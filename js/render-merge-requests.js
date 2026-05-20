@@ -17,7 +17,14 @@
   const R = window.GitddnRender;
   let currentStatus = 'all';
 
-  function detailUrl(m){ return `./mr-detail.html?id=${encodeURIComponent(m.id)}&repo=${encodeURIComponent(m.repo || '')}`; }
+  function repoMergeRequestsUrl(m){
+    return `./repository-detail.html?id=${encodeURIComponent(m.repo || m.repositoryId || '')}#merge-requests`;
+  }
+  function progressTone(m){
+    if (Number(m.approved || 0) >= Number(m.required || 0)) return 'green is-100';
+    if (m.review === 'rejected' || m.pipeline === 'failed' || m.security === 'failed') return 'red is-0';
+    return 'orange is-50';
+  }
   function row(m){
     const pipeline = R.status(m.pipeline);
     const mrStatus = R.status(m.status);
@@ -29,14 +36,36 @@
       data-repo="${R.escape(m.repo)}"
       data-owner="${R.escape(m.owner)}"
       data-review="${R.escape(m.review)}"
-      onclick="location.href='${detailUrl(m)}'">
+      onclick="location.href='${repoMergeRequestsUrl(m)}'">
         <td>${R.escape(m.updatedAt)}</td>
-        <td><strong>MR #${R.escape(m.id)} ${R.escape(m.title)}</strong><br><small>${R.escape(m.source)} → ${R.escape(m.target)}</small></td>
+        <td>
+          <div class="mr-title">
+            <strong>MR #${R.escape(m.id)} ${R.escape(m.title)}</strong>
+            <span>${R.escape(m.summary || m.description || '')}</span>
+          </div>
+        </td>
+        <td>
+          <div class="repo-info">
+            <strong>${R.escape(m.repo)}</strong>
+            <span>${R.escape(m.repoGroup || m.project || '')}</span>
+          </div>
+        </td>
+        <td>
+          <div class="branch-flow">
+            <span><strong class="mono">${R.escape(m.source)}</strong></span>
+            <span>→ <strong class="mono">${R.escape(m.target)}</strong></span>
+          </div>
+        </td>
         <td>${R.escape(m.author)}</td>
         <td>${R.statusChip(pipeline.label, pipeline.chip)}</td>
         <td>${R.statusChip(m.securityLabel || R.status(m.security).label, secTone)}</td>
         <td>${R.statusChip(m.reviewLabel || m.review, reviewTone)}</td>
-        <td>${R.escape(m.approved)}/${R.escape(m.required)} Approved</td>
+        <td>
+          <div class="review-progress">
+            <span>${R.escape(m.approved)}/${R.escape(m.required)} Approved</span>
+            <div class="progress-bar"><div class="progress-fill ${progressTone(m)}"></div></div>
+          </div>
+        </td>
         <td>${R.escape(m.comments)}</td>
         <td>${R.statusChip(mrStatus.label, mrStatus.chip)}</td>
       </tr>`;
@@ -54,7 +83,7 @@
     filterMrRows();
   }
 
-  window.setMrStatusTab = window.setMrTab = function(status){
+  window.setStatusTab = window.setMrStatusTab = window.setMrTab = function(status){
     currentStatus = status;
     document.querySelectorAll('.status-tab,.tab-button').forEach(tab => {
       const val = tab.dataset.status || tab.dataset.mrStatus;
