@@ -103,25 +103,7 @@
     </aside>
 
     <div class="app-main">
-      <header class="top-header">
-        <div class="header-left">
-          <button class="icon-button sidebar-toggle" type="button" aria-label="GNB 접기" onclick="toggleSidebar()">☰</button>
-          <button class="org-button" type="button"><span class="org-label">조직</span><strong>Digital Banking</strong></button>
-        </div>
-        <div class="global-search">
-          <span>⌕</span>
-          <input type="text" placeholder="Repository, MR, Pipeline, 파일 검색" />
-          <kbd>⌘K</kbd>
-        </div>
-        <div class="header-actions">
-          <button class="icon-button" type="button" onclick="showToast('즐겨찾기에 추가되었습니다.')">★</button>
-          <button class="primary-button" type="button" onclick="showToast('Pipeline을 다시 실행합니다.')">↻ 실행</button>
-          <button class="profile-button" type="button">
-            <span class="avatar">J</span>
-            <span class="profile-text"><strong>Jito</strong><small>Maintainer</small></span>
-          </button>
-        </div>
-      </header>
+      <div id="appHeader"></div>
 
       <main class="page-content pipeline-detail-page">
         <section class="pipeline-hero">
@@ -296,6 +278,8 @@
     </div>
   </div>
   <div class="toast" id="toast"></div>
+  <script src="../js/header.js"></script>
+  <script src="../js/components.js"></script>
   <script src="../js/navigation.js"></script>
   <script src="../js/main.js"></script>
   <script>
