@@ -186,11 +186,17 @@
       }
     ]
   },
+  "organizations": [
+    { "key": "digital-banking", "label": "Digital Banking" },
+    { "key": "corporate-banking", "label": "Corporate Banking" },
+    { "key": "wealth-management", "label": "Wealth Management" }
+  ],
   "repositories": {
     "list": [
       {
         "id": "mobile-banking-api",
         "name": "mobile-banking-api",
+        "organizationKey": "digital-banking",
         "groupKey": "banking",
         "group": "Digital Banking / Mobile",
         "typeKey": "typescript",
@@ -272,6 +278,7 @@
       {
         "id": "customer-web-portal",
         "name": "customer-web-portal",
+        "organizationKey": "digital-banking",
         "groupKey": "banking",
         "group": "Digital Banking / Web",
         "typeKey": "react",
@@ -353,6 +360,7 @@
       {
         "id": "account-limit-service",
         "name": "account-limit-service",
+        "organizationKey": "digital-banking",
         "groupKey": "banking",
         "group": "Digital Banking / Core API",
         "typeKey": "java",
@@ -434,6 +442,7 @@
       {
         "id": "loan-screen-web",
         "name": "loan-screen-web",
+        "organizationKey": "digital-banking",
         "groupKey": "banking",
         "group": "Digital Banking / Loan",
         "typeKey": "react",
@@ -515,6 +524,7 @@
       {
         "id": "notification-gateway",
         "name": "notification-gateway",
+        "organizationKey": "digital-banking",
         "groupKey": "platform",
         "group": "Platform Center / Messaging",
         "typeKey": "typescript",
@@ -596,6 +606,7 @@
       {
         "id": "auth-policy-engine",
         "name": "auth-policy-engine",
+        "organizationKey": "digital-banking",
         "groupKey": "platform",
         "group": "Platform Center / Security",
         "typeKey": "java",
@@ -677,6 +688,7 @@
       {
         "id": "admin-console-ui",
         "name": "admin-console-ui",
+        "organizationKey": "digital-banking",
         "groupKey": "platform",
         "group": "Platform Center / Admin",
         "typeKey": "vue",
@@ -758,6 +770,7 @@
       {
         "id": "settlement-batch",
         "name": "settlement-batch",
+        "organizationKey": "digital-banking",
         "groupKey": "banking",
         "group": "Digital Banking / Batch",
         "typeKey": "python",
@@ -839,6 +852,7 @@
       {
         "id": "common-ui-components",
         "name": "common-ui-components",
+        "organizationKey": "digital-banking",
         "groupKey": "platform",
         "group": "Platform Center / Shared Module",
         "typeKey": "vue",
@@ -920,6 +934,7 @@
       {
         "id": "partner-payment-sdk",
         "name": "partner-payment-sdk",
+        "organizationKey": "digital-banking",
         "groupKey": "partner",
         "group": "Partner Workspace",
         "typeKey": "java",
@@ -1002,6 +1017,7 @@
       {
         "id": "legacy-report-batch",
         "name": "legacy-report-batch",
+        "organizationKey": "digital-banking",
         "groupKey": "banking",
         "group": "Digital Banking / Batch",
         "typeKey": "python",
@@ -1083,6 +1099,7 @@
       {
         "id": "compliance-exporter",
         "name": "compliance-exporter",
+        "organizationKey": "digital-banking",
         "groupKey": "platform",
         "group": "Platform Center / Audit",
         "typeKey": "python",
@@ -1160,7 +1177,96 @@
             "tone": "red"
           }
         ]
+      },
+      {
+        "id": "corp-loan-risk-api",
+        "name": "corp-loan-risk-api",
+        "organizationKey": "corporate-banking",
+        "groupKey": "banking",
+        "group": "Digital Banking / Core API",
+        "typeKey": "java",
+        "type": "Java",
+        "description": "기업 여신 심사와 리스크 등급 계산을 처리하는 API Repository",
+        "status": "approved",
+        "favorite": true,
+        "updatedAt": "Updated 12 minutes ago",
+        "role": "Maintainer",
+        "visibility": "Private",
+        "defaultBranch": "main",
+        "openMrCount": 2,
+        "pipelineStatus": "passed",
+        "securityStatus": "passed",
+        "metrics": [],
+        "nextUp": [],
+        "tickets": []
+      },
+      {
+        "id": "corp-cash-portal",
+        "name": "corp-cash-portal",
+        "organizationKey": "corporate-banking",
+        "groupKey": "banking",
+        "group": "Digital Banking / Web",
+        "typeKey": "react",
+        "type": "React",
+        "description": "기업 자금관리 포털의 계좌, 승인, 이체 화면 Repository",
+        "status": "approved",
+        "favorite": false,
+        "updatedAt": "Updated 45 minutes ago",
+        "role": "Developer",
+        "visibility": "Private",
+        "defaultBranch": "develop",
+        "openMrCount": 1,
+        "pipelineStatus": "running",
+        "securityStatus": "warning",
+        "metrics": [],
+        "nextUp": [],
+        "tickets": []
+      },
+      {
+        "id": "wealth-advisor-web",
+        "name": "wealth-advisor-web",
+        "organizationKey": "wealth-management",
+        "groupKey": "banking",
+        "group": "Digital Banking / Web",
+        "typeKey": "react",
+        "type": "React",
+        "description": "자산관리 상담 화면과 포트폴리오 제안 흐름을 제공하는 Web Repository",
+        "status": "approved",
+        "favorite": true,
+        "updatedAt": "Updated 25 minutes ago",
+        "role": "Maintainer",
+        "visibility": "Private",
+        "defaultBranch": "main",
+        "openMrCount": 3,
+        "pipelineStatus": "passed",
+        "securityStatus": "passed",
+        "metrics": [],
+        "nextUp": [],
+        "tickets": []
+      },
+      {
+        "id": "wealth-report-batch",
+        "name": "wealth-report-batch",
+        "organizationKey": "wealth-management",
+        "groupKey": "banking",
+        "group": "Digital Banking / Batch",
+        "typeKey": "python",
+        "type": "Python",
+        "description": "고객 포트폴리오 리포트 생성과 발송 배치를 담당하는 Repository",
+        "status": "pending",
+        "favorite": false,
+        "updatedAt": "Requested 2 hours ago",
+        "role": "Requested",
+        "visibility": "Private",
+        "defaultBranch": "main",
+        "openMrCount": 0,
+        "pipelineStatus": "none",
+        "securityStatus": "none",
+        "metrics": [],
+        "nextUp": [],
+        "tickets": []
       }
+
     ],
     "detail": {
       "id": "mobile-banking-api",

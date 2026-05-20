@@ -4,19 +4,24 @@
 
   const isPageFile = window.location.pathname.includes('/pages/');
   const pageUrl = (fileName) => isPageFile ? `./${fileName}` : `./pages/${fileName}`;
+  const organizations = [
+    { key: 'digital-banking', label: 'Digital Banking' },
+    { key: 'corporate-banking', label: 'Corporate Banking' },
+    { key: 'wealth-management', label: 'Wealth Management' }
+  ];
+  const currentOrgKey = window.localStorage?.getItem('gitddn:organization') || 'digital-banking';
+  const currentOrg = organizations.find((org) => org.key === currentOrgKey) || organizations[0];
 
   mount.outerHTML = `
     <header class="top-header">
       <div class="header-left">
         <div class="org-switch">
           <button class="org-button" type="button" data-action="dropdown" data-target="orgMenu" data-dropdown>
-            <strong>Digital Banking</strong>
+            <strong>${currentOrg.label}</strong>
             <span>⌄</span>
           </button>
           <div class="org-menu" id="orgMenu" data-dropdown-menu>
-            <button type="button">Digital Banking</button>
-            <button type="button">Platform Center</button>
-            <button type="button">Partner Workspace</button>
+            ${organizations.map((org) => `<button type="button" data-action="organization" data-org-key="${org.key}">${org.label}</button>`).join('')}
           </div>
         </div>
       </div>

@@ -17,6 +17,13 @@
   const R = window.GitddnRender;
   let currentStatus = 'all';
 
+  function currentOrganizationKey(){
+    return window.localStorage?.getItem('gitddn:organization') || 'digital-banking';
+  }
+  function organizationRepositories(data){
+    const orgKey = currentOrganizationKey();
+    return data.filter(repo => (repo.organizationKey || 'digital-banking') === orgKey);
+  }
   function updatedSortValue(repo){
     const raw = String(repo.updatedAt || '').toLowerCase();
     const number = Number((raw.match(/\d+/) || [0])[0]);
@@ -88,7 +95,7 @@
     const list = document.getElementById('repoList');
     const data = R.data().repositories?.list || [];
     if (!list) return;
-    list.innerHTML = sortedRepositories(data).map(row).join('');
+    list.innerHTML = sortedRepositories(organizationRepositories(data)).map(row).join('');
     filterRepositories();
   }
 

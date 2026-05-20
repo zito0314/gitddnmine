@@ -117,6 +117,14 @@
       event.preventDefault();
       toggleDropdown(action.dataset.target);
     }
+    if (actionName === 'organization') {
+      event.preventDefault();
+      const orgKey = action.dataset.orgKey || 'digital-banking';
+      window.localStorage?.setItem('gitddn:organization', orgKey);
+      window.dispatchEvent(new CustomEvent('gitddn:organization-change', { detail: { orgKey } }));
+      closeDropdowns();
+      window.location.reload();
+    }
     if (actionName === 'modal-open') {
       event.preventDefault();
       openModal(action.dataset.target);
