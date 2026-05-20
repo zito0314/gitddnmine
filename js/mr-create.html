@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gitddn - MR 생성</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+</head>
+<body class="page-mr-create">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+
+      <div class="brand">
+        <div class="brand-mark">g</div>
+        <div>
+          <div class="brand-name">gitddn</div>
+          <div class="brand-sub">DevSecOps Governance</div>
+        </div>
+      </div>
+
+      <nav class="gnb">
+        <div class="gnb-section current-repo">
+          <div class="gnb-title">Current Repository</div>
+          <a class="repo-back" href="./repository-list.html">← Repository 목록</a>
+
+          <div class="repo-context-card">
+            <div class="repo-context-name">mobile-banking-api</div>
+            <div class="repo-context-path">Digital Banking / Mobile</div>
+            <div class="repo-context-meta">
+              <span class="repo-context-chip blue">Maintainer</span>
+              <span class="repo-context-chip">Private</span>
+            </div>
+          </div>
+
+          <a class="gnb-item" href="./repository-detail.html">
+            <span class="gnb-icon">▦</span>
+            <span>Overview</span>
+          </a>
+          <a class="gnb-item" href="./repository-detail.html">
+            <span class="gnb-icon">📁</span>
+            <span>Files</span>
+          </a>
+          <a class="gnb-item active" href="./repository-detail.html">
+            <span class="gnb-icon">⇄</span>
+            <span>Merge Requests</span>
+            <span class="gnb-badge">5</span>
+          </a>
+          <a class="gnb-item" href="./repository-detail.html">
+            <span class="gnb-icon">⚡</span>
+            <span>Pipelines</span>
+          </a>
+          <a class="gnb-item" href="./repository-detail.html">
+            <span class="gnb-icon">●</span>
+            <span>Commits</span>
+          </a>
+          <a class="gnb-item" href="./repository-detail.html">
+            <span class="gnb-icon">⑂</span>
+            <span>Branches</span>
+          </a>
+          <a class="gnb-item" href="./repository-detail.html">
+            <span class="gnb-icon">⌁</span>
+            <span>Git Graph</span>
+          </a>
+          <a class="gnb-item" href="./repository-detail.html">
+            <span class="gnb-icon">🏷</span>
+            <span>Tags</span>
+          </a>
+          <a class="gnb-item" href="./repository-detail.html">
+            <span class="gnb-icon">◈</span>
+            <span>Security</span>
+            <span class="gnb-badge warning">2</span>
+          </a>
+          <a class="gnb-item" href="./repository-detail.html">
+            <span class="gnb-icon">◷</span>
+            <span>Activity</span>
+          </a>
+          <a class="gnb-item" href="./repository-detail.html">
+            <span class="gnb-icon">◇</span>
+            <span>Access</span>
+          </a>
+          <a class="gnb-item" href="./repository-detail.html">
+            <span class="gnb-icon">⚙</span>
+            <span>Settings</span>
+          </a>
+        </div>
+
+        <div class="gnb-section">
+          <div class="gnb-title">Workspace</div>
+          <a class="gnb-item" href="../index.html">
+            <span class="gnb-icon">▦</span>
+            <span>Dashboard</span>
+          </a>
+          <a class="gnb-item" href="./repository-list.html">
+            <span class="gnb-icon">▤</span>
+            <span>Repository</span>
+          </a>
+          <a class="gnb-item" href="./mr-list.html">
+            <span class="gnb-icon">⇄</span>
+            <span>Merge Request</span>
+          </a>
+          <a class="gnb-item" href="#" onclick="showToast('Activity 화면은 다음 단계에서 연결됩니다.')">
+            <span class="gnb-icon">◷</span>
+            <span>Activity</span>
+          </a>
+          <a class="gnb-item" href="./audit-log.html">
+            <span class="gnb-icon">☷</span>
+            <span>Audit Log</span>
+          </a>
+      </nav>
+    </aside>
+    <div class="app-main">
+      <div id="appHeader"></div>
+      <main class="page-content mr-create-page">
+        <section class="page-hero compact" id="mrHero"><div><div class="eyebrow">Merge Request</div><h1>Create MR</h1><p>Source Branch의 변경사항을 Target Branch로 병합 요청합니다. 연결된 Jira Ticket, 리뷰어, Pipeline/보안 점검 조건을 함께 확인한 후 MR을 생성하세요.</p></div><div class="hero-actions"><button class="secondary-button" type="button" onclick="history.back()">이전 화면</button><button class="secondary-button" type="button" onclick="location.href='./mr-list.html'">MR 목록</button></div></section>
+        <section class="mr-layout" id="mrFormArea">
+          <form class="form-card" id="mrCreateForm" data-validate onsubmit="submitMr(event)">
+            <div class="form-section"><h2 class="section-title">Repository / Branch 선택</h2><p class="section-desc">MR을 생성할 Repository와 병합 방향을 선택합니다.</p><div class="field-grid"><div class="field full"><label for="repository">Repository<span class="required">*</span></label><select id="repository" name="repository" required><option>mobile-banking-api</option><option>customer-web-portal</option><option>common-ui-components</option></select></div></div><div class="branch-compare u-mt-14"><div class="field branch-field"><label for="sourceBranch">Source Branch<span class="required">*</span></label><select id="sourceBranch" name="sourceBranch" required onchange="updateBranchCommitInfo()"><option>feature/login-policy</option><option>feature/account-cache</option><option>fix/login-message</option></select><div class="help-text">변경사항이 있는 Branch입니다.</div><div class="branch-commit-card source"><span class="commit-avatar">J</span><span class="commit-info"><strong id="sourceCommitTitle">로그인 정책 예외 케이스 응답값 개선</strong><small id="sourceCommitMeta">Jito · a82f4c1 · 20분 전</small></span><button type="button" onclick="showToast('Source 최신 커밋 SHA가 복사되었습니다.')">SHA 복사</button></div></div><div class="compare-arrow">→</div><div class="field branch-field"><label for="targetBranch">Target Branch<span class="required">*</span></label><select id="targetBranch" name="targetBranch" required onchange="updateBranchCommitInfo()"><option>develop</option><option>main</option><option>release</option></select><div class="help-text">변경사항을 병합할 대상 Branch입니다.</div><div class="branch-commit-card target"><span class="commit-avatar green">M</span><span class="commit-info"><strong id="targetCommitTitle">develop 브랜치 빌드 안정화</strong><small id="targetCommitMeta">Min · d31e92a · 1시간 전</small></span><button type="button" onclick="showToast('Target 최신 커밋 SHA가 복사되었습니다.')">SHA 복사</button></div></div></div></div>
+            <div class="form-section"><h2 class="section-title">MR 정보</h2><p class="section-desc">리뷰어가 변경 목적과 범위를 이해할 수 있도록 작성합니다.</p><div class="field-grid"><div class="field full"><label for="mrTitle">MR 제목<span class="required">*</span></label><input id="mrTitle" name="mrTitle" type="text" placeholder="MR 제목을 입력해 주세요." required /></div><div class="field full"><label for="mrDescription">MR 설명<span class="required">*</span></label><textarea id="mrDescription" name="mrDescription" placeholder="변경 내용, 영향 범위, 리뷰 포인트를 입력해 주세요." required></textarea><div class="help-text">변경 내용, 영향 범위, 리뷰 포인트를 함께 작성하는 것을 권장합니다.</div></div></div></div>
+            <div class="form-section"><h2 class="section-title">Jira 연계</h2><p class="section-desc">MR과 연계할 Jira 업무를 불러옵니다.</p><div class="jira-load-card"><span class="item-main"><strong>Jira 업무 불러오기</strong><small>연결 가능한 Ticket을 조회한 뒤 MR 설명과 검토 항목에 반영합니다.</small></span><button class="secondary-button" type="button" onclick="showToast('Jira 업무를 불러왔습니다.')">Jira 불러오기</button></div></div>
+            <div class="form-section"><h2 class="section-title">리뷰어 / 승인자</h2><p class="section-desc">MR 검토를 요청할 리뷰어와 역할을 지정합니다.</p><div class="reviewer-list" id="reviewerList"><div class="reviewer-row"><input type="email" value="min@company.com" placeholder="reviewer@company.com" /><select><option>리뷰어</option><option>승인자</option><option>리뷰어 + 승인자</option></select><button class="remove-button" type="button" onclick="removeReviewerRow(this)">×</button></div><div class="reviewer-row"><input type="email" value="security@company.com" placeholder="reviewer@company.com" /><select><option>승인자</option><option>리뷰어</option><option>리뷰어 + 승인자</option></select><button class="remove-button" type="button" onclick="removeReviewerRow(this)">×</button></div></div><div class="u-mt-12"><button class="secondary-button" type="button" onclick="addReviewerRow()">+ 리뷰어 추가</button></div></div>
+            <div class="form-section"><h2 class="section-title">생성 옵션</h2><p class="section-desc">MR 생성 후 처리 방식을 선택합니다.</p><div class="field-grid option-grid"><label class="ticket-item"><span class="item-main"><strong>MR 생성 후 Pipeline 자동 실행</strong><small>Build, Test, Security Scan을 순차적으로 실행합니다.</small></span><input type="checkbox" checked /></label><label class="ticket-item"><span class="item-main"><strong>Merge 후 Source Branch 삭제</strong><small>병합 완료 후 작업 Branch를 자동 정리합니다.</small></span><input type="checkbox" /></label><label class="ticket-item"><span class="item-main"><strong>리뷰어에게 알림 전송</strong><small>Mattermost 또는 Email로 리뷰 요청 알림을 보냅니다.</small></span><input type="checkbox" checked /></label><label class="ticket-item"><span class="item-main"><strong>Draft로 생성</strong><small>리뷰 요청 전 임시 MR로 생성합니다.</small></span><input type="checkbox" /></label></div></div>
+            <div class="form-actions"><button class="secondary-button" type="button" onclick="history.back()">취소</button><div class="action-group"><button class="secondary-button" type="button" onclick="saveDraft()">임시 저장</button><button class="primary-button" type="submit">MR 생성</button></div></div>
+          </form>
+          <aside class="side-card"><div class="side-block"><div class="side-title">MR 생성 전 확인</div><p class="side-text">선택한 Branch 기준으로 비교 가능한 변경사항이 있을 때 MR을 생성할 수 있습니다. 이미 동일한 Source/Target 조합의 MR이 있으면 생성이 제한될 수 있습니다.</p></div><div class="side-block"><div class="side-title">Merge 조건</div><div class="check-list"><div class="check-item"><span class="item-icon green">✓</span><span class="item-main"><strong>변경사항 있음</strong><small>Source Branch에 비교 가능한 Commit이 있습니다.</small></span><span class="status-chip green">충족</span></div><div class="check-item"><span class="item-icon orange">2</span><span class="item-main"><strong>승인 2명 필요</strong><small>Maintainer 또는 지정 Approver 승인 필요</small></span><span class="status-chip orange">대기</span></div><div class="check-item"><span class="item-icon red">!</span><span class="item-main"><strong>보안 점검 필요</strong><small>MR 생성 후 Security Check가 실행됩니다.</small></span><span class="status-chip gray">예정</span></div></div></div><div class="side-block"><div class="side-title">연결 정보</div><p class="side-text">Repository: <strong>mobile-banking-api</strong><br>Target: <strong>develop</strong><br>Policy Template: <strong>Financial Service Policy</strong></p></div></aside>
+        </section>
+        <section class="complete-card" id="mrComplete"><div class="complete-icon">✓</div><h2>MR이 생성되었습니다.</h2><p>MR 생성 후 Pipeline과 Security Check가 순차적으로 실행됩니다. 리뷰어에게 알림이 전송되며, 승인 상태는 MR 상세 화면에서 확인할 수 있습니다.</p><div class="action-group u-justify-center"><button class="secondary-button" type="button" onclick="location.href='./mr-list.html'">MR 목록으로 이동</button><button class="primary-button" type="button" onclick="location.href='./mr-detail.html'">MR 상세 보기</button></div></section>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast">완료</div>
+  <script src="../js/header.js"></script>
+  <script src="../js/components.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const branchCommitData = {
+      source: {
+        'feature/login-policy': { title: '로그인 정책 예외 케이스 응답값 개선', author: 'Jito', sha: 'a82f4c1', time: '20분 전' },
+        'feature/account-cache': { title: '계좌 조회 cache policy 정리', author: 'Jito', sha: 'f91c2d0', time: '2시간 전' },
+        'fix/login-message': { title: '로그인 실패 메시지 문구 수정', author: 'Min', sha: 'b18a90c', time: '어제' }
+      },
+      target: {
+        develop: { title: 'develop 브랜치 빌드 안정화', author: 'Min', sha: 'd31e92a', time: '1시간 전' },
+        main: { title: '운영 배포 태그 v2.4.0 반영', author: 'Han', sha: '7f28c11', time: '어제' },
+        release: { title: 'May release 후보 브랜치 동기화', author: 'Deploy Bot', sha: '9c44e21', time: '3시간 전' }
+      }
+    };
+
+    function updateBranchCommitInfo(){const source=document.getElementById('sourceBranch').value;const target=document.getElementById('targetBranch').value;const sourceData=branchCommitData.source[source]||branchCommitData.source['feature/login-policy'];const targetData=branchCommitData.target[target]||branchCommitData.target.develop;document.getElementById('sourceCommitTitle').textContent=sourceData.title;document.getElementById('sourceCommitMeta').textContent=sourceData.author+' · '+sourceData.sha+' · '+sourceData.time;document.getElementById('targetCommitTitle').textContent=targetData.title;document.getElementById('targetCommitMeta').textContent=targetData.author+' · '+targetData.sha+' · '+targetData.time;}
+    function addReviewerRow(){const list=document.getElementById('reviewerList');const row=document.createElement('div');row.className='reviewer-row';row.innerHTML=`<input type="email" placeholder="reviewer@company.com" /><select><option>리뷰어</option><option>승인자</option><option>리뷰어 + 승인자</option></select><button class="remove-button" type="button" onclick="removeReviewerRow(this)">×</button>`;list.appendChild(row);}
+    function removeReviewerRow(button){const rows=document.querySelectorAll('.reviewer-row');if(rows.length<=1){showToast('리뷰어 입력 행은 최소 1개가 필요합니다.');return;}button.closest('.reviewer-row').remove();}
+    function saveDraft(){showToast('MR Draft가 임시 저장되었습니다.');}
+    function submitMr(event){event.preventDefault();if(!GitddnComponents.validateForm(event.currentTarget))return;document.getElementById('mrHero').style.display='none';document.getElementById('mrFormArea').style.display='none';document.getElementById('mrComplete').style.display='block';window.scrollTo({top:0,behavior:'smooth'});showToast('MR이 생성되었습니다.');}
+    document.addEventListener('DOMContentLoaded',updateBranchCommitInfo);
+  </script>
+  <script src="../js/mock-data.js?v=sync-20260520"></script>
+  <script src="../js/render-forms.js?v=sync-20260520"></script>
+</body>
+</html>
