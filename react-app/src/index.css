@@ -141,6 +141,65 @@ body {
   padding: 24px 28px 44px;
 }
 
+.page-header {
+  margin-bottom: 18px;
+}
+
+.page-header h2.ant-typography {
+  margin: 0 0 6px;
+}
+
+.page-header-eyebrow.ant-typography {
+  margin: 0 0 6px;
+  color: var(--gitddn-primary);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.summary-card .ant-card-body {
+  min-height: 128px;
+}
+
+.summary-card-description {
+  display: block;
+  margin-top: 12px;
+}
+
+.summary-card-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  color: var(--gitddn-primary);
+  background: var(--gitddn-primary-soft);
+  font-size: 18px;
+}
+
+.summary-card-danger .summary-card-icon {
+  color: #de3412;
+  background: #fdefec;
+}
+
+.summary-card-warning .summary-card-icon {
+  color: #9e6a00;
+  background: #fff3db;
+}
+
+.summary-card-success .summary-card-icon {
+  color: #228738;
+  background: #eaf6ec;
+}
+
+.filter-bar {
+  margin-bottom: 14px;
+}
+
+.filter-search {
+  width: 280px;
+}
+
 .sidebar-divider {
   margin: 16px 12px;
 }
