@@ -1,26 +1,92 @@
 (function(){
   window.GitddnRender = window.GitddnRender || {};
   const R = window.GitddnRender;
-  R.h = (v) => String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-  R.chip = (label, cls='') => `<span class="chip ${cls}">${R.h(label)}</span>`;
-  R.status = (key) => (window.GITDDN_MOCK?.common?.status || {})[key] || {label:key, chip:''};
-  R.setOptions = (select, values, placeholder) => {
-    if(!select || !values) return;
-    select.innerHTML = `${placeholder ? `<option value="">${R.h(placeholder)}</option>` : ''}${values.map(v => typeof v === 'string' ? `<option value="${R.h(v)}">${R.h(v)}</option>` : `<option value="${R.h(v.value)}">${R.h(v.label)}</option>`).join('')}`;
+  R.data = () => window.GITDDN_MOCK || {};
+  R.escape = (v='') => String(v ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  R.status = (keyOrLabel) => {
+    const m = R.data();
+    const st = (m.common && m.common.status && m.common.status[keyOrLabel]) || null;
+    return st || {label:keyOrLabel || '-', chip:''};
   };
+  R.param = (name) => new URLSearchParams(window.location.search).get(name);
+  R.chip = (label, tone='') => `<span class="chip ${R.escape(tone)}">${R.escape(label)}</span>`;
+  R.statusChip = (label, tone='') => `<span class="status-chip ${R.escape(tone)}">${R.escape(label)}</span>`;
 })();
 
 (function(){
-  const R=window.GitddnRender; let currentStatus='all';
-  const progCls=(p)=> p>=100?'green is-100':p>=50?'orange is-50':'red is-0';
-  function mrRow(m, full=true){ const pipeline=R.status(m.pipeline); const status=R.status(m.status); const secCls=m.security==='passed'?'green':m.security==='failed'?'red':''; const revCls=m.review==='approved'?'green':m.review==='rejected'?'red':m.review==='need-review'?'orange':''; const pct=Math.round(m.approved/m.required*100);
-    return `<tr data-status="${m.status}" data-repo="${m.repo}" data-owner="${m.owner}" data-review="${m.review}" onclick="openMrDetail('repository')"><td>${R.h(m.updatedAt)}</td><td><div class="mr-title"><strong>MR #${m.id} ${R.h(m.title)}</strong><span>${R.h(m.summary)}</span></div></td>${full?`<td><div class="repo-info"><strong>${R.h(m.repo)}</strong><span>${R.h(m.repoGroup)}</span></div></td>`:''}<td><div class="branch-flow"><span><strong class="mono">${R.h(m.source)}</strong></span><span>→ <strong class="mono">${R.h(m.target)}</strong></span></div></td><td>${R.h(m.author)}</td><td><span class="chip ${pipeline.chip}">${R.h(pipeline.label)}</span></td><td><span class="chip ${secCls}">${R.h(m.securityLabel)}</span></td><td><span class="chip ${revCls}">${R.h(m.reviewLabel)}</span></td><td><div class="review-progress"><span>${m.approved}/${m.required} Approved</span><div class="progress-bar"><div class="progress-fill ${progCls(pct)}"></div></div></div></td><td>${m.comments}</td><td><span class="chip ${status.chip}">${status.label}</span></td></tr>`;
+  const R = window.GitddnRender;
+  let currentStatus = 'all';
+
+  function detailUrl(m){ return `./mr-detail.html?id=${encodeURIComponent(m.id)}&repo=${encodeURIComponent(m.repo || '')}`; }
+  function row(m){
+    const pipeline = R.status(m.pipeline);
+    const mrStatus = R.status(m.status);
+    const secTone = m.security === 'passed' ? 'green' : m.security === 'failed' || m.security === 'need-check' ? 'red' : '';
+    const reviewTone = m.review === 'approved' ? 'green' : m.review === 'need-review' ? 'orange' : m.review === 'rejected' ? 'red' : '';
+    return `<tr class="mr-clickable-row"
+      data-id="${R.escape(m.id)}"
+      data-status="${R.escape(m.status)}"
+      data-repo="${R.escape(m.repo)}"
+      data-owner="${R.escape(m.owner)}"
+      data-review="${R.escape(m.review)}"
+      onclick="location.href='${detailUrl(m)}'">
+        <td>${R.escape(m.updatedAt)}</td>
+        <td><strong>MR #${R.escape(m.id)} ${R.escape(m.title)}</strong><br><small>${R.escape(m.source)} → ${R.escape(m.target)}</small></td>
+        <td>${R.escape(m.author)}</td>
+        <td>${R.statusChip(pipeline.label, pipeline.chip)}</td>
+        <td>${R.statusChip(m.securityLabel || R.status(m.security).label, secTone)}</td>
+        <td>${R.statusChip(m.reviewLabel || m.review, reviewTone)}</td>
+        <td>${R.escape(m.approved)}/${R.escape(m.required)} Approved</td>
+        <td>${R.escape(m.comments)}</td>
+        <td>${R.statusChip(mrStatus.label, mrStatus.chip)}</td>
+      </tr>`;
   }
-  function renderMrList(){ const body=document.getElementById('mrTable'); if(body){ body.innerHTML=GITDDN_MOCK.mergeRequests.list.map(m=>mrRow(m,true)).join(''); filterMrs(); }
-    const repoBody=document.getElementById('mrTableBody'); if(repoBody && document.body.classList.contains('page-repository-detail')){ repoBody.innerHTML=GITDDN_MOCK.mergeRequests.list.slice(0,4).map(m=>`<tr class="mr-clickable-row" data-status="${m.status}" onclick="openMrDetail()"><td>${R.h(m.updatedAt)}</td><td><strong>MR #${m.id} ${R.h(m.title)}</strong><br><small>${R.h(m.source)} → ${R.h(m.target)}</small></td><td>${R.h(m.author)}</td><td><span class="status-chip ${R.status(m.pipeline).chip}">${R.status(m.pipeline).label}</span></td><td><span class="status-chip ${m.security==='passed'?'green':m.security==='failed'?'red':'gray'}">${R.h(m.securityLabel)}</span></td><td><span class="status-chip ${m.review==='approved'?'green':m.review==='rejected'?'red':m.review==='need-review'?'orange':'gray'}">${R.h(m.reviewLabel)}</span></td><td>${m.approved}/${m.required} Approved</td><td>${m.comments}</td><td><span class="status-chip ${R.status(m.status).chip}">${R.status(m.status).label}</span></td></tr>`).join(''); }
+
+  function render(){
+    const data = R.data().mergeRequests?.list || [];
+    const body = document.getElementById('mrTable');
+    if (body) body.innerHTML = data.map(row).join('');
+
+    const repoFilter = document.getElementById('repoFilter');
+    if (repoFilter && repoFilter.options.length <= 1) {
+      [...new Set(data.map(m => m.repo))].forEach(repo => repoFilter.insertAdjacentHTML('beforeend', `<option value="${R.escape(repo)}">${R.escape(repo)}</option>`));
+    }
+    filterMrRows();
   }
-  window.setStatusTab=function(status){ currentStatus=status; document.querySelectorAll('.status-tab').forEach(t=>t.classList.toggle('active',t.dataset.status===status)); filterMrs(); };
-  window.filterMrs=function(keyword){ const q=(keyword || document.getElementById('mrSearch')?.value || '').toLowerCase().trim(); const repo=document.getElementById('repoFilter')?.value||'all'; const owner=document.getElementById('ownerFilter')?.value||'all'; const review=document.getElementById('reviewFilter')?.value||'all'; let cnt=0; document.querySelectorAll('#mrTable tr, #mrTableBody tr').forEach(row=>{ const ok=(!q||row.innerText.toLowerCase().includes(q))&&(repo==='all'||row.dataset.repo===repo)&&(owner==='all'||row.dataset.owner===owner)&&(review==='all'||row.dataset.review===review)&&(currentStatus==='all'||row.dataset.status===currentStatus); row.style.display=ok?'':'none'; if(ok)cnt++; }); const empty=document.getElementById('emptyState'); if(empty) empty.style.display=cnt?'none':'block'; };
-  window.openMrDetail=function(){ location.href='./mr-detail.html'; };
-  document.addEventListener('DOMContentLoaded', renderMrList);
+
+  window.setMrStatusTab = window.setMrTab = function(status){
+    currentStatus = status;
+    document.querySelectorAll('.status-tab,.tab-button').forEach(tab => {
+      const val = tab.dataset.status || tab.dataset.mrStatus;
+      if (val) tab.classList.toggle('active', val === status);
+    });
+    filterMrRows();
+  };
+
+  window.filterMrRows = window.filterMrs = function(){
+    const keyword = (document.getElementById('mrSearch')?.value || '').trim().toLowerCase();
+    const repo = document.getElementById('repoFilter')?.value || 'all';
+    const owner = document.getElementById('ownerFilter')?.value || 'all';
+    const review = document.getElementById('reviewFilter')?.value || 'all';
+    let visible = 0;
+    document.querySelectorAll('#mrTable tr, #mrTableBody tr').forEach(row => {
+      const matchKeyword = !keyword || row.innerText.toLowerCase().includes(keyword);
+      const matchStatus = currentStatus === 'all' || row.dataset.status === currentStatus;
+      const matchRepo = repo === 'all' || row.dataset.repo === repo;
+      const matchOwner = owner === 'all' || row.dataset.owner === owner;
+      const matchReview = review === 'all' || row.dataset.review === review;
+      const ok = matchKeyword && matchStatus && matchRepo && matchOwner && matchReview;
+      row.style.display = ok ? '' : 'none';
+      if (ok) visible += 1;
+    });
+    const empty = document.getElementById('emptyState');
+    if (empty) empty.style.display = visible ? 'none' : 'block';
+  };
+
+  window.openMrDetail = function(id){
+    const mrId = id || event?.currentTarget?.dataset?.id || 128;
+    location.href = `./mr-detail.html?id=${encodeURIComponent(mrId)}`;
+  };
+
+  document.addEventListener('DOMContentLoaded', render);
 })();
