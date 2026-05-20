@@ -77,28 +77,7 @@
           </div>
         </section>
 
-        <section class="summary-grid audit-summary">
-          <article class="summary-card">
-            <div class="summary-label">오늘 수집된 이벤트</div>
-            <div class="summary-value">248</div>
-            <div class="summary-note">전일 대비 18% 증가</div>
-          </article>
-          <article class="summary-card">
-            <div class="summary-label">위험 이벤트</div>
-            <div class="summary-value danger">5</div>
-            <div class="summary-note">권한/보안 관련 확인 필요</div>
-          </article>
-          <article class="summary-card">
-            <div class="summary-label">권한 변경</div>
-            <div class="summary-value">14</div>
-            <div class="summary-note">사용자, 그룹, 브랜치 보호 정책</div>
-          </article>
-          <article class="summary-card">
-            <div class="summary-label">배포 이관 로그</div>
-            <div class="summary-value">9</div>
-            <div class="summary-note">승인, 반려, 운영 반영 기록</div>
-          </article>
-        </section>
+        <section class="summary-grid audit-summary" id="auditSummary"></section>
 
         <section class="toolbar-card">
           <div class="toolbar-top">
@@ -110,18 +89,9 @@
               <input id="dateFilter" type="date" value="2026-05-19" onchange="filterAuditLogs()" />
               <select id="actorFilter" onchange="filterAuditLogs()">
                 <option value="all">전체 사용자</option>
-                <option value="jito">Jito</option>
-                <option value="min">Min</option>
-                <option value="han">Han</option>
-                <option value="system">System</option>
               </select>
               <select id="targetFilter" onchange="filterAuditLogs()">
                 <option value="all">전체 대상</option>
-                <option value="repository">Repository</option>
-                <option value="merge-request">Merge Request</option>
-                <option value="pipeline">Pipeline</option>
-                <option value="deployment">Deployment</option>
-                <option value="security">Security</option>
               </select>
             </div>
           </div>
@@ -146,127 +116,7 @@
                   <th>IP</th>
                 </tr>
               </thead>
-              <tbody id="auditTable">
-                <tr class="selected" data-severity="danger" data-actor="jito" data-target="repository" data-title="Protected branch policy changed" data-id="AUD-20260519-1042" data-message="mobile-banking-api의 main 브랜치 보호 정책에서 force push 차단 규칙이 수정되었습니다." data-ip="10.42.18.91" data-time="2026-05-19 14:22:10" data-result="위험 확인 필요" onclick="selectAuditLog(this)">
-                  <td>
-                    <div class="event-title">
-                      <strong>Protected branch policy changed</strong>
-                      <span class="mono">AUD-20260519-1042 · policy.update</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="actor-info">
-                      <strong>Jito</strong>
-                      <span>Maintainer · MFA 확인</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="target-info">
-                      <strong>mobile-banking-api</strong>
-                      <span>Repository / main</span>
-                    </div>
-                  </td>
-                  <td><span class="chip red">위험 확인 필요</span></td>
-                  <td class="mono">14:22:10</td>
-                  <td class="mono">10.42.18.91</td>
-                </tr>
-
-                <tr data-severity="warning" data-actor="min" data-target="deployment" data-title="Deployment transfer approved" data-id="AUD-20260519-1038" data-message="customer-web-portal 운영이관 요청이 승인되어 금일 18:00 배포 대기 상태로 변경되었습니다." data-ip="10.42.31.24" data-time="2026-05-19 13:48:37" data-result="승인 완료" onclick="selectAuditLog(this)">
-                  <td>
-                    <div class="event-title">
-                      <strong>Deployment transfer approved</strong>
-                      <span class="mono">AUD-20260519-1038 · deploy.approve</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="actor-info">
-                      <strong>Min</strong>
-                      <span>Release Manager</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="target-info">
-                      <strong>customer-web-portal</strong>
-                      <span>Deployment Transfer</span>
-                    </div>
-                  </td>
-                  <td><span class="chip orange">승인 완료</span></td>
-                  <td class="mono">13:48:37</td>
-                  <td class="mono">10.42.31.24</td>
-                </tr>
-
-                <tr data-severity="info" data-actor="han" data-target="merge-request" data-title="Merge request merged" data-id="AUD-20260519-1027" data-message="MR #128 인증 정책 응답값 개선이 승인 조건을 충족하여 develop 브랜치에 병합되었습니다." data-ip="10.42.44.10" data-time="2026-05-19 12:16:04" data-result="정상 처리" onclick="selectAuditLog(this)">
-                  <td>
-                    <div class="event-title">
-                      <strong>Merge request merged</strong>
-                      <span class="mono">AUD-20260519-1027 · mr.merge</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="actor-info">
-                      <strong>Han</strong>
-                      <span>Reviewer</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="target-info">
-                      <strong>MR #128</strong>
-                      <span>mobile-banking-api</span>
-                    </div>
-                  </td>
-                  <td><span class="chip green">정상 처리</span></td>
-                  <td class="mono">12:16:04</td>
-                  <td class="mono">10.42.44.10</td>
-                </tr>
-
-                <tr data-severity="danger" data-actor="system" data-target="security" data-title="Security validation failed" data-id="AUD-20260519-1019" data-message="partner-payment-sdk의 외부 연동 모듈에서 High 등급 취약점이 감지되어 Repository 생성 승인이 보류되었습니다." data-ip="system" data-time="2026-05-19 11:42:55" data-result="보안 실패" onclick="selectAuditLog(this)">
-                  <td>
-                    <div class="event-title">
-                      <strong>Security validation failed</strong>
-                      <span class="mono">AUD-20260519-1019 · security.scan</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="actor-info">
-                      <strong>System</strong>
-                      <span>Policy Engine</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="target-info">
-                      <strong>partner-payment-sdk</strong>
-                      <span>Security Validation</span>
-                    </div>
-                  </td>
-                  <td><span class="chip red">보안 실패</span></td>
-                  <td class="mono">11:42:55</td>
-                  <td class="mono">system</td>
-                </tr>
-
-                <tr data-severity="info" data-actor="jito" data-target="pipeline" data-title="Pipeline rerun requested" data-id="AUD-20260519-1008" data-message="Pipeline #8014의 Test 단계를 재실행했습니다. 재실행 사유는 flaky test 확인입니다." data-ip="10.42.18.91" data-time="2026-05-19 10:05:18" data-result="재실행 요청" onclick="selectAuditLog(this)">
-                  <td>
-                    <div class="event-title">
-                      <strong>Pipeline rerun requested</strong>
-                      <span class="mono">AUD-20260519-1008 · pipeline.rerun</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="actor-info">
-                      <strong>Jito</strong>
-                      <span>Maintainer</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="target-info">
-                      <strong>Pipeline #8014</strong>
-                      <span>feature/login-policy</span>
-                    </div>
-                  </td>
-                  <td><span class="chip blue">재실행 요청</span></td>
-                  <td class="mono">10:05:18</td>
-                  <td class="mono">10.42.18.91</td>
-                </tr>
-              </tbody>
+              <tbody id="auditTable"></tbody>
             </table>
 
             <div class="empty-state" id="emptyState">
@@ -277,27 +127,27 @@
 
           <aside class="audit-detail-card">
             <div class="detail-header">
-              <span class="chip red" id="detailSeverity">위험 확인 필요</span>
-              <h2 id="detailTitle">Protected branch policy changed</h2>
-              <p id="detailMessage">mobile-banking-api의 main 브랜치 보호 정책에서 force push 차단 규칙이 수정되었습니다.</p>
+              <span class="chip" id="detailSeverity">-</span>
+              <h2 id="detailTitle">선택된 로그가 없습니다.</h2>
+              <p id="detailMessage">왼쪽 목록에서 감사 로그를 선택하면 상세 정보가 표시됩니다.</p>
             </div>
 
             <div class="detail-list">
               <div>
                 <span>이벤트 ID</span>
-                <strong class="mono" id="detailId">AUD-20260519-1042</strong>
+                <strong class="mono" id="detailId">-</strong>
               </div>
               <div>
                 <span>발생 시간</span>
-                <strong class="mono" id="detailTime">2026-05-19 14:22:10</strong>
+                <strong class="mono" id="detailTime">-</strong>
               </div>
               <div>
                 <span>접속 IP</span>
-                <strong class="mono" id="detailIp">10.42.18.91</strong>
+                <strong class="mono" id="detailIp">-</strong>
               </div>
               <div>
                 <span>처리 결과</span>
-                <strong id="detailResult">위험 확인 필요</strong>
+                <strong id="detailResult">-</strong>
               </div>
             </div>
 
@@ -317,62 +167,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/navigation.js"></script>
   <script src="../js/main.js"></script>
-  <script>
-    let currentSeverity = 'all';
-
-    function setSeverityTab(severity) {
-      currentSeverity = severity;
-      document.querySelectorAll('.status-tab').forEach((tab) => {
-        tab.classList.toggle('active', tab.dataset.severity === severity);
-      });
-      filterAuditLogs();
-    }
-
-    function filterAuditLogs() {
-      const keyword = document.getElementById('auditSearch').value.trim().toLowerCase();
-      const actor = document.getElementById('actorFilter').value;
-      const target = document.getElementById('targetFilter').value;
-      const rows = Array.from(document.querySelectorAll('#auditTable tr'));
-      let visibleCount = 0;
-
-      rows.forEach((row) => {
-        const matchesKeyword = !keyword || row.innerText.toLowerCase().includes(keyword) || row.dataset.id.toLowerCase().includes(keyword) || row.dataset.ip.toLowerCase().includes(keyword);
-        const matchesSeverity = currentSeverity === 'all' || row.dataset.severity === currentSeverity;
-        const matchesActor = actor === 'all' || row.dataset.actor === actor;
-        const matchesTarget = target === 'all' || row.dataset.target === target;
-        const isVisible = matchesKeyword && matchesSeverity && matchesActor && matchesTarget;
-
-        row.style.display = isVisible ? '' : 'none';
-        if (isVisible) visibleCount += 1;
-      });
-
-      document.getElementById('emptyState').style.display = visibleCount === 0 ? 'block' : 'none';
-
-      const selected = document.querySelector('#auditTable tr.selected');
-      if (!selected || selected.style.display === 'none') {
-        const firstVisible = rows.find((row) => row.style.display !== 'none');
-        if (firstVisible) selectAuditLog(firstVisible);
-      }
-    }
-
-    function selectAuditLog(row) {
-      document.querySelectorAll('#auditTable tr').forEach((item) => item.classList.remove('selected'));
-      row.classList.add('selected');
-
-      const chip = row.querySelector('.chip').cloneNode(true);
-      const detailSeverity = document.getElementById('detailSeverity');
-      detailSeverity.className = chip.className;
-      detailSeverity.textContent = row.dataset.result;
-
-      document.getElementById('detailTitle').textContent = row.dataset.title;
-      document.getElementById('detailMessage').textContent = row.dataset.message;
-      document.getElementById('detailId').textContent = row.dataset.id;
-      document.getElementById('detailTime').textContent = row.dataset.time;
-      document.getElementById('detailIp').textContent = row.dataset.ip;
-      document.getElementById('detailResult').textContent = row.dataset.result;
-    }
-
-    document.addEventListener('DOMContentLoaded', filterAuditLogs);
-  </script>
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/render-audit.js"></script>
 </body>
 </html>
