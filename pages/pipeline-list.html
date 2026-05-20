@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gitddn - Pipeline 목록</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+</head>
+<body class="page-pipeline-list">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">g</div>
+        <div>
+          <div class="brand-name">gitddn</div>
+          <div class="brand-sub">DevSecOps Governance</div>
+        </div>
+      </div>
+      <nav class="gnb">
+        <div class="gnb-section current-repo">
+          <div class="gnb-title">Current Repository</div>
+          <a class="repo-back" href="./repository-list.html">← Repository 목록</a>
+
+          <div class="repo-context-card">
+            <div class="repo-context-name">mobile-banking-api</div>
+            <div class="repo-context-path">Digital Banking / Mobile</div>
+            <div class="repo-context-meta">
+              <span class="repo-context-chip blue">Maintainer</span>
+              <span class="repo-context-chip">Private</span>
+            </div>
+          </div>
+
+          <a class="gnb-item repo-nav" href="./repository-detail.html">
+            <span class="gnb-icon">▦</span>
+            <span>Overview</span>
+          </a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#files">
+            <span class="gnb-icon">📁</span>
+            <span>Files</span>
+          </a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#merge-requests">
+            <span class="gnb-icon">⇄</span>
+            <span>Merge Requests</span>
+            <span class="gnb-badge">5</span>
+          </a>
+          <a class="gnb-item active repo-nav" href="./pipeline-list.html">
+            <span class="gnb-icon">⚡</span>
+            <span>Pipelines</span>
+          </a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#commits">
+            <span class="gnb-icon">●</span>
+            <span>Commits</span>
+          </a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#branches">
+            <span class="gnb-icon">⑂</span>
+            <span>Branches</span>
+          </a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#git-graph">
+            <span class="gnb-icon">⌁</span>
+            <span>Git Graph</span>
+          </a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#tags">
+            <span class="gnb-icon">🏷</span>
+            <span>Tags</span>
+          </a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#security">
+            <span class="gnb-icon">◈</span>
+            <span>Security</span>
+            <span class="gnb-badge warning">2</span>
+          </a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#activity">
+            <span class="gnb-icon">◷</span>
+            <span>Activity</span>
+          </a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#access">
+            <span class="gnb-icon">◇</span>
+            <span>Access</span>
+          </a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#settings">
+            <span class="gnb-icon">⚙</span>
+            <span>Settings</span>
+          </a>
+        </div>
+
+        <div class="gnb-section">
+          <div class="gnb-title">Workspace</div>
+          <a class="gnb-item" href="../index.html">
+            <span class="gnb-icon">▦</span>
+            <span>Dashboard</span>
+          </a>
+          <a class="gnb-item" href="./repository-list.html">
+            <span class="gnb-icon">▤</span>
+            <span>Repository</span>
+          </a>
+          <a class="gnb-item" href="./mr-list.html">
+            <span class="gnb-icon">⇄</span>
+            <span>Merge Request</span>
+          </a>
+          <a class="gnb-item" href="#" onclick="showToast('Activity 화면은 다음 단계에서 연결됩니다.')">
+            <span class="gnb-icon">◷</span>
+            <span>Activity</span>
+          </a>
+          <a class="gnb-item" href="./audit-log.html">
+            <span class="gnb-icon">☷</span>
+            <span>Audit Log</span>
+          </a>
+        </div>
+
+        <div class="gnb-section">
+          <div class="gnb-title">My Workspace</div>
+          <a class="gnb-item" href="#" onclick="showToast('즐겨찾기에 추가되었습니다.')">
+            <span class="gnb-icon">★</span>
+            <span>Favorites</span>
+          </a>
+          <a class="gnb-item" href="#" onclick="showToast('최근 본 항목을 엽니다.')">
+            <span class="gnb-icon">◷</span>
+            <span>Recently Viewed</span>
+          </a>
+        </div>
+      </nav>
+
+      <nav class="gnb">
+        <div class="gnb-section">
+          <div class="gnb-title">Workspace</div>
+          <a class="gnb-item" href="../index.html"><span class="gnb-icon">▦</span><span>Dashboard</span></a>
+          <a class="gnb-item" href="./repository-list.html"><span class="gnb-icon">▤</span><span>Repository</span></a>
+          <a class="gnb-item" href="./mr-list.html"><span class="gnb-icon">⇄</span><span>Merge Request</span></a>
+          <a class="gnb-item active" href="./pipeline-list.html"><span class="gnb-icon">⚡</span><span>Pipelines</span><span class="gnb-badge warning">3</span></a>
+          <a class="gnb-item" href="./audit-log.html"><span class="gnb-icon">☷</span><span>Audit Log</span></a>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="app-main">
+      <header class="top-header">
+        <div class="header-left">
+          <button class="icon-button sidebar-toggle" type="button" aria-label="GNB 접기" onclick="toggleSidebar()">☰</button>
+          <button class="org-button" type="button"><span class="org-label">조직</span><strong>Digital Banking</strong></button>
+        </div>
+        <div class="global-search">
+          <span>⌕</span>
+          <input type="text" placeholder="Repository, MR, Pipeline, 파일 검색" />
+          <kbd>⌘K</kbd>
+        </div>
+        <div class="header-actions">
+          <button class="icon-button" type="button" onclick="showToast('알림 목록을 엽니다.')">!</button>
+          <button class="primary-button" type="button" onclick="showToast('새 Pipeline을 실행합니다.')">+ Pipeline 실행</button>
+          <button class="profile-button" type="button">
+            <span class="avatar">김</span>
+            <span class="profile-text"><strong>김신한</strong><small>Developer</small></span>
+          </button>
+        </div>
+      </header>
+
+      <main class="page-content pipeline-list-page">
+        <section class="page-hero compact">
+          <div>
+            <div class="eyebrow">PIPELINE</div>
+            <h1>Pipeline 목록</h1>
+            <p>Repository 단위로 Pipeline 실행 상태, Job dependency, Stage 진행 상황을 확인할 수 있습니다.</p>
+          </div>
+          <div class="hero-actions">
+            <button class="secondary-button" type="button" onclick="location.href='./repository-detail.html'">Repository 상세</button>
+            <button class="primary-button" type="button" onclick="showToast('Pipeline을 실행합니다.')">새 Pipeline 실행</button>
+          </div>
+        </section>
+
+        <section class="summary-grid pipeline-summary">
+          <article class="summary-card"><div class="summary-label">Running</div><div class="summary-value">2</div><div class="summary-note">현재 실행 중</div></article>
+          <article class="summary-card"><div class="summary-label">Failed</div><div class="summary-value danger">2</div><div class="summary-note">확인이 필요한 Pipeline</div></article>
+          <article class="summary-card"><div class="summary-label">Finished</div><div class="summary-value">6</div><div class="summary-note">완료된 실행</div></article>
+          <article class="summary-card"><div class="summary-label">Total Jobs</div><div class="summary-value">82</div><div class="summary-note">최근 Pipeline 기준</div></article>
+        </section>
+
+        <section class="toolbar-card">
+          <div class="toolbar-top">
+            <div class="mr-search">
+              <span>⌕</span>
+              <input id="pipelineSearch" type="text" placeholder="Pipeline 제목, Repository, 작성자, Branch 검색" oninput="filterPipelineRows(currentPipelineFilter)" />
+            </div>
+            <div class="toolbar-filter">
+              <select><option>전체 Repository</option><option>root-sub-repo</option><option>mobile-banking-api</option></select>
+              <select><option>전체 작성자</option><option>김신한</option><option>이신한</option><option>박신한</option></select>
+              <select><option>전체 Trigger</option><option>Push</option><option>Schedule</option><option>Manual</option></select>
+            </div>
+          </div>
+          <div class="status-tabs" role="tablist" aria-label="Pipeline 상태 필터">
+            <button class="status-tab active" type="button" data-pipeline-filter="all" onclick="filterPipelineRows('all')">전체 <span data-count="all">10</span></button>
+            <button class="status-tab" type="button" data-pipeline-filter="running" onclick="filterPipelineRows('running')">Running <span data-count="running">2</span></button>
+            <button class="status-tab" type="button" data-pipeline-filter="failed" onclick="filterPipelineRows('failed')">Failed <span data-count="failed">2</span></button>
+            <button class="status-tab" type="button" data-pipeline-filter="finished" onclick="filterPipelineRows('finished')">Finished <span data-count="finished">6</span></button>
+          </div>
+        </section>
+
+        <section class="mr-table-card">
+          <table class="mr-table">
+            <thead>
+              <tr>
+                <th>마지막 업데이트</th>
+                <th>Pipeline</th>
+                <th>Repository</th>
+                <th>Branch</th>
+                <th>작성자</th>
+                <th>Commit</th>
+                <th>Stages</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="pipelineTableBody">
+              <tr data-status="running" onclick="location.href='./pipeline-detail.html'">
+                <td>3분 전</td>
+                <td><div class="mr-title"><strong>#2847502395</strong><span>Merge branch 'dg-fix-subgroup-menu' into main</span><div class="chip-row"><span class="chip blue">Push</span><span class="chip orange">Running</span></div></div></td>
+                <td><div class="repo-info"><strong>root-sub-repo</strong><span>Git 저장소 / root / sub</span></div></td>
+                <td><div class="branch-flow"><a href="./repository-detail.html#files" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./repository-detail.html#files');"><strong class="mono">feature/subgroup-menu</strong></a><span>→ <strong class="mono">main</strong></span></div></td>
+                <td>김신한</td>
+                <td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./commit-detail.html');">7e14d754</a></td>
+                <td><div class="stage-status-row"><span class="pipeline-status-icon manual"></span><span class="pipeline-status-icon running"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon pending"></span><span class="pipeline-status-icon failed"></span><span class="pipeline-status-icon canceled"></span><span class="pipeline-status-icon skipped"></span><span class="pipeline-status-icon created"></span></div></td>
+                <td><button class="secondary-button small danger-text" type="button" data-pipeline-action="cancel" onclick="togglePipelineRun(event, this)">실행 취소</button></td>
+              </tr>
+              <tr data-status="finished" onclick="location.href='./pipeline-detail.html'">
+                <td>38분 전</td>
+                <td><div class="mr-title"><strong>#2847502388</strong><span>GNB breadcrumb overflow policy 적용</span><div class="chip-row"><span class="chip green">Passed</span><span class="chip">Push</span></div></div></td>
+                <td><div class="repo-info"><strong>root-sub-repo</strong><span>Git 저장소 / root / sub</span></div></td>
+                <td><div class="branch-flow"><a href="./repository-detail.html#files" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./repository-detail.html#files');"><strong class="mono">main</strong></a><span>→ <strong class="mono">main</strong></span></div></td>
+                <td>김신한</td>
+                <td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./commit-detail.html');">3c96a12b</a></td>
+                <td><div class="stage-status-row"><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span></div></td>
+                <td><span class="table-action-placeholder">-</span></td>
+              </tr>
+              <tr data-status="failed" onclick="location.href='./pipeline-detail.html'">
+                <td>1시간 전</td>
+                <td><div class="mr-title"><strong>#2847502374</strong><span>Contract test for account limits API</span><div class="chip-row"><span class="chip red">Failed</span><span class="chip blue">Branch</span></div></div></td>
+                <td><div class="repo-info"><strong>mobile-banking-api</strong><span>Digital Banking / Mobile</span></div></td>
+                <td><div class="branch-flow"><a href="./repository-detail.html#files" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./repository-detail.html#files');"><strong class="mono">feature/account-limit</strong></a><span>→ <strong class="mono">develop</strong></span></div></td>
+                <td>이신한</td>
+                <td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./commit-detail.html');">b71c2f09</a></td>
+                <td><div class="stage-status-row"><span class="pipeline-status-icon manual"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon pending"></span><span class="pipeline-status-icon failed"></span><span class="pipeline-status-icon canceled"></span><span class="pipeline-status-icon skipped"></span><span class="pipeline-status-icon created"></span></div></td>
+                <td><button class="secondary-button small" type="button" data-pipeline-action="rerun" onclick="togglePipelineRun(event, this)">재실행</button></td>
+              </tr>
+              <tr data-status="finished" onclick="location.href='./pipeline-detail.html'">
+                <td>2시간 전</td>
+                <td><div class="mr-title"><strong>#2847502369</strong><span>MR 생성 화면 validation rule 정리</span><div class="chip-row"><span class="chip orange">Canceled</span><span class="chip">Manual</span></div></div></td>
+                <td><div class="repo-info"><strong>customer-web-portal</strong><span>Digital Banking / Web</span></div></td>
+                <td><div class="branch-flow"><a href="./repository-detail.html#files" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./repository-detail.html#files');"><strong class="mono">feature/mr-validation</strong></a><span>→ <strong class="mono">develop</strong></span></div></td>
+                <td>박신한</td>
+                <td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./commit-detail.html');">c41a79ee</a></td>
+                <td><div class="stage-status-row"><span class="pipeline-status-icon manual"></span><span class="pipeline-status-icon running"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon pending"></span><span class="pipeline-status-icon canceled"></span><span class="pipeline-status-icon skipped"></span><span class="pipeline-status-icon created"></span><span class="pipeline-status-icon created"></span></div></td>
+                <td><button class="secondary-button small" type="button" data-pipeline-action="rerun" onclick="togglePipelineRun(event, this)">재실행</button></td>
+              </tr>
+              <tr data-status="running" onclick="location.href='./pipeline-detail.html'">
+                <td>2시간 전</td>
+                <td><div class="mr-title"><strong>#2847502362</strong><span>Security scan schedule trigger</span><div class="chip-row"><span class="chip blue">Schedule</span><span class="chip orange">Running</span></div></div></td>
+                <td><div class="repo-info"><strong>mobile-banking-api</strong><span>Digital Banking / Mobile</span></div></td>
+                <td><div class="branch-flow"><a href="./repository-detail.html#files" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./repository-detail.html#files');"><strong class="mono">release/2026.05</strong></a><span>→ <strong class="mono">main</strong></span></div></td>
+                <td>정신한</td>
+                <td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./commit-detail.html');">e0d1ab42</a></td>
+                <td><div class="stage-status-row"><span class="pipeline-status-icon manual"></span><span class="pipeline-status-icon running"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon pending"></span><span class="pipeline-status-icon created"></span><span class="pipeline-status-icon created"></span><span class="pipeline-status-icon created"></span><span class="pipeline-status-icon created"></span></div></td>
+                <td><button class="secondary-button small danger-text" type="button" data-pipeline-action="cancel" onclick="togglePipelineRun(event, this)">실행 취소</button></td>
+              </tr>
+              <tr data-status="finished" onclick="location.href='./pipeline-detail.html'"><td>3시간 전</td><td><div class="mr-title"><strong>#2847502351</strong><span>Repository detail tab routing 개선</span><div class="chip-row"><span class="chip green">Passed</span></div></div></td><td><div class="repo-info"><strong>root-sub-repo</strong><span>Git 저장소 / root / sub</span></div></td><td><div class="branch-flow"><a href="./repository-detail.html#files" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./repository-detail.html#files');"><strong class="mono">feature/repo-tabs</strong></a><span>→ <strong class="mono">main</strong></span></div></td><td>김신한</td><td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./commit-detail.html');">81f52d6a</a></td><td><div class="stage-status-row"><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span></div></td><td><span class="table-action-placeholder">-</span></td></tr>
+              <tr data-status="failed" onclick="location.href='./pipeline-detail.html'"><td>어제</td><td><div class="mr-title"><strong>#2847502318</strong><span>Redis version compatibility test</span><div class="chip-row"><span class="chip red">Failed</span></div></div></td><td><div class="repo-info"><strong>customer-web-portal</strong><span>Digital Banking / Web</span></div></td><td><div class="branch-flow"><a href="./repository-detail.html#files" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./repository-detail.html#files');"><strong class="mono">cng-qa-min-redis-version</strong></a><span>→ <strong class="mono">develop</strong></span></div></td><td>문유진</td><td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./commit-detail.html');">d290ed33</a></td><td><div class="stage-status-row"><span class="pipeline-status-icon manual"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon failed"></span><span class="pipeline-status-icon skipped"></span><span class="pipeline-status-icon skipped"></span><span class="pipeline-status-icon skipped"></span><span class="pipeline-status-icon created"></span><span class="pipeline-status-icon created"></span></div></td><td><button class="secondary-button small" type="button" data-pipeline-action="rerun" onclick="togglePipelineRun(event, this)">재실행</button></td></tr>
+              <tr data-status="finished" onclick="location.href='./pipeline-detail.html'"><td>어제</td><td><div class="mr-title"><strong>#2847502302</strong><span>Branch policy badge color update</span><div class="chip-row"><span class="chip green">Passed</span></div></div></td><td><div class="repo-info"><strong>common-ui-components</strong><span>Platform Center / Shared Module</span></div></td><td><div class="branch-flow"><a href="./repository-detail.html#files" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./repository-detail.html#files');"><strong class="mono">design/pipeline-badges</strong></a><span>→ <strong class="mono">main</strong></span></div></td><td>최지한</td><td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./commit-detail.html');">90aef512</a></td><td><div class="stage-status-row"><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span></div></td><td><span class="table-action-placeholder">-</span></td></tr>
+              <tr data-status="finished" onclick="location.href='./pipeline-detail.html'"><td>2일 전</td><td><div class="mr-title"><strong>#2847502267</strong><span>Production deployment approval gate</span><div class="chip-row"><span class="chip">Manual</span></div></div></td><td><div class="repo-info"><strong>root-sub-repo</strong><span>Git 저장소 / root / sub</span></div></td><td><div class="branch-flow"><a href="./repository-detail.html#files" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./repository-detail.html#files');"><strong class="mono">hotfix/prod-gate</strong></a><span>→ <strong class="mono">main</strong></span></div></td><td>한지토</td><td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./commit-detail.html');">a3b42d10</a></td><td><div class="stage-status-row"><span class="pipeline-status-icon manual"></span><span class="pipeline-status-icon created"></span><span class="pipeline-status-icon created"></span><span class="pipeline-status-icon created"></span><span class="pipeline-status-icon created"></span><span class="pipeline-status-icon created"></span><span class="pipeline-status-icon created"></span><span class="pipeline-status-icon created"></span></div></td><td><button class="secondary-button small" type="button" data-pipeline-action="rerun" onclick="togglePipelineRun(event, this)">재실행</button></td></tr>
+              <tr data-status="finished" onclick="location.href='./pipeline-detail.html'"><td>3일 전</td><td><div class="mr-title"><strong>#2847502201</strong><span>API trigger token rotation</span><div class="chip-row"><span class="chip green">Passed</span></div></div></td><td><div class="repo-info"><strong>partner-payment-sdk</strong><span>Partner Workspace</span></div></td><td><div class="branch-flow"><a href="./repository-detail.html#files" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./repository-detail.html#files');"><strong class="mono">ops/api-trigger</strong></a><span>→ <strong class="mono">develop</strong></span></div></td><td>서민준</td><td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault(); event.stopPropagation(); window.location.assign('./commit-detail.html');">f67c98aa</a></td><td><div class="stage-status-row"><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span></div></td><td><span class="table-action-placeholder">-</span></td></tr>
+            </tbody>
+          </table>
+          <div class="empty-state" id="pipelineEmptyState"><strong>검색 결과가 없습니다.</strong> 조건을 바꿔 다시 확인해 주세요.</div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    let currentPipelineFilter = 'all';
+
+    function updatePipelineCounts() {
+      const rows = Array.from(document.querySelectorAll('#pipelineTableBody tr'));
+      document.querySelector('[data-count="all"]').textContent = rows.length;
+      document.querySelector('[data-count="running"]').textContent = rows.filter((row) => row.dataset.status === 'running').length;
+      document.querySelector('[data-count="failed"]').textContent = rows.filter((row) => row.dataset.status === 'failed').length;
+      document.querySelector('[data-count="finished"]').textContent = rows.filter((row) => row.dataset.status === 'finished').length;
+    }
+
+    function filterPipelineRows(status) {
+      updatePipelineCounts();
+      currentPipelineFilter = status;
+      const keyword = document.getElementById('pipelineSearch').value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      document.querySelectorAll('[data-pipeline-filter]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.pipelineFilter === status);
+      });
+
+      document.querySelectorAll('#pipelineTableBody tr').forEach((row) => {
+        const matchesStatus = status === 'all' || row.dataset.status === status;
+        const matchesKeyword = !keyword || row.innerText.toLowerCase().includes(keyword);
+        const visible = matchesStatus && matchesKeyword;
+        row.style.display = visible ? '' : 'none';
+        if (visible) visibleCount += 1;
+      });
+
+      document.getElementById('pipelineEmptyState').style.display = visibleCount ? 'none' : 'block';
+    }
+
+    function togglePipelineRun(event, button) {
+      event.stopPropagation();
+      const row = button.closest('tr');
+      const action = button.dataset.pipelineAction;
+      const statusChip = row.querySelector('.mr-title .chip');
+
+      if (action === 'rerun') {
+        row.dataset.status = 'running';
+        statusChip.className = 'chip orange';
+        statusChip.textContent = 'Running';
+        button.dataset.pipelineAction = 'cancel';
+        button.textContent = '실행 취소';
+        button.classList.add('danger-text');
+        showToast('Pipeline을 다시 실행합니다.');
+      } else {
+        row.dataset.status = 'finished';
+        statusChip.className = 'chip orange';
+        statusChip.textContent = 'Canceled';
+        button.dataset.pipelineAction = 'rerun';
+        button.textContent = '재실행';
+        button.classList.remove('danger-text');
+        showToast('Pipeline 실행을 취소했습니다.');
+      }
+
+      filterPipelineRows(currentPipelineFilter);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => filterPipelineRows('all'));
+  </script>
+</body>
+</html>

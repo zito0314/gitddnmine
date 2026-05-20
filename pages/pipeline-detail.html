@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gitddn - Pipeline 상세</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .pipeline-detail-page{display:grid;gap:18px}
+    .pipeline-hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:24px 26px;display:grid;gap:18px}
+    .pipeline-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+    .pipeline-kicker{color:var(--blue);font-size:12px;font-weight:900;text-transform:uppercase;margin-bottom:8px}
+    .pipeline-hero h1{margin:0;font-size:28px;line-height:1.25;font-weight:900;color:var(--text)}
+    .pipeline-hero-desc{margin:10px 0 0;max-width:840px;color:var(--muted);font-size:14px;line-height:1.6}
+    .pipeline-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+    .pipeline-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .detail-chip{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 10px;border-radius:999px;background:#f1f4f8;color:#5f6d80;font-size:12px;font-weight:850;white-space:nowrap}
+    .detail-chip.blue{background:var(--blue-soft);color:var(--blue)}
+    .detail-chip.green{background:var(--green-soft);color:var(--green)}
+    .detail-chip.orange{background:var(--orange-soft);color:var(--orange)}
+    .detail-chip.red{background:var(--red-soft);color:var(--red)}
+    .pipeline-ref-flow{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding-top:16px;border-top:1px solid var(--line)}
+    .branch-pill{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:12px;background:var(--surface-soft);border:1px solid var(--line);color:var(--text);font-size:13px;font-weight:850}
+    .summary-grid.pipeline-summary{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:0}
+    .pipeline-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px}
+    .pipeline-tabs{display:flex;align-items:center;gap:4px;padding:4px;border:1px solid var(--line);background:var(--surface-soft);border-radius:999px;width:fit-content;margin-bottom:0}
+    .pipeline-tabs button{height:34px;border:0;background:transparent;color:var(--muted);border-radius:999px;padding:0 13px;font-size:13px;font-weight:850}
+    .pipeline-tabs button.active{background:var(--surface);color:var(--blue);box-shadow:var(--shadow-sm)}
+    .pipeline-tab-panel{display:none;min-height:0;border:0;background:transparent;padding:0;margin-top:14px}
+    .pipeline-tab-panel.active{display:block}
+    .dependency-toolbar{align-items:center;margin-bottom:16px}
+    .dependency-toolbar h2{font-size:17px;font-weight:900}
+    .dependency-toolbar p{font-size:13px;line-height:1.5}
+    .view-switch{border-radius:999px;background:var(--surface-soft)}
+    .view-switch button{border-radius:999px}
+    .view-switch button.active{background:var(--surface);color:var(--blue);box-shadow:var(--shadow-sm)}
+    .stage-status-guide{border-radius:14px;background:var(--surface-soft);box-shadow:none}
+    .stage-board,.dependency-map{gap:14px}
+    .stage-card,.dependency-column{border-radius:14px;box-shadow:none;background:#fff}
+    .stage-card h3,.dependency-column h3{font-size:14px;color:var(--text)}
+    .stage-job,.job-node{min-height:38px;background:var(--surface-soft);margin-top:8px}
+    .stage-job:hover,.job-node:hover{background:#fff;box-shadow:0 0 0 1px var(--line)}
+    .pipeline-jobs-table{width:100%;border-collapse:collapse}
+    .pipeline-jobs-table th{padding:14px 16px;text-align:left;color:var(--muted);font-size:12px;font-weight:850;background:#fbfcff;border-bottom:1px solid var(--line);white-space:nowrap}
+    .pipeline-jobs-table td{padding:16px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:13px}
+    .pipeline-jobs-table tr:last-child td{border-bottom:0}
+    .pipeline-jobs-table tbody tr{cursor:pointer}
+    .pipeline-jobs-table tbody tr:hover td{background:#f8fbff}
+    @media(max-width:1280px){
+      .summary-grid.pipeline-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .pipeline-title-row{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">g</div>
+        <div>
+          <div class="brand-name">gitddn</div>
+          <div class="brand-sub">DevSecOps Governance</div>
+        </div>
+      </div>
+      <nav class="gnb">
+        <div class="gnb-section current-repo">
+          <div class="gnb-title">Current Repository</div>
+          <a class="repo-back" href="./repository-list.html">← Repository 목록</a>
+
+          <div class="repo-context-card">
+            <div class="repo-context-name">mobile-banking-api</div>
+            <div class="repo-context-path">Digital Banking / Mobile</div>
+            <div class="repo-context-meta">
+              <span class="repo-context-chip blue">Maintainer</span>
+              <span class="repo-context-chip">Private</span>
+            </div>
+          </div>
+
+          <a class="gnb-item repo-nav" href="./repository-detail.html"><span class="gnb-icon">▦</span><span>Overview</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#files"><span class="gnb-icon">📁</span><span>Files</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#merge-requests"><span class="gnb-icon">⇄</span><span>Merge Requests</span><span class="gnb-badge">5</span></a>
+          <a class="gnb-item active repo-nav" href="./pipeline-list.html"><span class="gnb-icon">⚡</span><span>Pipelines</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#commits"><span class="gnb-icon">●</span><span>Commits</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#branches"><span class="gnb-icon">⑂</span><span>Branches</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#git-graph"><span class="gnb-icon">⌁</span><span>Git Graph</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#tags"><span class="gnb-icon">🏷</span><span>Tags</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#security"><span class="gnb-icon">◈</span><span>Security</span><span class="gnb-badge warning">2</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#activity"><span class="gnb-icon">◷</span><span>Activity</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#access"><span class="gnb-icon">◇</span><span>Access</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#settings"><span class="gnb-icon">⚙</span><span>Settings</span></a>
+        </div>
+
+        <div class="gnb-section">
+          <div class="gnb-title">Workspace</div>
+          <a class="gnb-item" href="../index.html"><span class="gnb-icon">▦</span><span>Dashboard</span></a>
+          <a class="gnb-item" href="./repository-list.html"><span class="gnb-icon">▤</span><span>Repository</span></a>
+          <a class="gnb-item" href="./mr-list.html"><span class="gnb-icon">⇄</span><span>Merge Request</span></a>
+          <a class="gnb-item" href="#" onclick="showToast('Activity 화면은 다음 단계에서 연결됩니다.')"><span class="gnb-icon">◷</span><span>Activity</span></a>
+          <a class="gnb-item" href="./audit-log.html"><span class="gnb-icon">☷</span><span>Audit Log</span></a>
+        </div>
+
+        <div class="gnb-section">
+          <div class="gnb-title">My Workspace</div>
+          <a class="gnb-item" href="#" onclick="showToast('즐겨찾기에 추가되었습니다.')"><span class="gnb-icon">★</span><span>Favorites</span></a>
+          <a class="gnb-item" href="#" onclick="showToast('최근 본 항목을 엽니다.')"><span class="gnb-icon">◷</span><span>Recently Viewed</span></a>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="app-main">
+      <header class="top-header">
+        <div class="header-left">
+          <button class="icon-button sidebar-toggle" type="button" aria-label="GNB 접기" onclick="toggleSidebar()">☰</button>
+          <button class="org-button" type="button"><span class="org-label">조직</span><strong>Digital Banking</strong></button>
+        </div>
+        <div class="global-search">
+          <span>⌕</span>
+          <input type="text" placeholder="Repository, MR, Pipeline, 파일 검색" />
+          <kbd>⌘K</kbd>
+        </div>
+        <div class="header-actions">
+          <button class="icon-button" type="button" onclick="showToast('즐겨찾기에 추가되었습니다.')">★</button>
+          <button class="primary-button" type="button" onclick="showToast('Pipeline을 다시 실행합니다.')">↻ 실행</button>
+          <button class="profile-button" type="button">
+            <span class="avatar">J</span>
+            <span class="profile-text"><strong>Jito</strong><small>Maintainer</small></span>
+          </button>
+        </div>
+      </header>
+
+      <main class="page-content pipeline-detail-page">
+        <section class="pipeline-hero">
+          <div class="pipeline-title-row">
+            <div>
+              <div class="pipeline-kicker">Pipeline Detail</div>
+              <h1>#2847502395</h1>
+              <p class="pipeline-hero-desc">account limits API contract update 실행 결과입니다. Stage 흐름, Job dependency, 개별 Job 로그를 한 화면에서 이어서 확인할 수 있습니다.</p>
+              <div class="pipeline-meta">
+                <span class="detail-chip red">Failed</span>
+                <span class="detail-chip green">latest</span>
+                <span class="detail-chip blue">branch</span>
+                <span class="detail-chip">작성자 김신한</span>
+                <span class="detail-chip">1시간 전 생성</span>
+                <span class="detail-chip">48분 전 종료</span>
+              </div>
+            </div>
+            <div class="pipeline-actions">
+              <button class="secondary-button" type="button" onclick="location.href='./pipeline-list.html'">Pipeline 목록</button>
+              <button class="primary-button" type="button" onclick="showToast('Pipeline을 다시 실행합니다.')">Retry Pipeline</button>
+            </div>
+          </div>
+          <div class="pipeline-ref-flow">
+            <span class="branch-pill">Branch <strong class="mono">feature/account-limit</strong></span>
+            <span class="branch-pill">Commit <strong class="mono">7e14d754</strong></span>
+            <span class="detail-chip">12 Jobs</span>
+            <span class="detail-chip red">3 Failed</span>
+            <span class="detail-chip">Source Push</span>
+          </div>
+        </section>
+
+        <section class="summary-grid pipeline-summary">
+          <article class="summary-card"><div class="summary-label">Pipeline 총 실행 시간</div><div class="summary-value">04:22</div><div class="summary-note">생성부터 종료까지</div></article>
+          <article class="summary-card"><div class="summary-label">실제 실행 시간</div><div class="summary-value">03:48</div><div class="summary-note">Runner 실행 기준</div></article>
+          <article class="summary-card"><div class="summary-label">Failed Jobs</div><div class="summary-value danger">3</div><div class="summary-note">test stage 확인 필요</div></article>
+          <article class="summary-card"><div class="summary-label">Completed Jobs</div><div class="summary-value">7</div><div class="summary-note">성공 또는 종료됨</div></article>
+        </section>
+
+        <section class="pipeline-card">
+          <div class="pipeline-tabs" aria-label="Pipeline 상세 탭">
+            <button class="active" type="button" data-pipeline-tab="pipeline" onclick="setPipelineTab('pipeline')">Pipeline</button>
+            <button type="button" data-pipeline-tab="jobs" onclick="setPipelineTab('jobs')">Jobs</button>
+          </div>
+
+          <div class="pipeline-tab-panel active" id="pipeline-tab-pipeline">
+          <div class="dependency-toolbar">
+            <div>
+              <h2>Pipeline Flow</h2>
+              <p>Stage 흐름과 Job dependencies를 같은 영역에서 전환해 확인합니다.</p>
+            </div>
+            <div class="pipeline-view-actions">
+              <div class="view-switch" role="group" aria-label="Pipeline view">
+                <button class="active" type="button" data-pipeline-view="stage" onclick="setPipelineView('stage')">Stage</button>
+                <button type="button" data-pipeline-view="dependencies" onclick="setPipelineView('dependencies')">Job dependencies</button>
+              </div>
+              <div class="legend">
+                <span><i class="legend-dot manual"></i> Manual</span>
+                <span><i class="legend-dot running"></i> Running</span>
+                <span><i class="legend-dot passed"></i> Passed</span>
+                <span><i class="legend-dot pending"></i> Pending</span>
+                <span><i class="legend-dot failed"></i> Failed</span>
+                <span><i class="legend-dot canceled"></i> Canceled</span>
+                <span><i class="legend-dot skipped"></i> Skipped</span>
+                <span><i class="legend-dot created"></i> Created</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-mode-panel active" id="pipeline-view-stage">
+            <div class="stage-status-guide" aria-label="Stage status order">
+              <span><i class="pipeline-status-icon manual"></i>Manual</span>
+              <span><i class="pipeline-status-icon running"></i>Running</span>
+              <span><i class="pipeline-status-icon passed"></i>Passed</span>
+              <span><i class="pipeline-status-icon pending"></i>Pending</span>
+              <span><i class="pipeline-status-icon failed"></i>Failed</span>
+              <span><i class="pipeline-status-icon canceled"></i>Canceled</span>
+              <span><i class="pipeline-status-icon skipped"></i>Skipped</span>
+              <span><i class="pipeline-status-icon created"></i>Created</span>
+            </div>
+            <div class="stage-board">
+              <article class="stage-card">
+                <h3><span class="pipeline-status-icon passed"></span>prepare</h3>
+                <a class="stage-job" href="./job-detail.html"><span class="pipeline-status-icon passed"></span>checkout</a>
+                <a class="stage-job" href="./job-detail.html"><span class="pipeline-status-icon passed"></span>install dependencies</a>
+              </article>
+              <article class="stage-card">
+                <h3><span class="pipeline-status-icon running"></span>build</h3>
+                <a class="stage-job" href="./job-detail.html"><span class="pipeline-status-icon passed"></span>build-api</a>
+                <a class="stage-job" href="./job-detail.html"><span class="pipeline-status-icon running"></span>build-web</a>
+                <a class="stage-job" href="./job-detail.html"><span class="pipeline-status-icon pending"></span>package artifact</a>
+              </article>
+              <article class="stage-card failed">
+                <h3><span class="pipeline-status-icon failed"></span>test</h3>
+                <a class="stage-job" href="./job-detail.html"><span class="pipeline-status-icon failed"></span>unit-test</a>
+                <a class="stage-job" href="./job-detail.html"><span class="pipeline-status-icon failed"></span>contract-test</a>
+                <a class="stage-job" href="./job-detail.html"><span class="pipeline-status-icon skipped"></span>qa-smoke</a>
+              </article>
+              <article class="stage-card">
+                <h3><span class="pipeline-status-icon manual"></span>deploy</h3>
+                <a class="stage-job" href="./job-detail.html"><span class="pipeline-status-icon canceled"></span>deploy-dev</a>
+                <a class="stage-job" href="./job-detail.html"><span class="pipeline-status-icon created"></span>deploy-prod</a>
+              </article>
+            </div>
+          </div>
+
+          <div class="stage-mode-panel" id="pipeline-view-dependencies">
+            <div class="dependency-map" id="dependencyMap">
+            <article class="dependency-column">
+              <h3>prepare</h3>
+              <a class="job-node passed" href="./job-detail.html" data-job="checkout" data-related="checkout install build-api build-web package"><span></span> checkout</a>
+              <a class="job-node passed" href="./job-detail.html" data-job="install" data-related="checkout install build-api build-web package"><span></span> install</a>
+            </article>
+            <article class="dependency-column">
+              <h3>build</h3>
+              <a class="job-node passed" href="./job-detail.html" data-job="build-api" data-related="checkout install build-api unit-test contract-test"><span></span> build-api</a>
+              <a class="job-node running" href="./job-detail.html" data-job="build-web" data-related="checkout install build-web qa-smoke"><span></span> build-web</a>
+              <a class="job-node pending" href="./job-detail.html" data-job="package" data-related="checkout install package deploy-dev deploy-prod"><span></span> package</a>
+            </article>
+            <article class="dependency-column failed">
+              <h3>test</h3>
+              <a class="job-node failed" href="./job-detail.html" data-job="unit-test" data-related="build-api unit-test deploy-dev"><span></span> unit-test</a>
+              <a class="job-node failed" href="./job-detail.html" data-job="contract-test" data-related="build-api contract-test deploy-dev deploy-prod"><span></span> contract-test</a>
+              <a class="job-node skipped" href="./job-detail.html" data-job="qa-smoke" data-related="build-web qa-smoke deploy-prod"><span></span> qa-smoke</a>
+            </article>
+            <article class="dependency-column">
+              <h3>deploy</h3>
+              <a class="job-node canceled" href="./job-detail.html" data-job="deploy-dev" data-related="package unit-test contract-test deploy-dev"><span></span> deploy-dev</a>
+              <a class="job-node created" href="./job-detail.html" data-job="deploy-prod" data-related="package contract-test qa-smoke deploy-prod"><span></span> deploy-prod</a>
+            </article>
+            </div>
+          </div>
+          </div>
+
+          <div class="pipeline-tab-panel" id="pipeline-tab-jobs">
+            <table class="pipeline-jobs-table">
+              <thead>
+                <tr>
+                  <th>마지막 업데이트</th>
+                  <th>제목</th>
+                  <th>Branch명</th>
+                  <th>Commit 번호</th>
+                  <th>Stage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="clickable-row" onclick="location.href='./job-detail.html'">
+                  <td><span class="status-chip">Running</span><small class="table-meta">00:01:18<br />4분 전</small></td>
+                  <td><a class="table-link" href="./job-detail.html">#13176117059: cng-qa-min-redis-version 1/1</a></td>
+                  <td><span class="code-chip">feature/account-limit</span></td>
+                  <td><span class="code-chip">~ 7e14d754</span></td>
+                  <td>build</td>
+                </tr>
+                <tr class="clickable-row" onclick="location.href='./job-detail.html'">
+                  <td><span class="status-chip green">Passed</span><small class="table-meta">00:00:42<br />2026.05.19</small></td>
+                  <td><a class="table-link" href="./job-detail.html">#13176117052: build-api 1/1</a></td>
+                  <td><span class="code-chip">feature/account-limit</span></td>
+                  <td><span class="code-chip">~ 7e14d754</span></td>
+                  <td>prepare</td>
+                </tr>
+                <tr class="clickable-row" onclick="location.href='./job-detail.html'">
+                  <td><span class="status-chip danger">Failed</span><small class="table-meta">00:00:55<br />2026.05.19</small></td>
+                  <td><a class="table-link" href="./job-detail.html">#13176117061: contract-test</a></td>
+                  <td><span class="code-chip">feature/account-limit</span></td>
+                  <td><span class="code-chip">~ 7e14d754</span></td>
+                  <td>test</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    function setPipelineTab(tabName) {
+      document.querySelectorAll('[data-pipeline-tab]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.pipelineTab === tabName);
+      });
+      document.querySelectorAll('.pipeline-tab-panel').forEach((panel) => {
+        panel.classList.toggle('active', panel.id === `pipeline-tab-${tabName}`);
+      });
+    }
+
+    function setPipelineView(viewName) {
+      document.querySelectorAll('[data-pipeline-view]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.pipelineView === viewName);
+      });
+      document.querySelectorAll('.stage-mode-panel').forEach((panel) => {
+        panel.classList.toggle('active', panel.id === `pipeline-view-${viewName}`);
+      });
+    }
+
+    document.querySelectorAll('#dependencyMap .job-node').forEach((node) => {
+      node.addEventListener('mouseenter', () => {
+        const relatedJobs = new Set(node.dataset.related.split(' '));
+        document.getElementById('dependencyMap').classList.add('is-highlighting');
+        document.querySelectorAll('#dependencyMap .job-node').forEach((candidate) => {
+          candidate.classList.toggle('is-related', relatedJobs.has(candidate.dataset.job));
+        });
+      });
+
+      node.addEventListener('mouseleave', () => {
+        document.getElementById('dependencyMap').classList.remove('is-highlighting');
+        document.querySelectorAll('#dependencyMap .job-node').forEach((candidate) => {
+          candidate.classList.remove('is-related');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

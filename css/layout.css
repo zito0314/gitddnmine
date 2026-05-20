@@ -1,0 +1,154 @@
+.app-shell{
+  display:grid;
+  grid-template-columns:248px 1fr;
+  min-height:100vh;
+}
+.sidebar{
+  background:var(--surface);
+  color:var(--text);
+  border-right:1px solid var(--line);
+  height:100vh;
+  position:sticky;
+  top:0;
+  padding:16px 12px 32px;
+  overflow:auto;
+}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:6px}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px 14px;
+  border-bottom:1px solid var(--line);
+}
+.brand-mark{
+  width:32px;height:32px;border-radius:8px;
+  display:grid;place-items:center;
+  color:white;font-weight:900;
+  background:linear-gradient(135deg,var(--magenta-5),var(--magenta-7));
+  box-shadow:0 4px 10px rgba(235,47,150,.25);
+}
+.brand-name{font-size:18px;font-weight:800;color:var(--text);line-height:1}
+.brand-sub{font-size:11px;color:var(--subtle);margin-top:5px}
+.gnb-section{margin-top:22px}
+.gnb-title{
+  font-size:11px;
+  color:var(--subtle);
+  font-weight:800;
+  text-transform:uppercase;
+  padding:0 10px;
+  margin-bottom:8px;
+}
+.gnb-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:38px;
+  padding:8px 12px;
+  border-radius:6px;
+  color:var(--muted);
+  font-size:14px;
+  font-weight:650;
+  position:relative;
+  transition:background .2s cubic-bezier(.645,.045,.355,1),color .2s cubic-bezier(.645,.045,.355,1);
+}
+.gnb-item:hover{background:rgba(0,0,0,.04);color:var(--text)}
+.gnb-item.active{background:var(--primary-bg);color:var(--primary-text)}
+.gnb-item.active:before{
+  content:"";
+  position:absolute;
+  left:-12px;
+  top:7px;
+  bottom:7px;
+  width:3px;
+  border-radius:0 3px 3px 0;
+  background:var(--primary);
+}
+.gnb-icon{width:20px;text-align:center}
+.gnb-badge{
+  margin-left:auto;
+  min-width:22px;
+  height:22px;
+  padding:0 7px;
+  border-radius:999px;
+  background:rgba(0,0,0,.06);
+  color:var(--muted);
+  display:grid;
+  place-items:center;
+  font-size:11px;
+}
+.gnb-item.active .gnb-badge{background:var(--magenta-2);color:var(--primary-text)}
+.gnb-badge.warning{background:var(--orange-soft);color:#ad6800}
+.app-main{min-width:980px}
+.top-header{
+  height:64px;
+  background:rgba(255,255,255,.86);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:0 24px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+.header-left,.header-actions{display:flex;align-items:center;gap:10px;position:relative}
+.global-search{
+  flex:1;
+  max-width:620px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:var(--surface-soft);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:0 14px;
+  transition:all .2s cubic-bezier(.645,.045,.355,1);
+}
+.global-search:focus-within{background:var(--surface);border-color:var(--primary);box-shadow:var(--focus-ring)}
+.global-search input{
+  flex:1;
+  border:0;
+  outline:0;
+  background:transparent;
+  font-size:14px;
+  color:var(--text);
+}
+.global-search kbd{
+  border:1px solid var(--line-strong);
+  background:#fff;
+  color:var(--subtle);
+  border-radius:6px;
+  padding:3px 6px;
+  font-size:11px;
+}
+.page-content{padding:24px 28px 44px}
+.page-hero{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  padding:26px;
+  box-shadow:var(--shadow-sm);
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:24px;
+  margin-bottom:18px;
+}
+.eyebrow{font-size:12px;color:var(--primary);font-weight:850;text-transform:uppercase;margin-bottom:8px}
+.page-hero h1{font-size:30px;line-height:1.2;margin:0;font-weight:900}
+.page-hero p{margin:10px 0 0;color:var(--muted);line-height:1.6;font-size:14px}
+.hero-actions{display:flex;gap:8px;flex-wrap:wrap}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.5fr) 360px;gap:18px;margin-bottom:18px}
+@media(max-width:1180px){
+  .app-shell{grid-template-columns:248px 1fr}
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
+  .dashboard-grid{grid-template-columns:1fr}
+  .app-main{min-width:760px}
+}

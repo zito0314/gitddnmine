@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gitddn - Job 상세</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .job-detail-page{display:grid;gap:18px}
+    .job-hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:24px 26px;display:grid;gap:18px}
+    .job-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+    .job-kicker{color:var(--blue);font-size:12px;font-weight:900;text-transform:uppercase;margin-bottom:8px}
+    .job-hero h1{margin:0;font-size:28px;line-height:1.25;font-weight:900;color:var(--text)}
+    .job-desc{margin:10px 0 0;max-width:820px;color:var(--muted);font-size:14px;line-height:1.6}
+    .job-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+    .job-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .detail-chip{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 10px;border-radius:999px;background:#f1f4f8;color:#5f6d80;font-size:12px;font-weight:850;white-space:nowrap}
+    .detail-chip.blue{background:var(--blue-soft);color:var(--blue)}
+    .detail-chip.green{background:var(--green-soft);color:var(--green)}
+    .detail-chip.orange{background:var(--orange-soft);color:var(--orange)}
+    .detail-chip.red{background:var(--red-soft);color:var(--red)}
+    .job-ref-flow{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding-top:16px;border-top:1px solid var(--line)}
+    .branch-pill{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:12px;background:var(--surface-soft);border:1px solid var(--line);color:var(--text);font-size:13px;font-weight:850}
+    .summary-grid.job-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:0}
+    .job-content-layout{display:grid;grid-template-columns:minmax(0,1.35fr) 390px;gap:18px;align-items:start}
+    .panel-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px}
+    .panel-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px}
+    .panel-header h2{margin:0;font-size:17px;font-weight:900;color:var(--text)}
+    .panel-header p{margin:5px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+    .job-log-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden}
+    .log-toolbar{height:auto;padding:14px 16px;background:#fbfcff;border-bottom:1px solid var(--line)}
+    .log-toolbar .filter-search{min-width:320px}
+    .log-screen{min-height:560px;border-radius:0;background:#0f172a;color:#d9f99d}
+    .job-side-panel{background:transparent;border:0;border-radius:0;padding:0;display:grid;gap:18px;overflow:visible}
+    .info-list{display:grid;gap:12px}
+    .info-row{display:flex;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line);font-size:13px}
+    .info-row:last-child{border-bottom:0;padding-bottom:0}
+    .info-row span{color:var(--muted);font-weight:800}
+    .info-row strong{color:var(--text);font-weight:900;text-align:right}
+    .related-job-list{background:var(--surface-soft);border:1px solid var(--line);border-radius:14px}
+    .related-job-list a{min-height:38px}
+    @media(max-width:1280px){
+      .summary-grid.job-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .job-content-layout{grid-template-columns:1fr}
+      .job-title-row{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">g</div>
+        <div>
+          <div class="brand-name">gitddn</div>
+          <div class="brand-sub">DevSecOps Governance</div>
+        </div>
+      </div>
+      <nav class="gnb">
+        <div class="gnb-section">
+          <div class="gnb-title">Current Pipeline</div>
+          <a class="repo-back" href="./pipeline-detail.html">← Pipeline 상세</a>
+          <div class="repo-context-card">
+            <div class="repo-context-name">#2847502395</div>
+            <div class="repo-context-path">root-sub-repo / test</div>
+            <div class="repo-context-meta">
+              <span class="repo-context-chip blue">branch</span>
+              <span class="repo-context-chip">failed</span>
+            </div>
+          </div>
+          <a class="gnb-item active" href="./job-detail.html"><span class="gnb-icon">●</span><span>Job Detail</span></a>
+          <a class="gnb-item" href="./pipeline-detail.html"><span class="gnb-icon">⚡</span><span>Pipeline Detail</span></a>
+          <a class="gnb-item" href="./pipeline-list.html"><span class="gnb-icon">▤</span><span>Pipeline List</span></a>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="app-main">
+      <header class="top-header">
+        <div class="header-left">
+          <button class="icon-button sidebar-toggle" type="button" aria-label="GNB 접기" onclick="toggleSidebar()">☰</button>
+          <button class="org-button" type="button"><span class="org-label">조직</span><strong>Digital Banking</strong></button>
+        </div>
+        <div class="global-search">
+          <span>⌕</span>
+          <input type="text" placeholder="Repository, MR, Pipeline, 파일 검색" />
+          <kbd>⌘K</kbd>
+        </div>
+        <div class="header-actions">
+          <button class="icon-button" type="button" onclick="showToast('로그를 다운로드합니다.')">↓</button>
+          <button class="primary-button" type="button" onclick="showToast('Job을 다시 실행합니다.')">↻ 실행</button>
+          <button class="profile-button" type="button">
+            <span class="avatar">J</span>
+            <span class="profile-text"><strong>Jito</strong><small>Maintainer</small></span>
+          </button>
+        </div>
+      </header>
+
+      <main class="page-content">
+        <nav class="breadcrumb">
+          <a href="./repository-list.html">Git 저장소</a>
+          <span>/</span>
+          <a href="./repository-detail.html">root-sub-repo</a>
+          <span>/</span>
+          <a href="./pipeline-detail.html">#2847502395</a>
+          <span>/</span>
+          <strong>contract-test</strong>
+        </nav>
+
+        <section class="pipeline-detail-head">
+          <button class="icon-button" type="button" aria-label="뒤로" onclick="location.href='./pipeline-detail.html'">‹</button>
+          <div>
+            <h1>contract-test</h1>
+            <div class="pipeline-meta-line">
+              <span class="status-chip danger">Failed</span>
+              <span>Job 시작 날짜</span>
+              <span>Stage: <span class="code-chip">test</span></span>
+              <span>Source: Push</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="job-detail-layout">
+          <article class="job-log-panel">
+            <div class="log-toolbar">
+              <label class="filter-search">
+                <input type="text" placeholder="로그를 검색해 주세요." />
+                <span>⌕</span>
+              </label>
+              <div class="log-actions">
+                <button class="icon-button" type="button" aria-label="위로">⌃</button>
+                <button class="icon-button" type="button" aria-label="아래로">⌄</button>
+                <button class="icon-button" type="button" aria-label="전체화면">□</button>
+                <button class="icon-button" type="button" aria-label="업로드">↑</button>
+                <button class="icon-button" type="button" aria-label="다운로드">↓</button>
+              </div>
+            </div>
+            <pre class="log-screen"><code>$ npm run test:contract
+
+Running contract suite for mobile-banking-api
+✓ schema loaded
+✓ mock server started
+✕ contract-test failed
+
+Expected response.status to equal 200
+Received 500 from /api/v1/account/limits
+
+Job failed with exit code 1</code></pre>
+          </article>
+
+          <aside class="job-side-panel">
+            <dl class="job-summary">
+              <div><dt>총 실행 시간</dt><dd>55 seconds</dd></div>
+              <div><dt>종료 시점</dt><dd>1 hour ago</dd></div>
+              <div><dt>Source</dt><dd>Push</dd></div>
+            </dl>
+            <hr />
+            <div class="side-section">
+              <h2>Commit</h2>
+              <p><span class="code-chip">~ 7e14d754</span> Commit 메시지</p>
+            </div>
+            <div class="side-section">
+              <h2>Pipeline</h2>
+              <p><a class="table-link" href="./pipeline-detail.html">#Pipeline 번호</a></p>
+              <p><span class="status-chip danger">Failed</span> for <span class="code-chip">branch-name</span></p>
+            </div>
+            <div class="side-section">
+              <button class="secondary-button" type="button">Stage ▾</button>
+            </div>
+            <div class="side-section">
+              <h2>Related jobs</h2>
+              <div class="related-job-list">
+                <a class="active" href="./job-detail.html"><span class="job-status running"></span> build-api <strong>✓</strong></a>
+                <a href="./job-detail.html"><span class="job-status warning"></span> unit-test</a>
+                <a href="./job-detail.html"><span class="job-status failed"></span> contract-test</a>
+                <a href="./job-detail.html"><span class="job-status pending"></span> qa-smoke</a>
+                <a href="./job-detail.html"><span class="job-status manual"></span> deploy-dev</a>
+                <a href="./job-detail.html"><span class="job-status passed"></span> deploy-prod</a>
+              </div>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

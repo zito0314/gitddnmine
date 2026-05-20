@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gitddn - Dashboard</title>
+  <link rel="stylesheet" href="./css/common.css" />
+  <link rel="stylesheet" href="./css/layout.css" />
+  <link rel="stylesheet" href="./css/components.css" />
+  <link rel="stylesheet" href="./css/pages.css" />
+</head>
+<body class="page-dashboard-home">
+  <div class="app-shell">
+    <!-- Sidebar / Global GNB -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">g</div>
+        <div>
+          <div class="brand-name">gitddn</div>
+          <div class="brand-sub">DevSecOps Governance</div>
+        </div>
+      </div>
+
+      <nav class="gnb">
+        <div class="gnb-section">
+          <div class="gnb-title">Workspace</div>
+          <a class="gnb-item active" href="./index.html" data-page="dashboard">
+            <span class="gnb-icon">▦</span>
+            <span>Dashboard</span>
+          </a>
+          <a class="gnb-item" href="./pages/repository-list.html" data-page="repository">
+            <span class="gnb-icon">▤</span>
+            <span>Repository</span>
+          </a>
+          <a class="gnb-item" href="./pages/mr-list.html" data-page="merge-request">
+            <span class="gnb-icon">⇄</span>
+            <span>Merge Request</span>
+            <span class="gnb-badge">6</span>
+          </a>
+          <a class="gnb-item" href="#" data-page="activity" onclick="showToast('Activity 화면은 다음 단계에서 연결됩니다.')">
+            <span class="gnb-icon">◷</span>
+            <span>Activity</span>
+          </a>
+          <a class="gnb-item" href="#" data-page="security" onclick="showToast('Security Validation 화면은 다음 단계에서 연결됩니다.')">
+            <span class="gnb-icon">◈</span>
+            <span>Security Validation</span>
+            <span class="gnb-badge warning">2</span>
+          </a>
+          <a class="gnb-item" href="#" data-page="deploy" onclick="showToast('Deployment Transfer 화면은 다음 단계에서 연결됩니다.')">
+            <span class="gnb-icon">⇧</span>
+            <span>Deployment Transfer</span>
+            <span class="gnb-badge">3</span>
+          </a>
+          <a class="gnb-item" href="./pages/audit-log.html" data-page="audit-log">
+            <span class="gnb-icon">☷</span>
+            <span>Audit Log</span>
+          </a>
+        </div>
+
+        <div class="gnb-section">
+          <div class="gnb-title">My Workspace</div>
+          <a class="gnb-item" href="#" onclick="showToast('Favorites 화면은 다음 단계에서 연결됩니다.')">
+            <span class="gnb-icon">★</span>
+            <span>Favorites</span>
+          </a>
+          <a class="gnb-item" href="#" onclick="showToast('Recently Viewed 화면은 다음 단계에서 연결됩니다.')">
+            <span class="gnb-icon">◷</span>
+            <span>Recently Viewed</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="app-main">
+      <!-- Common Header -->
+      <div id="appHeader"></div>
+
+      <!-- Dashboard Content -->
+      <main class="page-content dashboard-home">
+        <section class="page-hero work-hero">
+          <div class="hero-copy">
+            <div class="eyebrow">Dashboard</div>
+            <h1>오늘 처리할 업무를 확인하고 바로 진행하세요.</h1>
+            <p>승인, 검증, 운영이관 상태를 한 화면에서 확인하고 필요한 업무로 이동할 수 있습니다.</p>
+          </div>
+        </section>
+
+        <section class="work-summary-grid" aria-label="오늘 업무 요약">
+          <button class="work-summary-card" type="button" onclick="location.href='./pages/mr-list.html'">
+            <strong>승인해야 할 MR</strong>
+            <b>4</b>
+            <span>리뷰 또는 승인 필요</span>
+          </button>
+          <button class="work-summary-card" type="button" onclick="location.href='./pages/mr-list.html'">
+            <strong>진행 중인 내 MR</strong>
+            <b>7</b>
+            <span>Open 상태의 Merge Request</span>
+          </button>
+          <button class="work-summary-card risk" type="button" onclick="showToast('Pipeline 실패 목록으로 이동하도록 연결할 수 있습니다.')">
+            <strong>조치 필요한 Pipeline</strong>
+            <b>2</b>
+            <span>실패 원인 확인 필요</span>
+          </button>
+          <button class="work-summary-card" type="button" onclick="showToast('운영이관 대기 목록으로 이동하도록 연결할 수 있습니다.')">
+            <strong>운영이관 대기</strong>
+            <b>3</b>
+            <span>승인 또는 반영 대기 중</span>
+          </button>
+          <button class="work-summary-card warning" type="button" onclick="showToast('보안 검증 필요 목록으로 이동하도록 연결할 수 있습니다.')">
+            <strong>보안 검증 필요</strong>
+            <b>1</b>
+            <span>취약점 또는 정책 확인 필요</span>
+          </button>
+        </section>
+
+        <section class="work-layout">
+          <article class="panel">
+            <div class="section-head">
+              <div>
+                <h2>Next up</h2>
+                <p>우선 처리하면 좋은 업무입니다.</p>
+              </div>
+              <button class="text-button" type="button" onclick="location.href='./pages/mr-list.html'">전체 보기</button>
+            </div>
+
+            <div class="pill-tabs" aria-label="Next up filter">
+              <button class="pill-tab active" type="button" data-filter="all" onclick="setDashboardFilter('next', this, 'all')">전체</button>
+              <button class="pill-tab" type="button" data-filter="urgent" onclick="setDashboardFilter('next', this, 'urgent')">긴급</button>
+              <button class="pill-tab" type="button" data-filter="approval" onclick="setDashboardFilter('next', this, 'approval')">승인 필요</button>
+              <button class="pill-tab" type="button" data-filter="failure" onclick="setDashboardFilter('next', this, 'failure')">실패</button>
+              <button class="pill-tab" type="button" data-filter="deploy" onclick="setDashboardFilter('next', this, 'deploy')">운영이관</button>
+              <button class="pill-tab" type="button" data-filter="security" onclick="setDashboardFilter('next', this, 'security')">보안 검증</button>
+            </div>
+
+            <div class="next-list" id="nextList">
+              <div class="next-item" data-filter="urgent failure">
+                <div class="next-main">
+                  <div class="next-title-line">
+                    <span class="priority-badge risk">긴급</span>
+                    <strong>Pipeline #8014 실패 원인 확인</strong>
+                  </div>
+                  <div class="next-meta">mobile-banking-api · feature/login-policy · Test 단계 실패 · 20분 전</div>
+                  <div class="policy-state">
+                    <span class="policy-label">조건 2/4 충족</span>
+                    <span class="policy-dots risk"><span class="done"></span><span class="done"></span><span></span><span></span></span>
+                  </div>
+                </div>
+                <button class="secondary-button next-action" type="button" onclick="showToast('Pipeline 실패 상세로 이동합니다.')">실패 원인 보기</button>
+              </div>
+
+              <div class="next-item" data-filter="approval">
+                <div class="next-main">
+                  <div class="next-title-line">
+                    <span class="priority-badge warning">리뷰 필요</span>
+                    <strong>MR #128 인증 정책 응답값 개선</strong>
+                  </div>
+                  <div class="next-meta">mobile-banking-api · 리뷰 요청 · 20분 전</div>
+                  <div class="policy-state">
+                    <span class="policy-label">조건 3/4 충족</span>
+                    <span class="policy-dots warning"><span class="done"></span><span class="done"></span><span class="done"></span><span></span></span>
+                  </div>
+                </div>
+                <button class="primary-button next-action" type="button" onclick="location.href='./pages/mr-detail.html'">리뷰하기</button>
+              </div>
+
+              <div class="next-item" data-filter="deploy">
+                <div class="next-main">
+                  <div class="next-title-line">
+                    <span class="priority-badge warning">오늘까지</span>
+                    <strong>운영이관 요청 승인 대기</strong>
+                  </div>
+                  <div class="next-meta">customer-web-portal · 운영 반영 예정일 오늘</div>
+                  <div class="policy-state">
+                    <span class="policy-label">운영이관 조건 4/5 충족</span>
+                    <span class="policy-dots warning"><span class="done"></span><span class="done"></span><span class="done"></span><span class="done"></span><span></span></span>
+                  </div>
+                </div>
+                <button class="secondary-button next-action" type="button" onclick="showToast('운영이관 요청 상세로 이동합니다.')">요청 보기</button>
+              </div>
+
+              <div class="next-item" data-filter="security urgent">
+                <div class="next-main">
+                  <div class="next-title-line">
+                    <span class="priority-badge risk">보안 확인</span>
+                    <strong>Security #204 보안 정책 확인 필요</strong>
+                  </div>
+                  <div class="next-meta">customer-web-portal · Critical 취약점 1건</div>
+                  <div class="policy-state">
+                    <span class="policy-label">조건 1/3 충족</span>
+                    <span class="policy-dots risk"><span class="done"></span><span></span><span></span></span>
+                  </div>
+                </div>
+                <button class="secondary-button next-action" type="button" onclick="showToast('보안 조치 가이드를 엽니다.')">조치 가이드 보기</button>
+              </div>
+            </div>
+          </article>
+
+          <aside class="side-stack">
+            <article class="panel">
+              <div class="section-head">
+                <div>
+                  <h2>My Repository</h2>
+                  <p>자주 사용하는 Repository입니다.</p>
+                </div>
+              </div>
+              <div class="repo-work-list">
+                <a class="repo-work-item" href="./pages/repository-detail.html">
+                  <strong>mobile-banking-api</strong>
+                  <div class="mini-chip-row">
+                    <span class="mini-chip blue">MR 3</span>
+                    <span class="mini-chip red">Pipeline 실패 1</span>
+                    <span class="mini-chip orange">운영이관 1</span>
+                  </div>
+                  <small>Updated 2 hours ago</small>
+                </a>
+                <a class="repo-work-item" href="./pages/repository-detail.html">
+                  <strong>common-ui-components</strong>
+                  <div class="mini-chip-row">
+                    <span class="mini-chip blue">MR 1</span>
+                    <span class="mini-chip orange">보안 검증 1</span>
+                  </div>
+                  <small>Updated 5 hours ago</small>
+                </a>
+                <a class="repo-work-item" href="./pages/repository-detail.html">
+                  <strong>customer-web-portal</strong>
+                  <div class="mini-chip-row">
+                    <span class="mini-chip orange">운영이관 대기 1</span>
+                  </div>
+                  <small>Updated yesterday</small>
+                </a>
+              </div>
+            </article>
+
+            <article class="panel">
+              <div class="section-head">
+                <div>
+                  <h2>최근 본 항목</h2>
+                </div>
+              </div>
+              <div class="recent-list">
+                <a class="recent-item" href="./pages/mr-detail.html">
+                  <strong>MR #128 인증 정책 응답값 개선</strong>
+                  <small>Merge Request · 방금 전</small>
+                </a>
+                <a class="recent-item" href="#" onclick="showToast('Pipeline 상세 화면으로 이동하도록 연결할 수 있습니다.')">
+                  <strong>Pipeline #8014</strong>
+                  <small>Test 단계 실패 · 20분 전</small>
+                </a>
+                <a class="recent-item" href="./pages/repository-detail.html">
+                  <strong>Repository mobile-banking-api</strong>
+                  <small>Repository · 1시간 전</small>
+                </a>
+                <a class="recent-item" href="#" onclick="showToast('운영이관 요청 상세로 이동하도록 연결할 수 있습니다.')">
+                  <strong>운영이관 요청 #DT-230</strong>
+                  <small>Deployment Transfer · 4시간 전</small>
+                </a>
+              </div>
+            </article>
+          </aside>
+        </section>
+
+        <section class="panel activity-panel">
+          <div class="section-head">
+            <div>
+              <h2>최근 활동</h2>
+              <p>최근 Repository, MR, Pipeline, 운영이관에서 발생한 활동입니다.</p>
+            </div>
+          </div>
+
+          <div class="pill-tabs" aria-label="Activity filter">
+            <button class="pill-tab active" type="button" onclick="setDashboardFilter('activity', this, 'all')">전체</button>
+            <button class="pill-tab" type="button" onclick="setDashboardFilter('activity', this, 'repository')">Repository</button>
+            <button class="pill-tab" type="button" onclick="setDashboardFilter('activity', this, 'mr')">MR</button>
+            <button class="pill-tab" type="button" onclick="setDashboardFilter('activity', this, 'pipeline')">Pipeline</button>
+            <button class="pill-tab" type="button" onclick="setDashboardFilter('activity', this, 'deploy')">운영이관</button>
+            <button class="pill-tab" type="button" onclick="setDashboardFilter('activity', this, 'security')">보안</button>
+          </div>
+
+          <div class="activity-log-list" id="activityList">
+            <div class="activity-log-item" data-filter="repository">
+              <span class="activity-type blue">Commit</span>
+              <div>
+                <strong>Jito님이 feature/login-policy 브랜치에 3개의 Commit을 push했습니다.</strong>
+                <small>mobile-banking-api · 1시간 전</small>
+              </div>
+            </div>
+            <div class="activity-log-item" data-filter="mr">
+              <span class="activity-type orange">Review</span>
+              <div>
+                <strong>Min님이 MR #1280에 리뷰 코멘트를 남겼습니다.</strong>
+                <small>Merge Request · 2시간 전</small>
+              </div>
+            </div>
+            <div class="activity-log-item" data-filter="pipeline">
+              <span class="activity-type blue">Pipeline</span>
+              <div>
+                <strong>Pipeline #8021이 main 브랜치에서 정상 통과했습니다.</strong>
+                <small>Pipeline · 3시간 전</small>
+              </div>
+            </div>
+            <div class="activity-log-item" data-filter="deploy">
+              <span class="activity-type orange">Deploy</span>
+              <div>
+                <strong>운영이관 요청 #DT-230이 승인되었습니다.</strong>
+                <small>Deployment Transfer · 4시간 전</small>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">완료</div>
+
+  <script src="./js/header.js"></script>
+  <script src="./js/components.js"></script>
+  <script src="./js/navigation.js"></script>
+  <script src="./js/main.js"></script>
+  <script>
+    function setDashboardFilter(type, button, filter) {
+      const listId = type === 'next' ? 'nextList' : 'activityList';
+      const itemSelector = type === 'next' ? '.next-item' : '.activity-log-item';
+      const container = document.getElementById(listId);
+
+      button.closest('.pill-tabs').querySelectorAll('.pill-tab').forEach((tab) => {
+        tab.classList.toggle('active', tab === button);
+      });
+
+      container.querySelectorAll(itemSelector).forEach((item) => {
+        const filters = item.dataset.filter.split(' ');
+        item.style.display = filter === 'all' || filters.includes(filter) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
