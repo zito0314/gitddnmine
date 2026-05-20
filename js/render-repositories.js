@@ -17,6 +17,38 @@
   const R = window.GitddnRender;
   let currentStatus = 'all';
 
+  function updatedSortValue(repo){
+    const raw = String(repo.updatedAt || '').toLowerCase();
+    const number = Number((raw.match(/\d+/) || [0])[0]);
+    if (raw.includes('minute') || raw.includes('분')) return number || 0;
+    if (raw.includes('hour') || raw.includes('시간')) return (number || 0) * 60;
+    if (raw.includes('yesterday') || raw.includes('어제')) return 24 * 60;
+    if (raw.includes('day') || raw.includes('일')) return (number || 1) * 24 * 60;
+    if (raw.includes('week') || raw.includes('주')) return (number || 1) * 7 * 24 * 60;
+    return Number.MAX_SAFE_INTEGER;
+  }
+  function sortedRepositories(data){
+    return [...data].sort((a, b) => {
+      const favoriteOrder = Number(!a.favorite) - Number(!b.favorite);
+      if (favoriteOrder !== 0) return favoriteOrder;
+      const updatedOrder = updatedSortValue(a) - updatedSortValue(b);
+      if (updatedOrder !== 0) return updatedOrder;
+      return String(a.name || '').localeCompare(String(b.name || ''));
+    });
+  }
+  function sortRepositoryRows(){
+    const list = document.getElementById('repoList');
+    if (!list) return;
+    const rows = Array.from(list.querySelectorAll('.repository-item'));
+    rows.sort((a, b) => {
+      const favoriteOrder = Number(a.dataset.favorite !== 'true') - Number(b.dataset.favorite !== 'true');
+      if (favoriteOrder !== 0) return favoriteOrder;
+      const updatedOrder = Number(a.dataset.updatedSort || 0) - Number(b.dataset.updatedSort || 0);
+      if (updatedOrder !== 0) return updatedOrder;
+      return (a.dataset.name || '').localeCompare(b.dataset.name || '');
+    });
+    rows.forEach(row => list.appendChild(row));
+  }
   function repoUrl(repo){ return `./repository-detail.html?id=${encodeURIComponent(repo.id || repo.name)}`; }
   function row(repo){
     const st = R.status(repo.status);
@@ -35,8 +67,9 @@
       data-type="${R.escape(repo.typeKey)}"
       data-status="${R.escape(repo.status)}"
       data-favorite="${repo.favorite?'true':'false'}"
+      data-updated-sort="${R.escape(updatedSortValue(repo))}"
       onclick="${disabled ? "showToast('승인 완료된 Repository만 상세로 이동할 수 있습니다.')" : `location.href='${repoUrl(repo)}'`}">
-        <button class="favorite-button ${fav}" type="button" ${disabled?'disabled':''} aria-label="즐겨찾기" onclick="event.stopPropagation(); this.classList.toggle('active'); this.textContent=this.classList.contains('active')?'★':'☆';">${star}</button>
+        <button class="favorite-button ${fav}" type="button" ${disabled?'disabled':''} aria-label="즐겨찾기" onclick="toggleRepositoryFavorite(event, this)">${star}</button>
         <div class="repo-name">
           <strong>${R.escape(repo.name)}</strong>
           <span class="repo-group">${R.escape(repo.group)}</span>
@@ -55,7 +88,7 @@
     const list = document.getElementById('repoList');
     const data = R.data().repositories?.list || [];
     if (!list) return;
-    list.innerHTML = data.map(row).join('');
+    list.innerHTML = sortedRepositories(data).map(row).join('');
     filterRepositories();
   }
 
@@ -66,6 +99,7 @@
   };
 
   window.filterRepositories = function(){
+    sortRepositoryRows();
     const keyword = (document.getElementById('repoSearch')?.value || '').trim().toLowerCase();
     const group = document.getElementById('groupFilter')?.value || 'all';
     const type = document.getElementById('typeFilter')?.value || 'all';
@@ -81,6 +115,19 @@
     });
     const empty = document.getElementById('emptyState');
     if (empty) empty.style.display = visible ? 'none' : 'block';
+  };
+
+  window.toggleRepositoryFavorite = function(event, button){
+    event?.stopPropagation?.();
+    const row = button?.closest?.('.repository-item');
+    if (!row) return;
+    const isFavorite = row.dataset.favorite === 'true';
+    row.dataset.favorite = isFavorite ? 'false' : 'true';
+    button.classList.toggle('active', !isFavorite);
+    button.textContent = isFavorite ? '☆' : '★';
+    button.setAttribute('aria-label', isFavorite ? '즐겨찾기 추가' : '즐겨찾기 해제');
+    sortRepositoryRows();
+    filterRepositories();
   };
 
   window.openRepositoryDetail = function(event){
