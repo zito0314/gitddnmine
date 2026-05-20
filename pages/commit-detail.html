@@ -324,7 +324,7 @@
           <a class="gnb-item repo-nav" href="./repository-detail.html"><span class="gnb-icon">▦</span><span>Overview</span></a>
           <a class="gnb-item repo-nav" href="./repository-detail.html#files"><span class="gnb-icon">📁</span><span>Files</span></a>
           <a class="gnb-item repo-nav" href="./repository-detail.html#merge-requests"><span class="gnb-icon">⇄</span><span>Merge Requests</span><span class="gnb-badge">5</span></a>
-          <a class="gnb-item repo-nav" href="./pipeline-list.html"><span class="gnb-icon">⚡</span><span>Pipelines</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#pipelines"><span class="gnb-icon">⚡</span><span>Pipelines</span></a>
           <a class="gnb-item active repo-nav" href="./repository-detail.html#commits"><span class="gnb-icon">●</span><span>Commits</span></a>
           <a class="gnb-item repo-nav" href="./repository-detail.html#branches"><span class="gnb-icon">⑂</span><span>Branches</span></a>
           <a class="gnb-item repo-nav" href="./repository-detail.html#git-graph"><span class="gnb-icon">⌁</span><span>Git Graph</span></a>
@@ -345,23 +345,7 @@
     </aside>
 
     <div class="app-main">
-      <header class="top-header">
-        <div class="header-left">
-          <button class="icon-button sidebar-toggle" type="button" aria-label="GNB 접기" onclick="toggleSidebar()">☰</button>
-          <button class="org-button" type="button"><span class="org-label">조직</span><strong>Digital Banking</strong></button>
-        </div>
-        <div class="global-search">
-          <span>⌕</span>
-          <input type="text" placeholder="Repository, MR, Pipeline, 파일 검색" />
-          <kbd>⌘K</kbd>
-        </div>
-        <div class="header-actions">
-          <button class="profile-button" type="button">
-            <span class="avatar">김</span>
-            <span class="profile-text"><strong>김신한</strong><small>Developer</small></span>
-          </button>
-        </div>
-      </header>
+      <div id="appHeader"></div>
 
       <main class="page-content commit-detail-page">
         <section class="commit-hero">
@@ -463,6 +447,8 @@
       </main>
     </div>
   </div>
+  <script src="../js/header.js"></script>
+  <script src="../js/components.js"></script>
   <script src="../js/navigation.js"></script>
   <script src="../js/main.js"></script>
   <script>

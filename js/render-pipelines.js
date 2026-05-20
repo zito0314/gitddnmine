@@ -55,10 +55,19 @@
   function render(){
     const data = R.data().pipelines?.list || [];
     const body = document.getElementById('pipelineTableBody');
-    if (!body) return;
-    body.innerHTML = data.map(row).join('');
-    updateCounts(data);
-    filterPipelineRows(currentPipelineFilter);
+    if (body) {
+      body.innerHTML = data.map(row).join('');
+      updateCounts(data);
+      filterPipelineRows(currentPipelineFilter);
+    }
+
+    const repoBody = document.getElementById('repoPipelineTableBody');
+    if (repoBody) {
+      const repoName = R.param('id') || R.param('repo') || 'mobile-banking-api';
+      const repoData = data.filter(p => !repoName || p.repo === repoName || p.repositoryId === repoName);
+      repoBody.innerHTML = (repoData.length ? repoData : data).map(row).join('');
+      if (typeof window.filterRepoPipelineRows === 'function') window.filterRepoPipelineRows('all');
+    }
   }
 
   window.filterPipelineRows = function(status='all'){

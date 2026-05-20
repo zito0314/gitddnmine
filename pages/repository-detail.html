@@ -48,7 +48,7 @@
             <span>Merge Requests</span>
             <span class="gnb-badge">5</span>
           </a>
-          <a class="gnb-item repo-nav" href="./pipeline-list.html" data-view="pipelines">
+          <a class="gnb-item repo-nav" href="#pipelines" data-view="pipelines" onclick="showRepoView(event, 'pipelines')">
             <span class="gnb-icon">⚡</span>
             <span>Pipelines</span>
           </a>
@@ -470,49 +470,39 @@
 
         <!-- Pipelines -->
         <section class="page-view" id="view-pipelines">
-          <article class="repo-panel">
-            <div class="repo-panel-header">
-              <div>
-                <h2>Pipeline Timeline</h2>
-                <p>최근 Pipeline 실행 단계와 결과를 확인합니다.</p>
+          <section class="summary-grid pipeline-summary">
+            <article class="summary-card"><div class="summary-label">Running</div><div class="summary-value">2</div><div class="summary-note">현재 실행 중</div></article>
+            <article class="summary-card"><div class="summary-label">Failed</div><div class="summary-value danger">2</div><div class="summary-note">확인이 필요한 Pipeline</div></article>
+            <article class="summary-card"><div class="summary-label">Finished</div><div class="summary-value">6</div><div class="summary-note">완료된 실행</div></article>
+            <article class="summary-card"><div class="summary-label">Total Jobs</div><div class="summary-value">82</div><div class="summary-note">최근 Pipeline 기준</div></article>
+          </section>
+
+          <section class="pipeline-board-card repo-pipeline-board">
+            <div class="toolbar-top">
+              <div class="mr-search">
+                <span>⌕</span>
+                <input id="repoPipelineSearch" type="text" placeholder="Pipeline 제목, Repository, 작성자, Branch 검색" oninput="filterRepoPipelineRows(currentRepoPipelineFilter)" />
               </div>
             </div>
-            <div class="table-card">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Pipeline</th>
-                    <th>Branch</th>
-                    <th>Commit</th>
-                    <th>상태</th>
-                    <th>Duration</th>
-                    <th>실행자</th>
-                    <th>실행 일시</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="clickable-row" onclick="location.href='./pipeline-detail.html'">
-                    <td><a class="table-link" href="./pipeline-detail.html">#8021</a></td>
-                    <td class="mono">main</td>
-                    <td class="mono">a82f4c1</td>
-                    <td><span class="status-chip green">Passed</span></td>
-                    <td>4m 21s</td>
-                    <td>Jito</td>
-                    <td>18분 전</td>
-                  </tr>
-                  <tr class="clickable-row" onclick="location.href='./pipeline-detail.html'">
-                    <td><a class="table-link" href="./pipeline-detail.html">#8014</a></td>
-                    <td class="mono">feature/login-policy</td>
-                    <td class="mono">9c21d0e</td>
-                    <td><span class="status-chip red">Failed</span></td>
-                    <td>2m 44s</td>
-                    <td>Jito</td>
-                    <td>2시간 전</td>
-                  </tr>
+            <div class="status-tabs" role="tablist">
+              <button class="status-tab active" type="button" data-repo-pipeline-filter="all" onclick="filterRepoPipelineRows('all')">전체 <span data-repo-count="all">4</span></button>
+              <button class="status-tab" type="button" data-repo-pipeline-filter="running" onclick="filterRepoPipelineRows('running')">Running <span data-repo-count="running">1</span></button>
+              <button class="status-tab" type="button" data-repo-pipeline-filter="failed" onclick="filterRepoPipelineRows('failed')">Failed <span data-repo-count="failed">1</span></button>
+              <button class="status-tab" type="button" data-repo-pipeline-filter="finished" onclick="filterRepoPipelineRows('finished')">Finished <span data-repo-count="finished">2</span></button>
+            </div>
+            <div class="pipeline-table-wrap">
+              <table class="mr-table">
+                <thead><tr><th>마지막 업데이트</th><th>Pipeline</th><th>Repository</th><th>Branch</th><th>작성자</th><th>Commit</th><th>Stages</th><th>Action</th></tr></thead>
+                <tbody id="repoPipelineTableBody">
+                  <tr data-status="running" onclick="location.href='./pipeline-detail.html'"><td>3분 전</td><td><div class="mr-title"><strong>#2847502395</strong><span>Merge branch 'dg-fix-subgroup-menu' into main</span><div class="chip-row"><span class="chip blue">Push</span><span class="chip orange">Running</span></div></div></td><td><div class="repo-info"><strong>root-sub-repo</strong><span>Git 저장소 / root / sub</span></div></td><td><div class="branch-flow"><strong class="mono">feature/subgroup-menu</strong><span>→ <strong class="mono">main</strong></span></div></td><td>김신한</td><td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault();event.stopPropagation();location.href='./commit-detail.html';">7e14d754</a></td><td><div class="stage-status-row"><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon running"></span><span class="pipeline-status-icon pending"></span></div></td><td><button class="secondary-button small danger-text" type="button" data-pipeline-action="cancel" onclick="toggleRepoPipelineRun(event, this)">실행 취소</button></td></tr>
+                  <tr data-status="finished" onclick="location.href='./pipeline-detail.html'"><td>38분 전</td><td><div class="mr-title"><strong>#2847502388</strong><span>GNB breadcrumb overflow policy 적용</span><div class="chip-row"><span class="chip green">Passed</span><span class="chip">Push</span></div></div></td><td><div class="repo-info"><strong>root-sub-repo</strong><span>Git 저장소 / root / sub</span></div></td><td><div class="branch-flow"><strong class="mono">main</strong><span>→ <strong class="mono">main</strong></span></div></td><td>김신한</td><td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault();event.stopPropagation();location.href='./commit-detail.html';">3c96a12b</a></td><td><div class="stage-status-row"><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon passed"></span></div></td><td><span class="table-action-placeholder">-</span></td></tr>
+                  <tr data-status="failed" onclick="location.href='./pipeline-detail.html'"><td>1시간 전</td><td><div class="mr-title"><strong>#2847502374</strong><span>Contract test for account limits API</span><div class="chip-row"><span class="chip red">Failed</span><span class="chip blue">Branch</span></div></div></td><td><div class="repo-info"><strong>mobile-banking-api</strong><span>Digital Banking / Mobile</span></div></td><td><div class="branch-flow"><strong class="mono">feature/account-limit</strong><span>→ <strong class="mono">develop</strong></span></div></td><td>이신한</td><td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault();event.stopPropagation();location.href='./commit-detail.html';">b71c2f09</a></td><td><div class="stage-status-row"><span class="pipeline-status-icon passed"></span><span class="pipeline-status-icon failed"></span><span class="pipeline-status-icon skipped"></span></div></td><td><button class="secondary-button small" type="button" data-pipeline-action="rerun" onclick="toggleRepoPipelineRun(event, this)">재실행</button></td></tr>
+                  <tr data-status="finished" onclick="location.href='./pipeline-detail.html'"><td>2시간 전</td><td><div class="mr-title"><strong>#2847502369</strong><span>MR 생성 화면 validation rule 정리</span><div class="chip-row"><span class="chip orange">Canceled</span><span class="chip">Manual</span></div></div></td><td><div class="repo-info"><strong>customer-web-portal</strong><span>Digital Banking / Web</span></div></td><td><div class="branch-flow"><strong class="mono">feature/mr-validation</strong><span>→ <strong class="mono">develop</strong></span></div></td><td>박신한</td><td><a class="code-chip" href="./commit-detail.html" onclick="event.preventDefault();event.stopPropagation();location.href='./commit-detail.html';">c41a79ee</a></td><td><div class="stage-status-row"><span class="pipeline-status-icon manual"></span><span class="pipeline-status-icon canceled"></span></div></td><td><button class="secondary-button small" type="button" data-pipeline-action="rerun" onclick="toggleRepoPipelineRun(event, this)">재실행</button></td></tr>
                 </tbody>
               </table>
+              <div class="empty-state" id="repoPipelineEmptyState"><strong>검색 결과가 없습니다.</strong> 조건을 바꿔 다시 확인해 주세요.</div>
             </div>
-          </article>
+          </section>
         </section>
 
         <!-- Commits -->
@@ -550,29 +540,53 @@
         <section class="page-view" id="view-branches">
           <article class="repo-panel">
             <div class="branch-list">
-              <div class="branch-item">
+              <div class="branch-item" data-branch="main" data-protected="true">
                   <span class="item-icon green">BR</span>
                   <span class="item-main">
                     <strong>main</strong>
                   <small>Protected · Updated 18분 전</small>
                   </span>
-                <span class="status-chip green">Protected</span>
+                <div class="branch-item-actions">
+                  <span class="status-chip green">Protected</span>
+                  <div class="branch-menu-wrap">
+                    <button class="small-icon-button branch-option-btn" type="button" aria-label="브랜치 옵션" onclick="toggleBranchMenu(event)">⋯</button>
+                    <div class="branch-menu" hidden>
+                      <button type="button" class="danger" disabled>삭제하기</button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="branch-item">
+              <div class="branch-item" data-branch="develop">
                 <span class="item-icon">BR</span>
                 <span class="item-main">
                   <strong>develop</strong>
                   <small>14 commits ahead of main · Updated 2시간 전</small>
                 </span>
-                <span class="status-chip">Active</span>
+                <div class="branch-item-actions">
+                  <span class="status-chip">Active</span>
+                  <div class="branch-menu-wrap">
+                    <button class="small-icon-button branch-option-btn" type="button" aria-label="브랜치 옵션" onclick="toggleBranchMenu(event)">⋯</button>
+                    <div class="branch-menu" hidden>
+                      <button type="button" class="danger" onclick="deleteBranch(event)">삭제하기</button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="branch-item">
+              <div class="branch-item" data-branch="feature/login-policy">
                 <span class="item-icon orange">BR</span>
                 <span class="item-main">
                   <strong>feature/login-policy</strong>
                   <small>MR #128 연결됨 · 리뷰 진행 중</small>
                 </span>
-                <span class="status-chip orange">In Review</span>
+                <div class="branch-item-actions">
+                  <span class="status-chip orange">In Review</span>
+                  <div class="branch-menu-wrap">
+                    <button class="small-icon-button branch-option-btn" type="button" aria-label="브랜치 옵션" onclick="toggleBranchMenu(event)">⋯</button>
+                    <div class="branch-menu" hidden>
+                      <button type="button" class="danger" onclick="deleteBranch(event)">삭제하기</button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </article>
@@ -822,6 +836,39 @@
   </div>
 
   <div class="toast" id="toast">완료</div>
+  <div class="modal-backdrop" id="branchCreateModal" aria-hidden="true">
+    <div class="modal-card branch-create-modal" role="dialog" aria-modal="true" aria-labelledby="branchCreateTitle">
+      <h2 id="branchCreateTitle">새 브랜치</h2>
+      <div class="modal-field">
+        <label for="newBranchName">브랜치 이름 <em class="required-mark">*</em></label>
+        <input id="newBranchName" type="text" placeholder="예: feature/new-policy" required />
+        <small id="branchNameError" class="field-error" hidden>브랜치 이름은 필수 항목입니다.</small>
+      </div>
+      <div class="modal-field">
+        <label for="branchBase">다음에서 생성</label>
+        <select id="branchBase">
+          <option value="main">main</option>
+          <option value="develop">develop</option>
+          <option value="feature/login-policy">feature/login-policy</option>
+        </select>
+        <small>기존 브랜치 이름, 태그 또는 커밋 SHA</small>
+      </div>
+      <div class="modal-actions">
+        <button class="primary-button" type="button" onclick="createBranchFromModal()">브랜치 생성</button>
+        <button class="secondary-button" type="button" onclick="closeBranchCreateModal()">취소</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop" id="branchDeleteModal" aria-hidden="true">
+    <div class="modal-card branch-delete-modal" role="dialog" aria-modal="true" aria-labelledby="branchDeleteTitle">
+      <h2 id="branchDeleteTitle">정말로 삭제하시겠습니까?</h2>
+      <p class="modal-helper" id="branchDeleteTarget">선택한 브랜치를 삭제합니다.</p>
+      <div class="modal-actions">
+        <button class="primary-button" type="button" onclick="confirmDeleteBranch()">삭제하기</button>
+        <button class="secondary-button" type="button" onclick="closeBranchDeleteModal()">취소하기</button>
+      </div>
+    </div>
+  </div>
 
   <script src="../js/header.js"></script>
   <script src="../js/components.js"></script>
@@ -850,7 +897,6 @@
         title: 'Pipelines',
         meta: 'mobile-banking-api · Build / Test / Security Scan',
         actions: [
-          ['Pipeline 목록', 'location.href="./pipeline-list.html"', 'secondary'],
           ['Pipeline 실행', 'showToast("Pipeline을 실행합니다.")', 'primary']
         ]
       },
@@ -863,7 +909,7 @@
         title: 'Branches',
         meta: 'mobile-banking-api · Branch 목록과 상태',
         actions: [
-          ['Branch 생성', 'showToast("Branch 생성 화면을 엽니다.")', 'primary']
+          ['Branch 생성', 'openBranchCreateModal()', 'primary']
         ]
       },
       'git-graph': {
@@ -898,6 +944,87 @@
     };
 
     let currentMrStatus = 'all';
+    let pendingDeleteBranchRow = null;
+
+    function openBranchCreateModal() {
+      const modal = document.getElementById('branchCreateModal');
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      document.getElementById('branchNameError').hidden = true;
+      setTimeout(() => {
+        document.getElementById('newBranchName').focus();
+      }, 0);
+    }
+
+    function closeBranchCreateModal() {
+      const modal = document.getElementById('branchCreateModal');
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function openBranchDeleteModal(branchRow) {
+      pendingDeleteBranchRow = branchRow;
+      const modal = document.getElementById('branchDeleteModal');
+      const name = branchRow?.querySelector('.item-main strong')?.textContent?.trim() || '선택한 브랜치';
+      document.getElementById('branchDeleteTarget').textContent = `${name} 브랜치를 삭제합니다.`;
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeBranchDeleteModal() {
+      const modal = document.getElementById('branchDeleteModal');
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+      pendingDeleteBranchRow = null;
+    }
+
+    function confirmDeleteBranch() {
+      if (!pendingDeleteBranchRow) return;
+      const branchName = pendingDeleteBranchRow?.dataset.branch || '브랜치';
+      pendingDeleteBranchRow.remove();
+      closeBranchDeleteModal();
+      showToast(`${branchName} 브랜치가 삭제되었습니다.`);
+    }
+
+    function createBranchFromModal() {
+      const nameInput = document.getElementById('newBranchName');
+      const baseSelect = document.getElementById('branchBase');
+      const branchName = nameInput.value.trim();
+      const base = baseSelect.value;
+      if (!branchName) {
+        document.getElementById('branchNameError').hidden = false;
+        nameInput.focus();
+        return;
+      }
+      document.getElementById('branchNameError').hidden = true;
+
+      const list = document.querySelector('#view-branches .branch-list');
+      const row = document.createElement('div');
+      row.className = 'branch-item';
+      row.dataset.branch = branchName;
+      row.innerHTML = `
+        <span class="item-icon">BR</span>
+        <span class="item-main">
+          <strong>${branchName}</strong>
+          <small>${base}에서 생성 · 방금 전</small>
+        </span>
+        <div class="branch-item-actions">
+          <span class="status-chip">Active</span>
+          <div class="branch-menu-wrap">
+            <button class="small-icon-button branch-option-btn" type="button" aria-label="브랜치 옵션" onclick="toggleBranchMenu(event)">⋯</button>
+            <div class="branch-menu" hidden>
+              <button type="button" class="danger" onclick="deleteBranch(event)">삭제하기</button>
+            </div>
+          </div>
+        </div>
+      `;
+      list.prepend(row);
+
+      closeBranchCreateModal();
+      nameInput.value = '';
+      baseSelect.value = 'main';
+      showToast('브랜치가 생성되었습니다.');
+    }
 
     function showRepoView(event, viewName) {
       if (event) event.preventDefault();
@@ -941,6 +1068,42 @@
       }
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.addEventListener('click', (e) => {
+      const createBackdrop = document.getElementById('branchCreateModal');
+      const deleteBackdrop = document.getElementById('branchDeleteModal');
+      if (e.target === createBackdrop) closeBranchCreateModal();
+      if (e.target === deleteBackdrop) closeBranchDeleteModal();
+      if (!e.target.closest('.branch-menu-wrap')) {
+        document.querySelectorAll('.branch-menu').forEach((menu) => { menu.hidden = true; });
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeBranchCreateModal();
+        closeBranchDeleteModal();
+      }
+      if (e.key === 'Enter' && document.getElementById('branchCreateModal').classList.contains('show')) {
+        const target = document.activeElement;
+        if (target && target.id !== 'branchBase') createBranchFromModal();
+      }
+    });
+
+    function toggleBranchMenu(event) {
+      event.stopPropagation();
+      const wrap = event.currentTarget.closest('.branch-menu-wrap');
+      const menu = wrap.querySelector('.branch-menu');
+      const isOpen = !menu.hidden;
+      document.querySelectorAll('.branch-menu').forEach((m) => { m.hidden = true; });
+      menu.hidden = isOpen;
+    }
+
+    function deleteBranch(event) {
+      const row = event.currentTarget.closest('.branch-item');
+      if (!row) return;
+      openBranchDeleteModal(row);
     }
 
     function setMrTab(status) {
@@ -1072,6 +1235,70 @@
     commitSearchInput?.addEventListener('input', filterCommits);
     filterCommits();
 
+    let currentRepoPipelineFilter = 'all';
+    function updateRepoPipelineCounts() {
+      const rows = Array.from(document.querySelectorAll('#repoPipelineTableBody tr'));
+      const set = (key, val) => {
+        const el = document.querySelector(`[data-repo-count="${key}"]`);
+        if (el) el.textContent = String(val);
+      };
+      set('all', rows.length);
+      set('running', rows.filter((r) => r.dataset.status === 'running').length);
+      set('failed', rows.filter((r) => r.dataset.status === 'failed').length);
+      set('finished', rows.filter((r) => r.dataset.status === 'finished').length);
+    }
+
+    function filterRepoPipelineRows(status) {
+      currentRepoPipelineFilter = status;
+      updateRepoPipelineCounts();
+      const keyword = (document.getElementById('repoPipelineSearch')?.value || '').trim().toLowerCase();
+      let visibleCount = 0;
+      document.querySelectorAll('[data-repo-pipeline-filter]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.repoPipelineFilter === status);
+      });
+      document.querySelectorAll('#repoPipelineTableBody tr').forEach((row) => {
+        const matchesStatus = status === 'all' || row.dataset.status === status;
+        const matchesKeyword = !keyword || row.innerText.toLowerCase().includes(keyword);
+        const visible = matchesStatus && matchesKeyword;
+        row.style.display = visible ? '' : 'none';
+        if (visible) visibleCount += 1;
+      });
+      const empty = document.getElementById('repoPipelineEmptyState');
+      if (empty) empty.style.display = visibleCount ? 'none' : 'block';
+    }
+
+    function toggleRepoPipelineRun(event, button) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const row = button.closest('tr');
+      const action = button.dataset.pipelineAction;
+      const chips = Array.from(row.querySelectorAll('.chip-row .chip'));
+      const statusChip = chips.find((chip) => ['Running', 'Failed', 'Canceled', 'Passed'].includes(chip.textContent.trim())) || chips[0];
+
+      if (action === 'rerun') {
+        row.dataset.status = 'running';
+        statusChip.className = 'chip orange';
+        statusChip.textContent = 'Running';
+        button.dataset.pipelineAction = 'cancel';
+        button.textContent = '실행 취소';
+        button.classList.add('danger-text');
+        showToast('Pipeline을 다시 실행합니다.');
+      } else {
+        row.dataset.status = 'finished';
+        statusChip.className = 'chip orange';
+        statusChip.textContent = 'Canceled';
+        button.dataset.pipelineAction = 'rerun';
+        button.textContent = '재실행';
+        button.classList.remove('danger-text');
+        showToast('Pipeline 실행을 취소했습니다.');
+      }
+
+      filterRepoPipelineRows(currentRepoPipelineFilter);
+    }
+
+    filterRepoPipelineRows('all');
+
     const initialView = window.location.hash.replace('#', '');
     if (initialView && viewMeta[initialView]) {
       showRepoView(null, initialView);
@@ -1080,7 +1307,7 @@
   <script src="../js/mock-data.js?v=sync-20260520"></script>
   <script src="../js/render-repositories.js?v=sync-20260520"></script>
   <script src="../js/render-merge-requests.js?v=sync-20260520"></script>
-  <script src="../js/render-pipelines.js?v=sync-20260520"></script>
+  <script src="../js/render-pipelines.js?v=sync-20260520b"></script>
   <script src="../js/render-security.js?v=sync-20260520"></script>
   <script src="../js/render-detail-pages.js?v=sync-20260520"></script>
 </body>

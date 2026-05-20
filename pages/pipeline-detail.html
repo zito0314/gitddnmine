@@ -12,7 +12,10 @@
     .pipeline-hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:24px 26px;display:grid;gap:18px}
     .pipeline-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
     .pipeline-kicker{color:var(--blue);font-size:12px;font-weight:900;text-transform:uppercase;margin-bottom:8px}
+    .pipeline-title-inline{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
     .pipeline-hero h1{margin:0;font-size:28px;line-height:1.25;font-weight:900;color:var(--text)}
+    .pipeline-title-inline .small-icon-button{width:36px;height:36px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--text);display:grid;place-items:center;font-size:18px;font-weight:900;transition:all .2s cubic-bezier(.645,.045,.355,1)}
+    .pipeline-title-inline .small-icon-button:hover{border-color:var(--primary-border);color:var(--blue);background:var(--primary-bg)}
     .pipeline-hero-desc{margin:10px 0 0;max-width:840px;color:var(--muted);font-size:14px;line-height:1.6}
     .pipeline-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
     .pipeline-meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:12px}
@@ -110,7 +113,10 @@
           <div class="pipeline-title-row">
             <div>
               <div class="pipeline-kicker">Pipeline Detail</div>
-              <h1>#2847502395</h1>
+              <div class="pipeline-title-inline">
+                <button class="small-icon-button" type="button" aria-label="파이프라인 목록으로 돌아가기" onclick="location.href='./repository-detail.html#pipelines'">‹</button>
+                <h1>#2847502395</h1>
+              </div>
               <p class="pipeline-hero-desc">account limits API contract update 실행 결과입니다. Stage 흐름, Job dependency, 개별 Job 로그를 한 화면에서 이어서 확인할 수 있습니다.</p>
               <div class="pipeline-meta">
                 <span class="detail-chip red">Failed</span>
@@ -122,7 +128,6 @@
               </div>
             </div>
             <div class="pipeline-actions">
-              <button class="secondary-button" type="button" onclick="location.href='./pipeline-list.html'">Pipeline 목록</button>
               <button class="primary-button" type="button" onclick="showToast('Pipeline을 다시 실행합니다.')">Retry Pipeline</button>
             </div>
           </div>
@@ -159,30 +164,10 @@
                 <button class="active" type="button" data-pipeline-view="stage" onclick="setPipelineView('stage')">Stage</button>
                 <button type="button" data-pipeline-view="dependencies" onclick="setPipelineView('dependencies')">Job dependencies</button>
               </div>
-              <div class="legend">
-                <span><i class="legend-dot manual"></i> Manual</span>
-                <span><i class="legend-dot running"></i> Running</span>
-                <span><i class="legend-dot passed"></i> Passed</span>
-                <span><i class="legend-dot pending"></i> Pending</span>
-                <span><i class="legend-dot failed"></i> Failed</span>
-                <span><i class="legend-dot canceled"></i> Canceled</span>
-                <span><i class="legend-dot skipped"></i> Skipped</span>
-                <span><i class="legend-dot created"></i> Created</span>
-              </div>
             </div>
           </div>
 
           <div class="stage-mode-panel active" id="pipeline-view-stage">
-            <div class="stage-status-guide" aria-label="Stage status order">
-              <span><i class="pipeline-status-icon manual"></i>Manual</span>
-              <span><i class="pipeline-status-icon running"></i>Running</span>
-              <span><i class="pipeline-status-icon passed"></i>Passed</span>
-              <span><i class="pipeline-status-icon pending"></i>Pending</span>
-              <span><i class="pipeline-status-icon failed"></i>Failed</span>
-              <span><i class="pipeline-status-icon canceled"></i>Canceled</span>
-              <span><i class="pipeline-status-icon skipped"></i>Skipped</span>
-              <span><i class="pipeline-status-icon created"></i>Created</span>
-            </div>
             <div class="stage-board">
               <article class="stage-card">
                 <h3><span class="pipeline-status-icon passed"></span>prepare</h3>
@@ -319,7 +304,7 @@
     });
   </script>
   <script src="../js/mock-data.js?v=sync-20260520"></script>
-  <script src="../js/render-pipelines.js?v=sync-20260520"></script>
+  <script src="../js/render-pipelines.js?v=sync-20260520b"></script>
   <script src="../js/render-detail-pages.js?v=sync-20260520"></script>
 </body>
 </html>
