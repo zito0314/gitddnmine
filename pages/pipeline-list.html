@@ -107,19 +107,6 @@
             <span class="gnb-icon">☷</span>
             <span>Audit Log</span>
           </a>
-        </div>
-
-        <div class="gnb-section">
-          <div class="gnb-title">My Workspace</div>
-          <a class="gnb-item" href="#" onclick="showToast('즐겨찾기에 추가되었습니다.')">
-            <span class="gnb-icon">★</span>
-            <span>Favorites</span>
-          </a>
-          <a class="gnb-item" href="#" onclick="showToast('최근 본 항목을 엽니다.')">
-            <span class="gnb-icon">◷</span>
-            <span>Recently Viewed</span>
-          </a>
-        </div>
       </nav>
 
       <nav class="gnb">
@@ -175,7 +162,7 @@
           <article class="summary-card"><div class="summary-label">Total Jobs</div><div class="summary-value">82</div><div class="summary-note">최근 Pipeline 기준</div></article>
         </section>
 
-        <section class="toolbar-card">
+        <section class="pipeline-board-card">
           <div class="toolbar-top">
             <div class="mr-search">
               <span>⌕</span>
@@ -193,10 +180,9 @@
             <button class="status-tab" type="button" data-pipeline-filter="failed" onclick="filterPipelineRows('failed')">Failed <span data-count="failed">2</span></button>
             <button class="status-tab" type="button" data-pipeline-filter="finished" onclick="filterPipelineRows('finished')">Finished <span data-count="finished">6</span></button>
           </div>
-        </section>
 
-        <section class="mr-table-card">
-          <table class="mr-table">
+          <div class="pipeline-table-wrap">
+            <table class="mr-table">
             <thead>
               <tr>
                 <th>마지막 업데이트</th>
@@ -268,6 +254,7 @@
             </tbody>
           </table>
           <div class="empty-state" id="pipelineEmptyState"><strong>검색 결과가 없습니다.</strong> 조건을 바꿔 다시 확인해 주세요.</div>
+          </div>
         </section>
       </main>
     </div>

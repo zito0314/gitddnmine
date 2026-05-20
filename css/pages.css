@@ -1385,7 +1385,7 @@
       margin-bottom: 0;
     }
 
-.page-pipeline-list .toolbar-card {
+.page-pipeline-list .pipeline-board-card {
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
@@ -1474,11 +1474,8 @@
       color: #fff;
     }
 
-.page-pipeline-list .mr-table-card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
+.page-pipeline-list .pipeline-table-wrap {
+      border-top: 1px solid var(--line);
       overflow: hidden;
     }
 

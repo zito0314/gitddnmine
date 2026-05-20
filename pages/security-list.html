@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gitddn - Security Validation</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <style>
+    /* ─── Security List Page Styles ─── */
+    .page-security-list .security-list-page {
+      display: grid;
+      gap: 18px;
+    }
+
+    .page-security-list .page-hero.compact {
+      margin-bottom: 0;
+      padding: 24px 26px;
+    }
+
+    .page-security-list .page-hero.compact h1 {
+      font-size: 28px;
+    }
+
+    /* Summary Cards */
+    .page-security-list .summary-grid.security-summary {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-bottom: 0;
+    }
+
+    .page-security-list .summary-card.clickable {
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    .page-security-list .summary-card.clickable:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-border);
+    }
+
+    .page-security-list .summary-card.clickable.danger-card:hover {
+      border-color: #f1b9c1;
+    }
+
+    .page-security-list .summary-card-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .page-security-list .summary-card-icon.blue { background: var(--blue-soft); color: var(--blue); }
+    .page-security-list .summary-card-icon.red { background: var(--red-soft); color: var(--red); }
+    .page-security-list .summary-card-icon.orange { background: var(--orange-soft); color: var(--orange); }
+    .page-security-list .summary-card-icon.purple { background: #f0ebfe; color: #6d3fce; }
+
+    /* Toolbar */
+    .page-security-list .toolbar-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .page-security-list .toolbar-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .page-security-list .sec-search {
+      flex: 1;
+      min-width: 360px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0 12px;
+    }
+
+    .page-security-list .sec-search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .page-security-list .toolbar-filter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .page-security-list .toolbar-filter select {
+      height: 40px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 12px;
+      color: var(--text);
+      font-weight: 700;
+      padding: 0 12px;
+      outline: none;
+    }
+
+    .page-security-list .status-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 16px;
+      background: #fbfcff;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .page-security-list .status-tab {
+      height: 36px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 0 14px;
+      font-weight: 800;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .page-security-list .status-tab.active {
+      background: var(--primary-bg);
+      color: var(--primary-text);
+      border-color: var(--primary-border);
+    }
+
+    /* Severity Filter Tabs */
+    .page-security-list .severity-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #fafbfd;
+      overflow-x: auto;
+    }
+
+    .page-security-list .severity-filter-label {
+      font-size: 12px;
+      font-weight: 850;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .page-security-list .severity-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 30px;
+      padding: 0 11px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 12px;
+      font-weight: 850;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .14s;
+    }
+
+    .page-security-list .severity-chip.critical { background: #fff0ef; color: #b91c1c; border-color: #fca5a5; }
+    .page-security-list .severity-chip.high { background: var(--red-soft); color: var(--red); border-color: #fca5a5; }
+    .page-security-list .severity-chip.medium { background: var(--orange-soft); color: var(--orange); border-color: #fde68a; }
+    .page-security-list .severity-chip.low { background: #f0f9ff; color: #0369a1; border-color: #bae6fd; }
+    .page-security-list .severity-chip.inactive {
+      background: #f1f4f8;
+      color: var(--subtle);
+      border-color: transparent;
+    }
+
+    .page-security-list .severity-chip .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Table */
+    .page-security-list .sec-table-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .page-security-list .sec-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .page-security-list .sec-table th {
+      padding: 14px 16px;
+      text-align: left;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      background: #fbfcff;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .page-security-list .sec-table td {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+      font-size: 13px;
+    }
+
+    .page-security-list .sec-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .page-security-list .sec-table tbody tr {
+      cursor: pointer;
+      transition: background .12s;
+    }
+
+    .page-security-list .sec-table tbody tr:hover {
+      background: #f7f9ff;
+    }
+
+    .page-security-list .mr-title-cell strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 850;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .page-security-list .mr-title-cell span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .page-security-list .mr-title-link:hover strong {
+      color: var(--primary);
+    }
+
+    .page-security-list .repo-cell strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 850;
+      margin-bottom: 2px;
+    }
+
+    .page-security-list .repo-cell span {
+      font-size: 11px;
+      color: var(--subtle);
+    }
+
+    /* Chip Styles */
+    .page-security-list .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: #f1f4f8;
+      color: #5f6d80;
+      font-size: 11px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .page-security-list .chip.green { background: var(--green-soft); color: var(--green); }
+    .page-security-list .chip.red { background: var(--red-soft); color: var(--red); }
+    .page-security-list .chip.orange { background: var(--orange-soft); color: var(--orange); }
+    .page-security-list .chip.blue { background: var(--blue-soft); color: var(--blue); }
+    .page-security-list .chip.critical { background: #fff0ef; color: #b91c1c; }
+    .page-security-list .chip.blocked { background: #fff0ef; color: #b91c1c; font-weight: 900; }
+    .page-security-list .chip.allowed { background: var(--green-soft); color: var(--green); }
+    .page-security-list .chip.running { background: var(--blue-soft); color: var(--blue); }
+
+    .page-security-list .chip .pulse-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: secPulse 1.4s infinite;
+    }
+
+    @keyframes secPulse { 50% { opacity: .3; } }
+
+    /* Vuln count display */
+    .page-security-list .vuln-count-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .page-security-list .vuln-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .page-security-list .vuln-badge.critical { background: #fff0ef; color: #b91c1c; }
+    .page-security-list .vuln-badge.high { background: var(--red-soft); color: var(--red); }
+    .page-security-list .vuln-badge.medium { background: var(--orange-soft); color: var(--orange); }
+    .page-security-list .vuln-badge.low { background: #f0f9ff; color: #0369a1; }
+    .page-security-list .vuln-badge.none { color: var(--subtle); font-weight: 700; }
+
+    /* Row Action */
+    .page-security-list .row-action {
+      height: 32px;
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      color: var(--text);
+      border-radius: 8px;
+      padding: 0 11px;
+      font-size: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all .14s;
+    }
+
+    .page-security-list .row-action:hover {
+      border-color: var(--primary-border);
+      color: var(--primary-text);
+      background: var(--primary-bg);
+    }
+
+    /* Empty state */
+    .page-security-list .empty-state {
+      display: none;
+      background: var(--surface);
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius-lg);
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .page-security-list .empty-state strong {
+      display: block;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    /* Blocked MR Banner */
+    .page-security-list .blocked-banner {
+      background: #fff8f8;
+      border: 1px solid #fca5a5;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .page-security-list .blocked-banner-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--red-soft);
+      color: var(--red);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      font-size: 15px;
+    }
+
+    .page-security-list .blocked-banner-text {
+      flex: 1;
+    }
+
+    .page-security-list .blocked-banner-text strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--red);
+    }
+
+    .page-security-list .blocked-banner-text span {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1180px) {
+      .page-security-list .summary-grid.security-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .page-security-list .toolbar-top {
+        align-items: stretch;
+        flex-direction: column;
+      }
+      .page-security-list .sec-search {
+        min-width: 0;
+        width: 100%;
+      }
+      .page-security-list .sec-table-card {
+        overflow-x: auto;
+      }
+      .page-security-list .sec-table {
+        min-width: 1200px;
+      }
+    }
+  </style>
+</head>
+<body class="page-security-list">
+  <div class="app-shell">
+    <!-- Sidebar / Global GNB -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">g</div>
+        <div>
+          <div class="brand-name">gitddn</div>
+          <div class="brand-sub">DevSecOps Governance</div>
+        </div>
+      </div>
+
+      <nav class="gnb">
+        <div class="gnb-section">
+          <div class="gnb-title">Workspace</div>
+          <a class="gnb-item" href="../index.html" data-page="dashboard">
+            <span class="gnb-icon">▦</span>
+            <span>Dashboard</span>
+          </a>
+          <a class="gnb-item" href="./repository-list.html" data-page="repository">
+            <span class="gnb-icon">▤</span>
+            <span>Repository</span>
+          </a>
+          <a class="gnb-item" href="./mr-list.html" data-page="merge-request">
+            <span class="gnb-icon">⇄</span>
+            <span>Merge Request</span>
+            <span class="gnb-badge">6</span>
+          </a>
+          <a class="gnb-item" href="#" data-page="activity" onclick="showToast('Activity 화면은 다음 단계에서 연결됩니다.')">
+            <span class="gnb-icon">◷</span>
+            <span>Activity</span>
+          </a>
+          <a class="gnb-item active" href="./security-list.html" data-page="security">
+            <span class="gnb-icon">◈</span>
+            <span>Security Validation</span>
+            <span class="gnb-badge warning">2</span>
+          </a>
+          <a class="gnb-item" href="#" data-page="deploy" onclick="showToast('Deployment Transfer 화면은 다음 단계에서 연결됩니다.')">
+            <span class="gnb-icon">⇧</span>
+            <span>Deployment Transfer</span>
+            <span class="gnb-badge">3</span>
+          </a>
+          <a class="gnb-item" href="./audit-log.html" data-page="audit-log">
+            <span class="gnb-icon">☷</span>
+            <span>Audit Log</span>
+          </a>
+      </nav>
+    </aside>
+
+    <div class="app-main">
+      <!-- Common Header -->
+      <div id="appHeader"></div>
+
+      <main class="page-content security-list-page">
+
+        <!-- Page Hero -->
+        <section class="page-hero compact">
+          <div>
+            <div class="eyebrow">Security</div>
+            <h1>Security Validation</h1>
+            <p>MR 병합 전 필수 보안 검증 결과를 확인합니다.</p>
+          </div>
+          <div class="hero-actions">
+            <button class="secondary-button" type="button" onclick="showToast('병합 차단 MR만 표시합니다.')">◈ Blocked MR만 보기</button>
+          </div>
+        </section>
+
+        <!-- Blocked Banner (UX 개선: 즉시 인지 가능한 위험 알림) -->
+        <div class="blocked-banner">
+          <div class="blocked-banner-icon">⛔</div>
+          <div class="blocked-banner-text">
+            <strong>병합 차단 MR 2건이 있습니다</strong>
+            <span>Critical 취약점 또는 보안 정책 미충족으로 인해 병합이 차단된 MR을 확인하고 조치하세요.</span>
+          </div>
+          <button class="secondary-button" type="button" onclick="showToast('병합 차단 MR 목록으로 이동합니다.')">목록 보기</button>
+        </div>
+
+        <!-- Summary Cards -->
+        <section class="summary-grid security-summary">
+          <article class="summary-card clickable" onclick="showToast('전체 검증 목록으로 이동합니다.')">
+            <div class="summary-card-icon blue">◈</div>
+            <div class="summary-label">전체 검증</div>
+            <div class="summary-value">24</div>
+            <div class="summary-note">실행된 총 검증 수</div>
+          </article>
+          <article class="summary-card clickable danger-card" onclick="showToast('실패 항목 목록으로 이동합니다.')">
+            <div class="summary-card-icon red">✕</div>
+            <div class="summary-label">실패 항목</div>
+            <div class="summary-value danger">7</div>
+            <div class="summary-note">Failed 검증 수</div>
+          </article>
+          <article class="summary-card clickable danger-card" onclick="showToast('Critical 취약점 목록으로 이동합니다.')">
+            <div class="summary-card-icon red">⚠</div>
+            <div class="summary-label">Critical 취약점</div>
+            <div class="summary-value danger">3</div>
+            <div class="summary-note">즉시 차단 대상</div>
+          </article>
+          <article class="summary-card clickable danger-card" onclick="showToast('병합 차단 MR 목록으로 이동합니다.')">
+            <div class="summary-card-icon red">⛔</div>
+            <div class="summary-label">병합 차단 MR</div>
+            <div class="summary-value danger">2</div>
+            <div class="summary-note">보안 조건 미충족</div>
+          </article>
+        </section>
+
+        <!-- Toolbar + Filters -->
+        <section class="toolbar-card">
+          <div class="toolbar-top">
+            <div class="sec-search">
+              <span>⌕</span>
+              <input id="secSearch" type="text" placeholder="MR 제목, 저장소, 취약점 검색" oninput="filterSec()" />
+            </div>
+
+            <div class="toolbar-filter">
+              <select id="projectFilter" onchange="filterSec()">
+                <option value="all">전체 프로젝트</option>
+                <option value="digital-banking">Digital Banking</option>
+                <option value="platform-center">Platform Center</option>
+                <option value="partner-workspace">Partner Workspace</option>
+              </select>
+
+              <select id="repoFilter" onchange="filterSec()">
+                <option value="all">전체 저장소</option>
+                <option value="mobile-banking-api">mobile-banking-api</option>
+                <option value="customer-web-portal">customer-web-portal</option>
+                <option value="common-ui-components">common-ui-components</option>
+                <option value="partner-payment-sdk">partner-payment-sdk</option>
+              </select>
+
+              <select id="mrStatusFilter" onchange="filterSec()">
+                <option value="all">MR 상태 전체</option>
+                <option value="open">Open</option>
+                <option value="merged">Merged</option>
+                <option value="blocked">Blocked</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 검증 상태 탭 -->
+          <div class="status-tabs" role="tablist" aria-label="검증 상태 필터">
+            <button class="status-tab active" type="button" data-vstatus="all" onclick="setVStatusTab('all')">전체</button>
+            <button class="status-tab" type="button" data-vstatus="pass" onclick="setVStatusTab('pass')">Pass</button>
+            <button class="status-tab" type="button" data-vstatus="failed" onclick="setVStatusTab('failed')">Failed</button>
+            <button class="status-tab" type="button" data-vstatus="warning" onclick="setVStatusTab('warning')">Warning</button>
+            <button class="status-tab" type="button" data-vstatus="running" onclick="setVStatusTab('running')">Running</button>
+          </div>
+
+          <!-- 취약점 등급 필터 (UX 개선: 탭 형식으로 가시성 향상) -->
+          <div class="severity-filter-row" role="group" aria-label="취약점 등급 필터">
+            <span class="severity-filter-label">취약점 등급</span>
+            <button class="severity-chip critical" type="button" data-severity="critical" onclick="toggleSeverity(this)">
+              <span class="dot"></span> Critical <span>3</span>
+            </button>
+            <button class="severity-chip high" type="button" data-severity="high" onclick="toggleSeverity(this)">
+              <span class="dot"></span> High <span>8</span>
+            </button>
+            <button class="severity-chip medium" type="button" data-severity="medium" onclick="toggleSeverity(this)">
+              <span class="dot"></span> Medium <span>14</span>
+            </button>
+            <button class="severity-chip low" type="button" data-severity="low" onclick="toggleSeverity(this)">
+              <span class="dot"></span> Low <span>22</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Security Table -->
+        <section class="sec-table-card">
+          <table class="sec-table">
+            <thead>
+              <tr>
+                <th>MR</th>
+                <th>저장소</th>
+                <th>검증 상태</th>
+                <th>취약점</th>
+                <th>정책 판단</th>
+                <th>마지막 검증</th>
+                <th>액션</th>
+              </tr>
+            </thead>
+            <tbody id="secTable">
+
+              <!-- Row 1: Failed + Blocked -->
+              <tr data-vstatus="failed" data-repo="mobile-banking-api" data-mr-status="open" onclick="goDetail(event)">
+                <td>
+                  <div class="mr-title-cell mr-title-link">
+                    <strong>MR #128 인증 정책 응답값 개선</strong>
+                    <span>feature/login-policy → develop · mobile-banking-api</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="repo-cell">
+                    <strong>mobile-banking-api</strong>
+                    <span>Digital Banking / Mobile</span>
+                  </div>
+                </td>
+                <td><span class="chip red">Failed</span></td>
+                <td>
+                  <div class="vuln-count-row">
+                    <span class="vuln-badge critical">C&thinsp;2</span>
+                    <span class="vuln-badge high">H&thinsp;3</span>
+                    <span class="vuln-badge medium">M&thinsp;1</span>
+                  </div>
+                </td>
+                <td><span class="chip blocked">⛔ Blocked</span></td>
+                <td style="color:var(--muted);font-size:12px;">20분 전</td>
+                <td>
+                  <button class="row-action" type="button" onclick="event.stopPropagation(); location.href='./security-detail.html'">상세 보기</button>
+                </td>
+              </tr>
+
+              <!-- Row 2: Warning + Allowed -->
+              <tr data-vstatus="warning" data-repo="customer-web-portal" data-mr-status="open" onclick="goDetail(event)">
+                <td>
+                  <div class="mr-title-cell mr-title-link">
+                    <strong>MR #126 계좌 목록 캐싱 개선</strong>
+                    <span>feature/account-cache → develop · customer-web-portal</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="repo-cell">
+                    <strong>customer-web-portal</strong>
+                    <span>Digital Banking / Web</span>
+                  </div>
+                </td>
+                <td><span class="chip orange">Warning</span></td>
+                <td>
+                  <div class="vuln-count-row">
+                    <span class="vuln-badge high">H&thinsp;1</span>
+                    <span class="vuln-badge medium">M&thinsp;4</span>
+                    <span class="vuln-badge low">L&thinsp;7</span>
+                  </div>
+                </td>
+                <td><span class="chip allowed">✓ Allowed</span></td>
+                <td style="color:var(--muted);font-size:12px;">2시간 전</td>
+                <td>
+                  <button class="row-action" type="button" onclick="event.stopPropagation(); location.href='./security-detail.html'">상세 보기</button>
+                </td>
+              </tr>
+
+              <!-- Row 3: Running -->
+              <tr data-vstatus="running" data-repo="common-ui-components" data-mr-status="open" onclick="goDetail(event)">
+                <td>
+                  <div class="mr-title-cell mr-title-link">
+                    <strong>MR #125 Button 토큰 구조 정리</strong>
+                    <span>feature/button-token → develop · common-ui-components</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="repo-cell">
+                    <strong>common-ui-components</strong>
+                    <span>Platform Center / Shared Module</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="chip running">
+                    <span class="pulse-dot"></span> Running
+                  </span>
+                </td>
+                <td>
+                  <div class="vuln-count-row">
+                    <span class="vuln-badge none">검증 중…</span>
+                  </div>
+                </td>
+                <td><span class="chip">— 대기</span></td>
+                <td style="color:var(--muted);font-size:12px;">방금 전</td>
+                <td>
+                  <button class="row-action" type="button" onclick="event.stopPropagation(); showToast('검증이 진행 중입니다.')">상태 확인</button>
+                </td>
+              </tr>
+
+              <!-- Row 4: Failed + Blocked -->
+              <tr data-vstatus="failed" data-repo="partner-payment-sdk" data-mr-status="blocked" onclick="goDetail(event)">
+                <td>
+                  <div class="mr-title-cell mr-title-link">
+                    <strong>MR #119 외부 인증 SDK 교체</strong>
+                    <span>feature/external-auth → develop · partner-payment-sdk</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="repo-cell">
+                    <strong>partner-payment-sdk</strong>
+                    <span>Partner Workspace</span>
+                  </div>
+                </td>
+                <td><span class="chip red">Failed</span></td>
+                <td>
+                  <div class="vuln-count-row">
+                    <span class="vuln-badge critical">C&thinsp;1</span>
+                    <span class="vuln-badge high">H&thinsp;2</span>
+                    <span class="vuln-badge medium">M&thinsp;3</span>
+                    <span class="vuln-badge low">L&thinsp;5</span>
+                  </div>
+                </td>
+                <td><span class="chip blocked">⛔ Blocked</span></td>
+                <td style="color:var(--muted);font-size:12px;">1일 전</td>
+                <td>
+                  <button class="row-action" type="button" onclick="event.stopPropagation(); location.href='./security-detail.html'">상세 보기</button>
+                </td>
+              </tr>
+
+              <!-- Row 5: Pass -->
+              <tr data-vstatus="pass" data-repo="mobile-banking-api" data-mr-status="merged" onclick="goDetail(event)">
+                <td>
+                  <div class="mr-title-cell mr-title-link">
+                    <strong>MR #121 로그인 실패 메시지 정리</strong>
+                    <span>fix/login-message → main · mobile-banking-api</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="repo-cell">
+                    <strong>mobile-banking-api</strong>
+                    <span>Digital Banking / Mobile</span>
+                  </div>
+                </td>
+                <td><span class="chip green">Pass</span></td>
+                <td>
+                  <div class="vuln-count-row">
+                    <span class="vuln-badge low">L&thinsp;2</span>
+                  </div>
+                </td>
+                <td><span class="chip allowed">✓ Allowed</span></td>
+                <td style="color:var(--muted);font-size:12px;">어제</td>
+                <td>
+                  <button class="row-action" type="button" onclick="event.stopPropagation(); location.href='./security-detail.html'">상세 보기</button>
+                </td>
+              </tr>
+
+              <!-- Row 6: Pass -->
+              <tr data-vstatus="pass" data-repo="customer-web-portal" data-mr-status="merged" onclick="goDetail(event)">
+                <td>
+                  <div class="mr-title-cell mr-title-link">
+                    <strong>MR #117 메인 페이지 UI 개선</strong>
+                    <span>feature/main-ui → develop · customer-web-portal</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="repo-cell">
+                    <strong>customer-web-portal</strong>
+                    <span>Digital Banking / Web</span>
+                  </div>
+                </td>
+                <td><span class="chip green">Pass</span></td>
+                <td>
+                  <div class="vuln-count-row">
+                    <span class="vuln-badge none">취약점 없음</span>
+                  </div>
+                </td>
+                <td><span class="chip allowed">✓ Allowed</span></td>
+                <td style="color:var(--muted);font-size:12px;">3일 전</td>
+                <td>
+                  <button class="row-action" type="button" onclick="event.stopPropagation(); location.href='./security-detail.html'">상세 보기</button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Empty State -->
+        <section class="empty-state" id="emptyState">
+          <strong>표시할 검증 결과가 없습니다.</strong>
+          <span>검색어나 필터 조건을 변경해보세요.</span>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">완료</div>
+
+  <script src="../js/header.js"></script>
+  <script src="../js/components.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    let currentVStatus = 'all';
+
+    function setVStatusTab(status) {
+      currentVStatus = status;
+      document.querySelectorAll('.status-tab').forEach((tab) => {
+        tab.classList.toggle('active', tab.dataset.vstatus === status);
+      });
+      filterSec();
+    }
+
+    function toggleSeverity(btn) {
+      btn.classList.toggle('inactive');
+      filterSec();
+    }
+
+    function filterSec() {
+      const keyword = document.getElementById('secSearch').value.trim().toLowerCase();
+      const repo = document.getElementById('repoFilter').value;
+      const mrStatus = document.getElementById('mrStatusFilter').value;
+      const rows = Array.from(document.querySelectorAll('#secTable tr'));
+      let visibleCount = 0;
+
+      rows.forEach((row) => {
+        const matchesKeyword = !keyword || row.innerText.toLowerCase().includes(keyword);
+        const matchesVStatus = currentVStatus === 'all' || row.dataset.vstatus === currentVStatus;
+        const matchesRepo = repo === 'all' || row.dataset.repo === repo;
+        const matchesMrStatus = mrStatus === 'all' || row.dataset.mrStatus === mrStatus;
+        const isVisible = matchesKeyword && matchesVStatus && matchesRepo && matchesMrStatus;
+
+        row.style.display = isVisible ? '' : 'none';
+        if (isVisible) visibleCount++;
+      });
+
+      document.getElementById('emptyState').style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    function goDetail(event) {
+      if (event.target.classList.contains('row-action')) return;
+      location.href = './security-detail.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', filterSec);
+  </script>
+</body>
+</html>

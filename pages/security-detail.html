@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gitddn - Security Validation 상세</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/pages.css" />
+  <style>
+    /* ─── Security Detail Page Styles ─── */
+    .page-security-detail .security-detail-page {
+      display: grid;
+      gap: 18px;
+    }
+
+    /* MR Overview Hero */
+    .page-security-detail .sec-overview-hero {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 22px 26px;
+    }
+
+    .page-security-detail .hero-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 8px;
+      color: var(--subtle);
+      font-size: 13px;
+      font-weight: 750;
+      margin-bottom: 14px;
+      cursor: pointer;
+      transition: all .14s;
+    }
+
+    .page-security-detail .hero-back:hover {
+      background: var(--primary-bg);
+      color: var(--primary-text);
+    }
+
+    .page-security-detail .hero-top-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .page-security-detail .hero-kicker {
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      letter-spacing: .05em;
+    }
+
+    .page-security-detail .hero-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .page-security-detail .hero-title-row h1 {
+      font-size: 22px;
+      font-weight: 900;
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    .page-security-detail .hero-mr-link {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: 800;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .page-security-detail .hero-meta-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .page-security-detail .hero-meta-row span {
+      height: 26px;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface-soft);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .page-security-detail .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Status Badge */
+    .page-security-detail .sec-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .page-security-detail .sec-status-badge.failed { background: var(--red-soft); color: var(--red); }
+    .page-security-detail .sec-status-badge.pass { background: var(--green-soft); color: var(--green); }
+    .page-security-detail .sec-status-badge.warning { background: var(--orange-soft); color: var(--orange); }
+    .page-security-detail .sec-status-badge.running { background: var(--blue-soft); color: var(--blue); }
+
+    .page-security-detail .policy-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .page-security-detail .policy-badge.blocked { background: #fff0ef; color: #b91c1c; border: 1.5px solid #fca5a5; }
+    .page-security-detail .policy-badge.allowed { background: var(--green-soft); color: var(--green); border: 1.5px solid #bbf7d0; }
+
+    .page-security-detail .badge-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Summary Cards - severity */
+    .page-security-detail .severity-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .page-security-detail .severity-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .page-security-detail .severity-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .page-security-detail .severity-icon.critical { background: #fff0ef; color: #b91c1c; }
+    .page-security-detail .severity-icon.high { background: var(--red-soft); color: var(--red); }
+    .page-security-detail .severity-icon.medium { background: var(--orange-soft); color: var(--orange); }
+    .page-security-detail .severity-icon.low { background: #f0f9ff; color: #0369a1; }
+
+    .page-security-detail .severity-info {
+      display: grid;
+      gap: 2px;
+    }
+
+    .page-security-detail .severity-label {
+      font-size: 12px;
+      font-weight: 850;
+      color: var(--muted);
+    }
+
+    .page-security-detail .severity-count {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .page-security-detail .severity-count.critical { color: #b91c1c; }
+    .page-security-detail .severity-count.high { color: var(--red); }
+    .page-security-detail .severity-count.medium { color: var(--orange); }
+    .page-security-detail .severity-count.low { color: #0369a1; }
+
+    /* Work Layout */
+    .page-security-detail .sec-work-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .page-security-detail .sec-main-col {
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .page-security-detail .sec-side-col {
+      display: grid;
+      gap: 14px;
+      position: sticky;
+      top: 82px;
+    }
+
+    /* Section Cards */
+    .page-security-detail .sec-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .page-security-detail .sec-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcff;
+    }
+
+    .page-security-detail .sec-card-header h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .page-security-detail .sec-card-body {
+      padding: 18px;
+    }
+
+    /* Scan Check List */
+    .page-security-detail .scan-list {
+      display: grid;
+      gap: 0;
+    }
+
+    .page-security-detail .scan-item {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      transition: background .12s;
+      cursor: pointer;
+    }
+
+    .page-security-detail .scan-item:last-child {
+      border-bottom: 0;
+    }
+
+    .page-security-detail .scan-item:hover {
+      background: #f7f9ff;
+    }
+
+    .page-security-detail .scan-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .page-security-detail .scan-icon.green { background: var(--green-soft); color: var(--green); }
+    .page-security-detail .scan-icon.red { background: var(--red-soft); color: var(--red); }
+    .page-security-detail .scan-icon.orange { background: var(--orange-soft); color: var(--orange); }
+    .page-security-detail .scan-icon.gray { background: #f1f4f8; color: var(--subtle); }
+
+    .page-security-detail .scan-info {
+      display: grid;
+      gap: 3px;
+    }
+
+    .page-security-detail .scan-name {
+      font-size: 14px;
+      font-weight: 850;
+      color: var(--text);
+    }
+
+    .page-security-detail .scan-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Chip */
+    .page-security-detail .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 850;
+      white-space: nowrap;
+      background: #f1f4f8;
+      color: #5f6d80;
+    }
+
+    .page-security-detail .chip.green { background: var(--green-soft); color: var(--green); }
+    .page-security-detail .chip.red { background: var(--red-soft); color: var(--red); }
+    .page-security-detail .chip.orange { background: var(--orange-soft); color: var(--orange); }
+    .page-security-detail .chip.blue { background: var(--blue-soft); color: var(--blue); }
+    .page-security-detail .chip.critical { background: #fff0ef; color: #b91c1c; }
+    .page-security-detail .chip.block { background: #fff0ef; color: #b91c1c; font-weight: 900; }
+    .page-security-detail .chip.resolved { background: var(--green-soft); color: var(--green); }
+    .page-security-detail .chip.ignored { background: #f1f4f8; color: var(--subtle); }
+
+    /* Vuln Table */
+    .page-security-detail .vuln-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .page-security-detail .vuln-table th {
+      padding: 12px 16px;
+      text-align: left;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      background: #fbfcff;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .page-security-detail .vuln-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+      font-size: 13px;
+    }
+
+    .page-security-detail .vuln-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .page-security-detail .vuln-table tbody tr {
+      transition: background .12s;
+    }
+
+    .page-security-detail .vuln-table tbody tr:hover {
+      background: #f7f9ff;
+    }
+
+    .page-security-detail .vuln-table tr.critical-row {
+      background: #fffafa;
+    }
+
+    .page-security-detail .file-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .page-security-detail .file-link:hover {
+      text-decoration: underline;
+    }
+
+    .page-security-detail .line-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .page-security-detail .vuln-desc {
+      max-width: 320px;
+    }
+
+    .page-security-detail .vuln-desc strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 850;
+      margin-bottom: 3px;
+    }
+
+    .page-security-detail .vuln-desc span {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* Vuln Filter Bar */
+    .page-security-detail .vuln-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      background: #fafbfd;
+      flex-wrap: wrap;
+    }
+
+    .page-security-detail .vuln-filter-label {
+      font-size: 12px;
+      font-weight: 850;
+      color: var(--muted);
+    }
+
+    .page-security-detail .vuln-tab {
+      height: 30px;
+      border: 1px solid transparent;
+      background: transparent;
+      border-radius: 999px;
+      padding: 0 12px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .12s;
+    }
+
+    .page-security-detail .vuln-tab.active {
+      background: var(--primary-bg);
+      color: var(--primary-text);
+      border-color: var(--primary-border);
+    }
+
+    /* Side Guide Panel */
+    .page-security-detail .guide-panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .page-security-detail .guide-panel-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .page-security-detail .guide-panel-header h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .page-security-detail .guide-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .page-security-detail .guide-section:last-child {
+      border-bottom: 0;
+    }
+
+    .page-security-detail .guide-label {
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--subtle);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 8px;
+    }
+
+    .page-security-detail .guide-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .page-security-detail .guide-step {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .page-security-detail .guide-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .page-security-detail .guide-step-num {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--primary-bg);
+      color: var(--primary-text);
+      font-size: 11px;
+      font-weight: 900;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .page-security-detail .guide-step-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      padding-top: 2px;
+    }
+
+    /* CTA Bar */
+    .page-security-detail .cta-bar {
+      position: sticky;
+      bottom: 0;
+      background: rgba(255, 255, 255, .96);
+      border-top: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      z-index: 10;
+    }
+
+    .page-security-detail .cta-info {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .page-security-detail .cta-info strong {
+      color: var(--text);
+      font-weight: 850;
+    }
+
+    .page-security-detail .cta-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Row action button */
+    .page-security-detail .row-action {
+      height: 28px;
+      border: 1px solid var(--line-strong);
+      background: #fff;
+      color: var(--text);
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 850;
+      cursor: pointer;
+      transition: all .12s;
+    }
+
+    .page-security-detail .row-action:hover {
+      border-color: var(--primary-border);
+      color: var(--primary-text);
+      background: var(--primary-bg);
+    }
+
+    /* Status notice */
+    .page-security-detail .status-notice {
+      background: #fff8f8;
+      border: 1px solid #fca5a5;
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .page-security-detail .status-notice.blocked {
+      background: #fff8f8;
+      border-color: #fca5a5;
+    }
+
+    .page-security-detail .status-notice-icon {
+      font-size: 16px;
+    }
+
+    .page-security-detail .status-notice-text strong {
+      display: block;
+      font-weight: 900;
+      color: #b91c1c;
+      margin-bottom: 2px;
+    }
+
+    .page-security-detail .status-notice-text span {
+      color: var(--muted);
+    }
+
+    @media (max-width: 1180px) {
+      .page-security-detail .sec-work-layout {
+        grid-template-columns: 1fr;
+      }
+      .page-security-detail .sec-side-col {
+        position: static;
+      }
+      .page-security-detail .severity-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body class="page-security-detail">
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">g</div>
+        <div>
+          <div class="brand-name">gitddn</div>
+          <div class="brand-sub">DevSecOps Governance</div>
+        </div>
+      </div>
+
+      <nav class="gnb">
+        <div class="gnb-section">
+          <div class="gnb-title">Workspace</div>
+          <a class="gnb-item" href="../index.html" data-page="dashboard">
+            <span class="gnb-icon">▦</span>
+            <span>Dashboard</span>
+          </a>
+          <a class="gnb-item" href="./repository-list.html" data-page="repository">
+            <span class="gnb-icon">▤</span>
+            <span>Repository</span>
+          </a>
+          <a class="gnb-item" href="./mr-list.html" data-page="merge-request">
+            <span class="gnb-icon">⇄</span>
+            <span>Merge Request</span>
+            <span class="gnb-badge">6</span>
+          </a>
+          <a class="gnb-item" href="#" data-page="activity" onclick="showToast('Activity 화면은 다음 단계에서 연결됩니다.')">
+            <span class="gnb-icon">◷</span>
+            <span>Activity</span>
+          </a>
+          <a class="gnb-item active" href="./security-list.html" data-page="security">
+            <span class="gnb-icon">◈</span>
+            <span>Security Validation</span>
+            <span class="gnb-badge warning">2</span>
+          </a>
+          <a class="gnb-item" href="#" data-page="deploy" onclick="showToast('Deployment Transfer 화면은 다음 단계에서 연결됩니다.')">
+            <span class="gnb-icon">⇧</span>
+            <span>Deployment Transfer</span>
+            <span class="gnb-badge">3</span>
+          </a>
+          <a class="gnb-item" href="./audit-log.html" data-page="audit-log">
+            <span class="gnb-icon">☷</span>
+            <span>Audit Log</span>
+          </a>
+      </nav>
+    </aside>
+
+    <div class="app-main">
+      <div id="appHeader"></div>
+
+      <main class="page-content security-detail-page">
+
+        <!-- MR Overview Hero -->
+        <section class="sec-overview-hero">
+          <a class="hero-back" href="./security-list.html">← Security Validation 목록</a>
+
+          <div class="hero-top-row">
+            <div>
+              <div class="hero-kicker">Security Validation · MR #128</div>
+              <div class="hero-title-row">
+                <h1>인증 정책 응답값 개선</h1>
+                <span class="sec-status-badge failed">
+                  <span class="badge-dot"></span> Failed
+                </span>
+                <span class="policy-badge blocked">⛔ 병합 불가</span>
+              </div>
+              <div class="hero-meta-row">
+                <span>mobile-banking-api</span>
+                <span>feature/login-policy → develop</span>
+                <span>작성자 Jito</span>
+                <span>마지막 검증 20분 전</span>
+              </div>
+            </div>
+            <div class="hero-actions">
+              <button class="secondary-button" type="button" onclick="location.href='./mr-detail.html'">MR로 돌아가기</button>
+              <button class="primary-button" type="button" onclick="showToast('보안 검증을 재실행합니다. 검증 상태가 Running으로 변경됩니다.')">↺ 재검증</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Blocked Notice (UX 개선: 차단 이유를 명확하게) -->
+        <div class="status-notice blocked">
+          <span class="status-notice-icon">⛔</span>
+          <div class="status-notice-text">
+            <strong>병합이 차단되었습니다</strong>
+            <span>Critical 취약점 2건이 탐지되어 보안 정책에 따라 병합이 불가합니다. 하단 취약점 목록에서 조치 후 재검증하세요.</span>
+          </div>
+        </div>
+
+        <!-- Severity Summary -->
+        <section class="severity-summary-grid">
+          <div class="severity-card">
+            <div class="severity-icon critical">C</div>
+            <div class="severity-info">
+              <div class="severity-label">Critical</div>
+              <div class="severity-count critical">2</div>
+            </div>
+          </div>
+          <div class="severity-card">
+            <div class="severity-icon high">H</div>
+            <div class="severity-info">
+              <div class="severity-label">High</div>
+              <div class="severity-count high">3</div>
+            </div>
+          </div>
+          <div class="severity-card">
+            <div class="severity-icon medium">M</div>
+            <div class="severity-info">
+              <div class="severity-label">Medium</div>
+              <div class="severity-count medium">1</div>
+            </div>
+          </div>
+          <div class="severity-card">
+            <div class="severity-icon low">L</div>
+            <div class="severity-info">
+              <div class="severity-label">Low</div>
+              <div class="severity-count low">0</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Main Work Layout -->
+        <div class="sec-work-layout">
+
+          <!-- Main Column -->
+          <div class="sec-main-col">
+
+            <!-- Scan Check Items -->
+            <div class="sec-card">
+              <div class="sec-card-header">
+                <h2>검증 항목</h2>
+                <span style="font-size:12px; color:var(--muted);">3개 항목 · 2개 실패</span>
+              </div>
+              <div class="scan-list">
+
+                <div class="scan-item" onclick="showToast('SAST 검증 상세 결과를 확인합니다.')">
+                  <div class="scan-icon red">✕</div>
+                  <div class="scan-info">
+                    <div class="scan-name">SAST (Static Application Security Testing)</div>
+                    <div class="scan-desc">소스코드 정적 분석 · 2개 Critical, 1개 High 탐지</div>
+                  </div>
+                  <span class="chip red">Failed</span>
+                  <span class="chip block">Block</span>
+                </div>
+
+                <div class="scan-item" onclick="showToast('Secret Scan 검증 상세 결과를 확인합니다.')">
+                  <div class="scan-icon red">✕</div>
+                  <div class="scan-info">
+                    <div class="scan-name">Secret Scan</div>
+                    <div class="scan-desc">하드코딩된 자격증명 탐지 · API Key 노출 1건</div>
+                  </div>
+                  <span class="chip red">Failed</span>
+                  <span class="chip block">Block</span>
+                </div>
+
+                <div class="scan-item" onclick="showToast('Dependency Scan 검증 상세 결과를 확인합니다.')">
+                  <div class="scan-icon orange">!</div>
+                  <div class="scan-info">
+                    <div class="scan-name">Dependency Scan</div>
+                    <div class="scan-desc">의존성 취약점 분석 · 2개 High, 1개 Medium 탐지</div>
+                  </div>
+                  <span class="chip orange">Warning</span>
+                  <span class="chip orange">Warning</span>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Vuln Table -->
+            <div class="sec-card">
+              <div class="sec-card-header">
+                <h2>취약점 목록</h2>
+              </div>
+
+              <!-- Vuln Filter Bar (UX 개선: 조치 상태별 빠른 필터) -->
+              <div class="vuln-filter-bar">
+                <span class="vuln-filter-label">조치 상태</span>
+                <button class="vuln-tab active" type="button">전체 <strong>6</strong></button>
+                <button class="vuln-tab" type="button">Open <strong>4</strong></button>
+                <button class="vuln-tab" type="button">Resolved <strong>1</strong></button>
+                <button class="vuln-tab" type="button">Ignored <strong>1</strong></button>
+              </div>
+
+              <table class="vuln-table">
+                <thead>
+                  <tr>
+                    <th>파일명</th>
+                    <th>라인</th>
+                    <th>등급</th>
+                    <th>설명</th>
+                    <th>조치 상태</th>
+                    <th>액션</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <!-- Critical rows -->
+                  <tr class="critical-row">
+                    <td>
+                      <a class="file-link" onclick="showToast('해당 파일의 Diff 위치로 이동합니다.')">
+                        ↗ src/auth/AuthController.java
+                      </a>
+                    </td>
+                    <td><span class="line-num">:142</span></td>
+                    <td><span class="chip critical">Critical</span></td>
+                    <td class="vuln-desc">
+                      <strong>SQL Injection 취약점</strong>
+                      <span>사용자 입력값이 직접 SQL 쿼리에 삽입됨. PreparedStatement 사용 필요.</span>
+                    </td>
+                    <td><span class="chip red">Open</span></td>
+                    <td>
+                      <button class="row-action" type="button" onclick="showToast('조치 가이드를 확인합니다.')">가이드</button>
+                    </td>
+                  </tr>
+
+                  <tr class="critical-row">
+                    <td>
+                      <a class="file-link" onclick="showToast('해당 파일의 Diff 위치로 이동합니다.')">
+                        ↗ src/config/AppConfig.java
+                      </a>
+                    </td>
+                    <td><span class="line-num">:38</span></td>
+                    <td><span class="chip critical">Critical</span></td>
+                    <td class="vuln-desc">
+                      <strong>하드코딩된 API Key</strong>
+                      <span>소스코드에 API Key가 직접 노출됨. 환경변수 또는 Secret Manager 사용 필요.</span>
+                    </td>
+                    <td><span class="chip red">Open</span></td>
+                    <td>
+                      <button class="row-action" type="button" onclick="showToast('조치 가이드를 확인합니다.')">가이드</button>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <a class="file-link" onclick="showToast('해당 파일의 Diff 위치로 이동합니다.')">
+                        ↗ src/auth/TokenService.java
+                      </a>
+                    </td>
+                    <td><span class="line-num">:87</span></td>
+                    <td><span class="chip red">High</span></td>
+                    <td class="vuln-desc">
+                      <strong>약한 암호화 알고리즘 사용</strong>
+                      <span>MD5 해시 사용 감지. SHA-256 이상 사용 권장.</span>
+                    </td>
+                    <td><span class="chip red">Open</span></td>
+                    <td>
+                      <button class="row-action" type="button" onclick="showToast('조치 가이드를 확인합니다.')">가이드</button>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <a class="file-link" onclick="showToast('해당 파일의 Diff 위치로 이동합니다.')">
+                        ↗ pom.xml
+                      </a>
+                    </td>
+                    <td><span class="line-num">:54</span></td>
+                    <td><span class="chip red">High</span></td>
+                    <td class="vuln-desc">
+                      <strong>취약한 의존성: log4j-core 2.14.1</strong>
+                      <span>CVE-2021-44228 (Log4Shell). 2.17.1 이상으로 업데이트 필요.</span>
+                    </td>
+                    <td><span class="chip red">Open</span></td>
+                    <td>
+                      <button class="row-action" type="button" onclick="showToast('조치 가이드를 확인합니다.')">가이드</button>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <a class="file-link" onclick="showToast('해당 파일의 Diff 위치로 이동합니다.')">
+                        ↗ src/api/UserController.java
+                      </a>
+                    </td>
+                    <td><span class="line-num">:205</span></td>
+                    <td><span class="chip red">High</span></td>
+                    <td class="vuln-desc">
+                      <strong>XSS 취약점 (Reflected)</strong>
+                      <span>요청 파라미터가 응답에 그대로 반영됨. 출력 인코딩 처리 필요.</span>
+                    </td>
+                    <td><span class="chip resolved">Resolved</span></td>
+                    <td>
+                      <button class="row-action" type="button" onclick="showToast('조치 내용을 확인합니다.')">확인</button>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <a class="file-link" onclick="showToast('해당 파일의 Diff 위치로 이동합니다.')">
+                        ↗ src/util/FileUtils.java
+                      </a>
+                    </td>
+                    <td><span class="line-num">:31</span></td>
+                    <td><span class="chip orange">Medium</span></td>
+                    <td class="vuln-desc">
+                      <strong>경로 탐색 취약점 가능성</strong>
+                      <span>파일 경로 검증 부재. 입력값 정규화 및 화이트리스트 적용 권장.</span>
+                    </td>
+                    <td><span class="chip ignored">Ignored</span></td>
+                    <td>
+                      <button class="row-action" type="button" onclick="showToast('무시 사유를 확인합니다.')">사유 보기</button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Bottom CTA Bar -->
+            <div class="cta-bar">
+              <div class="cta-info">
+                <strong>⛔ 병합 불가</strong> — Critical 취약점 2건 조치 후 재검증이 필요합니다.
+              </div>
+              <div class="cta-actions">
+                <button class="secondary-button" type="button" onclick="location.href='./mr-detail.html'">MR로 돌아가기</button>
+                <button class="primary-button" type="button" onclick="showToast('보안 검증을 재실행합니다.')">↺ 재검증</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Side Column: Guide -->
+          <div class="sec-side-col">
+
+            <div class="guide-panel">
+              <div class="guide-panel-header">
+                <h2>◈ 조치 가이드</h2>
+                <span style="font-size:11px; color:var(--muted);">SQL Injection</span>
+              </div>
+
+              <div class="guide-section">
+                <div class="guide-label">취약점 개요</div>
+                <p class="guide-text">
+                  사용자 입력이 SQL 쿼리에 직접 삽입되면 공격자가 악의적인 SQL 구문을 주입해 데이터베이스를 조작할 수 있습니다.
+                </p>
+              </div>
+
+              <div class="guide-section">
+                <div class="guide-label">수정 방향</div>
+                <div class="guide-step">
+                  <span class="guide-step-num">1</span>
+                  <span class="guide-step-text">Statement 대신 PreparedStatement를 사용하세요.</span>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step-num">2</span>
+                  <span class="guide-step-text">모든 사용자 입력값에 파라미터 바인딩을 적용하세요.</span>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step-num">3</span>
+                  <span class="guide-step-text">ORM 프레임워크(JPA/MyBatis)의 파라미터 바인딩 기능을 적극 활용하세요.</span>
+                </div>
+              </div>
+
+              <div class="guide-section">
+                <div class="guide-label">참고 자료</div>
+                <div style="display:grid; gap:6px;">
+                  <a style="font-size:13px; color:var(--primary); font-weight:750; cursor:pointer;" onclick="showToast('OWASP SQL Injection 가이드로 이동합니다.')">↗ OWASP SQL Injection Prevention</a>
+                  <a style="font-size:13px; color:var(--primary); font-weight:750; cursor:pointer;" onclick="showToast('내부 보안 가이드로 이동합니다.')">↗ 사내 보안 코딩 가이드</a>
+                </div>
+              </div>
+
+              <div class="guide-section">
+                <button class="primary-button" type="button" style="width:100%; justify-content:center;" onclick="showToast('조치 완료 처리가 접수되었습니다.')">
+                  ✓ 조치 완료 처리
+                </button>
+              </div>
+            </div>
+
+            <!-- Progress Summary (UX 개선: 조치 진행 현황) -->
+            <div class="sec-card">
+              <div class="sec-card-header">
+                <h2>조치 현황</h2>
+              </div>
+              <div class="sec-card-body">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13px;">
+                  <span style="color:var(--muted);">전체 취약점</span>
+                  <strong>6건</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px;">
+                  <span style="color:var(--muted);">Resolved</span>
+                  <strong style="color:var(--green);">1건</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px;">
+                  <span style="color:var(--muted);">Ignored</span>
+                  <strong style="color:var(--subtle);">1건</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:14px; font-size:13px;">
+                  <span style="color:var(--muted);">Open (조치 필요)</span>
+                  <strong style="color:var(--red);">4건</strong>
+                </div>
+                <div style="background:#edf1f6; border-radius:999px; height:8px; overflow:hidden;">
+                  <div style="background:var(--green); height:100%; border-radius:999px; width:16%;"></div>
+                </div>
+                <div style="font-size:12px; color:var(--subtle); margin-top:6px;">조치 완료율 16% (1 / 6)</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">완료</div>
+
+  <script src="../js/header.js"></script>
+  <script src="../js/components.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

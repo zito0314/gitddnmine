@@ -109,19 +109,6 @@
             <span class="gnb-icon">☷</span>
             <span>Audit Log</span>
           </a>
-        </div>
-
-        <div class="gnb-section">
-          <div class="gnb-title">My Workspace</div>
-          <a class="gnb-item" href="#" onclick="showToast('즐겨찾기에 추가되었습니다.')">
-            <span class="gnb-icon">★</span>
-            <span>Favorites</span>
-          </a>
-          <a class="gnb-item" href="#" onclick="showToast('최근 본 항목을 엽니다.')">
-            <span class="gnb-icon">◷</span>
-            <span>Recently Viewed</span>
-          </a>
-        </div>
       </nav>
     </aside>
 
@@ -534,10 +521,13 @@
             <div class="commit-toolbar">
               <label class="branch-select filter-search">
                 <select aria-label="Branch 선택">
-                  <option selected>main</option>
+                  <option value="all" selected>전체 Branch</option>
+                  <option>main</option>
                   <option>develop</option>
                   <option>feature/login-policy</option>
                   <option>feature/account-cache</option>
+                  <option>feature/security-scan</option>
+                  <option>hotfix/session-timeout</option>
                 </select>
                 <span>⌄</span>
               </label>
@@ -1009,12 +999,26 @@
     const commitBranchSelect = document.querySelector('.commit-toolbar .branch-select select');
     const commitSearchInput = document.querySelector('.commit-toolbar .filter-search input');
     const commitData = [
-      { day: '2026년 5월 19일', branch: 'main', status: 'Running', version: '2.4', sha: '7e14d754', title: '인증 정책 응답값 개선', author: 'Jito', time: '20분 전', icon: '↻' },
-      { day: '2026년 5월 19일', branch: 'feature/login-policy', status: 'Running', version: '2.4', sha: '7e14d754', title: '테스트 케이스 추가', author: 'Jito', time: '2시간 전', icon: '↻' },
-      { day: '2026년 5월 19일', branch: 'develop', status: 'Running', version: '2.4', sha: '7e14d754', title: 'README 실행 가이드 업데이트', author: 'Min', time: '어제', icon: '↻' },
-      { day: '2026년 5월 18일', branch: 'main', status: 'Running', version: '2.4', sha: '7e14d754', title: 'API 응답 메시지 정리', author: 'Jito', time: '어제', icon: '↻' },
-      { day: '2026년 5월 18일', branch: 'develop', status: 'Running', version: '2.4', sha: '7e14d754', title: '로그인 폼 정리', author: 'Min', time: '어제', icon: '↻' },
-      { day: '2026년 5월 17일', branch: 'feature/account-cache', status: 'Running', version: '2.4', sha: '7e14d754', title: '캐시 만료 정책 수정', author: 'Jito', time: '2일 전', icon: '↻' }
+      { day: '2026년 5월 20일', branch: 'main', status: 'Passed', version: '2.4', sha: '7e14d754', title: '인증 정책 응답값 개선', author: 'Jito', time: '20분 전', icon: '↻' },
+      { day: '2026년 5월 20일', branch: 'feature/login-policy', status: 'Running', version: '2.4', sha: '91bc2f10', title: '로그인 정책 예외 케이스 정리', author: 'Kim', time: '38분 전', icon: '↻' },
+      { day: '2026년 5월 20일', branch: 'feature/account-cache', status: 'Passed', version: '2.4', sha: 'a82f4c1d', title: '계좌 목록 캐시 갱신 조건 추가', author: 'Min', time: '1시간 전', icon: '↻' },
+      { day: '2026년 5월 20일', branch: 'develop', status: 'Failed', version: '2.4', sha: 'c2d91a8e', title: 'Pipeline 실패 로그 메시지 보강', author: 'Han', time: '2시간 전', icon: '↻' },
+      { day: '2026년 5월 20일', branch: 'main', status: 'Passed', version: '2.4', sha: 'f03a9b72', title: 'README 실행 가이드 업데이트', author: 'Min', time: '3시간 전', icon: '↻' },
+      { day: '2026년 5월 19일', branch: 'feature/security-scan', status: 'Running', version: '2.4', sha: '6d1f42ab', title: '보안 점검 결과 요약 카드 추가', author: 'Jito', time: '어제', icon: '↻' },
+      { day: '2026년 5월 19일', branch: 'feature/login-policy', status: 'Passed', version: '2.4', sha: '3c96a12b', title: '테스트 케이스 추가', author: 'Jito', time: '어제', icon: '↻' },
+      { day: '2026년 5월 19일', branch: 'develop', status: 'Passed', version: '2.4', sha: 'b71c2f09', title: 'API 응답 메시지 정리', author: 'Kim', time: '어제', icon: '↻' },
+      { day: '2026년 5월 19일', branch: 'main', status: 'Canceled', version: '2.4', sha: 'e0d1ab42', title: 'Pipeline 실행 취소 상태 반영', author: 'Park', time: '어제', icon: '↻' },
+      { day: '2026년 5월 19일', branch: 'hotfix/session-timeout', status: 'Passed', version: '2.4', sha: 'd290ed33', title: '세션 만료 토스트 문구 수정', author: 'Han', time: '어제', icon: '↻' },
+      { day: '2026년 5월 18일', branch: 'main', status: 'Passed', version: '2.3', sha: '81f52d6a', title: 'Repository 상세 탭 라우팅 개선', author: 'Jito', time: '2일 전', icon: '↻' },
+      { day: '2026년 5월 18일', branch: 'develop', status: 'Failed', version: '2.3', sha: '90aef512', title: 'Redis 버전 호환성 테스트', author: 'Moon', time: '2일 전', icon: '↻' },
+      { day: '2026년 5월 18일', branch: 'feature/account-cache', status: 'Passed', version: '2.3', sha: 'a3b42d10', title: '캐시 만료 정책 수정', author: 'Jito', time: '2일 전', icon: '↻' },
+      { day: '2026년 5월 18일', branch: 'main', status: 'Manual', version: '2.3', sha: 'f67c98aa', title: '운영 배포 승인 조건 추가', author: 'Seo', time: '2일 전', icon: '↻' },
+      { day: '2026년 5월 17일', branch: 'feature/login-policy', status: 'Passed', version: '2.3', sha: '0af31b7c', title: '로그인 실패 메시지 정리', author: 'Han', time: '3일 전', icon: '↻' },
+      { day: '2026년 5월 17일', branch: 'develop', status: 'Passed', version: '2.3', sha: '5be90d12', title: '공통 버튼 토큰 구조 정리', author: 'Choi', time: '3일 전', icon: '↻' },
+      { day: '2026년 5월 17일', branch: 'feature/security-scan', status: 'Passed', version: '2.3', sha: '74ea8c20', title: '취약점 배지 색상 조정', author: 'Kim', time: '3일 전', icon: '↻' },
+      { day: '2026년 5월 16일', branch: 'main', status: 'Passed', version: '2.2', sha: '19d4c7ef', title: 'MR 리뷰 상태 필터 개선', author: 'Jito', time: '4일 전', icon: '↻' },
+      { day: '2026년 5월 16일', branch: 'develop', status: 'Passed', version: '2.2', sha: '8c41ef03', title: '브랜치 목록 빈 상태 처리', author: 'Min', time: '4일 전', icon: '↻' },
+      { day: '2026년 5월 16일', branch: 'main', status: 'Passed', version: '2.2', sha: '2b6c10da', title: '상단 검색 포커스 스타일 정리', author: 'Park', time: '4일 전', icon: '↻' }
     ];
 
     function renderCommitList() {
@@ -1038,7 +1042,7 @@
               <div class="commit-item" data-branch="${item.branch}">
                 <span class="item-icon">CM</span>
                 <span class="item-main">
-                  <strong><a class="table-link" href="./commit-detail.html">${item.title}</a></strong>
+                  <strong><a class="table-link" href="./commit-detail.html?title=${encodeURIComponent(item.title)}&sha=${encodeURIComponent(item.sha)}&author=${encodeURIComponent(item.author)}&time=${encodeURIComponent(item.time)}&branch=${encodeURIComponent(item.branch)}">${item.title}</a></strong>
                   <small class="mono">${item.sha} · ${item.author} · ${item.time}</small>
                 </span>
                 <span class="commit-actions">
@@ -1046,7 +1050,7 @@
                   <span class="commit-pill">2.4</span>
                   <span class="commit-pill gray">${item.sha}</span>
                   <button class="icon-button" type="button" aria-label="복사" onclick="showToast('SHA를 복사했습니다.')">⧉</button>
-                  <button class="icon-button" type="button" aria-label="열기" onclick="location.href='./commit-detail.html'">↗</button>
+                  <button class="icon-button" type="button" aria-label="열기" onclick="location.href='./commit-detail.html?title=${encodeURIComponent(item.title)}&sha=${encodeURIComponent(item.sha)}&author=${encodeURIComponent(item.author)}&time=${encodeURIComponent(item.time)}&branch=${encodeURIComponent(item.branch)}'">↗</button>
                 </span>
               </div>
             `).join('')}
