@@ -92,10 +92,12 @@
     const list = R.data().pipelines?.list || [];
     const detail = R.data().details?.pipeline || {};
     const item = list.find(p => String(p.id) === String(id)) || list[0] || {};
+    const pipelineJobs = (R.data().jobs || []).filter(job => String(job.pipelineId) === String(item.id || id));
     return Object.assign({}, detail, item, {
       id: item.id || detail.id,
-      description: detail.description || item.title || '',
-      result: item.status === 'finished' ? item.result : item.status
+      description: item.description || detail.description || item.title || '',
+      result: item.status === 'finished' ? item.result : item.status,
+      jobs: pipelineJobs.length ? pipelineJobs : (Array.isArray(item.jobs) && typeof item.jobs[0] === 'object' ? item.jobs : detail.jobs || [])
     });
   }
 
@@ -418,12 +420,12 @@
   function renderCommitDetail() {
     if (!$('.page-commit-detail')) return;
     const id = R.param('id') || R.param('commit') || '7e14d754';
-    const commit = R.data().details?.commit || {};
+    const commit = (R.data().commits || []).find(item => String(item.id) === String(id) || String(item.sha) === String(id)) || R.data().details?.commit || {};
     const hero = $('.commit-hero');
     if (hero) {
       hero.innerHTML = `
         <div>
-          <a class="hero-back" href="./repository-detail.html">← Repository로 돌아가기</a>
+          <a class="hero-back" href="./repository-detail.html?id=${encodeURIComponent(commit.repositoryId || 'mobile-banking-api')}">← Repository로 돌아가기</a>
           <div class="hero-kicker">Commit Detail</div>
           <h1>${h(commit.title || id)}</h1>
           <p>${h(commit.description || '')}</p>
@@ -436,12 +438,14 @@
 
   function renderJobDetail() {
     if (!$('.job-detail-page')) return;
-    const job = R.data().details?.job || {};
-    const name = R.param('job') || job.name || 'unit-test';
+    const pipelineId = R.param('pipelineId');
+    const name = R.param('job') || 'unit-test';
+    const job = (R.data().jobs || []).find(item => (!pipelineId || String(item.pipelineId) === String(pipelineId)) && String(item.name) === String(name)) || R.data().details?.job || {};
     const heading = $('.job-detail-page h1');
-    if (heading) heading.textContent = name;
+    if (heading) heading.textContent = job.name || name;
     const log = $('.job-log pre') || $('.job-log') || $('pre');
-    if (log && job.logs) log.textContent = job.logs.join('\n');
+    if (log && job.log) log.textContent = job.log.join('\n');
+    else if (log && job.logs) log.textContent = job.logs.join('\n');
   }
 
   document.addEventListener('DOMContentLoaded', function(){
