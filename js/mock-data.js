@@ -11722,6 +11722,176 @@
       }
     ]
   },
+  "dashboard": {
+    "summaryCards": [
+      {
+        "title": "승인해야 할 MR",
+        "value": 4,
+        "note": "리뷰 또는 승인 필요",
+        "href": "./pages/mr-list.html"
+      },
+      {
+        "title": "진행 중인 내 MR",
+        "value": 7,
+        "note": "Open 상태의 Merge Request",
+        "href": "./pages/mr-list.html"
+      },
+      {
+        "title": "조치 필요한 Pipeline",
+        "value": 2,
+        "note": "실패 원인 확인 필요",
+        "tone": "risk",
+        "href": "./pages/pipeline-list.html"
+      },
+      {
+        "title": "운영이관 대기",
+        "value": 3,
+        "note": "승인 또는 반영 대기 중",
+        "href": "#deployment"
+      },
+      {
+        "title": "보안 검증 필요",
+        "value": 1,
+        "note": "취약점 또는 정책 확인 필요",
+        "tone": "warning",
+        "href": "./pages/security-list.html"
+      }
+    ],
+    "nextUp": [
+      {
+        "filters": "urgent failure",
+        "priority": "긴급",
+        "tone": "risk",
+        "title": "Pipeline #2847502395 실패 원인 확인",
+        "meta": "mobile-banking-api · feature/login-policy · Test 단계 실패 · 20분 전",
+        "condition": "조건 2/4 충족",
+        "done": 2,
+        "total": 4,
+        "actionLabel": "실패 원인 보기",
+        "actionType": "secondary",
+        "href": "./pages/pipeline-detail.html?id=2847502395"
+      },
+      {
+        "filters": "approval",
+        "priority": "리뷰 필요",
+        "tone": "warning",
+        "title": "MR #128 인증 정책 응답값 개선",
+        "meta": "mobile-banking-api · 리뷰 요청 · 20분 전",
+        "condition": "조건 3/4 충족",
+        "done": 3,
+        "total": 4,
+        "actionLabel": "리뷰하기",
+        "actionType": "primary",
+        "href": "./pages/mr-detail.html?id=128&repo=mobile-banking-api"
+      },
+      {
+        "filters": "deploy",
+        "priority": "오늘까지",
+        "tone": "warning",
+        "title": "운영이관 요청 승인 대기",
+        "meta": "customer-web-portal · 운영 반영 예정일 오늘",
+        "condition": "운영이관 조건 4/5 충족",
+        "done": 4,
+        "total": 5,
+        "actionLabel": "요청 보기",
+        "toast": "Deployment Transfer 화면은 다음 단계에서 연결됩니다."
+      },
+      {
+        "filters": "security urgent",
+        "priority": "보안 확인",
+        "tone": "risk",
+        "title": "Security #SEC-204 보안 정책 확인 필요",
+        "meta": "mobile-banking-api · Critical 취약점 2건",
+        "condition": "조건 1/3 충족",
+        "done": 1,
+        "total": 3,
+        "actionLabel": "조치 가이드 보기",
+        "href": "./pages/security-detail.html?id=SEC-204&mrId=128"
+      }
+    ],
+    "repositories": [
+      {
+        "name": "mobile-banking-api",
+        "href": "./pages/repository-detail.html?id=mobile-banking-api",
+        "chips": [
+          {"label": "MR 5", "tone": "blue"},
+          {"label": "Pipeline 실패 1", "tone": "red"},
+          {"label": "보안 차단 1", "tone": "orange"}
+        ],
+        "updatedAt": "Updated 20 minutes ago"
+      },
+      {
+        "name": "common-ui-components",
+        "href": "./pages/repository-detail.html?id=common-ui-components",
+        "chips": [
+          {"label": "MR 1", "tone": "blue"},
+          {"label": "보안 검증 1", "tone": "orange"}
+        ],
+        "updatedAt": "Updated 5 hours ago"
+      },
+      {
+        "name": "customer-web-portal",
+        "href": "./pages/repository-detail.html?id=customer-web-portal",
+        "chips": [
+          {"label": "MR 3", "tone": "blue"},
+          {"label": "Pipeline 실행 중", "tone": "orange"}
+        ],
+        "updatedAt": "Updated yesterday"
+      }
+    ],
+    "recent": [
+      {
+        "title": "MR #128 인증 정책 응답값 개선",
+        "meta": "Merge Request · 방금 전",
+        "href": "./pages/mr-detail.html?id=128&repo=mobile-banking-api"
+      },
+      {
+        "title": "Pipeline #2847502395",
+        "meta": "Test 단계 실패 · 20분 전",
+        "href": "./pages/pipeline-detail.html?id=2847502395"
+      },
+      {
+        "title": "Repository mobile-banking-api",
+        "meta": "Repository · 1시간 전",
+        "href": "./pages/repository-detail.html?id=mobile-banking-api"
+      },
+      {
+        "title": "Security #SEC-204",
+        "meta": "Security Validation · 확인 필요",
+        "href": "./pages/security-detail.html?id=SEC-204&mrId=128"
+      }
+    ],
+    "activity": [
+      {
+        "filter": "repository",
+        "type": "Commit",
+        "tone": "blue",
+        "title": "Jito님이 feature/login-policy 브랜치에 3개의 Commit을 push했습니다.",
+        "meta": "mobile-banking-api · 1시간 전"
+      },
+      {
+        "filter": "mr",
+        "type": "Review",
+        "tone": "orange",
+        "title": "Min님이 MR #128에 리뷰 코멘트를 남겼습니다.",
+        "meta": "Merge Request · 2시간 전"
+      },
+      {
+        "filter": "pipeline",
+        "type": "Pipeline",
+        "tone": "blue",
+        "title": "Pipeline #2847502395가 test 단계에서 실패했습니다.",
+        "meta": "Pipeline · 20분 전"
+      },
+      {
+        "filter": "security",
+        "type": "Security",
+        "tone": "orange",
+        "title": "Security #SEC-204에서 Critical 취약점이 확인되었습니다.",
+        "meta": "Security Validation · 방금 전"
+      }
+    ]
+  },
   "forms": {
     "repositoryTemplates": [
       "Spring Boot API",
