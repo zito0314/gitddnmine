@@ -7,7 +7,6 @@ export function getRepositories() {
 export function getRepositoryById(repositoryId) {
   const repositories = getRepositories()
   const repository = findById(repositories, repositoryId)
-
   return repository ?? null
 }
 
@@ -20,4 +19,17 @@ export function getRepositoryDetail(repositoryId) {
   }
 
   return repository ?? null
+}
+
+// 요약 통계
+export function getRepositorySummary() {
+  const list = getRepositories()
+  return {
+    total: list.length,
+    active: list.filter((r) => r.status === 'approved').length,
+    reviewRequired: list.filter(
+      (r) => r.pipelineStatus === 'failed' || r.securityStatus === 'blocked' || r.securityStatus === 'warning',
+    ).length,
+    securityBlocked: list.filter((r) => r.securityStatus === 'blocked' || r.securityStatus === 'failed').length,
+  }
 }

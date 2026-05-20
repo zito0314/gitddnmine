@@ -279,3 +279,38 @@ body {
     padding: 18px;
   }
 }
+/* === RepositoryList 추가 스타일 === */
+
+.repo-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.repo-name-link {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.repo-description {
+  font-size: 12px;
+  color: var(--gitddn-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 260px;
+}
+
+.favorite-btn {
+  color: #d1d5db;
+  transition: color 0.15s;
+  line-height: 1;
+}
+
+.favorite-btn.active {
+  color: #faad14;
+}
+
+.summary-cards-row {
+  margin-bottom: 4px;
+}
