@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gitddn - Commit 상세</title>
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <style>
+    .commit-detail-page{display:grid;gap:18px}
+    .commit-hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:24px 26px;display:grid;gap:18px}
+    .commit-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+    .commit-kicker{color:var(--blue);font-size:12px;font-weight:900;text-transform:uppercase;margin-bottom:8px}
+    .commit-hero h1{margin:0;font-size:28px;line-height:1.25;font-weight:900;color:var(--text)}
+    .commit-desc{margin:10px 0 0;max-width:860px;color:var(--muted);font-size:14px;line-height:1.6}
+    .commit-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+    .detail-chip{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 10px;border-radius:999px;background:#f1f4f8;color:#5f6d80;font-size:12px;font-weight:850;white-space:nowrap;border:1px solid transparent}
+    .detail-chip.blue{background:var(--blue-soft);color:var(--blue)}
+    .detail-chip.green{background:var(--green-soft);color:var(--green)}
+    .detail-chip.orange{background:var(--orange-soft);color:var(--orange)}
+    .detail-chip.red{background:var(--red-soft);color:var(--red)}
+    .detail-chip.neutral{background:#fff;border-color:var(--line);color:var(--text);box-shadow:var(--shadow-sm)}
+    .commit-ref-flow{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding-top:16px;border-top:1px solid var(--line)}
+    .commit-ref-item{display:inline-flex;align-items:center;gap:0;min-height:34px}
+    .commit-ref-label{
+      display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:999px;
+      background:var(--surface-soft);border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:850
+    }
+    .commit-ref-link{
+      display:inline-flex;align-items:center;min-height:30px;padding:0 10px;border-radius:10px;
+      border:1px solid var(--line);background:#fff;color:var(--blue);font-size:13px;font-weight:900;text-decoration:none;
+      transition:border-color .2s ease, background .2s ease, color .2s ease;
+      margin-left:-1px;
+      border-top-left-radius:0;
+      border-bottom-left-radius:0;
+    }
+    .commit-ref-item .commit-ref-label{
+      border-top-right-radius:0;
+      border-bottom-right-radius:0;
+    }
+    .commit-ref-link:hover{
+      border-color:var(--blue);
+      background:var(--primary-bg);
+      color:var(--blue-strong);
+    }
+    .commit-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:18px;align-items:stretch;transition:grid-template-columns .25s ease}
+    .commit-layout.is-tree-collapsed{grid-template-columns:56px minmax(0,1fr)}
+    .panel-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:18px}
+    .panel-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px}
+    .panel-header h2{margin:0;font-size:17px;font-weight:900;color:var(--text)}
+    .panel-header p{margin:5px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+    .file-tree-panel,
+    .file-browser-panel{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--surface);
+      overflow:hidden;
+    }
+    .file-tree-header,
+    .file-browser-header{
+      min-height:52px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px;
+      border-bottom:1px solid var(--line);
+      background:#fbfcff;
+    }
+    .file-tree-header strong,
+    .file-browser-header strong{font-size:14px;font-weight:900;color:var(--text)}
+    .file-tree-search{padding:12px;border-bottom:1px solid var(--line)}
+    .file-tree-search input{
+      width:100%;height:38px;border:1px solid var(--line);background:#fff;border-radius:11px;
+      padding:0 11px;outline:none;color:var(--text);font-size:13px;
+    }
+    .file-tree{display:grid;gap:2px;padding:10px}
+    .tree-item{
+      height:34px;border:0;background:transparent;border-radius:9px;padding:0 9px;
+      display:flex;align-items:center;gap:6px;color:var(--text);font-size:13px;font-weight:750;text-align:left;
+      cursor:pointer;
+    }
+    .tree-item:hover{background:#f8fbff;color:var(--text)}
+    .tree-item.active{
+      background:var(--primary-bg);
+      color:var(--blue);
+      font-weight:900;
+    }
+    .tree-item.child{padding-left:22px;color:var(--muted);font-weight:700}
+    .tree-item.level-2{padding-left:34px}
+    .tree-item.is-hidden{display:none}
+    .tree-item .tree-caret{
+      width:12px;
+      flex:0 0 auto;
+      font-size:10px;
+      line-height:1;
+      color:var(--muted);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      transform:translateY(-1px);
+      transition:transform .2s ease,color .2s ease;
+    }
+    .tree-item.parent.is-open .tree-caret{
+      transform:rotate(90deg) translateX(1px);
+      color:var(--blue);
+    }
+    .tree-item .tree-meta{margin-left:auto;color:var(--muted);font-size:11px;font-weight:800}
+    .tree-item.has-comment::after{
+      content:'';
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--pink);
+      margin-left:8px;
+      flex:0 0 auto;
+    }
+    .small-icon-button{
+      width:36px;height:36px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--text);
+      display:grid;place-items:center;font-size:18px;font-weight:900;transition:all .2s cubic-bezier(.645,.045,.355,1);
+    }
+    .small-icon-button:hover{
+      border-color:var(--primary-border);color:var(--blue);background:var(--primary-bg);
+    }
+    .commit-layout.is-tree-collapsed .file-tree-panel{min-height:0;padding-top:14px}
+    .commit-layout.is-tree-collapsed .file-tree-header{
+      border-bottom:0;
+      background:transparent;
+      min-height:auto;
+      padding:0;
+      justify-content:center;
+    }
+    .commit-layout.is-tree-collapsed .file-tree-header strong,
+    .commit-layout.is-tree-collapsed .file-tree-search,
+    .commit-layout.is-tree-collapsed .file-tree,
+    .commit-layout.is-tree-collapsed .file-tree-commit-info{
+      display:none;
+    }
+    .commit-layout.is-tree-collapsed .small-icon-button{
+      transform:rotate(180deg);
+    }
+    .code-review{
+      display:block;
+      min-height:100%;
+    }
+    .diff-card{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius-lg);
+      box-shadow:var(--shadow-sm);
+      overflow:hidden;
+      grid-column:1;
+    }
+    .code-review-toolbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px 16px;background:#fbfcff;border-bottom:1px solid var(--line);
+    }
+    .review-path{display:grid;gap:2px}
+    .review-path strong{font-size:14px}
+    .review-path small{color:var(--muted);font-size:12px}
+    .review-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .review-mode{display:inline-flex;align-items:center;gap:4px;padding:4px;border-radius:999px;background:var(--surface-soft);border:1px solid var(--line)}
+    .review-mode button{height:30px;border:0;background:transparent;color:var(--muted);border-radius:999px;padding:0 12px;font-size:12px;font-weight:850}
+    .review-mode button.active{background:var(--surface);color:var(--blue);box-shadow:var(--shadow-sm)}
+    .review-body{
+      display:grid;
+      grid-template-columns:minmax(0,1fr);
+      gap:0;
+      min-height:760px;
+    }
+    .diff-view{background:#fff}
+    .diff-head{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      padding:12px 16px;border-bottom:1px solid var(--line);background:#f8fbff
+    }
+    .diff-stats{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .diff-stat{display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface-soft);font-size:12px;font-weight:850;color:var(--muted)}
+    .diff-stat.green{background:var(--green-soft);color:var(--green);border-color:transparent}
+    .diff-stat.red{background:var(--red-soft);color:var(--red);border-color:transparent}
+    .diff-pane{display:grid;grid-template-columns:56px minmax(0,1fr) minmax(0,1fr);font-family:var(--mono-font, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);font-size:12px;line-height:1.7}
+    .diff-pane .line-num{padding:0 10px;text-align:right;color:#94a3b8;border-right:1px solid #edf2f7;background:#f8fafc}
+    .diff-pane .code-line{padding:0 14px;white-space:pre-wrap;word-break:break-word;border-right:1px solid #edf2f7}
+    .diff-pane .code-line:last-child{border-right:0}
+    .diff-pane .row{display:contents}
+    .diff-pane .row.added .code-line{background:#ecfdf3;color:#166534}
+    .diff-pane .row.removed .code-line{background:#fef2f2;color:#b42318}
+    .diff-pane .row.context .code-line{background:#fff;color:#111827}
+    .diff-pane .review-thread .line-num{background:#f8fafc}
+    .diff-pane .code-review-thread{
+      grid-column:2 / 4;
+      margin:8px 14px 12px;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      box-shadow:var(--shadow-sm);
+      font-family:var(--font-family);
+      color:var(--text);
+    }
+    .inline-review-head{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:7px;
+      font-size:12px;
+    }
+    .inline-review-avatar{
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:var(--blue);
+      color:#fff;
+      font-size:11px;
+      font-weight:900;
+      flex:0 0 auto;
+    }
+    .inline-review-head strong{font-weight:900}
+    .inline-review-head span{color:var(--muted)}
+    .inline-review-body{
+      margin:0;
+      color:var(--text);
+      font-size:13px;
+      line-height:1.55;
+      white-space:normal;
+    }
+    .inline-review-actions{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-top:10px;
+    }
+    .inline-review-actions button{
+      height:28px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      color:var(--muted);
+      padding:0 10px;
+      font-size:12px;
+      font-weight:850;
+    }
+    .inline-reply-box{
+      margin-top:10px;
+      padding:10px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:#f8fbff;
+      display:grid;
+      gap:8px;
+    }
+    .inline-reply-box textarea{
+      width:100%;
+      min-height:68px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:8px;
+      padding:8px 10px;
+      font:inherit;
+      color:var(--text);
+      background:#fff;
+    }
+    .inline-reply-controls{
+      display:flex;
+      justify-content:flex-end;
+      gap:6px;
+    }
+    .review-body[data-mode="inline"] .diff-pane{grid-template-columns:56px minmax(0,1fr)}
+    .review-body[data-mode="inline"] .diff-pane .row.removed{display:none}
+    .review-body[data-mode="inline"] .diff-pane .row.added .code-line,
+    .review-body[data-mode="inline"] .diff-pane .row.context .code-line{border-right:0}
+    .review-body[data-mode="inline"] .diff-pane .row.added .code-line,
+    .review-body[data-mode="inline"] .diff-pane .row.context .code-line{
+      grid-column:2 / 3;
+      background:#fff;
+    }
+    .review-body[data-mode="inline"] .diff-pane .code-review-thread{grid-column:2 / 3}
+    .review-body[data-mode="inline"] .diff-pane .row.added .code-line{background:#ecfdf3;color:#166534}
+    .review-body[data-mode="inline"] .diff-pane .row .line-num{grid-column:1 / 2}
+    .file-group{display:grid;gap:8px}
+    .file-group .group-title{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:900;color:var(--muted);margin:2px 2px 0;padding:0 2px}
+    .file-group .group-title::after{content:'';flex:1;height:1px;background:var(--line);margin-left:10px}
+    .code-review-thread.is-thread-highlight{box-shadow:0 0 0 2px rgba(56,123,255,.18),var(--shadow-sm);animation:threadPulse .85s ease}
+    @keyframes threadPulse{
+      0%{transform:translateY(2px);opacity:.75}
+      100%{transform:translateY(0);opacity:1}
+    }
+    @media(max-width:1320px){
+      .commit-layout{grid-template-columns:260px 1fr}
+      .code-review{display:block}
+    }
+    @media(max-width:980px){
+      .commit-layout{grid-template-columns:1fr}
+      .commit-info-card .review-list{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body class="page-commit-detail">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">g</div>
+        <div>
+          <div class="brand-name">gitddn</div>
+          <div class="brand-sub">DevSecOps Governance</div>
+        </div>
+      </div>
+      <nav class="gnb">
+        <div class="gnb-section current-repo">
+          <div class="gnb-title">Current Repository</div>
+          <a class="repo-back" href="./repository-list.html">← Repository 목록</a>
+
+          <div class="repo-context-card">
+            <div class="repo-context-name">mobile-banking-api</div>
+            <div class="repo-context-path">Digital Banking / Mobile</div>
+            <div class="repo-context-meta">
+              <span class="repo-context-chip blue">Maintainer</span>
+              <span class="repo-context-chip">Private</span>
+            </div>
+          </div>
+
+          <a class="gnb-item repo-nav" href="./repository-detail.html"><span class="gnb-icon">▦</span><span>Overview</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#files"><span class="gnb-icon">📁</span><span>Files</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#merge-requests"><span class="gnb-icon">⇄</span><span>Merge Requests</span><span class="gnb-badge">5</span></a>
+          <a class="gnb-item repo-nav" href="./pipeline-list.html"><span class="gnb-icon">⚡</span><span>Pipelines</span></a>
+          <a class="gnb-item active repo-nav" href="./repository-detail.html#commits"><span class="gnb-icon">●</span><span>Commits</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#branches"><span class="gnb-icon">⑂</span><span>Branches</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#git-graph"><span class="gnb-icon">⌁</span><span>Git Graph</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#tags"><span class="gnb-icon">🏷</span><span>Tags</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#security"><span class="gnb-icon">◈</span><span>Security</span><span class="gnb-badge warning">2</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#activity"><span class="gnb-icon">◷</span><span>Activity</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#access"><span class="gnb-icon">◇</span><span>Access</span></a>
+          <a class="gnb-item repo-nav" href="./repository-detail.html#settings"><span class="gnb-icon">⚙</span><span>Settings</span></a>
+        </div>
+        <div class="gnb-section">
+          <div class="gnb-title">Workspace</div>
+          <a class="gnb-item" href="../index.html"><span class="gnb-icon">▦</span><span>Dashboard</span></a>
+          <a class="gnb-item" href="./repository-list.html"><span class="gnb-icon">▤</span><span>Repository</span></a>
+          <a class="gnb-item" href="./mr-list.html"><span class="gnb-icon">⇄</span><span>Merge Request</span></a>
+          <a class="gnb-item" href="#" onclick="showToast('Activity 화면은 다음 단계에서 연결됩니다.')"><span class="gnb-icon">◷</span><span>Activity</span></a>
+          <a class="gnb-item" href="./audit-log.html"><span class="gnb-icon">☷</span><span>Audit Log</span></a>
+      </nav>
+    </aside>
+
+    <div class="app-main">
+      <header class="top-header">
+        <div class="header-left">
+          <button class="icon-button sidebar-toggle" type="button" aria-label="GNB 접기" onclick="toggleSidebar()">☰</button>
+          <button class="org-button" type="button"><span class="org-label">조직</span><strong>Digital Banking</strong></button>
+        </div>
+        <div class="global-search">
+          <span>⌕</span>
+          <input type="text" placeholder="Repository, MR, Pipeline, 파일 검색" />
+          <kbd>⌘K</kbd>
+        </div>
+        <div class="header-actions">
+          <button class="profile-button" type="button">
+            <span class="avatar">김</span>
+            <span class="profile-text"><strong>김신한</strong><small>Developer</small></span>
+          </button>
+        </div>
+      </header>
+
+      <main class="page-content commit-detail-page">
+        <section class="commit-hero">
+          <div class="commit-title-row">
+            <div>
+              <div class="commit-kicker">Commit Detail</div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <button class="small-icon-button" type="button" aria-label="커밋 목록으로 돌아가기" onclick="location.href='./repository-detail.html#commits'">‹</button>
+                <h1 id="commitTitle">account limits API contract update</h1>
+              </div>
+            <p class="commit-desc"></p>
+              <div class="commit-meta">
+                <span class="detail-chip green">main</span>
+                <span class="detail-chip blue">latest</span>
+                <span class="detail-chip neutral">작성자 김신한</span>
+                <span class="detail-chip neutral">2개 파일 변경</span>
+                <span class="detail-chip neutral">1시간 전 생성</span>
+              </div>
+            </div>
+            <div class="commit-actions">
+              <button class="primary-button" type="button" onclick="location.href='./repository-detail.html#files'">파일 찾아보기</button>
+            </div>
+          </div>
+          <div class="commit-ref-flow">
+            <span class="commit-ref-item">
+              <span class="commit-ref-label">Parent</span>
+              <a class="commit-ref-link mono" href="./commit-detail.html?commit=a1b2c3d">a1b2c3d</a>
+            </span>
+            <span class="commit-ref-item">
+              <span class="commit-ref-label">Branch</span>
+              <a class="commit-ref-link mono" href="./repository-detail.html#branches">feature/account-limit · main</a>
+            </span>
+            <span class="commit-ref-item">
+              <span class="commit-ref-label">Tag</span>
+              <a class="commit-ref-link mono" href="./repository-detail.html#tags">v2.4.0</a>
+            </span>
+            <span class="commit-ref-item">
+              <span class="commit-ref-label">MR</span>
+              <a class="commit-ref-link mono" href="./repository-detail.html#merge-requests">#128 · 인증 정책 응답값 개선</a>
+            </span>
+          </div>
+        </section>
+
+        <section class="commit-layout">
+          <aside class="file-tree-panel" id="fileTreePanel">
+            <div class="file-tree-header">
+              <strong>파일 트리</strong>
+              <button class="small-icon-button" id="fileTreeToggle" type="button" aria-label="파일트리 접기" onclick="toggleFileTree()">‹</button>
+            </div>
+            <div class="file-tree-search">
+              <input id="fileTreeSearch" type="text" placeholder="파일트리 검색" />
+            </div>
+            <div class="file-tree" id="fileTree">
+              <button class="tree-item parent is-open" type="button" data-file="src/api/account/limits.ts" data-tree-group="src"><span class="tree-caret">▾</span>src <span class="tree-meta">+42 -11</span></button>
+              <button class="tree-item parent level-1 is-open" type="button" data-file="src/api/account/limits.ts" data-tree-group="src-api" data-tree-parent="src"><span class="tree-caret">▾</span>api</button>
+              <button class="tree-item child level-2 active has-comment" type="button" data-file="src/api/account/limits.ts" data-tree-parent="src-api">limits.ts</button>
+              <button class="tree-item child level-1" type="button" data-file="src/api/account/limits.ts" data-tree-parent="src">auth</button>
+              <button class="tree-item child level-1" type="button" data-file="src/api/account/limits.ts" data-tree-parent="src">accounts</button>
+              <button class="tree-item parent" type="button" data-file="tests/contracts/account-limits.spec.ts" data-tree-group="tests"><span class="tree-caret">▸</span>tests <span class="tree-meta">+11 -0</span></button>
+              <button class="tree-item child level-1 is-hidden has-comment" type="button" data-file="tests/contracts/account-limits.spec.ts" data-tree-parent="tests">auth.spec.ts</button>
+              <button class="tree-item" type="button" data-file="README.md">README.md</button>
+              <button class="tree-item" type="button" data-file="package.json">package.json</button>
+            </div>
+          </aside>
+
+          <article class="code-review">
+            <div class="diff-card">
+              <div class="code-review-toolbar">
+                <div class="review-path">
+                  <strong id="reviewFileTitle">src/api/account/limits.ts</strong>
+                  <small id="reviewFileMeta">응답 상태 코드와 예외 매핑을 조정했습니다.</small>
+                </div>
+                <div class="review-actions">
+                  <div class="review-mode" role="group" aria-label="Review mode">
+                    <button class="active" type="button" data-review-mode="split" onclick="setReviewMode('split')">Diff</button>
+                    <button type="button" data-review-mode="inline" onclick="setReviewMode('inline')">Inline</button>
+                  </div>
+                  <button class="secondary-button" id="nextFileButton" type="button">다음 파일</button>
+                </div>
+              </div>
+              <div class="review-body" id="reviewBody" data-mode="split">
+                <div class="diff-view">
+                  <div class="diff-head">
+                    <div class="diff-stats">
+                      <span class="diff-stat green">+42</span>
+                      <span class="diff-stat red">-11</span>
+                      <span class="diff-stat">1 file</span>
+                    </div>
+                    <div class="diff-stats">
+                      <span class="diff-stat">src/api/account/limits.ts</span>
+                    </div>
+                  </div>
+                  <div class="diff-pane" id="diffPane"></div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const fileItems = [...document.querySelectorAll('#fileTree .tree-item')];
+    const treeParentButtons = [...document.querySelectorAll('#fileTree .tree-item.parent')];
+    const commitLayout = document.querySelector('.commit-layout');
+    const fileTreePanel = document.getElementById('fileTreePanel');
+    const fileTreeToggle = document.getElementById('fileTreeToggle');
+    const nextFileButton = document.getElementById('nextFileButton');
+    const reviewFileTitle = document.getElementById('reviewFileTitle');
+    const reviewFileMeta = document.getElementById('reviewFileMeta');
+    const commitTitle = document.getElementById('commitTitle');
+    const diffPane = document.getElementById('diffPane');
+    const fileTreeSearch = document.getElementById('fileTreeSearch');
+    const reviewBody = document.getElementById('reviewBody');
+    const selectableTreeItems = fileItems.filter((item) => !item.classList.contains('parent'));
+    const selectableFiles = [...new Set(selectableTreeItems.map((item) => item.dataset.file))];
+    let activeFileKey = 'src/api/account/limits.ts';
+
+    function hydrateCommitHeaderFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const title = params.get('title');
+      if (title && commitTitle) {
+        commitTitle.textContent = title;
+      }
+    }
+
+    const fileMap = {
+      'src/api/account/limits.ts': {
+        title: 'src/api/account/limits.ts',
+        meta: '응답 상태 코드와 예외 매핑을 조정했습니다.',
+      },
+      'tests/contracts/account-limits.spec.ts': {
+        title: 'tests/contracts/account-limits.spec.ts',
+        meta: 'Contract expectation을 최신 정책 기준으로 갱신했습니다.',
+      },
+      'README.md': {
+        title: 'README.md',
+        meta: '실행 가이드와 브랜치 안내를 다듬었습니다.',
+      },
+      'package.json': {
+        title: 'package.json',
+        meta: '스크립트 및 버전 정보를 갱신했습니다.',
+      },
+    };
+
+    const diffMap = {
+      'src/api/account/limits.ts': `
+        <div class="row context"><div class="line-num">1</div><div class="code-line">export function resolveAccountLimit(request) {</div><div class="code-line">export function resolveAccountLimit(request) {</div></div>
+        <div class="row context"><div class="line-num">2</div><div class="code-line">  const policy = getPolicy(request.user);</div><div class="code-line">  const policy = getPolicy(request.user);</div></div>
+        <div class="row removed"><div class="line-num">3</div><div class="code-line">  if (!policy.enabled) return { status: 500 };</div><div class="code-line">  if (!policy.enabled) return { status: 500 };</div></div>
+        <div class="row added"><div class="line-num">3</div><div class="code-line">  if (!policy.enabled) return { status: 200, body: null };</div><div class="code-line">  if (!policy.enabled) return { status: 200, body: null };</div></div>
+        <div class="row review-thread">
+          <div class="line-num"></div>
+          <div class="code-review-thread" id="thread-policy-status">
+            <div class="inline-review-head">
+              <span class="inline-review-avatar">김</span>
+              <strong>김신한</strong>
+              <span>방금 전 · 코드 리뷰</span>
+            </div>
+            <p class="inline-review-body">policy 비활성 상태에서 500 대신 200 + body: null 처리로 정리된 부분 확인 부탁드립니다.</p>
+            <div class="inline-review-actions">
+              <button type="button" class="reply-trigger">답글</button>
+            </div>
+          </div>
+        </div>
+        <div class="row context"><div class="line-num">4</div><div class="code-line">  return { status: 200, body: policy.limit };</div><div class="code-line">  return { status: 200, body: policy.limit };</div></div>
+        <div class="row context"><div class="line-num">5</div><div class="code-line">}</div><div class="code-line">}</div></div>
+      `,
+      'src/api/account/limits.ts:inline': `
+        <div class="row context"><div class="line-num">1</div><div class="code-line">export function resolveAccountLimit(request) {</div></div>
+        <div class="row context"><div class="line-num">2</div><div class="code-line">  const policy = getPolicy(request.user);</div></div>
+        <div class="row added"><div class="line-num">3</div><div class="code-line">  if (!policy.enabled) return { status: 200, body: null };</div></div>
+        <div class="row review-thread">
+          <div class="line-num"></div>
+          <div class="code-review-thread" id="thread-policy-status">
+            <div class="inline-review-head">
+              <span class="inline-review-avatar">김</span>
+              <strong>김신한</strong>
+              <span>방금 전 · 코드 리뷰</span>
+            </div>
+            <p class="inline-review-body">policy 비활성 상태에서 500 대신 200 + body: null 처리로 정리된 부분 확인 부탁드립니다.</p>
+            <div class="inline-review-actions">
+              <button type="button" class="reply-trigger">답글</button>
+            </div>
+          </div>
+        </div>
+        <div class="row context"><div class="line-num">4</div><div class="code-line">  return { status: 200, body: policy.limit };</div></div>
+        <div class="row context"><div class="line-num">5</div><div class="code-line">}</div></div>
+      `,
+      'tests/contracts/account-limits.spec.ts': `
+        <div class="row context"><div class="line-num">1</div><div class="code-line">describe('account limits contract', () => {</div><div class="code-line">describe('account limits contract', () => {</div></div>
+        <div class="row added"><div class="line-num">2</div><div class="code-line">  it('returns 200 when policy is disabled', async () => {</div><div class="code-line">  it('returns 200 when policy is disabled', async () => {</div></div>
+        <div class="row added"><div class="line-num">3</div><div class="code-line">    const response = await requestLimits();</div><div class="code-line">    const response = await requestLimits();</div></div>
+        <div class="row added"><div class="line-num">4</div><div class="code-line">    expect(response.status).toBe(200);</div><div class="code-line">    expect(response.status).toBe(200);</div></div>
+        <div class="row review-thread">
+          <div class="line-num"></div>
+          <div class="code-review-thread" id="thread-test-case">
+            <div class="inline-review-head">
+              <span class="inline-review-avatar">이</span>
+              <strong>이신한</strong>
+              <span>5분 전 · 코드 리뷰</span>
+            </div>
+            <p class="inline-review-body">disabled 케이스 외에 null policy 분기도 contract-test와 unit-test에 포함되면 더 안전합니다.</p>
+            <div class="inline-review-actions">
+              <button type="button" class="reply-trigger">답글</button>
+            </div>
+          </div>
+        </div>
+        <div class="row context"><div class="line-num">5</div><div class="code-line">  });</div><div class="code-line">  });</div></div>
+        <div class="row context"><div class="line-num">6</div><div class="code-line">});</div><div class="code-line">});</div></div>
+      `,
+      'README.md': `
+        <div class="row context"><div class="line-num">1</div><div class="code-line"># mobile-banking-api</div><div class="code-line"># mobile-banking-api</div></div>
+        <div class="row added"><div class="line-num">2</div><div class="code-line">- Commit / File tree / Diff review guide</div><div class="code-line">- Commit / File tree / Diff review guide</div></div>
+        <div class="row context"><div class="line-num">3</div><div class="code-line">- Run pipelines and inspect code review</div><div class="code-line">- Run pipelines and inspect code review</div></div>
+      `,
+      'package.json': `
+        <div class="row context"><div class="line-num">1</div><div class="code-line">{</div><div class="code-line">{</div></div>
+        <div class="row added"><div class="line-num">2</div><div class="code-line">  "name": "mobile-banking-api"</div><div class="code-line">  "name": "mobile-banking-api"</div></div>
+        <div class="row added"><div class="line-num">3</div><div class="code-line">}</div><div class="code-line">}</div></div>
+      `,
+    };
+
+    function setReviewMode(mode) {
+      document.querySelectorAll('[data-review-mode]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.reviewMode === mode);
+      });
+      reviewBody.dataset.mode = mode;
+      renderActiveDiff();
+      showToast(mode === 'inline' ? 'Inline 리뷰 모드입니다.' : 'Diff 리뷰 모드입니다.');
+    }
+
+    function renderActiveDiff() {
+      const modeKey = reviewBody.dataset.mode === 'inline' ? `${activeFileKey}:inline` : activeFileKey;
+      diffPane.innerHTML = diffMap[modeKey] || diffMap[activeFileKey];
+      bindReplyActions();
+    }
+
+    function bindReplyActions() {
+      diffPane.querySelectorAll('.reply-trigger').forEach((button) => {
+        button.addEventListener('click', () => {
+          const thread = button.closest('.code-review-thread');
+          if (!thread) return;
+          const existing = thread.querySelector('.inline-reply-box');
+          if (existing) {
+            existing.querySelector('textarea')?.focus();
+            return;
+          }
+          const box = document.createElement('div');
+          box.className = 'inline-reply-box';
+          box.innerHTML = `
+            <textarea placeholder="답글을 입력해 주세요."></textarea>
+            <div class="inline-reply-controls">
+              <button type="button" class="secondary-button reply-cancel">취소</button>
+              <button type="button" class="secondary-button reply-submit">등록</button>
+            </div>
+          `;
+          thread.appendChild(box);
+          box.querySelector('textarea')?.focus();
+
+          box.querySelector('.reply-cancel')?.addEventListener('click', () => {
+            box.remove();
+          });
+          box.querySelector('.reply-submit')?.addEventListener('click', () => {
+            const text = box.querySelector('textarea')?.value.trim();
+            if (!text) {
+              showToast('답글 내용을 입력해 주세요.');
+              return;
+            }
+            showToast('답글이 등록되었습니다.');
+            box.remove();
+          });
+        });
+      });
+    }
+
+    function setActiveFile(fileKey, targetItem) {
+      activeFileKey = fileKey;
+      const activeItem = targetItem || selectableTreeItems.find((item) => item.dataset.file === fileKey) || fileItems.find((item) => item.dataset.file === fileKey);
+      fileItems.forEach((node) => {
+        node.classList.toggle('active', node === activeItem);
+      });
+      const fileInfo = fileMap[fileKey] || fileMap['src/api/account/limits.ts'];
+      reviewFileTitle.textContent = fileInfo.title;
+      reviewFileMeta.textContent = fileInfo.meta;
+      renderActiveDiff();
+    }
+
+    function toggleFileTree() {
+      const collapsed = commitLayout.classList.toggle('is-tree-collapsed');
+      fileTreeToggle.textContent = collapsed ? '›' : '‹';
+      fileTreeToggle.setAttribute('aria-label', collapsed ? '파일트리 펼치기' : '파일트리 접기');
+    }
+
+    fileItems.forEach((item) => {
+      item.addEventListener('click', () => {
+        if (item.classList.contains('parent')) return;
+        setActiveFile(item.dataset.file, item);
+      });
+    });
+
+    treeParentButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const group = button.dataset.treeGroup;
+        const expanded = button.classList.toggle('is-open');
+        button.querySelector('.tree-caret').textContent = expanded ? '▾' : '▸';
+        const descendants = [...document.querySelectorAll('[data-tree-parent]')];
+        descendants.forEach((child) => {
+          const parentKey = child.dataset.treeParent;
+          const shouldHide = !expanded ? parentKey === group || parentKey.startsWith(`${group}-`) : false;
+          if (shouldHide) child.classList.add('is-hidden');
+          if (expanded && parentKey === group) child.classList.remove('is-hidden');
+        });
+      });
+    });
+
+    nextFileButton?.addEventListener('click', () => {
+      const currentIndex = Math.max(0, selectableFiles.indexOf(activeFileKey));
+      const nextKey = selectableFiles[(currentIndex + 1) % selectableFiles.length];
+      setActiveFile(nextKey);
+      showToast('다음 파일로 이동했습니다.');
+    });
+
+    fileTreeSearch?.addEventListener('input', (event) => {
+      const query = event.target.value.trim().toLowerCase();
+      fileItems.forEach((item) => {
+        const matches = !query || item.textContent.toLowerCase().includes(query);
+        item.classList.toggle('is-hidden', !matches);
+      });
+    });
+
+    hydrateCommitHeaderFromQuery();
+    setActiveFile(activeFileKey);
+    renderActiveDiff();
+  </script>
+  <script src="../js/mock-data.js?v=sync-20260520"></script>
+  <script src="../js/render-detail-pages.js?v=sync-20260520"></script>
+</body>
+</html>
