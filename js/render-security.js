@@ -29,12 +29,12 @@
     return `<tr data-id="${R.escape(s.id)}" data-vstatus="${R.escape(s.vstatus)}" data-project="${R.escape(s.projectKey)}" data-repo="${R.escape(s.repo)}" data-mrstatus="${R.escape(s.mrStatus)}"
       data-severity="${Object.entries(s.severity||{}).filter(([,v])=>Number(v)>0).map(([k])=>k).join(' ')}"
       onclick="location.href='./security-detail.html?id=${encodeURIComponent(s.id)}&mrId=${encodeURIComponent(s.mrId)}'">
-      <td><div class="mr-title-cell"><strong>MR #${R.escape(s.mrId)} ${R.escape(s.mrTitle)}</strong><span>${R.escape(s.lastCheckedAt)} 검증</span></div></td>
+      <td><div class="mr-title-cell"><strong>MR #${R.escape(s.mrId)} ${R.escape(s.mrTitle)}</strong><span>${R.escape(s.branch || `${s.lastCheckedAt} 검증`)}</span></div></td>
       <td><div class="repo-cell"><strong>${R.escape(s.repo)}</strong><span>${R.escape(s.project)}</span></div></td>
       <td>${R.chip(v.label, v.chip)}</td>
-      <td>${R.statusChip(s.mrStatus === 'blocked' ? 'Blocked' : s.mrStatus, s.mrStatus === 'blocked' ? 'red' : '')}</td>
       <td><div class="vuln-count-row">${sevHtml(s.severity)}</div></td>
       <td>${R.chip(s.policy === 'blocked' ? '병합 차단' : s.policy === 'allowed' ? '허용' : '검증 중', policyTone)}</td>
+      <td style="color:var(--muted);font-size:12px;">${R.escape(s.lastCheckedAt || '-')}</td>
       <td><button class="row-action" type="button" onclick="event.stopPropagation(); location.href='./security-detail.html?id=${encodeURIComponent(s.id)}&mrId=${encodeURIComponent(s.mrId)}'">상세 보기</button></td>
     </tr>`;
   }
