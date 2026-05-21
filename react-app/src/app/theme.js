@@ -45,6 +45,25 @@ export const gitddnTheme = {
     },
     Card: {
       borderRadiusLG: 10,
+      colorBgContainer: '#ffffff',
+      colorBorderSecondary: '#e5e7eb',
+    },
+    Table: {
+      headerBg: '#f8fafc',
+      headerColor: '#334155',
+      rowHoverBg: '#f8fbff',
+      borderColor: '#e5e7eb',
+    },
+    Tag: {
+      defaultBg: '#f8fafc',
+      defaultColor: '#475569',
+    },
+    Drawer: {
+      colorBgElevated: '#ffffff',
+    },
+    Modal: {
+      contentBg: '#ffffff',
+      headerBg: '#ffffff',
     },
     Input: {
       borderRadius: 8,

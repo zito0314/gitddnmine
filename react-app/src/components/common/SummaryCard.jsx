@@ -16,6 +16,7 @@ function SummaryCard({
   return (
     <Card
       className={`summary-card summary-card-${tone}`}
+      variant="outlined"
       hoverable={Boolean(onClick)}
       loading={loading}
       onClick={onClick}

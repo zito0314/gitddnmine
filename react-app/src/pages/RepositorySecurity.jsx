@@ -1,6 +1,7 @@
-import { Card, Table, Tag, Typography } from 'antd'
+import { Card, Table, Typography } from 'antd'
 import { useParams } from 'react-router-dom'
 import { getSecurityValidationsByRepository } from '../api/security'
+import { StatusTag } from '../components/common'
 
 export default function RepositorySecurity() {
   const { repositoryId } = useParams()
@@ -13,7 +14,7 @@ export default function RepositorySecurity() {
         { title: 'ID', dataIndex: 'id' },
         { title: 'MR', dataIndex: 'mrTitle' },
         { title: 'Branch', dataIndex: 'branch' },
-        { title: 'Policy', dataIndex: 'policyLabel', render: (value) => <Tag color="red">{value}</Tag> },
+        { title: 'Policy', dataIndex: 'policy', render: (value, record) => <StatusTag status={value} label={record.policyLabel} /> },
         { title: 'Last checked', dataIndex: 'lastCheckedAt' },
       ]} />
     </Card>
