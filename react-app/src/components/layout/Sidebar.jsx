@@ -3,6 +3,7 @@ import {
   BranchesOutlined,
   CodeOutlined,
   DashboardOutlined,
+  DeploymentUnitOutlined,
   PullRequestOutlined,
   SafetyCertificateOutlined,
 } from '@ant-design/icons'
@@ -25,6 +26,7 @@ const navItems = [
     badge: 6,
   },
   { key: '/pipelines', icon: <BranchesOutlined />, label: 'Pipeline' },
+  { key: '/deployment-transfer', icon: <DeploymentUnitOutlined />, label: 'Deployment Transfer', badge: 3 },
   {
     key: '/security',
     icon: <SafetyCertificateOutlined />,
@@ -33,6 +35,7 @@ const navItems = [
     badgeStatus: 'warning',
   },
   { key: '/audit', icon: <AuditOutlined />, label: 'Audit Log' },
+  { key: '/admin', icon: <AuditOutlined />, label: 'Admin Console' },
 ]
 
 function withBadge(item) {
