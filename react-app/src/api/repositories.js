@@ -1,7 +1,8 @@
 import { findById, getMockSlice } from './mockClient'
+import { applyRepositoryFavorites, sortRepositoriesByFavorite } from '../utils/favorites'
 
 export function getRepositories() {
-  return getMockSlice((data) => data.repositories.list, [])
+  return sortRepositoriesByFavorite(applyRepositoryFavorites(getMockSlice((data) => data.repositories.list, [])))
 }
 
 export function getRepositoryById(repositoryId) {

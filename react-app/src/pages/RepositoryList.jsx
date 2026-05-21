@@ -7,31 +7,14 @@ import {
   StarOutlined,
 } from '@ant-design/icons'
 import { Alert, Col, Row, Space, Typography } from 'antd'
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories, getRepositorySummary } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import useRepositoryFavorites from '../hooks/useRepositoryFavorites'
+import { sortRepositoriesByFavorite } from '../utils/favorites'
 
 const { Link, Text } = Typography
-
-// 언어(타입) 목록을 데이터에서 동적으로 추출
-function useRepositoryData() {
-  const [favorites, setFavorites] = useState(() => {
-    const all = getRepositories()
-    return new Set(all.filter((r) => r.favorite).map((r) => r.id))
-  })
-
-  const toggleFavorite = useCallback((id) => {
-    setFavorites((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
-  }, [])
-
-  return { favorites, toggleFavorite }
-}
 
 const STATUS_OPTIONS = [
   { value: 'approved', label: '승인 완료' },
@@ -48,7 +31,7 @@ const VISIBILITY_OPTIONS = [
 
 export default function RepositoryList() {
   const navigate = useNavigate()
-  const { favorites, toggleFavorite } = useRepositoryData()
+  const { favorites, toggleFavorite } = useRepositoryFavorites()
   const allRepos = useMemo(() => getRepositories(), [])
   const summary = useMemo(() => getRepositorySummary(), [])
 
@@ -67,7 +50,16 @@ export default function RepositoryList() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
-    return allRepos.filter((r) => {
+    const repos = sortRepositoriesByFavorite(
+      allRepos.map((repo) => ({
+        ...repo,
+        favorite: Object.prototype.hasOwnProperty.call(favorites, repo.id)
+          ? Boolean(favorites[repo.id])
+          : Boolean(repo.favorite),
+      })),
+    )
+
+    return repos.filter((r) => {
       if (q) {
         const matchName = r.name?.toLowerCase().includes(q)
         const matchGroup = r.group?.toLowerCase().includes(q)
@@ -77,8 +69,8 @@ export default function RepositoryList() {
       if (filterStatus && r.status !== filterStatus) return false
       if (filterLanguage && r.type !== filterLanguage) return false
       if (filterVisibility && r.visibility !== filterVisibility) return false
-      if (filterFavorite === 'favorites' && !favorites.has(r.id)) return false
-      if (filterFavorite === 'non-favorites' && favorites.has(r.id)) return false
+      if (filterFavorite === 'favorites' && !r.favorite) return false
+      if (filterFavorite === 'non-favorites' && r.favorite) return false
       return true
     })
   }, [allRepos, search, filterStatus, filterLanguage, filterVisibility, filterFavorite, favorites])
@@ -99,16 +91,16 @@ export default function RepositoryList() {
         align: 'center',
         render: (_, record) => (
           <span
-            className={`favorite-btn ${favorites.has(record.id) ? 'active' : ''}`}
+            className={`favorite-btn ${record.favorite ? 'active' : ''}`}
             onClick={(e) => {
               e.stopPropagation()
-              toggleFavorite(record.id)
+              toggleFavorite(record.id, record.favorite)
             }}
             role="button"
-            aria-label={favorites.has(record.id) ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+            aria-label={record.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
             style={{ cursor: 'pointer', fontSize: 16 }}
           >
-            {favorites.has(record.id) ? <StarFilled /> : <StarOutlined />}
+            {record.favorite ? <StarFilled /> : <StarOutlined />}
           </span>
         ),
       },
@@ -184,7 +176,7 @@ export default function RepositoryList() {
         render: (value) => <Text>{value}</Text>,
       },
     ],
-    [favorites, navigate, toggleFavorite],
+    [navigate, toggleFavorite],
   )
 
   const isFiltered =

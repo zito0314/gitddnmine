@@ -1,4 +1,5 @@
 import { getMockSlice } from './mockClient'
+import { applyRepositoryFavorites, sortRepositoriesByFavorite } from '../utils/favorites'
 
 export function getDashboardSummaryCards() {
   return getMockSlice((data) => data.dashboard.summaryCards, [])
@@ -21,7 +22,7 @@ export function getDashboardActivity() {
 }
 
 export function getDashboardSummary() {
-  const repositories = getMockSlice((data) => data.repositories.list, [])
+  const repositories = applyRepositoryFavorites(getMockSlice((data) => data.repositories.list, []))
   const mergeRequests = getMockSlice((data) => data.mergeRequests.list, [])
   const pipelines = getMockSlice((data) => data.pipelines.list, [])
   const validations = getMockSlice((data) => data.security.validations, [])
@@ -115,9 +116,12 @@ export function getDashboardNextUpItems() {
 }
 
 export function getDashboardRepositoriesData() {
-  return getMockSlice((data) => data.repositories.list, [])
-    .filter((repository) => repository.favorite)
-    .slice(0, 6)
+  const repositories = sortRepositoriesByFavorite(
+    applyRepositoryFavorites(getMockSlice((data) => data.repositories.list, [])),
+  )
+  const favorites = repositories.filter((repository) => repository.favorite)
+
+  return (favorites.length ? favorites : repositories).slice(0, 6)
 }
 
 export function getDashboardMergeRequestsData() {
