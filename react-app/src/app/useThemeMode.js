@@ -1,12 +1,12 @@
-import { useContext } from 'react'
-import { ThemeModeContext } from './themeModeContext'
+import { useThemeTokens } from '../hooks/useThemeTokens'
 
 export function useThemeMode() {
-  const context = useContext(ThemeModeContext)
+  const themeTokens = useThemeTokens()
 
-  if (!context) {
-    throw new Error('useThemeMode must be used within ThemeModeProvider')
+  return {
+    themeMode: themeTokens.mode,
+    theme: themeTokens.activeTheme,
+    setThemeMode: themeTokens.setThemeMode,
+    isDarkMode: themeTokens.isDarkMode,
   }
-
-  return context
 }
