@@ -1,73 +1,34 @@
-export const gitddnTheme = {
-  token: {
-    colorPrimary: '#256ef4',
-    colorInfo: '#256ef4',
-    colorSuccess: '#228738',
-    colorWarning: '#9e6a00',
-    colorError: '#de3412',
-    colorText: '#1e2124',
-    colorTextSecondary: '#6d7882',
-    colorTextTertiary: '#8a949e',
-    colorBgBase: '#f4f5f6',
-    colorBgContainer: '#ffffff',
-    colorBgLayout: '#f4f5f6',
-    colorBorder: '#e6e8ea',
-    colorBorderSecondary: '#eef0f2',
-    borderRadius: 6,
-    borderRadiusLG: 10,
-    fontFamily:
-      '"Pretendard GOV", "Pretendard", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif',
-    fontSize: 14,
-    lineHeight: 1.5715,
-    wireframe: false,
-  },
-  components: {
-    Layout: {
-      bodyBg: '#f4f5f6',
-      headerBg: 'rgba(255, 255, 255, 0.88)',
-      siderBg: '#ffffff',
-    },
-    Menu: {
-      itemBorderRadius: 6,
-      itemHeight: 40,
-      itemMarginInline: 8,
-      itemSelectedBg: '#ecf2fe',
-      itemSelectedColor: '#0b50d0',
-      itemColor: '#6d7882',
-      itemHoverBg: '#f4f5f6',
-      itemHoverColor: '#1e2124',
-    },
-    Button: {
-      borderRadius: 6,
-      controlHeight: 36,
-      controlHeightLG: 40,
-      primaryShadow: 'none',
-    },
-    Card: {
-      borderRadiusLG: 10,
-      colorBgContainer: '#ffffff',
-      colorBorderSecondary: '#e5e7eb',
-    },
-    Table: {
-      headerBg: '#f8fafc',
-      headerColor: '#334155',
-      rowHoverBg: '#f8fbff',
-      borderColor: '#e5e7eb',
-    },
-    Tag: {
-      defaultBg: '#f8fafc',
-      defaultColor: '#475569',
-    },
-    Drawer: {
-      colorBgElevated: '#ffffff',
-    },
-    Modal: {
-      contentBg: '#ffffff',
-      headerBg: '#ffffff',
-    },
-    Input: {
-      borderRadius: 8,
-      controlHeight: 40,
-    },
-  },
+import lightTheme from './themes/light.json'
+import darkTheme from './themes/dark.json'
+
+export const THEME_MODE_STORAGE_KEY = 'gitddn.themeMode'
+
+export const THEME_MODES = {
+  light: 'light',
+  dark: 'dark',
 }
+
+const fallbackFontFamily =
+  '"Pretendard GOV", "Pretendard", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif'
+
+function normalizeTheme(themeConfig) {
+  return {
+    ...themeConfig,
+    token: {
+      ...themeConfig.token,
+      fontFamily: themeConfig.token?.fontFamily || fallbackFontFamily,
+      wireframe: false,
+    },
+  }
+}
+
+export const gitddnThemes = {
+  [THEME_MODES.light]: normalizeTheme(lightTheme),
+  [THEME_MODES.dark]: normalizeTheme(darkTheme),
+}
+
+export function getGitddnTheme(mode) {
+  return gitddnThemes[mode] ?? gitddnThemes[THEME_MODES.light]
+}
+
+export const gitddnTheme = gitddnThemes[THEME_MODES.light]

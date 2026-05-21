@@ -17,10 +17,25 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root[data-theme='dark'] {
+  --gitddn-primary: #1668dc;
+  --gitddn-primary-strong: #65a9f3;
+  --gitddn-primary-soft: #111a2c;
+  --gitddn-bg: #000000;
+  --gitddn-surface: #141414;
+  --gitddn-line: #303030;
+  --gitddn-text: rgba(255, 255, 255, 0.85);
+  --gitddn-muted: rgba(255, 255, 255, 0.65);
+  --gitddn-subtle: rgba(255, 255, 255, 0.45);
+  --gitddn-shadow-sm: 0 0 0 1px rgba(255, 255, 255, 0.06);
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: var(--gitddn-bg);
 }
 
 #root {
@@ -125,6 +140,7 @@ body {
   height: 64px;
   padding: 0 24px;
   border-bottom: 1px solid var(--gitddn-line);
+  background: color-mix(in srgb, var(--gitddn-surface) 88%, transparent);
   backdrop-filter: blur(12px);
 }
 
@@ -191,7 +207,7 @@ body {
 
 .global-search-result:hover,
 .notification-item:hover {
-  background: #f8fbff;
+  background: var(--gitddn-primary-soft);
 }
 
 .page-content {

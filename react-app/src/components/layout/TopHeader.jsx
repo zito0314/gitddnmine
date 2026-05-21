@@ -2,10 +2,12 @@ import {
   BellOutlined,
   DownOutlined,
   GlobalOutlined,
+  MoonOutlined,
   PlusOutlined,
   QuestionCircleOutlined,
   SearchOutlined,
   SettingOutlined,
+  SunOutlined,
   UserOutlined,
 } from '@ant-design/icons'
 import {
@@ -23,6 +25,7 @@ import {
   List,
   message,
   Modal,
+  Segmented,
   Space,
   Tag,
   Typography,
@@ -38,6 +41,8 @@ import { useAuth } from '../../auth/AuthContext'
 import { getRepositories } from '../../api/repositories'
 import { StatusTag } from '../common'
 import { UI_TEXT } from '../../constants'
+import { useThemeMode } from '../../app/useThemeMode'
+import { THEME_MODES } from '../../app/theme'
 
 const { Header } = Layout
 const { Text } = Typography
@@ -68,6 +73,7 @@ function TopHeader({ onToggleSidebar }) {
   const navigate = useNavigate()
   const location = useLocation()
   const auth = useAuth()
+  const { themeMode, setThemeMode } = useThemeMode()
   const organizations = getHeaderOrganizations()
   const repositories = getRepositories()
   const currentUser = auth.currentUser
@@ -246,6 +252,16 @@ function TopHeader({ onToggleSidebar }) {
       </AutoComplete>
 
       <Space size={8} className="header-actions">
+        <Segmented
+          aria-label="Theme mode"
+          size="small"
+          value={themeMode}
+          onChange={setThemeMode}
+          options={[
+            { label: <SunOutlined />, value: THEME_MODES.light },
+            { label: <MoonOutlined />, value: THEME_MODES.dark },
+          ]}
+        />
         <Dropdown menu={{ items: createItems, onClick: handleQuickCreate }} trigger={['click']}>
           <Button type="primary" icon={<PlusOutlined />}>
             {UI_TEXT.quickCreate.label}
