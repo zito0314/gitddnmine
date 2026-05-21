@@ -1361,6 +1361,202 @@ const mockData = {
   "mergeRequests": {
     "list": [
       {
+        "id": 129,
+        "title": "고객 포털 인증 배너 개선",
+        "summary": "로그인 후 고객 포털 상단 인증 안내 배너와 만료 상태 표시를 개선합니다.",
+        "repo": "customer-web-portal",
+        "repoGroup": "Digital Banking / Web",
+        "source": "feature/auth-banner",
+        "target": "develop",
+        "owner": "min",
+        "author": "Min",
+        "updatedAt": "15분 전",
+        "pipeline": "failed",
+        "security": "warning",
+        "securityLabel": "Warning",
+        "review": "need-review",
+        "reviewLabel": "리뷰 필요",
+        "approved": 1,
+        "required": 2,
+        "comments": 5,
+        "status": "open",
+        "gates": [
+          {
+            "type": "approval",
+            "icon": "AP",
+            "iconTone": "blue",
+            "title": "승인자",
+            "subtitle": "최소 2명 승인 필요 · 현재 0/2",
+            "status": "0/2 승인",
+            "tone": "warning",
+            "items": [
+              {
+                "title": "Min",
+                "desc": "Tech Lead · 필수 승인자",
+                "result": "대기 중",
+                "tone": "warning"
+              },
+              {
+                "title": "Han",
+                "desc": "Backend Lead · 필수 승인자",
+                "result": "대기 중",
+                "tone": "warning"
+              },
+              {
+                "title": "Park",
+                "desc": "Security Reviewer · 선택 승인자",
+                "result": "확인 완료",
+                "tone": "success"
+              }
+            ]
+          },
+          {
+            "type": "pipeline",
+            "icon": "PL",
+            "iconTone": "orange",
+            "title": "파이프라인",
+            "subtitle": "customer-web-portal · feature/account-cache",
+            "status": "실패",
+            "tone": "danger",
+            "items": [
+              {
+                "title": "Build",
+                "desc": "dependency-install · compile",
+                "result": "통과",
+                "tone": "success"
+              },
+              {
+                "title": "Test",
+                "desc": "unit-test · integration-test",
+                "result": "실패",
+                "tone": "danger"
+              },
+              {
+                "title": "Quality Gate",
+                "desc": "coverage · lint · static analysis",
+                "result": "통과",
+                "tone": "success"
+              }
+            ]
+          },
+          {
+            "type": "check",
+            "icon": "SC",
+            "iconTone": "red",
+            "title": "보안 점검",
+            "subtitle": "SAST · SCA · Secret Detection · Container Scan",
+            "status": "대기",
+            "tone": "warning",
+            "items": [
+              {
+                "title": "SAST",
+                "desc": "정적 분석 취약점 확인",
+                "result": "통과",
+                "tone": "success"
+              },
+              {
+                "title": "SCA",
+                "desc": "오픈소스 취약점 및 라이선스 확인",
+                "result": "통과",
+                "tone": "success"
+              },
+              {
+                "title": "Secret Detection",
+                "desc": "하드코딩된 키/패스워드 검출",
+                "result": "통과",
+                "tone": "success"
+              }
+            ]
+          },
+          {
+            "type": "check",
+            "icon": "DT",
+            "iconTone": "purple",
+            "title": "운영 이관",
+            "subtitle": "운영 배포 전 사전 점검",
+            "status": "대기",
+            "tone": "warning",
+            "items": [
+              {
+                "title": "변경 영향도",
+                "desc": "연계 서비스 및 API 변경 영향 확인",
+                "result": "대기",
+                "tone": "warning"
+              },
+              {
+                "title": "롤백 계획",
+                "desc": "문제 발생 시 이전 버전 복구 절차",
+                "result": "첨부됨",
+                "tone": "success"
+              }
+            ]
+          }
+        ],
+        "activity": {
+          "review": [
+            {
+              "avatar": "민",
+              "tone": "blue",
+              "author": "Min",
+              "time": "2시간 전",
+              "stateLabel": "리뷰",
+              "comment": "계좌 목록 캐싱 개선 변경 범위 확인했습니다. 정책 조건과 예외 케이스를 중심으로 보겠습니다."
+            },
+            {
+              "avatar": "박",
+              "tone": "red",
+              "author": "Park",
+              "time": "10분 전",
+              "stateLabel": "보안 검토",
+              "comment": "보안 검증 결과와 운영 반영 조건을 함께 확인해 주세요."
+            }
+          ],
+          "line": [
+            {
+              "avatar": "한",
+              "tone": "green",
+              "author": "Han",
+              "file": "src/customer/policy.ts:42",
+              "time": "8분 전",
+              "comment": "이 조건은 상수로 분리하면 재사용하기 좋겠습니다."
+            }
+          ],
+          "general": [
+            {
+              "avatar": "M",
+              "tone": "orange",
+              "author": "Min",
+              "time": "2시간 전",
+              "comment": "계좌 목록 캐싱 개선 MR 생성했습니다. 리뷰 부탁드립니다."
+            }
+          ],
+          "history": [
+            {
+              "time": "2시간 전",
+              "title": "MR 생성",
+              "desc": "Min가 feature/account-cache → develop MR을 생성했습니다."
+            },
+            {
+              "time": "방금",
+              "title": "상태 업데이트",
+              "desc": "Pipeline failed · Security 대기"
+            }
+          ]
+        },
+        "meta": [
+          "Min 요청",
+          "15분 전",
+          "댓글 5",
+          "커밋 3",
+          "변경 파일 4개"
+        ],
+        "diff": {
+          "added": "+98",
+          "removed": "-21",
+          "files": 4
+        }
+      },
+      {
         "id": 128,
         "title": "인증 정책 응답값 개선",
         "summary": "로그인 정책 예외 케이스 응답값 정리 및 인증 API 응답 필드 표준화",
@@ -5088,6 +5284,288 @@ const mockData = {
   },
   "pipelines": {
     "list": [
+      {
+        "id": "2847502411",
+        "updatedAt": "10분 전",
+        "title": "고객 포털 인증 배너 개선 배포 검증",
+        "repo": "customer-web-portal",
+        "repoGroup": "Digital Banking / Web",
+        "branch": "feature/auth-banner",
+        "target": "develop",
+        "author": "Min",
+        "commit": "c2b8e129",
+        "status": "failed",
+        "result": "failed",
+        "trigger": "Merge Request",
+        "jobs": [
+          "manual",
+          "passed",
+          "passed",
+          "failed",
+          "failed",
+          "pending",
+          "skipped",
+          "created"
+        ],
+        "mrId": 129,
+        "description": "고객 포털 인증 배너 개선 MR의 배포 전 Pipeline 실행 결과입니다.",
+        "meta": [
+          {
+            "label": "Failed",
+            "tone": "red"
+          },
+          {
+            "label": "latest",
+            "tone": "green"
+          },
+          {
+            "label": "merge request",
+            "tone": "blue"
+          },
+          {
+            "label": "작성자 Min"
+          },
+          {
+            "label": "10분 전 생성"
+          }
+        ],
+        "refs": [
+          {
+            "label": "Branch",
+            "value": "feature/auth-banner"
+          },
+          {
+            "label": "Commit",
+            "value": "c2b8e129"
+          }
+        ],
+        "summary": [
+          {
+            "label": "Pipeline 총 실행 시간",
+            "value": "04:22",
+            "note": "생성부터 종료까지"
+          },
+          {
+            "label": "실제 실행 시간",
+            "value": "03:48",
+            "note": "Runner 실행 기준"
+          },
+          {
+            "label": "Failed Jobs",
+            "value": "2",
+            "note": "실패 Job 확인 필요",
+            "tone": "danger"
+          },
+          {
+            "label": "Completed Jobs",
+            "value": "7",
+            "note": "성공 또는 종료됨"
+          }
+        ],
+        "stages": [
+          {
+            "name": "prepare",
+            "status": "passed",
+            "jobs": [
+              {
+                "name": "checkout",
+                "status": "passed"
+              },
+              {
+                "name": "install-dependencies",
+                "status": "passed"
+              }
+            ]
+          },
+          {
+            "name": "build",
+            "status": "passed",
+            "jobs": [
+              {
+                "name": "build-api",
+                "status": "passed"
+              },
+              {
+                "name": "build-assets",
+                "status": "passed"
+              }
+            ]
+          },
+          {
+            "name": "test",
+            "status": "failed",
+            "jobs": [
+              {
+                "name": "unit-test",
+                "status": "failed"
+              },
+              {
+                "name": "contract-test",
+                "status": "failed"
+              },
+              {
+                "name": "integration-test",
+                "status": "passed"
+              }
+            ]
+          },
+          {
+            "name": "security",
+            "status": "passed",
+            "jobs": [
+              {
+                "name": "sast",
+                "status": "passed"
+              },
+              {
+                "name": "sca",
+                "status": "passed"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "2847502401",
+        "updatedAt": "15분 전",
+        "title": "고객 포털 인증 배너 개선 검증",
+        "repo": "customer-web-portal",
+        "repoGroup": "Digital Banking / Web",
+        "branch": "feature/auth-banner",
+        "target": "develop",
+        "author": "Min",
+        "commit": "a91f2c31",
+        "status": "failed",
+        "result": "failed",
+        "trigger": "Push",
+        "jobs": [
+          "manual",
+          "passed",
+          "passed",
+          "failed",
+          "failed",
+          "pending",
+          "skipped",
+          "created"
+        ],
+        "mrId": 129,
+        "description": "고객 포털 인증 배너 개선 MR의 Pipeline 실행 결과입니다.",
+        "meta": [
+          {
+            "label": "Failed",
+            "tone": "red"
+          },
+          {
+            "label": "latest",
+            "tone": "green"
+          },
+          {
+            "label": "branch",
+            "tone": "blue"
+          },
+          {
+            "label": "작성자 Min"
+          },
+          {
+            "label": "2시간 전 생성"
+          }
+        ],
+        "refs": [
+          {
+            "label": "Branch",
+            "value": "feature/account-cache"
+          },
+          {
+            "label": "Commit",
+            "value": "b71c2f09"
+          }
+        ],
+        "summary": [
+          {
+            "label": "Pipeline 총 실행 시간",
+            "value": "04:22",
+            "note": "생성부터 종료까지"
+          },
+          {
+            "label": "실제 실행 시간",
+            "value": "03:48",
+            "note": "Runner 실행 기준"
+          },
+          {
+            "label": "Failed Jobs",
+            "value": "2",
+            "note": "실패 Job 확인 필요",
+            "tone": "danger"
+          },
+          {
+            "label": "Completed Jobs",
+            "value": "7",
+            "note": "성공 또는 종료됨"
+          }
+        ],
+        "stages": [
+          {
+            "name": "prepare",
+            "status": "passed",
+            "jobs": [
+              {
+                "name": "checkout",
+                "status": "passed"
+              },
+              {
+                "name": "install-dependencies",
+                "status": "passed"
+              }
+            ]
+          },
+          {
+            "name": "build",
+            "status": "passed",
+            "jobs": [
+              {
+                "name": "build-api",
+                "status": "passed"
+              },
+              {
+                "name": "build-assets",
+                "status": "passed"
+              }
+            ]
+          },
+          {
+            "name": "test",
+            "status": "failed",
+            "jobs": [
+              {
+                "name": "unit-test",
+                "status": "failed"
+              },
+              {
+                "name": "contract-test",
+                "status": "failed"
+              },
+              {
+                "name": "integration-test",
+                "status": "passed"
+              }
+            ]
+          },
+          {
+            "name": "security",
+            "status": "passed",
+            "jobs": [
+              {
+                "name": "sast",
+                "status": "passed"
+              },
+              {
+                "name": "sca",
+                "status": "passed"
+              }
+            ]
+          }
+        ]
+      },
       {
         "id": "2847502395",
         "updatedAt": "20분 전",
@@ -9083,9 +9561,198 @@ const mockData = {
         "✓ job completed",
         "Job succeeded"
       ]
+    },
+    {
+      "id": "2847502411-checkout",
+      "name": "checkout",
+      "stage": "prepare",
+      "status": "passed",
+      "statusLabel": "Passed",
+      "tone": "green",
+      "duration": "00:24",
+      "runner": "runner-web-01",
+      "startedAt": "10분 전",
+      "finishedAt": "방금",
+      "pipelineId": "2847502411",
+      "log": [
+        "$ npm ci",
+        "$ npm run checkout",
+        "Running checkout for customer-web-portal",
+        "✓ job completed",
+        "Job succeeded"
+      ]
+    },
+    {
+      "id": "2847502411-install-dependencies",
+      "name": "install-dependencies",
+      "stage": "prepare",
+      "status": "passed",
+      "statusLabel": "Passed",
+      "tone": "green",
+      "duration": "00:46",
+      "runner": "runner-web-01",
+      "startedAt": "10분 전",
+      "finishedAt": "방금",
+      "pipelineId": "2847502411",
+      "log": [
+        "$ npm ci",
+        "$ npm run install-dependencies",
+        "Running install-dependencies for customer-web-portal",
+        "✓ job completed",
+        "Job succeeded"
+      ]
+    },
+    {
+      "id": "2847502411-build-web",
+      "name": "build-web",
+      "stage": "build",
+      "status": "passed",
+      "statusLabel": "Passed",
+      "tone": "green",
+      "duration": "01:12",
+      "runner": "runner-web-01",
+      "startedAt": "10분 전",
+      "finishedAt": "방금",
+      "pipelineId": "2847502411",
+      "log": [
+        "$ npm ci",
+        "$ npm run build-web",
+        "Running build-web for customer-web-portal",
+        "✓ job completed",
+        "Job succeeded"
+      ]
+    },
+    {
+      "id": "2847502411-unit-test",
+      "name": "unit-test",
+      "stage": "test",
+      "status": "passed",
+      "statusLabel": "Passed",
+      "tone": "green",
+      "duration": "01:08",
+      "runner": "runner-web-01",
+      "startedAt": "10분 전",
+      "finishedAt": "방금",
+      "pipelineId": "2847502411",
+      "log": [
+        "$ npm ci",
+        "$ npm run unit-test",
+        "Running unit-test for customer-web-portal",
+        "✓ job completed",
+        "Job succeeded"
+      ]
+    },
+    {
+      "id": "2847502411-contract-test",
+      "name": "contract-test",
+      "stage": "test",
+      "status": "failed",
+      "statusLabel": "Failed",
+      "tone": "red",
+      "duration": "00:55",
+      "runner": "runner-web-01",
+      "startedAt": "10분 전",
+      "finishedAt": "방금",
+      "pipelineId": "2847502411",
+      "log": [
+        "$ npm ci",
+        "$ npm run contract-test",
+        "Running contract-test for customer-web-portal",
+        "✕ job failed",
+        "Job failed with exit code 1"
+      ]
+    },
+    {
+      "id": "2847502411-security-scan",
+      "name": "security-scan",
+      "stage": "security",
+      "status": "failed",
+      "statusLabel": "Failed",
+      "tone": "red",
+      "duration": "00:48",
+      "runner": "runner-web-01",
+      "startedAt": "10분 전",
+      "finishedAt": "방금",
+      "pipelineId": "2847502411",
+      "log": [
+        "$ npm ci",
+        "$ npm run security-scan",
+        "Running security-scan for customer-web-portal",
+        "✕ job failed",
+        "Job failed with exit code 1"
+      ]
+    },
+    {
+      "id": "2847502411-quality-gate",
+      "name": "quality-gate",
+      "stage": "quality-gate",
+      "status": "blocked",
+      "statusLabel": "Blocked",
+      "tone": "red",
+      "duration": "00:05",
+      "runner": "runner-web-01",
+      "startedAt": "10분 전",
+      "finishedAt": "방금",
+      "pipelineId": "2847502411",
+      "log": [
+        "$ npm ci",
+        "$ npm run quality-gate",
+        "Running quality-gate for customer-web-portal",
+        "✕ job failed",
+        "Job failed with exit code 1"
+      ]
+    },
+    {
+      "id": "2847502411-deploy-preview",
+      "name": "deploy-preview",
+      "stage": "deploy",
+      "status": "pending",
+      "statusLabel": "Pending",
+      "tone": "orange",
+      "duration": "-",
+      "runner": "runner-web-01",
+      "startedAt": "10분 전",
+      "finishedAt": "-",
+      "pipelineId": "2847502411",
+      "log": [
+        "$ npm ci",
+        "$ npm run deploy-preview",
+        "Running deploy-preview for customer-web-portal",
+        "Job pending",
+        "Waiting for runner"
+      ]
     }
   ],
   "commits": [
+    {
+      "id": "c2b8e129",
+      "sha": "c2b8e129",
+      "repositoryId": "customer-web-portal",
+      "title": "고객 포털 인증 배너 개선 배포 검증",
+      "description": "인증 안내 배너와 만료 상태 표시 변경 사항입니다.",
+      "author": "Min",
+      "createdAt": "10분 전",
+      "added": 98,
+      "removed": 21,
+      "branch": "feature/auth-banner",
+      "mrId": 129,
+      "meta": [
+        {
+          "label": "c2b8e129",
+          "tone": "blue"
+        },
+        {
+          "label": "작성자 Min"
+        },
+        {
+          "label": "10분 전"
+        },
+        {
+          "label": "+98 / -21"
+        }
+      ],
+      "refs": []
+    },
     {
       "id": "7e14d754",
       "sha": "7e14d754",
@@ -9629,6 +10296,84 @@ const mockData = {
   ],
   "security": {
     "validations": [
+      {
+        "id": "SEC-301",
+        "mrId": 129,
+        "mrTitle": "고객 포털 인증 배너 개선",
+        "repo": "customer-web-portal",
+        "projectKey": "digital-banking",
+        "project": "Digital Banking / Web",
+        "branch": "feature/auth-banner → develop",
+        "author": "Min",
+        "mrStatus": "open",
+        "vstatus": "warning",
+        "vlabel": "Warning",
+        "policy": "pending",
+        "policyLabel": "보안 승인 필요",
+        "severity": {
+          "critical": 0,
+          "high": 2,
+          "medium": 2,
+          "low": 1
+        },
+        "lastCheckedAt": "8분 전",
+        "notice": {
+          "title": "보안 승인 필요",
+          "desc": "High 취약점 2건에 대한 보안 담당자 검토가 필요합니다."
+        }
+      },
+      {
+        "id": "SEC-112",
+        "mrId": 111,
+        "mrTitle": "권한 매핑 정책 import",
+        "repo": "auth-policy-engine",
+        "projectKey": "platform-center",
+        "project": "Platform Center / Security",
+        "branch": "feature/role-import → main",
+        "author": "Park",
+        "mrStatus": "merged",
+        "vstatus": "pass",
+        "vlabel": "Pass",
+        "policy": "allowed",
+        "policyLabel": "병합 가능",
+        "severity": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 1
+        },
+        "lastCheckedAt": "1주 전",
+        "notice": {
+          "title": "보안 검증 통과",
+          "desc": "필수 보안 검증 조건을 충족했습니다."
+        }
+      },
+      {
+        "id": "SEC-205",
+        "mrId": 129,
+        "mrTitle": "고객 포털 인증 배너 개선",
+        "repo": "customer-web-portal",
+        "projectKey": "digital-banking",
+        "project": "Digital Banking / Web",
+        "branch": "feature/auth-banner → develop",
+        "author": "Min",
+        "mrStatus": "open",
+        "vstatus": "warning",
+        "vlabel": "Warning",
+        "policy": "allowed",
+        "policyLabel": "조건부 병합 가능",
+        "severity": {
+          "critical": 0,
+          "high": 1,
+          "medium": 2,
+          "low": 1
+        },
+        "lastCheckedAt": "15분 전",
+        "notice": {
+          "title": "보안 검증 결과를 확인하세요",
+          "desc": "High 취약점 1건과 Medium 취약점 2건에 대한 검토가 필요합니다."
+        }
+      },
       {
         "id": "SEC-204",
         "mrId": 128,
@@ -10449,6 +11194,96 @@ const mockData = {
         "line": 49,
         "status": "review",
         "action": "조치 후 재검증 필요"
+      },
+      {
+        "id": "VUL-301-H-37",
+        "securityId": "SEC-301",
+        "mrId": 129,
+        "repositoryId": "customer-web-portal",
+        "severity": "high",
+        "type": "SAST",
+        "title": "Unsafe redirect parameter",
+        "file": "src/pages/LoginRedirect.tsx",
+        "line": 37,
+        "status": "open",
+        "action": "수정 후 보안 승인 필요",
+        "assignee": "Min",
+        "detectedAt": "8분 전"
+      },
+      {
+        "id": "VUL-301-H-22",
+        "securityId": "SEC-301",
+        "mrId": 129,
+        "repositoryId": "customer-web-portal",
+        "severity": "high",
+        "type": "SCA",
+        "title": "Vulnerable dependency detected",
+        "file": "package.json",
+        "line": 22,
+        "status": "open",
+        "action": "수정 후 보안 승인 필요",
+        "assignee": "Min",
+        "detectedAt": "8분 전"
+      },
+      {
+        "id": "VUL-301-M-118",
+        "securityId": "SEC-301",
+        "mrId": 129,
+        "repositoryId": "customer-web-portal",
+        "severity": "medium",
+        "type": "License Policy",
+        "title": "Unapproved transitive license",
+        "file": "package-lock.json",
+        "line": 118,
+        "status": "review",
+        "action": "검토 후 재검증 필요",
+        "assignee": "Min",
+        "detectedAt": "8분 전"
+      },
+      {
+        "id": "VUL-301-M-4",
+        "securityId": "SEC-301",
+        "mrId": 129,
+        "repositoryId": "customer-web-portal",
+        "severity": "medium",
+        "type": "Container Scan",
+        "title": "Base image needs update",
+        "file": "Dockerfile",
+        "line": 4,
+        "status": "review",
+        "action": "검토 후 재검증 필요",
+        "assignee": "Min",
+        "detectedAt": "8분 전"
+      },
+      {
+        "id": "VUL-301-L-81",
+        "securityId": "SEC-301",
+        "mrId": 129,
+        "repositoryId": "customer-web-portal",
+        "severity": "low",
+        "type": "SAST",
+        "title": "Verbose client error message",
+        "file": "src/components/AuthBanner.tsx",
+        "line": 81,
+        "status": "open",
+        "action": "검토 후 재검증 필요",
+        "assignee": "Min",
+        "detectedAt": "8분 전"
+      },
+      {
+        "id": "VUL-112-L-1",
+        "securityId": "SEC-112",
+        "mrId": 111,
+        "repositoryId": "auth-policy-engine",
+        "severity": "low",
+        "type": "License Policy",
+        "title": "License notice update recommended",
+        "file": "NOTICE",
+        "line": 1,
+        "status": "accepted",
+        "action": "검토 후 재검증 필요",
+        "assignee": "Park",
+        "detectedAt": "1주 전"
       }
     ],
     "detail": {
@@ -10479,6 +11314,36 @@ const mockData = {
     }
   },
   "activities": [
+    {
+      "id": "ACT-1060",
+      "type": "security.validation",
+      "actor": "System",
+      "targetType": "security",
+      "targetId": "SEC-301",
+      "repositoryId": "customer-web-portal",
+      "message": "SEC-301 보안 검증 결과: 보안 승인 필요",
+      "createdAt": "8분 전"
+    },
+    {
+      "id": "ACT-1061",
+      "type": "security.approval",
+      "actor": "Park",
+      "targetType": "security",
+      "targetId": "SEC-301",
+      "repositoryId": "customer-web-portal",
+      "message": "Park님이 High 취약점 보안 승인을 요청했습니다.",
+      "createdAt": "6분 전"
+    },
+    {
+      "id": "ACT-1062",
+      "type": "security.validation",
+      "actor": "System",
+      "targetType": "security",
+      "targetId": "SEC-112",
+      "repositoryId": "auth-policy-engine",
+      "message": "SEC-112 보안 검증 결과: Pass",
+      "createdAt": "1주 전"
+    },
     {
       "id": "ACT-1000",
       "type": "mr.created",
