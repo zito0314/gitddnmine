@@ -410,6 +410,52 @@ body {
   min-height: calc(100vh - 132px);
 }
 
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 48%, #ffffff 100%);
+}
+
+.login-shell {
+  width: min(1120px, 100%);
+}
+
+.login-brand-mark {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #4c87f6, #0b50d0);
+}
+
+.login-copy {
+  max-width: 560px;
+  color: var(--gitddn-muted);
+  font-size: 18px;
+}
+
+.login-card {
+  box-shadow: 0 16px 48px rgba(15, 23, 42, 0.08);
+}
+
+.access-denied-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background: var(--gitddn-bg);
+}
+
+.access-denied-card {
+  width: min(520px, 100%);
+}
+
 @media (max-width: 900px) {
   .top-header {
     flex-wrap: wrap;

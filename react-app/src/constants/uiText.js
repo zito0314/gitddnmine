@@ -270,4 +270,29 @@ export const UI_TEXT = {
     recommendedActions: 'Recommended Actions',
     expectedApprovalPolicy: 'Release Manager approval required',
   },
+  auth: {
+    signIn: 'Sign in',
+    signOut: 'Sign out',
+    email: 'Email',
+    password: 'Password',
+    invalidCredentials: 'Invalid email or password',
+    signedOut: 'Signed out successfully',
+  },
+  login: {
+    productName: 'gitddn',
+    description: '금융권 DevSecOps Governance Platform',
+    formDescription: '사내 인증, SSO, LDAP 확장을 고려한 데모 로그인입니다.',
+    demoAccounts: 'Demo accounts',
+  },
+  roles: {
+    admin: 'Admin',
+    internal: 'Internal User',
+    external: 'External Developer',
+  },
+  accessDenied: {
+    title: 'Access Denied',
+    description: 'You do not have permission to access this page.',
+    backToDashboard: 'Back to Dashboard',
+    signInAnother: 'Sign in with another account',
+  },
 }

@@ -21,6 +21,7 @@ import {
   getDashboardSecurityItems,
   getDashboardSummary,
 } from '../api/dashboard'
+import { useAuth } from '../auth/AuthContext'
 import { StatusTag, SummaryCard, PageHeader } from '../components/common'
 import { UI_TEXT } from '../constants'
 
@@ -42,6 +43,7 @@ function normalizeAuditResult(log) {
 
 function Dashboard() {
   const navigate = useNavigate()
+  const auth = useAuth()
   const summary = getDashboardSummary()
   const nextUp = getDashboardNextUpItems()
   const repositories = getDashboardRepositoriesData()
@@ -63,7 +65,13 @@ function Dashboard() {
           <Button key="refresh" icon={<ReloadOutlined />}>
             {UI_TEXT.actions.refresh}
           </Button>,
-          <Button key="create" type="primary" icon={<PlusOutlined />} onClick={() => navigate('/repositories')}>
+          <Button
+            key="create"
+            type="primary"
+            icon={<PlusOutlined />}
+            disabled={!auth.hasPermission('repository:create-request')}
+            onClick={() => navigate('/repositories/new')}
+          >
             {UI_TEXT.actions.createRepository}
           </Button>,
         ]}

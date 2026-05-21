@@ -1,7 +1,8 @@
 import { findById, getMockSlice } from './mockClient'
+import { filterItemsByRepositoryAccess, getStoredAuthUser } from '../auth/permissions'
 
 export function getMergeRequests() {
-  return getMockSlice((data) => data.mergeRequests.list, [])
+  return filterItemsByRepositoryAccess(getMockSlice((data) => data.mergeRequests.list, []), getStoredAuthUser(), 'repo')
 }
 
 export function getMergeRequestById(mergeRequestId) {

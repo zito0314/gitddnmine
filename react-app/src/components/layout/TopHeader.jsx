@@ -30,11 +30,11 @@ import {
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
-  getCurrentUser,
   getGlobalSearchSuggestions,
   getHeaderOrganizations,
   getNotifications,
 } from '../../api/common'
+import { useAuth } from '../../auth/AuthContext'
 import { getRepositories } from '../../api/repositories'
 import { StatusTag } from '../common'
 import { UI_TEXT } from '../../constants'
@@ -67,9 +67,10 @@ function getRepositoryIdFromPath(pathname) {
 function TopHeader({ onToggleSidebar }) {
   const navigate = useNavigate()
   const location = useLocation()
+  const auth = useAuth()
   const organizations = getHeaderOrganizations()
   const repositories = getRepositories()
-  const currentUser = getCurrentUser()
+  const currentUser = auth.currentUser
   const notifications = getNotifications()
   const currentRepositoryId = getRepositoryIdFromPath(location.pathname)
   const isAdminPath = location.pathname.startsWith('/admin')
@@ -168,12 +169,11 @@ function TopHeader({ onToggleSidebar }) {
     label: organization.label,
   }))
   const createItems = [
-    { key: 'repository', label: UI_TEXT.quickCreate.repository },
-    { key: 'merge-request', label: UI_TEXT.quickCreate.mergeRequest },
-    { key: 'deployment-transfer', label: UI_TEXT.quickCreate.deploymentTransfer },
-    { key: 'security-validation', label: UI_TEXT.quickCreate.securityValidation },
-    { key: 'policy', label: UI_TEXT.quickCreate.policy },
-  ]
+    auth.hasPermission('repository:create-request') ? { key: 'repository', label: UI_TEXT.quickCreate.repository } : null,
+    auth.hasPermission('mr:create') ? { key: 'merge-request', label: UI_TEXT.quickCreate.mergeRequest } : null,
+    auth.hasPermission('deployment:create-request') ? { key: 'deployment-transfer', label: UI_TEXT.quickCreate.deploymentTransfer } : null,
+    auth.isAdmin ? { key: 'policy', label: UI_TEXT.quickCreate.policy } : null,
+  ].filter(Boolean)
   const helpItems = [
     { key: 'demo-guide', label: UI_TEXT.help.demoGuide },
     { key: 'shortcuts', label: UI_TEXT.help.keyboardShortcuts },
@@ -197,7 +197,7 @@ function TopHeader({ onToggleSidebar }) {
     { key: 'my-activity', label: UI_TEXT.userMenu.myActivity },
     { key: 'preferences', label: UI_TEXT.userMenu.preferences },
     { type: 'divider' },
-    { key: 'sign-out', label: UI_TEXT.userMenu.signOut },
+    { key: 'sign-out', label: UI_TEXT.auth.signOut },
   ]
 
   return (
@@ -266,13 +266,24 @@ function TopHeader({ onToggleSidebar }) {
         >
           <Button icon={<QuestionCircleOutlined />} />
         </Dropdown>
-        <Button onClick={() => navigate(isAdminPath ? '/' : '/admin')}>
-          {isAdminPath ? UI_TEXT.topHeader.backToUserPlatform : UI_TEXT.topHeader.adminConsole}
-        </Button>
+        {auth.isAdmin ? (
+          <Button onClick={() => navigate(isAdminPath ? '/' : '/admin')}>
+            {isAdminPath ? UI_TEXT.topHeader.backToUserPlatform : UI_TEXT.topHeader.adminConsole}
+          </Button>
+        ) : null}
         <Dropdown
           menu={{
             items: userItems,
-            onClick: ({ key }) => key !== 'profile' && message.info(`${UI_TEXT.userMenu.demoOnly}: ${key}`),
+            onClick: async ({ key }) => {
+              if (key === 'profile') return
+              if (key === 'sign-out') {
+                await auth.logout()
+                message.success(UI_TEXT.auth.signedOut)
+                navigate('/login', { replace: true })
+                return
+              }
+              message.info(`${UI_TEXT.userMenu.demoOnly}: ${key}`)
+            },
           }}
           trigger={['click']}
         >

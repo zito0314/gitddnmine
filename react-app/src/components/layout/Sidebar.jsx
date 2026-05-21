@@ -11,6 +11,7 @@ import { Badge, Flex, Layout, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
+import { useAuth } from '../../auth/AuthContext'
 import { UI_TEXT } from '../../constants'
 import RepositoryContextSidebar from './RepositoryContextSidebar'
 
@@ -62,6 +63,18 @@ function withBadge(item) {
 function Sidebar({ collapsed, onCollapse }) {
   const location = useLocation()
   const navigate = useNavigate()
+  const auth = useAuth()
+  const visibleNavItems = useMemo(
+    () =>
+      navItems.filter((item) => {
+        if (item.key === '/admin') return auth.isAdmin
+        if (item.key === '/security') return auth.hasPermission('security:read')
+        if (item.key === '/deployment-transfer') return auth.hasPermission('deployment:read')
+        if (item.key === '/audit') return auth.hasPermission('audit:read')
+        return true
+      }),
+    [auth],
+  )
   const repositoryId = useMemo(() => {
     const match = location.pathname.match(/^\/repositories\/([^/]+)/)
     const id = match?.[1] ?? null
@@ -70,12 +83,12 @@ function Sidebar({ collapsed, onCollapse }) {
   }, [location.pathname])
 
   const selectedKeys = useMemo(() => {
-    const match = navItems
+    const match = visibleNavItems
       .filter((item) => item.key !== '/')
       .find((item) => location.pathname.startsWith(item.key))
 
     return [match?.key ?? '/']
-  }, [location.pathname])
+  }, [location.pathname, visibleNavItems])
 
   return (
     <Sider
@@ -104,7 +117,7 @@ function Sidebar({ collapsed, onCollapse }) {
         className="global-menu"
         mode="inline"
         selectedKeys={selectedKeys}
-        items={navItems.map(withBadge)}
+        items={visibleNavItems.map(withBadge)}
         onClick={({ key }) => navigate(key)}
       />
       {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}

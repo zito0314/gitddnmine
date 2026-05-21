@@ -1,8 +1,10 @@
 import { findById, getMockSlice } from './mockClient'
+import { filterRepositoriesByAccess, getStoredAuthUser } from '../auth/permissions'
 import { applyRepositoryFavorites, sortRepositoriesByFavorite } from '../utils/favorites'
 
 export function getRepositories() {
-  return sortRepositoriesByFavorite(applyRepositoryFavorites(getMockSlice((data) => data.repositories.list, [])))
+  const repositories = applyRepositoryFavorites(getMockSlice((data) => data.repositories.list, []))
+  return sortRepositoriesByFavorite(filterRepositoriesByAccess(repositories, getStoredAuthUser()))
 }
 
 export function getRepositoryById(repositoryId) {

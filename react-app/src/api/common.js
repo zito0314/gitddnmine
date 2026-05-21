@@ -1,8 +1,5 @@
 import { getMockSlice } from './mockClient'
-
-export function getCurrentUser() {
-  return getMockSlice((data) => data.user.currentUser, null)
-}
+import { filterItemsByRepositoryAccess, filterRepositoriesByAccess, getStoredAuthUser, hasPermission, isAdmin } from '../auth/permissions'
 
 export function getUsers() {
   return getMockSlice((data) => data.user.users, [])
@@ -45,8 +42,21 @@ export function getGlobalSearchItems() {
     ...(data.admin?.policies?.notification ?? []).map((policy) => ({ ...policy, area: 'Notification Policy', href: '/admin/notification-policy' })),
   ]
 
+  const user = getStoredAuthUser()
+  const accessibleRepositories = filterRepositoriesByAccess(repositories, user)
+  const accessibleMergeRequests = filterItemsByRepositoryAccess(mergeRequests, user, 'repo')
+  const accessiblePipelines = filterItemsByRepositoryAccess(pipelines, user, 'repo')
+  const accessibleSecurityValidations = hasPermission(user, 'security:read')
+    ? filterItemsByRepositoryAccess(securityValidations, user, 'repo')
+    : []
+  const accessibleDeploymentTransfers = hasPermission(user, 'deployment:read')
+    ? filterItemsByRepositoryAccess(deploymentTransfers, user, 'repositoryId')
+    : []
+  const accessibleAuditLogs = hasPermission(user, 'audit:read') ? auditLogs : []
+  const accessibleAdminPolicies = isAdmin(user) ? adminPolicies : []
+
   return [
-    ...repositories.map((repository) => ({
+    ...accessibleRepositories.map((repository) => ({
       id: `repository-${repository.id}`,
       type: 'Repository',
       title: repository.name,
@@ -55,7 +65,7 @@ export function getGlobalSearchItems() {
       href: `/repositories/${repository.id}`,
       searchable: [repository.name, repository.group, repository.description, repository.pipelineStatus, repository.securityStatus],
     })),
-    ...mergeRequests.map((mergeRequest) => ({
+    ...accessibleMergeRequests.map((mergeRequest) => ({
       id: `mr-${mergeRequest.id}`,
       type: 'Merge Request',
       title: `!${mergeRequest.id} ${mergeRequest.title}`,
@@ -64,7 +74,7 @@ export function getGlobalSearchItems() {
       href: `/repositories/${mergeRequest.repo}/merge-requests/${mergeRequest.id}`,
       searchable: [mergeRequest.id, mergeRequest.title, mergeRequest.summary, mergeRequest.repo, mergeRequest.source, mergeRequest.target, mergeRequest.author],
     })),
-    ...pipelines.map((pipeline) => ({
+    ...accessiblePipelines.map((pipeline) => ({
       id: `pipeline-${pipeline.id}`,
       type: 'Pipeline',
       title: `#${pipeline.id} ${pipeline.title ?? pipeline.branch}`,
@@ -73,7 +83,7 @@ export function getGlobalSearchItems() {
       href: `/repositories/${pipeline.repo}/pipelines/${pipeline.id}`,
       searchable: [pipeline.id, pipeline.title, pipeline.repo, pipeline.branch, pipeline.commit, pipeline.author, pipeline.status],
     })),
-    ...securityValidations.map((validation) => ({
+    ...accessibleSecurityValidations.map((validation) => ({
       id: `security-${validation.id}`,
       type: 'Security Validation',
       title: `${validation.id} ${validation.mrTitle}`,
@@ -82,7 +92,7 @@ export function getGlobalSearchItems() {
       href: `/security/${validation.id}`,
       searchable: [validation.id, validation.mrTitle, validation.repo, validation.author, validation.policyLabel, validation.vlabel],
     })),
-    ...deploymentTransfers.map((transfer) => ({
+    ...accessibleDeploymentTransfers.map((transfer) => ({
       id: `deployment-${transfer.transferId}`,
       type: 'Deployment Transfer',
       title: transfer.transferId,
@@ -91,7 +101,7 @@ export function getGlobalSearchItems() {
       href: `/deployment-transfer/${transfer.transferId}`,
       searchable: [transfer.transferId, transfer.repositoryId, transfer.targetEnvironment, transfer.policyDecision, transfer.requestedBy, transfer.status],
     })),
-    ...auditLogs.slice(0, 20).map((log) => ({
+    ...accessibleAuditLogs.slice(0, 20).map((log) => ({
       id: `audit-${log.id}`,
       type: 'Audit Event',
       title: log.title,
@@ -100,7 +110,7 @@ export function getGlobalSearchItems() {
       href: '/audit',
       searchable: [log.id, log.title, log.message, log.actorName, log.targetName, log.targetDetail, log.severity],
     })),
-    ...adminPolicies.map((policy) => ({
+    ...accessibleAdminPolicies.map((policy) => ({
       id: `policy-${policy.id}`,
       type: 'Admin Policy',
       title: policy.name,

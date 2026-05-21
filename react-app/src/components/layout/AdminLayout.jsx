@@ -1,6 +1,7 @@
 import { AuditOutlined, BellOutlined, BgColorsOutlined, DashboardOutlined, DeploymentUnitOutlined, LinkOutlined, LockOutlined, SafetyCertificateOutlined, TeamOutlined } from '@ant-design/icons'
-import { Button, Flex, Layout, Menu, Space, Typography } from 'antd'
+import { Button, Flex, Layout, Menu, Space, Typography, message } from 'antd'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../auth/AuthContext'
 import { UI_TEXT } from '../../constants'
 
 const { Content, Header, Sider } = Layout
@@ -22,6 +23,7 @@ const adminItems = [
 export default function AdminLayout() {
   const location = useLocation()
   const navigate = useNavigate()
+  const auth = useAuth()
   const selected = adminItems.find((item) => location.pathname === item.key)?.key ?? '/admin'
 
   return (
@@ -44,7 +46,18 @@ export default function AdminLayout() {
               <Text strong>Admin Console</Text>
               <Text type="secondary">Policy-based Governance Platform</Text>
             </Space>
-            <Button type="primary" onClick={() => navigate('/')}>{UI_TEXT.topHeader.backToUserPlatform}</Button>
+            <Space>
+              <Button type="primary" onClick={() => navigate('/')}>{UI_TEXT.topHeader.backToUserPlatform}</Button>
+              <Button
+                onClick={async () => {
+                  await auth.logout()
+                  message.success(UI_TEXT.auth.signedOut)
+                  navigate('/login', { replace: true })
+                }}
+              >
+                {UI_TEXT.auth.signOut}
+              </Button>
+            </Space>
           </Flex>
         </Header>
         <Content className="page-content">

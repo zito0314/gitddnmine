@@ -1,7 +1,8 @@
 import { findById, getMockSlice } from './mockClient'
+import { filterItemsByRepositoryAccess, getStoredAuthUser } from '../auth/permissions'
 
 export function getPipelines() {
-  return getMockSlice((data) => data.pipelines.list, [])
+  return filterItemsByRepositoryAccess(getMockSlice((data) => data.pipelines.list, []), getStoredAuthUser(), 'repo')
 }
 
 export function getPipelineById(pipelineId) {

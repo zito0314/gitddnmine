@@ -1,8 +1,12 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
+import ProtectedRoute from '../auth/ProtectedRoute'
+import RoleGuard from '../auth/RoleGuard'
 import AppLayout from '../components/layout/AppLayout'
 import AdminLayout from '../components/layout/AdminLayout'
 import RepositoryLayout from '../components/layout/RepositoryLayout'
 import Dashboard from '../pages/Dashboard'
+import Login from '../pages/Login'
+import AccessDenied from '../pages/AccessDenied'
 import RepositoryList from '../pages/RepositoryList'
 import RepositoryCreate from '../pages/RepositoryCreate'
 import RepositoryDetail from '../pages/RepositoryDetail'
@@ -39,9 +43,24 @@ import IntegrationAdmin from '../pages/admin/IntegrationAdmin'
 import ThemeBrandingAdmin from '../pages/admin/ThemeBrandingAdmin'
 
 export const routes = [
+  { path: '/login', element: <Login /> },
+  {
+    path: '/access-denied',
+    element: (
+      <ProtectedRoute>
+        <AccessDenied />
+      </ProtectedRoute>
+    ),
+  },
   {
     path: '/',
-    element: <AppLayout />,
+    element: (
+      <ProtectedRoute>
+        <RoleGuard>
+          <AppLayout />
+        </RoleGuard>
+      </ProtectedRoute>
+    ),
     children: [
       { index: true, element: <Dashboard /> },
       { path: 'repositories', element: <RepositoryList /> },
@@ -83,7 +102,13 @@ export const routes = [
   },
   {
     path: '/admin',
-    element: <AdminLayout />,
+    element: (
+      <ProtectedRoute>
+        <RoleGuard roles={['admin']}>
+          <AdminLayout />
+        </RoleGuard>
+      </ProtectedRoute>
+    ),
     children: [
       { index: true, element: <AdminDashboard /> },
       { path: 'organization', element: <OrganizationRoleAdmin /> },

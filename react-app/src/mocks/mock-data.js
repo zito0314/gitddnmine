@@ -242,6 +242,49 @@ const mockData = {
       }
     ]
   },
+  "auth": {
+    "mockUsers": [
+      {
+        "id": "admin-001",
+        "name": "Admin User",
+        "email": "admin@gitddn.local",
+        "password": "admin",
+        "employeeId": "A0001",
+        "role": "admin",
+        "roleLabel": "Admin",
+        "organization": "Shinhan Bank",
+        "department": "Platform Governance Team",
+        "allowedRepositoryIds": "all",
+        "permissions": "all"
+      },
+      {
+        "id": "user-001",
+        "name": "Internal Developer",
+        "email": "developer@gitddn.local",
+        "password": "user",
+        "employeeId": "D1024",
+        "role": "internal",
+        "roleLabel": "Internal User",
+        "organization": "Shinhan Bank",
+        "department": "Digital Banking Team",
+        "allowedRepositoryIds": ["mobile-banking-api", "customer-web-portal", "auth-policy-engine"],
+        "permissions": ["dashboard:read", "repository:read", "repository:create-request", "mr:read", "mr:create", "pipeline:read", "security:read", "deployment:read", "deployment:create-request", "audit:read"]
+      },
+      {
+        "id": "external-001",
+        "name": "External Partner",
+        "email": "partner@gitddn.local",
+        "password": "external",
+        "employeeId": "EXT-204",
+        "role": "external",
+        "roleLabel": "External Developer",
+        "organization": "Partner Company",
+        "department": "External Development",
+        "allowedRepositoryIds": ["customer-web-portal"],
+        "permissions": ["dashboard:read", "repository:read", "mr:read", "mr:create", "pipeline:read"]
+      }
+    ]
+  },
   "organizations": [
     {
       "key": "shinhan-bank",

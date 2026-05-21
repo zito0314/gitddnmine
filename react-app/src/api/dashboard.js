@@ -1,4 +1,5 @@
 import { getMockSlice } from './mockClient'
+import { filterItemsByRepositoryAccess, filterRepositoriesByAccess, getStoredAuthUser, hasPermission } from '../auth/permissions'
 import { applyRepositoryFavorites, sortRepositoriesByFavorite } from '../utils/favorites'
 
 export function getDashboardSummaryCards() {
@@ -22,10 +23,11 @@ export function getDashboardActivity() {
 }
 
 export function getDashboardSummary() {
-  const repositories = applyRepositoryFavorites(getMockSlice((data) => data.repositories.list, []))
-  const mergeRequests = getMockSlice((data) => data.mergeRequests.list, [])
-  const pipelines = getMockSlice((data) => data.pipelines.list, [])
-  const validations = getMockSlice((data) => data.security.validations, [])
+  const user = getStoredAuthUser()
+  const repositories = filterRepositoriesByAccess(applyRepositoryFavorites(getMockSlice((data) => data.repositories.list, [])), user)
+  const mergeRequests = filterItemsByRepositoryAccess(getMockSlice((data) => data.mergeRequests.list, []), user, 'repo')
+  const pipelines = filterItemsByRepositoryAccess(getMockSlice((data) => data.pipelines.list, []), user, 'repo')
+  const validations = filterItemsByRepositoryAccess(getMockSlice((data) => data.security.validations, []), user, 'repo')
   const auditLogs = getMockSlice((data) => data.audit.logs, [])
 
   return {
@@ -43,9 +45,10 @@ export function getDashboardSummary() {
 }
 
 export function getDashboardNextUpItems() {
-  const mergeRequests = getMockSlice((data) => data.mergeRequests.list, [])
-  const pipelines = getMockSlice((data) => data.pipelines.list, [])
-  const validations = getMockSlice((data) => data.security.validations, [])
+  const user = getStoredAuthUser()
+  const mergeRequests = filterItemsByRepositoryAccess(getMockSlice((data) => data.mergeRequests.list, []), user, 'repo')
+  const pipelines = filterItemsByRepositoryAccess(getMockSlice((data) => data.pipelines.list, []), user, 'repo')
+  const validations = filterItemsByRepositoryAccess(getMockSlice((data) => data.security.validations, []), user, 'repo')
   const auditLogs = getMockSlice((data) => data.audit.logs, [])
 
   const reviewItem = mergeRequests.find((mr) => mr.review === 'need-review')
@@ -117,7 +120,7 @@ export function getDashboardNextUpItems() {
 
 export function getDashboardRepositoriesData() {
   const repositories = sortRepositoriesByFavorite(
-    applyRepositoryFavorites(getMockSlice((data) => data.repositories.list, [])),
+    filterRepositoriesByAccess(applyRepositoryFavorites(getMockSlice((data) => data.repositories.list, [])), getStoredAuthUser()),
   )
   const favorites = repositories.filter((repository) => repository.favorite)
 
@@ -125,20 +128,23 @@ export function getDashboardRepositoriesData() {
 }
 
 export function getDashboardMergeRequestsData() {
-  return getMockSlice((data) => data.mergeRequests.list, []).slice(0, 6)
+  return filterItemsByRepositoryAccess(getMockSlice((data) => data.mergeRequests.list, []), getStoredAuthUser(), 'repo').slice(0, 6)
 }
 
 export function getDashboardPipelinesData() {
-  return getMockSlice((data) => data.pipelines.list, []).slice(0, 6)
+  return filterItemsByRepositoryAccess(getMockSlice((data) => data.pipelines.list, []), getStoredAuthUser(), 'repo').slice(0, 6)
 }
 
 export function getDashboardSecurityItems() {
-  return getMockSlice((data) => data.security.validations, [])
+  const user = getStoredAuthUser()
+  if (!hasPermission(user, 'security:read')) return []
+  return filterItemsByRepositoryAccess(getMockSlice((data) => data.security.validations, []), user, 'repo')
     .filter((validation) => validation.policy === 'blocked' || validation.vstatus === 'failed' || validation.vstatus === 'warning')
     .slice(0, 6)
 }
 
 export function getDashboardAuditEvents() {
+  if (!hasPermission(getStoredAuthUser(), 'audit:read')) return []
   return getMockSlice((data) => data.audit.logs, []).slice(0, 6)
 }
 
