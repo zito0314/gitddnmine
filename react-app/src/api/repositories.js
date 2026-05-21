@@ -83,8 +83,91 @@ export function getRepositoryActivities(repositoryId) {
   )
 }
 
+export function getRepositoryActivitySummary(repositoryId) {
+  const activities = getRepositoryActivities(repositoryId)
+
+  return {
+    today: activities.filter((activity) => activity.createdAt?.includes('분') || activity.createdAt?.includes('시간')).length,
+    mrEvents: activities.filter((activity) => activity.type?.startsWith('mr.')).length,
+    pipelineEvents: activities.filter((activity) => activity.type?.startsWith('pipeline.')).length,
+    securityEvents: activities.filter((activity) => activity.type?.startsWith('security.')).length,
+  }
+}
+
 export function getRepositoryCommits(repositoryId) {
-  return getMockSlice((data) => data.commits, []).filter((commit) => commit.repositoryId === repositoryId)
+  const commits = getMockSlice((data) => data.commits, []).filter((commit) => commit.repositoryId === repositoryId)
+  if (commits.length > 2) return commits
+
+  return [
+    ...commits,
+    {
+      id: '91a42df0',
+      sha: '91a42df0',
+      repositoryId,
+      title: 'Branch policy validation flow 정리',
+      description: 'MR 승인 정책과 보안 검증 결과를 Repository 화면에 연결했습니다.',
+      author: 'Min',
+      createdAt: '2시간 전',
+      added: 64,
+      removed: 12,
+      branch: 'main',
+      changedFiles: 7,
+    },
+    {
+      id: '5c91a022',
+      sha: '5c91a022',
+      repositoryId,
+      title: 'Pipeline retry 상태 표시 개선',
+      description: '실패 Job 재시도와 수동 승인 상태를 구분해 표시합니다.',
+      author: 'Yoon',
+      createdAt: '어제',
+      added: 42,
+      removed: 18,
+      branch: 'develop',
+      changedFiles: 5,
+    },
+  ]
+}
+
+export function getRepositoryCommitSummary(repositoryId) {
+  const commits = getRepositoryCommits(repositoryId)
+
+  return {
+    total: commits.length,
+    today: commits.filter((commit) => commit.createdAt?.includes('분') || commit.createdAt?.includes('시간')).length,
+    thisWeek: commits.length,
+    contributors: new Set(commits.map((commit) => commit.author)).size,
+  }
+}
+
+export function getRepositoryFiles(repositoryId) {
+  const repository = getRepositoryDetail(repositoryId)
+  if (!repository) return []
+
+  return [
+    { id: 'src', name: 'src', path: 'src', type: 'Folder', size: '-', lastCommit: '91a42df0', updatedAt: '20분 전' },
+    { id: 'src-api', name: 'api', path: 'src/api', type: 'Folder', size: '-', lastCommit: '91a42df0', updatedAt: '20분 전' },
+    { id: 'src-main', name: 'main.ts', path: 'src/main.ts', type: 'File', size: '4.2 KB', lastCommit: '7e14d754', updatedAt: '20분 전' },
+    { id: 'src-policy', name: 'authPolicy.ts', path: 'src/api/authPolicy.ts', type: 'File', size: '8.7 KB', lastCommit: '7e14d754', updatedAt: '20분 전' },
+    { id: 'pipeline', name: '.gitlab-ci.yml', path: '.gitlab-ci.yml', type: 'File', size: '3.1 KB', lastCommit: '5c91a022', updatedAt: '어제' },
+    { id: 'package', name: 'package.json', path: 'package.json', type: 'File', size: '2.8 KB', lastCommit: '91a42df0', updatedAt: '2시간 전' },
+    { id: 'readme', name: 'README.md', path: 'README.md', type: 'File', size: '5.4 KB', lastCommit: '5c91a022', updatedAt: '어제' },
+  ]
+}
+
+export function getRepositoryFileTree(repositoryId) {
+  const files = getRepositoryFiles(repositoryId)
+
+  return [
+    {
+      title: 'src',
+      key: 'src',
+      children: files
+        .filter((file) => file.path.startsWith('src/') && file.path !== 'src/api')
+        .map((file) => ({ title: file.name, key: file.path })),
+    },
+    ...files.filter((file) => !file.path.startsWith('src')).map((file) => ({ title: file.name, key: file.path })),
+  ]
 }
 
 export function getRepositoryBranches(repositoryId) {
@@ -100,7 +183,60 @@ export function getRepositoryBranches(repositoryId) {
   return [...branchNames].map((name) => ({
     name,
     protected: name === repository?.defaultBranch || name === 'develop',
+    default: name === repository?.defaultBranch,
+    status: name === repository?.defaultBranch ? 'active' : name.includes('feature') ? 'active' : 'stale',
+    lastCommit: commits.find((commit) => commit.branch === name)?.sha ?? '91a42df0',
+    lastAuthor: commits.find((commit) => commit.branch === name)?.author ?? 'System',
+    updatedAt: commits.find((commit) => commit.branch === name)?.createdAt ?? repository?.updatedAt ?? '-',
   }))
+}
+
+export function getRepositoryBranchSummary(repositoryId) {
+  const branches = getRepositoryBranches(repositoryId)
+
+  return {
+    total: branches.length,
+    protected: branches.filter((branch) => branch.protected).length,
+    active: branches.filter((branch) => branch.status === 'active').length,
+    stale: branches.filter((branch) => branch.status === 'stale').length,
+  }
+}
+
+export function getRepositoryTags(repositoryId) {
+  const repository = getRepositoryDetail(repositoryId)
+  if (!repository) return []
+
+  return [
+    { name: 'v1.4.2', releaseType: 'production', commit: '7e14d754', message: '인증 정책 응답값 개선 정식 배포', author: 'Choi', createdAt: '2일 전' },
+    { name: 'v1.4.1-hotfix', releaseType: 'hotfix', commit: '5c91a022', message: 'Pipeline retry hotfix', author: 'Yoon', createdAt: '5일 전' },
+    { name: 'release-2026.05.20', releaseType: 'release', commit: '91a42df0', message: '5월 정기 릴리즈 후보', author: 'Choi', createdAt: '어제' },
+    { name: 'prod-2026.05.20', releaseType: 'production', commit: '91a42df0', message: '운영 배포 승인 태그', author: 'Choi', createdAt: '어제' },
+    { name: 'v1.5.0-rc.1', releaseType: 'pre-release', commit: 'c2b8e129', message: '다음 버전 릴리즈 후보', author: 'Min', createdAt: '3시간 전' },
+  ]
+}
+
+export function getRepositoryTagSummary(repositoryId) {
+  const tags = getRepositoryTags(repositoryId)
+
+  return {
+    total: tags.length,
+    latestRelease: tags[0]?.name ?? '-',
+    production: tags.filter((tag) => tag.releaseType === 'production').length,
+    preRelease: tags.filter((tag) => tag.releaseType === 'pre-release').length,
+  }
+}
+
+export function getRepositorySettings(repositoryId) {
+  const repository = getRepositoryDetail(repositoryId)
+  if (!repository) return null
+
+  return {
+    repository,
+    branchPolicy: { protectedDefault: true, requireLinearHistory: true, forcePush: false },
+    mergeRequestPolicy: { approvals: 2, squash: true, pipelineRequired: true, securityRequired: true },
+    securityPolicy: { secretScan: true, dependencyScan: true, criticalBlock: true },
+    notificationPolicy: { pipelineFailure: true, securityAlert: true, weeklyDigest: false },
+  }
 }
 
 export function getRepositoryOverview(repositoryId) {

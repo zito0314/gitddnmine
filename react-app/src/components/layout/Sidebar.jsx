@@ -9,6 +9,7 @@ import {
 import { Badge, Flex, Layout, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { getRepositoryDetail } from '../../api/repositories'
 import RepositoryContextSidebar from './RepositoryContextSidebar'
 
 const { Sider } = Layout
@@ -59,7 +60,9 @@ function Sidebar({ collapsed, onCollapse }) {
   const navigate = useNavigate()
   const repositoryId = useMemo(() => {
     const match = location.pathname.match(/^\/repositories\/([^/]+)/)
-    return match?.[1] ?? null
+    const id = match?.[1] ?? null
+    if (!id || id === 'new') return null
+    return getRepositoryDetail(id) ? id : null
   }, [location.pathname])
 
   const selectedKeys = useMemo(() => {

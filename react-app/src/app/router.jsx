@@ -3,6 +3,7 @@ import AppLayout from '../components/layout/AppLayout'
 import RepositoryLayout from '../components/layout/RepositoryLayout'
 import Dashboard from '../pages/Dashboard'
 import RepositoryList from '../pages/RepositoryList'
+import RepositoryCreate from '../pages/RepositoryCreate'
 import RepositoryDetail from '../pages/RepositoryDetail'
 import RepositoryFiles from '../pages/RepositoryFiles'
 import RepositoryMergeRequests from '../pages/RepositoryMergeRequests'
@@ -14,6 +15,7 @@ import RepositorySecurity from '../pages/RepositorySecurity'
 import RepositoryActivity from '../pages/RepositoryActivity'
 import RepositorySettings from '../pages/RepositorySettings'
 import MergeRequestList from '../pages/MergeRequestList'
+import MergeRequestCreate from '../pages/MergeRequestCreate'
 import MergeRequestDetail from '../pages/MergeRequestDetail'
 import PipelineList from '../pages/PipelineList'
 import PipelineDetail from '../pages/PipelineDetail'
@@ -28,6 +30,7 @@ export const routes = [
     children: [
       { index: true, element: <Dashboard /> },
       { path: 'repositories', element: <RepositoryList /> },
+      { path: 'repositories/new', element: <RepositoryCreate /> },
       {
         path: 'repositories/:repositoryId',
         element: <RepositoryLayout />,
@@ -35,6 +38,7 @@ export const routes = [
           { index: true, element: <RepositoryDetail /> },
           { path: 'files', element: <RepositoryFiles /> },
           { path: 'merge-requests', element: <RepositoryMergeRequests /> },
+          { path: 'merge-requests/new', element: <MergeRequestCreate /> },
           { path: 'merge-requests/:mrId', element: <MergeRequestDetail /> },
           { path: 'pipelines', element: <RepositoryPipelines /> },
           { path: 'pipelines/:pipelineId', element: <PipelineDetail /> },
