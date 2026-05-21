@@ -11,7 +11,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories, getRepositorySummary } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
-import { EMPTY_MESSAGES, PAGE_TEXT } from '../constants'
+import { UI_TEXT } from '../constants'
 import useRepositoryFavorites from '../hooks/useRepositoryFavorites'
 import { sortRepositoriesByFavorite } from '../utils/favorites'
 
@@ -186,8 +186,8 @@ export default function RepositoryList() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        title={PAGE_TEXT.repositories.title}
-        description={PAGE_TEXT.repositories.description}
+        title={UI_TEXT.pages.repositories.title}
+        description={UI_TEXT.pages.repositories.description}
       />
 
       {/* 요약 카드 */}
@@ -277,8 +277,8 @@ export default function RepositoryList() {
         <Alert
           type="info"
           showIcon
-          message={EMPTY_MESSAGES.noSearchResults}
-          description={EMPTY_MESSAGES.noSearchResultsDescription}
+          message={UI_TEXT.messages.empty.noSearchResults}
+          description={UI_TEXT.messages.empty.noSearchResultsDescription}
         />
       )}
 

@@ -22,7 +22,7 @@ import {
   getDashboardSummary,
 } from '../api/dashboard'
 import { StatusTag, SummaryCard, PageHeader } from '../components/common'
-import { ACTION_LABELS, PAGE_TEXT } from '../constants'
+import { UI_TEXT } from '../constants'
 
 const { Text } = Typography
 
@@ -57,14 +57,14 @@ function Dashboard() {
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        title={PAGE_TEXT.dashboard.title}
-        description={PAGE_TEXT.dashboard.description}
+        title={UI_TEXT.pages.dashboard.title}
+        description={UI_TEXT.pages.dashboard.description}
         actions={[
           <Button key="refresh" icon={<ReloadOutlined />}>
-            {ACTION_LABELS.refresh}
+            {UI_TEXT.actions.refresh}
           </Button>,
           <Button key="create" type="primary" icon={<PlusOutlined />} onClick={() => navigate('/repositories')}>
-            {ACTION_LABELS.createRepository}
+            {UI_TEXT.actions.createRepository}
           </Button>,
         ]}
       />
@@ -118,9 +118,9 @@ function Dashboard() {
         </Col>
 
         <Col xs={24} xl={8}>
-          <Card title="gitddn AI Assistant">
+          <Card title={UI_TEXT.dashboardAi.title}>
             <Space orientation="vertical" size={12} style={{ width: '100%' }}>
-              <Text type="secondary">승인, 파이프라인 실패, 보안 차단, 운영이관 준비 상태를 빠르게 확인하세요.</Text>
+              <Text type="secondary">{UI_TEXT.dashboardAi.description}</Text>
               <Space wrap>
                 {prompts.map((prompt) => (
                   <Button key={prompt.key} size="small" type={aiPrompt === prompt.key ? 'primary' : 'default'} onClick={() => setAiPrompt(prompt.key)}>
@@ -130,7 +130,7 @@ function Dashboard() {
               </Space>
               <Flex gap={8}>
                 <Input
-                  placeholder="Ask gitddn AI about MR, pipeline, security, deployment..."
+                  placeholder={UI_TEXT.dashboardAi.inputPlaceholder}
                   value={aiInput}
                   onChange={(event) => setAiInput(event.target.value)}
                   onPressEnter={() => aiInput.trim() && setAiPrompt(aiInput)}

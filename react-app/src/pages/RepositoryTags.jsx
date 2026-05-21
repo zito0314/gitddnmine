@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getRepositoryDetail, getRepositoryTagSummary, getRepositoryTags } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
-import { NOT_FOUND_MESSAGES, PAGE_TEXT } from '../constants'
+import { UI_TEXT } from '../constants'
 
 const { Text, Title } = Typography
 
@@ -17,7 +17,7 @@ export default function RepositoryTags() {
   const [releaseType, setReleaseType] = useState(null)
   const [author, setAuthor] = useState(null)
 
-  if (!repository) return <Card><Title level={3}>{NOT_FOUND_MESSAGES.repository}</Title></Card>
+  if (!repository) return <Card><Title level={3}>{UI_TEXT.messages.notFound.repository}</Title></Card>
 
   const filtered = tags.filter((tag) => {
     const q = search.trim().toLowerCase()
@@ -29,7 +29,7 @@ export default function RepositoryTags() {
 
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader eyebrow={repository.name} title={PAGE_TEXT.repositoryTags.title} description={PAGE_TEXT.repositoryTags.description} />
+      <PageHeader eyebrow={repository.name} title={UI_TEXT.pages.repositoryTags.title} description={UI_TEXT.pages.repositoryTags.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Total Tags" value={summary.total} icon={<TagOutlined />} /></Col>
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Latest Release" value={summary.latestRelease} /></Col>

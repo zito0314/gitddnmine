@@ -16,7 +16,7 @@ import {
   getRepositoryPipelineSummary,
 } from '../api/pipelines'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
-import { ACTION_LABELS, PAGE_TEXT } from '../constants'
+import { UI_TEXT } from '../constants'
 
 const { Text } = Typography
 
@@ -208,14 +208,14 @@ export default function RepositoryPipelines() {
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         eyebrow={repository?.name}
-        title={PAGE_TEXT.repositoryPipelines.title}
-        description={PAGE_TEXT.repositoryPipelines.description}
+        title={UI_TEXT.pages.repositoryPipelines.title}
+        description={UI_TEXT.pages.repositoryPipelines.description}
         actions={[
           <Button key="run" type="primary" icon={<PlayCircleOutlined />}>
-            {ACTION_LABELS.runPipeline}
+            {UI_TEXT.actions.runPipeline}
           </Button>,
           <Button key="refresh" icon={<ReloadOutlined />}>
-            {ACTION_LABELS.refresh}
+            {UI_TEXT.actions.refresh}
           </Button>,
         ]}
       />

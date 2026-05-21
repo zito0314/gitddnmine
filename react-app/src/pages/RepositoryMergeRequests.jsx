@@ -14,7 +14,7 @@ import {
   getRepositoryMergeRequests,
 } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
-import { PAGE_TEXT } from '../constants'
+import { UI_TEXT } from '../constants'
 
 const { Text } = Typography
 
@@ -190,8 +190,8 @@ export default function RepositoryMergeRequests() {
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         eyebrow={repository?.name}
-        title={PAGE_TEXT.repositoryMergeRequests.title}
-        description={PAGE_TEXT.repositoryMergeRequests.description}
+        title={UI_TEXT.pages.repositoryMergeRequests.title}
+        description={UI_TEXT.pages.repositoryMergeRequests.description}
       />
 
       <Card>

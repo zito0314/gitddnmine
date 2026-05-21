@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { getMergeRequests } from '../api/mergeRequests'
 import { getRepositories } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
-import { ACTION_LABELS, PAGE_TEXT } from '../constants'
+import { UI_TEXT } from '../constants'
 
 const { Text } = Typography
 
@@ -49,7 +49,7 @@ export default function MergeRequestList() {
 
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader title={PAGE_TEXT.mergeRequests.title} description={PAGE_TEXT.mergeRequests.description} />
+      <PageHeader title={UI_TEXT.pages.mergeRequests.title} description={UI_TEXT.pages.mergeRequests.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}><SummaryCard title="Total MRs" value={summary.total} icon={<PullRequestOutlined />} /></Col>
         <Col xs={24} sm={12} xl={5}><SummaryCard title="Review Required" value={summary.reviewRequired} tone="warning" /></Col>
@@ -81,7 +81,7 @@ export default function MergeRequestList() {
           { title: 'Pipeline status', dataIndex: 'pipeline', render: (value) => <StatusTag status={value} /> },
           { title: 'Security status', dataIndex: 'security', render: (value, record) => <StatusTag status={value} label={record.securityLabel} /> },
           { title: 'Updated at', dataIndex: 'updatedAt' },
-          { title: 'Actions', key: 'actions', fixed: 'right', render: (_, record) => <Button size="small" onClick={() => navigate(`/repositories/${record.repo}/merge-requests/${record.id}`)}>{ACTION_LABELS.view}</Button> },
+          { title: 'Actions', key: 'actions', fixed: 'right', render: (_, record) => <Button size="small" onClick={() => navigate(`/repositories/${record.repo}/merge-requests/${record.id}`)}>{UI_TEXT.actions.view}</Button> },
         ]} />
       </Card>
     </Space>

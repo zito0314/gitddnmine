@@ -7,7 +7,7 @@ import { getPipelineOverview } from '../api/pipelines'
 import { getRepositoryDetail } from '../api/repositories'
 import { getSecurityValidationById } from '../api/security'
 import { PageHeader, StatusTag, SummaryCard } from '../components/common'
-import { NOT_FOUND_MESSAGES } from '../constants'
+import { UI_TEXT } from '../constants'
 
 const { Text, Title } = Typography
 
@@ -20,7 +20,7 @@ export default function DeploymentTransferDetail() {
   const { transferId, repositoryId } = useParams()
   const transfer = getDeploymentTransferDetail(transferId)
 
-  if (!transfer) return <Card><Title level={3}>{NOT_FOUND_MESSAGES.deploymentTransfer}</Title></Card>
+  if (!transfer) return <Card><Title level={3}>{UI_TEXT.messages.notFound.deploymentTransfer}</Title></Card>
 
   const repository = getRepositoryDetail(transfer.repositoryId)
   const mr = getMergeRequestDetail(transfer.mrId)

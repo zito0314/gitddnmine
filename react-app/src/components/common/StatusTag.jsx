@@ -1,11 +1,11 @@
 import { Tag } from 'antd'
-import { STATUS_LABELS, STATUS_TONES } from '../../constants'
+import { UI_TEXT } from '../../constants'
 
 const STATUS_PRESETS = {
   ...Object.fromEntries(
-    Object.entries(STATUS_LABELS).map(([status, label]) => [
+    Object.entries(UI_TEXT.status.labels).map(([status, label]) => [
       status,
-      { label, tone: STATUS_TONES[status] ?? 'neutral' },
+      { label, tone: UI_TEXT.status.tones[status] ?? 'neutral' },
     ]),
   ),
 }

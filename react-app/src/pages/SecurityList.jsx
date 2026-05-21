@@ -18,7 +18,7 @@ import {
   getVulnerabilities,
 } from '../api/security'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
-import { ACTION_LABELS, PAGE_TEXT } from '../constants'
+import { UI_TEXT } from '../constants'
 
 const { Text } = Typography
 
@@ -211,17 +211,17 @@ export default function SecurityList() {
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        title={PAGE_TEXT.security.title}
-        description={PAGE_TEXT.security.description}
+        title={UI_TEXT.pages.security.title}
+        description={UI_TEXT.pages.security.description}
         actions={[
           <Button key="run" type="primary" icon={<ScanOutlined />}>
-            {ACTION_LABELS.runValidation}
+            {UI_TEXT.actions.runValidation}
           </Button>,
           <Button key="export" icon={<DownloadOutlined />}>
-            {ACTION_LABELS.export}
+            {UI_TEXT.actions.export}
           </Button>,
           <Button key="refresh" icon={<ReloadOutlined />}>
-            {ACTION_LABELS.refresh}
+            {UI_TEXT.actions.refresh}
           </Button>,
         ]}
       />

@@ -1,5 +1,1 @@
-export * from './actions'
-export * from './messages'
-export * from './navigation'
-export * from './pageText'
-export * from './status'
+export { UI_TEXT } from './uiText'

@@ -3,7 +3,7 @@ import { Button, Card, Col, Descriptions, Form, Input, Row, Space, Switch, Typog
 import { useParams } from 'react-router-dom'
 import { getRepositorySettings } from '../api/repositories'
 import { PageHeader } from '../components/common'
-import { DEMO_MESSAGES, NOT_FOUND_MESSAGES, PAGE_TEXT } from '../constants'
+import { UI_TEXT } from '../constants'
 
 const { Text, Title } = Typography
 
@@ -15,7 +15,7 @@ export default function RepositorySettings() {
   const { repositoryId } = useParams()
   const settings = getRepositorySettings(repositoryId)
 
-  if (!settings) return <Card><Title level={3}>{NOT_FOUND_MESSAGES.repository}</Title></Card>
+  if (!settings) return <Card><Title level={3}>{UI_TEXT.messages.notFound.repository}</Title></Card>
 
   const { repository, branchPolicy, mergeRequestPolicy, securityPolicy, notificationPolicy } = settings
 
@@ -23,8 +23,8 @@ export default function RepositorySettings() {
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         eyebrow={repository.name}
-        title={PAGE_TEXT.repositorySettings.title}
-        description={PAGE_TEXT.repositorySettings.description}
+        title={UI_TEXT.pages.repositorySettings.title}
+        description={UI_TEXT.pages.repositorySettings.description}
         actions={[<Button key="save" type="primary" icon={<SaveOutlined />} disabled>Save</Button>]}
       />
       <Card title="Repository Information">
@@ -75,7 +75,7 @@ export default function RepositorySettings() {
           </Card>
         </Col>
       </Row>
-      <Text type="secondary">{DEMO_MESSAGES.readOnlySettings}</Text>
+      <Text type="secondary">{UI_TEXT.messages.demo.readOnlySettings}</Text>
     </Space>
   )
 }

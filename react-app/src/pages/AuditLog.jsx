@@ -27,7 +27,7 @@ import {
   getAuditRelatedIds,
 } from '../api/audit'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
-import { ACTION_LABELS, PAGE_TEXT } from '../constants'
+import { UI_TEXT } from '../constants'
 
 const { Paragraph, Text } = Typography
 
@@ -178,14 +178,14 @@ function AuditLog() {
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        title={PAGE_TEXT.audit.title}
-        description={PAGE_TEXT.audit.description}
+        title={UI_TEXT.pages.audit.title}
+        description={UI_TEXT.pages.audit.description}
         actions={[
           <Button key="export" icon={<DownloadOutlined />}>
-            {ACTION_LABELS.exportCsv}
+            {UI_TEXT.actions.exportCsv}
           </Button>,
           <Button key="refresh" icon={<ReloadOutlined />}>
-            {ACTION_LABELS.refresh}
+            {UI_TEXT.actions.refresh}
           </Button>,
         ]}
       />

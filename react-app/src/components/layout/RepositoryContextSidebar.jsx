@@ -15,22 +15,22 @@ import { Card, Divider, Flex, Menu, Tag, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
-import { REPOSITORY_NAV_LABELS } from '../../constants'
+import { UI_TEXT } from '../../constants'
 
 const { Text, Title } = Typography
 
 const navItems = [
-  { key: '', label: REPOSITORY_NAV_LABELS.overview, icon: <AppstoreOutlined /> },
-  { key: 'files', label: REPOSITORY_NAV_LABELS.files, icon: <FileTextOutlined /> },
-  { key: 'merge-requests', label: REPOSITORY_NAV_LABELS.mergeRequests, icon: <PullRequestOutlined /> },
-  { key: 'pipelines', label: REPOSITORY_NAV_LABELS.pipelines, icon: <BranchesOutlined /> },
-  { key: 'commits', label: REPOSITORY_NAV_LABELS.commits, icon: <NodeIndexOutlined /> },
-  { key: 'branches', label: REPOSITORY_NAV_LABELS.branches, icon: <CodeOutlined /> },
-  { key: 'tags', label: REPOSITORY_NAV_LABELS.tags, icon: <TagsOutlined /> },
-  { key: 'security', label: REPOSITORY_NAV_LABELS.security, icon: <SafetyCertificateOutlined /> },
-  { key: 'deployment-transfer', label: REPOSITORY_NAV_LABELS.deploymentTransfer, icon: <DeploymentUnitOutlined /> },
-  { key: 'activity', label: REPOSITORY_NAV_LABELS.activity, icon: <HistoryOutlined /> },
-  { key: 'settings', label: REPOSITORY_NAV_LABELS.settings, icon: <SettingOutlined /> },
+  { key: '', label: UI_TEXT.repositoryNavigation.overview, icon: <AppstoreOutlined /> },
+  { key: 'files', label: UI_TEXT.repositoryNavigation.files, icon: <FileTextOutlined /> },
+  { key: 'merge-requests', label: UI_TEXT.repositoryNavigation.mergeRequests, icon: <PullRequestOutlined /> },
+  { key: 'pipelines', label: UI_TEXT.repositoryNavigation.pipelines, icon: <BranchesOutlined /> },
+  { key: 'commits', label: UI_TEXT.repositoryNavigation.commits, icon: <NodeIndexOutlined /> },
+  { key: 'branches', label: UI_TEXT.repositoryNavigation.branches, icon: <CodeOutlined /> },
+  { key: 'tags', label: UI_TEXT.repositoryNavigation.tags, icon: <TagsOutlined /> },
+  { key: 'security', label: UI_TEXT.repositoryNavigation.security, icon: <SafetyCertificateOutlined /> },
+  { key: 'deployment-transfer', label: UI_TEXT.repositoryNavigation.deploymentTransfer, icon: <DeploymentUnitOutlined /> },
+  { key: 'activity', label: UI_TEXT.repositoryNavigation.activity, icon: <HistoryOutlined /> },
+  { key: 'settings', label: UI_TEXT.repositoryNavigation.settings, icon: <SettingOutlined /> },
 ]
 
 const statusColor = {
