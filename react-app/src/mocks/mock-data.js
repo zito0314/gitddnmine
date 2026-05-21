@@ -89,7 +89,63 @@ const mockData = {
       "mergeRequest": 7,
       "security": 2,
       "deployment": 3
-    }
+    },
+    "notifications": [
+      {
+        "id": "NTF-1001",
+        "type": "review-request",
+        "severity": "warning",
+        "title": "MR review requested",
+        "message": "MR #128 인증 정책 응답값 개선 리뷰가 필요합니다.",
+        "createdAt": "5분 전",
+        "targetLink": "/repositories/mobile-banking-api/merge-requests/128"
+      },
+      {
+        "id": "NTF-1002",
+        "type": "pipeline-failed",
+        "severity": "failed",
+        "title": "Pipeline failed",
+        "message": "Pipeline #2847502395의 Test 단계가 실패했습니다.",
+        "createdAt": "20분 전",
+        "targetLink": "/repositories/mobile-banking-api/pipelines/2847502395"
+      },
+      {
+        "id": "NTF-1003",
+        "type": "security-blocked",
+        "severity": "blocked",
+        "title": "Security validation blocked",
+        "message": "SEC-204 보안 정책 차단 항목 확인이 필요합니다.",
+        "createdAt": "30분 전",
+        "targetLink": "/security/SEC-204"
+      },
+      {
+        "id": "NTF-1004",
+        "type": "deployment-approved",
+        "severity": "approved",
+        "title": "Deployment transfer approved",
+        "message": "DT-2026-0521-003 운영이관 요청이 승인되었습니다.",
+        "createdAt": "2시간 전",
+        "targetLink": "/deployment-transfer/DT-2026-0521-003"
+      },
+      {
+        "id": "NTF-1005",
+        "type": "policy-changed",
+        "severity": "info",
+        "title": "Repository policy changed",
+        "message": "Repository naming policy가 업데이트되었습니다.",
+        "createdAt": "3시간 전",
+        "targetLink": "/admin/repository-policy"
+      },
+      {
+        "id": "NTF-1006",
+        "type": "audit-warning",
+        "severity": "warning",
+        "title": "Audit warning detected",
+        "message": "권한/정책 변경 이벤트 검토가 필요합니다.",
+        "createdAt": "4시간 전",
+        "targetLink": "/audit"
+      }
+    ]
   },
   "user": {
     "currentUser": {
@@ -188,16 +244,20 @@ const mockData = {
   },
   "organizations": [
     {
-      "key": "digital-banking",
-      "label": "Digital Banking"
+      "key": "shinhan-bank",
+      "label": "Shinhan Bank"
     },
     {
-      "key": "corporate-banking",
-      "label": "Corporate Banking"
+      "key": "hana-financial",
+      "label": "Hana Financial Group"
     },
     {
-      "key": "wealth-management",
-      "label": "Wealth Management"
+      "key": "kb-financial",
+      "label": "KB Financial"
+    },
+    {
+      "key": "woori-bank",
+      "label": "Woori Bank"
     }
   ],
   "repositories": {

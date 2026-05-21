@@ -119,8 +119,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 10;
-  display: grid;
-  grid-template-columns: minmax(180px, 260px) minmax(240px, 620px) max-content;
+  display: flex;
   align-items: center;
   gap: 18px;
   height: 64px;
@@ -136,11 +135,47 @@ body {
 }
 
 .global-search {
-  width: 100%;
+  flex: 1;
+  min-width: 260px;
+  max-width: 680px;
 }
 
 .user-avatar {
   background: var(--gitddn-primary);
+  cursor: pointer;
+}
+
+.header-left {
+  min-width: 250px;
+}
+
+.header-left .ant-btn {
+  min-width: 0;
+}
+
+.header-actions {
+  margin-left: auto;
+}
+
+.global-search-overlay {
+  width: min(620px, calc(100vw - 48px));
+}
+
+.global-search-popover {
+  max-height: 420px;
+  overflow: auto;
+}
+
+.global-search-result,
+.notification-item {
+  cursor: pointer;
+  border-radius: 8px;
+  padding-inline: 8px !important;
+}
+
+.global-search-result:hover,
+.notification-item:hover {
+  background: #f8fbff;
 }
 
 .page-content {
@@ -361,12 +396,16 @@ body {
 
 @media (max-width: 900px) {
   .top-header {
-    grid-template-columns: 1fr max-content;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 64px;
+    padding-block: 10px;
   }
 
   .global-search {
-    grid-column: 1 / -1;
-    grid-row: 2;
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
   }
 
   .header-left {

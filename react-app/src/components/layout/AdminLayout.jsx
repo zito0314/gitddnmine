@@ -1,6 +1,7 @@
 import { AuditOutlined, BellOutlined, BgColorsOutlined, DashboardOutlined, DeploymentUnitOutlined, LinkOutlined, LockOutlined, SafetyCertificateOutlined, TeamOutlined } from '@ant-design/icons'
 import { Button, Flex, Layout, Menu, Space, Typography } from 'antd'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { UI_TEXT } from '../../constants'
 
 const { Content, Header, Sider } = Layout
 const { Text, Title } = Typography
@@ -43,7 +44,7 @@ export default function AdminLayout() {
               <Text strong>Admin Console</Text>
               <Text type="secondary">Policy-based Governance Platform</Text>
             </Space>
-            <Button type="primary" onClick={() => navigate('/')}>User Platform</Button>
+            <Button type="primary" onClick={() => navigate('/')}>{UI_TEXT.topHeader.backToUserPlatform}</Button>
           </Flex>
         </Header>
         <Content className="page-content">
