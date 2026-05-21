@@ -218,7 +218,7 @@ export const UI_TEXT = {
     organizationSwitched: 'Organization switched to',
   },
   globalSearch: {
-    placeholder: 'Search repositories, MR, pipeline, security, deployment...',
+    placeholder: 'Search repositories, MRs, pipelines, security...',
     empty: '검색 결과가 없습니다.',
     hint: 'Repository, MR, Pipeline, Security, Deployment, Audit, Policy를 검색하세요.',
   },
@@ -255,5 +255,19 @@ export const UI_TEXT = {
   },
   organizations: {
     storageKey: 'gitddn.organization',
+  },
+  deploymentTransferCreate: {
+    title: 'New Deployment Transfer',
+    description: '운영 반영 요청 정보를 입력하고 배포 전 검증 조건을 확인하는 화면',
+    submit: 'Submit Transfer Request',
+    draft: 'Save as Draft',
+    cancel: 'Cancel',
+    submitted: 'Deployment transfer request submitted',
+    draftSaved: 'Deployment transfer draft saved',
+    formTitle: 'Transfer Request',
+    gatePreview: 'Validation / Gate Preview',
+    summaryPreview: 'Summary Preview',
+    recommendedActions: 'Recommended Actions',
+    expectedApprovalPolicy: 'Release Manager approval required',
   },
 }

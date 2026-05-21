@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons'
 import {
   Avatar,
+  AutoComplete,
   Badge,
   Button,
   Divider,
@@ -22,15 +23,15 @@ import {
   List,
   message,
   Modal,
-  Popover,
   Space,
+  Tag,
   Typography,
 } from 'antd'
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   getCurrentUser,
-  getGlobalSearchResults,
+  getGlobalSearchSuggestions,
   getHeaderOrganizations,
   getNotifications,
 } from '../../api/common'
@@ -87,10 +88,25 @@ function TopHeader({ onToggleSidebar }) {
 
   const selectedOrganization =
     organizations.find((organization) => organization.key === organizationKey) ?? organizations[0]
-  const searchResults = useMemo(() => getGlobalSearchResults(searchValue), [searchValue])
+  const searchResults = useMemo(() => getGlobalSearchSuggestions(searchValue), [searchValue])
   const unreadCount = notifications.filter(
     (notification) => !readNotificationIds.includes(notification.id),
   ).length
+  const searchOptions = searchResults.map((item) => ({
+    value: item.href,
+    label: (
+      <Flex align="flex-start" justify="space-between" gap={12} className="global-search-option">
+        <Space orientation="vertical" size={2}>
+          <Flex align="center" gap={6} wrap="wrap">
+            <Tag>{item.type}</Tag>
+            <Text strong>{item.title}</Text>
+          </Flex>
+          <Text type="secondary">{item.description}</Text>
+        </Space>
+        <StatusTag status={item.status} />
+      </Flex>
+    ),
+  }))
 
   const handleOrganizationChange = ({ key }) => {
     const nextOrganization = organizations.find((organization) => organization.key === key)
@@ -118,8 +134,7 @@ function TopHeader({ onToggleSidebar }) {
     }
 
     if (key === 'deployment-transfer') {
-      message.info(UI_TEXT.quickCreate.unavailable)
-      navigate('/deployment-transfer')
+      navigate(currentRepositoryId ? `/repositories/${currentRepositoryId}/deployment-transfer/new` : '/deployment-transfer/new')
       return
     }
 
@@ -170,7 +185,7 @@ function TopHeader({ onToggleSidebar }) {
       key: 'profile',
       disabled: true,
       label: (
-        <Space direction="vertical" size={0}>
+        <Space orientation="vertical" size={0}>
           <Text strong>{currentUser?.name}</Text>
           <Text type="secondary">{currentUser?.role} · {selectedOrganization?.label}</Text>
           <Text type="secondary">{currentUser?.email}</Text>
@@ -184,38 +199,6 @@ function TopHeader({ onToggleSidebar }) {
     { type: 'divider' },
     { key: 'sign-out', label: UI_TEXT.userMenu.signOut },
   ]
-
-  const searchContent = (
-    <div className="global-search-popover">
-      {searchValue.trim() ? (
-        <List
-          size="small"
-          dataSource={searchResults}
-          locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.globalSearch.empty} /> }}
-          renderItem={(item) => (
-            <List.Item onClick={() => navigateTo(item.href)} className="global-search-result">
-              <List.Item.Meta
-                title={
-                  <Flex align="center" gap={8} wrap="wrap">
-                    <Text strong>{item.title}</Text>
-                    <StatusTag status={item.status} />
-                  </Flex>
-                }
-                description={
-                  <Space direction="vertical" size={2}>
-                    <Text type="secondary">{item.type}</Text>
-                    <Text type="secondary">{item.description}</Text>
-                  </Space>
-                }
-              />
-            </List.Item>
-          )}
-        />
-      ) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.globalSearch.hint} />
-      )}
-    </div>
-  )
 
   return (
     <Header className="top-header">
@@ -237,28 +220,30 @@ function TopHeader({ onToggleSidebar }) {
         </Dropdown>
       </Flex>
 
-      <Popover
+      <AutoComplete
+        className="global-search"
         open={searchOpen}
-        onOpenChange={setSearchOpen}
-        content={searchContent}
-        trigger="click"
-        placement="bottom"
-        arrow={false}
-        overlayClassName="global-search-overlay"
+        value={searchValue}
+        options={searchOptions}
+        notFoundContent={<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.globalSearch.empty} />}
+        classNames={{ popup: { root: 'global-search-overlay' } }}
+        onSelect={(href) => {
+          setSearchValue('')
+          navigateTo(href)
+        }}
+        onSearch={(value) => {
+          setSearchValue(value)
+          setSearchOpen(true)
+        }}
+        onFocus={() => setSearchOpen(true)}
+        onBlur={() => setSearchOpen(false)}
       >
         <Input
-          className="global-search"
           prefix={<SearchOutlined />}
           placeholder={UI_TEXT.globalSearch.placeholder}
-          value={searchValue}
-          onChange={(event) => {
-            setSearchValue(event.target.value)
-            setSearchOpen(true)
-          }}
-          onFocus={() => setSearchOpen(true)}
           allowClear
         />
-      </Popover>
+      </AutoComplete>
 
       <Space size={8} className="header-actions">
         <Dropdown menu={{ items: createItems, onClick: handleQuickCreate }} trigger={['click']}>
@@ -301,7 +286,7 @@ function TopHeader({ onToggleSidebar }) {
         title={UI_TEXT.notifications.title}
         open={notificationOpen}
         onClose={() => setNotificationOpen(false)}
-        width={420}
+        size="default"
         extra={<Button size="small" onClick={markAllNotificationsRead}>{UI_TEXT.notifications.markAllRead}</Button>}
       >
         <List
@@ -320,7 +305,7 @@ function TopHeader({ onToggleSidebar }) {
                     </Flex>
                   }
                   description={
-                    <Space direction="vertical" size={4}>
+                    <Space orientation="vertical" size={4}>
                       <Text type="secondary">{notification.message}</Text>
                       <Text type="secondary">{notification.createdAt}</Text>
                     </Space>
@@ -338,7 +323,7 @@ function TopHeader({ onToggleSidebar }) {
         onCancel={() => setHelpOpen(false)}
         footer={<Button type="primary" onClick={() => setHelpOpen(false)}>OK</Button>}
       >
-        <Space direction="vertical" size={12}>
+        <Space orientation="vertical" size={12}>
           <Text>{UI_TEXT.help.demoGuideBody}</Text>
           <Divider />
           <Text type="secondary">Quick Create, Global Search, Notification Drawer는 mock 데이터 기반으로 동작합니다.</Text>

@@ -23,6 +23,7 @@ import PipelineDetail from '../pages/PipelineDetail'
 import SecurityList from '../pages/SecurityList'
 import SecurityDetail from '../pages/SecurityDetail'
 import AuditLog from '../pages/AuditLog'
+import DeploymentTransferCreate from '../pages/DeploymentTransferCreate'
 import DeploymentTransferList from '../pages/DeploymentTransferList'
 import DeploymentTransferDetail from '../pages/DeploymentTransferDetail'
 import RepositoryDeploymentTransfers from '../pages/RepositoryDeploymentTransfers'
@@ -57,6 +58,7 @@ export const routes = [
           { path: 'pipelines', element: <RepositoryPipelines /> },
           { path: 'pipelines/:pipelineId', element: <PipelineDetail /> },
           { path: 'deployment-transfer', element: <RepositoryDeploymentTransfers /> },
+          { path: 'deployment-transfer/new', element: <DeploymentTransferCreate /> },
           { path: 'deployment-transfer/:transferId', element: <DeploymentTransferDetail /> },
           { path: 'commits', element: <RepositoryCommits /> },
           { path: 'branches', element: <RepositoryBranches /> },
@@ -71,6 +73,7 @@ export const routes = [
       { path: 'pipelines', element: <PipelineList /> },
       { path: 'pipelines/:pipelineId', element: <PipelineDetail /> },
       { path: 'deployment-transfer', element: <DeploymentTransferList /> },
+      { path: 'deployment-transfer/new', element: <DeploymentTransferCreate /> },
       { path: 'deployment-transfer/:transferId', element: <DeploymentTransferDetail /> },
       { path: 'security', element: <SecurityList /> },
       { path: 'security/:securityId', element: <SecurityDetail /> },

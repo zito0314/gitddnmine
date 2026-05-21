@@ -28,10 +28,7 @@ export function getNotifications() {
   return getMockSlice((data) => data.common.notifications, [])
 }
 
-export function getGlobalSearchResults(query) {
-  const normalizedQuery = String(query ?? '').trim().toLowerCase()
-  if (!normalizedQuery) return []
-
+export function getGlobalSearchItems() {
   const data = getMockSlice((mockData) => mockData, {})
   const repositories = data.repositories?.list ?? []
   const mergeRequests = data.mergeRequests?.list ?? []
@@ -113,6 +110,39 @@ export function getGlobalSearchResults(query) {
       searchable: [policy.id, policy.name, policy.value, policy.area],
     })),
   ]
+}
+
+export function searchGlobalItems(query, limit = 8) {
+  const normalizedQuery = String(query ?? '').trim().toLowerCase()
+  if (!normalizedQuery) return []
+
+  return getGlobalSearchItems()
     .filter((item) => item.searchable.filter(Boolean).join(' ').toLowerCase().includes(normalizedQuery))
-    .slice(0, 8)
+    .slice(0, limit)
+}
+
+export function getGlobalSearchSuggestions(query) {
+  const normalizedQuery = String(query ?? '').trim()
+  if (!normalizedQuery) return getRecentSearchItems()
+
+  return searchGlobalItems(normalizedQuery)
+}
+
+export function getRecentSearchItems() {
+  return getGlobalSearchItems()
+    .filter((item) =>
+      [
+        '/repositories/mobile-banking-api',
+        '/repositories/mobile-banking-api/merge-requests/128',
+        '/repositories/mobile-banking-api/pipelines/2847502395',
+        '/security/SEC-204',
+        '/deployment-transfer/DT-2026-0519-001',
+        '/admin/repository-policy',
+      ].includes(item.href),
+    )
+    .slice(0, 6)
+}
+
+export function getGlobalSearchResults(query) {
+  return searchGlobalItems(query)
 }
