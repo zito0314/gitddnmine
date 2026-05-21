@@ -10,6 +10,8 @@ const STATUS_PRESETS = {
   blocked: { color: 'error', label: 'Blocked' },
   rejected: { color: 'error', label: '승인 반려' },
   'need-check': { color: 'error', label: '확인 필요' },
+  'need-review': { color: 'warning', label: '리뷰 필요' },
+  reviewing: { color: 'processing', label: '검토 중' },
   pending: { color: 'warning', label: 'Pending' },
   running: { color: 'processing', label: 'Running' },
   warning: { color: 'warning', label: 'Warning' },

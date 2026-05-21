@@ -314,3 +314,83 @@ body {
 .summary-cards-row {
   margin-bottom: 4px;
 }
+
+.repository-overview-hero h2.ant-typography {
+  margin: 0;
+}
+
+.repository-overview-hero .ant-card-body {
+  padding: 24px;
+}
+
+.repository-overview-meta {
+  margin-top: 16px;
+}
+
+.repo-favorite-icon {
+  color: #faad14;
+  font-size: 18px;
+}
+
+.next-up-icon {
+  color: var(--gitddn-primary);
+  font-size: 18px;
+}
+
+.security-summary-note.ant-typography {
+  margin: 14px 0 0;
+}
+
+.mr-detail-hero h2.ant-typography {
+  margin: 4px 0 8px;
+}
+
+.mr-detail-meta {
+  margin-top: 16px;
+}
+
+.mr-security-counts {
+  margin-top: 12px;
+}
+
+.mr-file-preview {
+  width: 100%;
+}
+
+.mr-comment-body.ant-typography {
+  margin: 8px 0 0;
+}
+
+.pipeline-detail-hero h2.ant-typography {
+  margin: 4px 0 8px;
+}
+
+.pipeline-detail-meta {
+  margin-top: 16px;
+}
+
+.pipeline-log-preview {
+  width: 100%;
+}
+
+.pipeline-log-preview .ant-typography {
+  display: block;
+  white-space: pre-wrap;
+}
+
+.security-risk-row > td {
+  background: #fff7f6;
+}
+
+.security-detail-hero h2.ant-typography {
+  margin: 4px 0 8px;
+}
+
+.security-detail-meta {
+  margin-top: 16px;
+}
+
+.audit-json-preview.ant-typography {
+  display: block;
+  white-space: pre-wrap;
+}
