@@ -6,6 +6,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons'
 import { Avatar, Badge, Button, Dropdown, Flex, Input, Layout, Space, Tag, Typography } from 'antd'
+import { useNavigate } from 'react-router-dom'
 
 const { Header } = Layout
 const { Text } = Typography
@@ -17,6 +18,7 @@ const createItems = [
 ]
 
 function TopHeader({ onToggleSidebar }) {
+  const navigate = useNavigate()
   return (
     <Header className="top-header">
       <Flex align="center" gap={12} className="header-left">
@@ -41,6 +43,7 @@ function TopHeader({ onToggleSidebar }) {
         <Badge count={4} size="small">
           <Button icon={<BellOutlined />} />
         </Badge>
+        <Button onClick={() => navigate('/admin')}>Admin Console</Button>
         <Avatar icon={<UserOutlined />} className="user-avatar" />
       </Space>
     </Header>

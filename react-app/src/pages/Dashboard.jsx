@@ -7,10 +7,13 @@ import {
   ReloadOutlined,
   SafetyCertificateOutlined,
 } from '@ant-design/icons'
-import { Alert, Button, Card, Col, Flex, List, Row, Space, Table, Typography } from 'antd'
+import { Alert, Button, Card, Col, Flex, Input, List, Row, Space, Table, Typography } from 'antd'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   getDashboardAuditEvents,
+  getDashboardAiPrompts,
+  getDashboardAiResponse,
   getDashboardMergeRequestsData,
   getDashboardNextUpItems,
   getDashboardPipelinesData,
@@ -45,6 +48,10 @@ function Dashboard() {
   const pipelines = getDashboardPipelinesData()
   const securityItems = getDashboardSecurityItems()
   const auditEvents = getDashboardAuditEvents()
+  const prompts = getDashboardAiPrompts()
+  const [aiPrompt, setAiPrompt] = useState('mr-approval')
+  const [aiInput, setAiInput] = useState('')
+  const aiResponse = getDashboardAiResponse(aiPrompt)
 
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
@@ -109,7 +116,40 @@ function Dashboard() {
           </Card>
         </Col>
 
-        <Col xs={24} xl={14}>
+        <Col xs={24} xl={8}>
+          <Card title="gitddn AI Assistant">
+            <Space orientation="vertical" size={12} style={{ width: '100%' }}>
+              <Text type="secondary">승인, 파이프라인 실패, 보안 차단, 운영이관 준비 상태를 빠르게 확인하세요.</Text>
+              <Space wrap>
+                {prompts.map((prompt) => (
+                  <Button key={prompt.key} size="small" type={aiPrompt === prompt.key ? 'primary' : 'default'} onClick={() => setAiPrompt(prompt.key)}>
+                    {prompt.label}
+                  </Button>
+                ))}
+              </Space>
+              <Flex gap={8}>
+                <Input
+                  placeholder="Ask gitddn AI about MR, pipeline, security, deployment..."
+                  value={aiInput}
+                  onChange={(event) => setAiInput(event.target.value)}
+                  onPressEnter={() => aiInput.trim() && setAiPrompt(aiInput)}
+                />
+                <Button onClick={() => aiInput.trim() && setAiPrompt(aiInput)}>Ask</Button>
+              </Flex>
+              <Card size="small">
+                <Space orientation="vertical" size={6}>
+                  <Text strong>{aiResponse.title}</Text>
+                  <Text>{aiResponse.body}</Text>
+                  <Space wrap>
+                    {aiResponse.links.map((link) => <Link key={link.href} to={link.href}>{link.label}</Link>)}
+                  </Space>
+                </Space>
+              </Card>
+            </Space>
+          </Card>
+        </Col>
+
+        <Col xs={24} xl={6}>
           <Card title="My Repositories">
             <Table
               rowKey="id"

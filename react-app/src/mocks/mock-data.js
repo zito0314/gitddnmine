@@ -13529,6 +13529,201 @@ const mockData = {
         "Job succeeded"
       ]
     }
+  },
+  "deploymentTransfers": [
+    {
+      "id": "DT-2026-0519-001",
+      "transferId": "DT-2026-0519-001",
+      "repositoryId": "mobile-banking-api",
+      "mrId": 128,
+      "pipelineId": "2847502395",
+      "securityId": "SEC-204",
+      "status": "reviewing",
+      "targetEnvironment": "production",
+      "requestedBy": "Jito",
+      "approvedBy": "Choi",
+      "requestedAt": "20분 전",
+      "scheduledAt": "2026-05-21 22:30",
+      "updatedAt": "10분 전",
+      "riskLevel": "high",
+      "policyDecision": "conditional approval",
+      "approvalStatus": "pending",
+      "pipelineStatus": "passed",
+      "securityStatus": "blocked",
+      "gates": [
+        { "label": "MR approved", "status": "passed" },
+        { "label": "Pipeline passed", "status": "passed" },
+        { "label": "Security validation passed", "status": "failed" },
+        { "label": "Required approver completed", "status": "pending" },
+        { "label": "Deployment window allowed", "status": "passed" },
+        { "label": "No active policy block", "status": "failed" },
+        { "label": "Audit log ready", "status": "passed" }
+      ],
+      "approvers": [
+        { "role": "Requester", "name": "Jito", "status": "approved" },
+        { "role": "Reviewer", "name": "Min", "status": "approved" },
+        { "role": "Security Manager", "name": "Park", "status": "pending" },
+        { "role": "Final Approver", "name": "Choi", "status": "pending" }
+      ],
+      "deploymentPlan": {
+        "window": "22:30-23:30 KST",
+        "rollbackPlan": "Blue/green rollback to v1.4.1-hotfix",
+        "changeReason": "모바일 인증 정책 응답값 운영 반영",
+        "impactScope": "Mobile login and account authentication API",
+        "checklistNote": "Security exception approval required before deployment"
+      },
+      "activities": [
+        { "type": "requested", "actor": "Jito", "message": "운영이관 요청 생성", "createdAt": "20분 전" },
+        { "type": "reviewed", "actor": "Min", "message": "MR 승인 상태 확인", "createdAt": "15분 전" },
+        { "type": "blocked", "actor": "System", "message": "Security gate blocked by SEC-204", "createdAt": "12분 전" }
+      ]
+    },
+    {
+      "id": "DT-2026-0520-002",
+      "transferId": "DT-2026-0520-002",
+      "repositoryId": "customer-web-portal",
+      "mrId": 129,
+      "pipelineId": "2847502411",
+      "securityId": "SEC-301",
+      "status": "scheduled",
+      "targetEnvironment": "staging",
+      "requestedBy": "Min",
+      "approvedBy": "Han",
+      "requestedAt": "1시간 전",
+      "scheduledAt": "2026-05-21 19:00",
+      "updatedAt": "30분 전",
+      "riskLevel": "medium",
+      "policyDecision": "approved",
+      "approvalStatus": "approved",
+      "pipelineStatus": "running",
+      "securityStatus": "warning",
+      "gates": [
+        { "label": "MR approved", "status": "passed" },
+        { "label": "Pipeline passed", "status": "warning" },
+        { "label": "Security validation passed", "status": "warning" },
+        { "label": "Required approver completed", "status": "passed" },
+        { "label": "Deployment window allowed", "status": "passed" },
+        { "label": "No active policy block", "status": "passed" },
+        { "label": "Audit log ready", "status": "passed" }
+      ],
+      "approvers": [
+        { "role": "Requester", "name": "Min", "status": "approved" },
+        { "role": "Reviewer", "name": "Seo", "status": "approved" },
+        { "role": "Final Approver", "name": "Han", "status": "approved" }
+      ],
+      "deploymentPlan": {
+        "window": "19:00-20:00 KST",
+        "rollbackPlan": "Rollback frontend bundle to previous CDN version",
+        "changeReason": "고객 포털 인증 배너 개선",
+        "impactScope": "Customer portal login page",
+        "checklistNote": "Monitor error rate for 30 minutes"
+      },
+      "activities": [
+        { "type": "requested", "actor": "Min", "message": "Staging 이관 요청", "createdAt": "1시간 전" },
+        { "type": "approved", "actor": "Han", "message": "배포 승인 완료", "createdAt": "30분 전" },
+        { "type": "scheduled", "actor": "System", "message": "배포 창 예약", "createdAt": "30분 전" }
+      ]
+    },
+    {
+      "id": "DT-2026-0521-003",
+      "transferId": "DT-2026-0521-003",
+      "repositoryId": "mobile-banking-api",
+      "mrId": 127,
+      "pipelineId": "2847502398",
+      "securityId": "SEC-112",
+      "status": "approved",
+      "targetEnvironment": "production",
+      "requestedBy": "Kang",
+      "approvedBy": "Choi",
+      "requestedAt": "어제",
+      "scheduledAt": "2026-05-22 01:00",
+      "updatedAt": "2시간 전",
+      "riskLevel": "low",
+      "policyDecision": "approved",
+      "approvalStatus": "approved",
+      "pipelineStatus": "passed",
+      "securityStatus": "passed",
+      "gates": [
+        { "label": "MR approved", "status": "passed" },
+        { "label": "Pipeline passed", "status": "passed" },
+        { "label": "Security validation passed", "status": "passed" },
+        { "label": "Required approver completed", "status": "passed" },
+        { "label": "Deployment window allowed", "status": "passed" },
+        { "label": "No active policy block", "status": "passed" },
+        { "label": "Audit log ready", "status": "passed" }
+      ],
+      "approvers": [
+        { "role": "Requester", "name": "Kang", "status": "approved" },
+        { "role": "Reviewer", "name": "Han", "status": "approved" },
+        { "role": "Final Approver", "name": "Choi", "status": "approved" }
+      ],
+      "deploymentPlan": {
+        "window": "01:00-02:00 KST",
+        "rollbackPlan": "Feature flag off and API rollback",
+        "changeReason": "계좌 이체 한도 정책 운영 반영",
+        "impactScope": "Transfer limit API",
+        "checklistNote": "Ready to deploy"
+      },
+      "activities": [
+        { "type": "requested", "actor": "Kang", "message": "운영이관 요청", "createdAt": "어제" },
+        { "type": "approved", "actor": "Choi", "message": "최종 승인 완료", "createdAt": "2시간 전" }
+      ]
+    }
+  ],
+  "admin": {
+    "summary": { "organizations": 3, "users": 248, "activePolicies": 18, "policyViolations": 7, "pendingRequests": 9, "integrationStatus": "Healthy" },
+    "roles": ["Owner", "Maintainer", "Developer", "Reporter", "Auditor", "Security Manager", "Custom Role"],
+    "roleMappings": [
+      { "id": "RM-1", "organization": "Digital Banking", "team": "Mobile API", "role": "Maintainer", "gitlabRole": "Maintainer", "screenAccess": "Repository, MR, Pipeline" },
+      { "id": "RM-2", "organization": "Digital Banking", "team": "Security", "role": "Security Manager", "gitlabRole": "Reporter", "screenAccess": "Security, Deployment, Audit" },
+      { "id": "RM-3", "organization": "Corporate Banking", "team": "Audit", "role": "Auditor", "gitlabRole": "Reporter", "screenAccess": "Audit, Policy read-only" }
+    ],
+    "policies": {
+      "repository": [
+        { "id": "RP-1", "name": "Repository naming", "value": "kebab-case with service suffix", "enabled": true },
+        { "id": "RP-2", "name": "Default branch", "value": "main", "enabled": true },
+        { "id": "RP-3", "name": "Private visibility", "value": "Required for banking projects", "enabled": true }
+      ],
+      "mrApproval": [
+        { "id": "MRP-1", "name": "Required approvals", "value": "2 approvals", "enabled": true },
+        { "id": "MRP-2", "name": "Code owner approval", "value": "Required on protected branch", "enabled": true },
+        { "id": "MRP-3", "name": "Emergency exception", "value": "Owner + Audit reason", "enabled": true }
+      ],
+      "security": [
+        { "id": "SP-1", "name": "SAST", "value": "Required", "enabled": true },
+        { "id": "SP-2", "name": "Critical/High block", "value": "Block merge and deployment", "enabled": true },
+        { "id": "SP-3", "name": "Exception approval", "value": "Security Manager required", "enabled": true }
+      ],
+      "deployment": [
+        { "id": "DP-1", "name": "Production approver", "value": "Release Manager", "enabled": true },
+        { "id": "DP-2", "name": "Deployment window", "value": "22:00-02:00 KST", "enabled": true },
+        { "id": "DP-3", "name": "Rollback plan", "value": "Required", "enabled": true }
+      ],
+      "audit": [
+        { "id": "AP-1", "name": "Retention", "value": "5 years", "enabled": true },
+        { "id": "AP-2", "name": "Risk event alert", "value": "Immediate", "enabled": true },
+        { "id": "AP-3", "name": "Admin tracking", "value": "All admin actions", "enabled": true }
+      ],
+      "notification": [
+        { "id": "NP-1", "name": "MR review request", "value": "Mattermost + Email", "enabled": true },
+        { "id": "NP-2", "name": "Pipeline failed", "value": "Mattermost", "enabled": true },
+        { "id": "NP-3", "name": "Deployment approved", "value": "Email", "enabled": true }
+      ]
+    },
+    "integrations": [
+      { "id": "INT-1", "name": "GitLab", "status": "connected", "owner": "DevOps", "lastSync": "5분 전" },
+      { "id": "INT-2", "name": "Mattermost", "status": "connected", "owner": "Platform", "lastSync": "12분 전" },
+      { "id": "INT-3", "name": "Jira/ITBPI", "status": "warning", "owner": "PMO", "lastSync": "1시간 전" },
+      { "id": "INT-4", "name": "Security scanner", "status": "connected", "owner": "Security", "lastSync": "8분 전" },
+      { "id": "INT-5", "name": "Nexus", "status": "connected", "owner": "DevOps", "lastSync": "30분 전" },
+      { "id": "INT-6", "name": "SSO/LDAP", "status": "connected", "owner": "IAM", "lastSync": "2분 전" }
+    ],
+    "themeSettings": { "productName": "gitddn", "organizationLogo": "K-Digital Bank", "primaryColor": "#256ef4", "accentColor": "#00a870", "mode": "Light" },
+    "adminAuditLogs": [
+      { "id": "ADM-101", "actor": "Baek", "action": "Deployment policy updated", "target": "Production approval", "createdAt": "15분 전", "result": "success" },
+      { "id": "ADM-102", "actor": "Park", "action": "Security exception rule reviewed", "target": "Critical block", "createdAt": "1시간 전", "result": "warning" },
+      { "id": "ADM-103", "actor": "System", "action": "Integration sync completed", "target": "GitLab", "createdAt": "2시간 전", "result": "success" }
+    ]
   }
 }
 

@@ -2,6 +2,7 @@ import {
   AppstoreOutlined,
   BranchesOutlined,
   CodeOutlined,
+  DeploymentUnitOutlined,
   FileTextOutlined,
   HistoryOutlined,
   NodeIndexOutlined,
@@ -26,6 +27,7 @@ const navItems = [
   { key: 'branches', label: 'Branches', icon: <CodeOutlined /> },
   { key: 'tags', label: 'Tags', icon: <TagsOutlined /> },
   { key: 'security', label: 'Security', icon: <SafetyCertificateOutlined /> },
+  { key: 'deployment-transfer', label: 'Deployment Transfer', icon: <DeploymentUnitOutlined /> },
   { key: 'activity', label: 'Activity', icon: <HistoryOutlined /> },
   { key: 'settings', label: 'Settings', icon: <SettingOutlined /> },
 ]
