@@ -1,37 +1,50 @@
 import { Tag } from 'antd'
 
 const STATUS_PRESETS = {
-  approved: { color: 'success', label: '승인 완료' },
-  accepted: { color: 'success', label: 'Accepted' },
-  allowed: { color: 'success', label: 'Allowed' },
-  success: { color: 'success', label: 'Success' },
-  passed: { color: 'success', label: 'Passed' },
-  pass: { color: 'success', label: 'Pass' },
-  merged: { color: 'success', label: 'Merged' },
-  finished: { color: 'success', label: 'Finished' },
-  failed: { color: 'error', label: 'Failed' },
-  danger: { color: 'error', label: 'Danger' },
-  critical: { color: 'error', label: 'Critical' },
-  blocked: { color: 'error', label: 'Blocked' },
-  rejected: { color: 'error', label: '승인 반려' },
-  'need-check': { color: 'error', label: '확인 필요' },
-  'need-review': { color: 'warning', label: '리뷰 필요' },
-  reviewing: { color: 'processing', label: '검토 중' },
-  review: { color: 'processing', label: 'Review' },
-  pending: { color: 'warning', label: 'Pending' },
-  running: { color: 'processing', label: 'Running' },
-  warning: { color: 'warning', label: 'Warning' },
-  high: { color: 'volcano', label: 'High' },
-  medium: { color: 'gold', label: 'Medium' },
-  low: { color: 'blue', label: 'Low' },
-  open: { color: 'processing', label: 'Open' },
-  manual: { color: 'blue', label: 'Manual' },
-  created: { color: 'default', label: 'Created' },
-  skipped: { color: 'default', label: 'Skipped' },
-  closed: { color: 'default', label: 'Closed' },
-  draft: { color: 'default', label: 'Draft' },
-  canceled: { color: 'default', label: 'Canceled' },
-  none: { color: 'default', label: '-' },
+  approved: { tone: 'success', label: '승인 완료' },
+  accepted: { tone: 'success', label: 'Accepted' },
+  allowed: { tone: 'success', label: 'Allowed' },
+  success: { tone: 'success', label: 'Success' },
+  passed: { tone: 'success', label: 'Passed' },
+  pass: { tone: 'success', label: 'Pass' },
+  merged: { tone: 'success', label: 'Merged' },
+  finished: { tone: 'success', label: 'Finished' },
+  failed: { tone: 'danger', label: 'Failed' },
+  danger: { tone: 'danger', label: 'Danger' },
+  critical: { tone: 'danger', label: 'Critical' },
+  blocked: { tone: 'danger', label: 'Blocked' },
+  rejected: { tone: 'danger', label: '승인 반려' },
+  'need-check': { tone: 'danger', label: '확인 필요' },
+  'need-review': { tone: 'warning', label: '리뷰 필요' },
+  reviewing: { tone: 'info', label: '검토 중' },
+  review: { tone: 'info', label: 'Review' },
+  pending: { tone: 'neutral', label: 'Pending' },
+  running: { tone: 'info', label: 'Running' },
+  warning: { tone: 'warning', label: 'Warning' },
+  high: { tone: 'warning', label: 'High' },
+  medium: { tone: 'warning', label: 'Medium' },
+  low: { tone: 'info', label: 'Low' },
+  open: { tone: 'info', label: 'Open' },
+  manual: { tone: 'purple', label: 'Manual' },
+  scheduled: { tone: 'info', label: 'Scheduled' },
+  deployed: { tone: 'success', label: 'Deployed' },
+  requested: { tone: 'neutral', label: 'Requested' },
+  conditional: { tone: 'warning', label: 'Conditional' },
+  created: { tone: 'neutral', label: 'Created' },
+  skipped: { tone: 'neutral', label: 'Skipped' },
+  closed: { tone: 'neutral', label: 'Closed' },
+  draft: { tone: 'purple', label: 'Draft' },
+  canceled: { tone: 'neutral', label: 'Canceled' },
+  none: { tone: 'neutral', label: '-' },
+}
+
+const TONE_STYLES = {
+  success: { color: '#166534', background: '#ecfdf3', borderColor: '#bbf7d0' },
+  danger: { color: '#b42318', background: '#fff1f0', borderColor: '#fecaca' },
+  warning: { color: '#92400e', background: '#fffbeb', borderColor: '#fde68a' },
+  info: { color: '#0b50d0', background: '#eff6ff', borderColor: '#bfdbfe' },
+  purple: { color: '#6d28d9', background: '#f5f3ff', borderColor: '#ddd6fe' },
+  neutral: { color: '#475569', background: '#f8fafc', borderColor: '#e2e8f0' },
 }
 
 function normalizeStatus(status) {
@@ -40,12 +53,20 @@ function normalizeStatus(status) {
 
 function StatusTag({ status, label, color, icon, bordered = true, ...tagProps }) {
   const preset = STATUS_PRESETS[normalizeStatus(status)] ?? {
-    color: 'default',
+    tone: 'neutral',
     label: status ?? '-',
   }
+  const lightStyle = TONE_STYLES[preset.tone] ?? TONE_STYLES.neutral
 
   return (
-    <Tag color={color ?? preset.color} icon={icon} bordered={bordered} {...tagProps}>
+    <Tag
+      className="gitddn-status-tag"
+      color={color}
+      icon={icon}
+      bordered={bordered}
+      style={color ? undefined : lightStyle}
+      {...tagProps}
+    >
       {label ?? preset.label}
     </Tag>
   )

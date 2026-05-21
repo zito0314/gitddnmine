@@ -10,6 +10,7 @@ function DataTable({
 }) {
   return (
     <Table
+      className="gitddn-data-table"
       rowKey={rowKey}
       columns={columns}
       dataSource={dataSource}

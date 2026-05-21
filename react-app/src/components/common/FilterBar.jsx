@@ -12,7 +12,7 @@ function FilterBar({
   children,
 }) {
   return (
-    <Card className="filter-bar" size="small">
+    <Card className="filter-bar" size="small" variant="outlined">
       <Flex align="center" justify="space-between" gap={12} wrap="wrap">
         <Space size={8} wrap>
           {search ? (
