@@ -2,6 +2,7 @@ import { ApiOutlined, SafetyCertificateOutlined, TeamOutlined } from '@ant-desig
 import { Card, Col, List, Row, Space } from 'antd'
 import { getAdminAuditLogs, getAdminSummary, getDeploymentPolicies, getMrApprovalPolicies, getRepositoryPolicies, getSecurityPolicies } from '../../api/admin'
 import { PageHeader, StatusTag, SummaryCard } from '../../components/common'
+import { PAGE_TEXT } from '../../constants'
 import { AuditList } from './AdminShared'
 
 export default function AdminDashboard() {
@@ -14,7 +15,7 @@ export default function AdminDashboard() {
   ]
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader title="Admin Console" description="조직, 권한, 정책, 연동, 테마 설정을 관리하는 관리자 콘솔" />
+      <PageHeader title={PAGE_TEXT.admin.title} description={PAGE_TEXT.admin.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}><SummaryCard title="Organizations" value={summary.organizations} icon={<TeamOutlined />} /></Col>
         <Col xs={24} sm={12} xl={4}><SummaryCard title="Users" value={summary.users} /></Col>

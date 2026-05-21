@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { getDeploymentTransfersByRepositoryId, getRepositoryDeploymentTransferSummary } from '../api/deploymentTransfers'
 import { getRepositoryDetail } from '../api/repositories'
 import { FilterBar, PageHeader, SummaryCard } from '../components/common'
+import { NOT_FOUND_MESSAGES, PAGE_TEXT } from '../constants'
 import { DeploymentTransferTable } from './DeploymentTransferList'
 
 const { Title } = Typography
@@ -15,13 +16,13 @@ export default function RepositoryDeploymentTransfers() {
   const summary = useMemo(() => getRepositoryDeploymentTransferSummary(repositoryId), [repositoryId])
   const [search, setSearch] = useState('')
 
-  if (!repository) return <Card><Title level={3}>Repository not found</Title></Card>
+  if (!repository) return <Card><Title level={3}>{NOT_FOUND_MESSAGES.repository}</Title></Card>
 
   const filtered = transfers.filter((item) => [item.id, item.mrId, item.requestedBy, item.targetEnvironment, item.policyDecision].join(' ').toLowerCase().includes(search.trim().toLowerCase()))
 
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader eyebrow={repository.name} title="Deployment Transfer" description="특정 Repository의 운영이관 요청 목록입니다." />
+      <PageHeader eyebrow={repository.name} title={PAGE_TEXT.repositoryDeploymentTransfer.title} description={PAGE_TEXT.repositoryDeploymentTransfer.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}><SummaryCard title="Total Requests" value={summary.total} /></Col>
         <Col xs={24} sm={12} xl={5}><SummaryCard title="Pending Approval" value={summary.pendingApproval} tone="warning" /></Col>

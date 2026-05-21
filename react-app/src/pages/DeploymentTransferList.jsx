@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { getDeploymentTransferSummary, getDeploymentTransfers } from '../api/deploymentTransfers'
 import { getRepositories } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { ACTION_LABELS, PAGE_TEXT } from '../constants'
 
 const { Text } = Typography
 
@@ -29,7 +30,7 @@ export function DeploymentTransferTable({ transfers, repositoryScoped = false, r
     { title: 'Approved by', dataIndex: 'approvedBy' },
     { title: 'Scheduled at', dataIndex: 'scheduledAt' },
     { title: 'Updated at', dataIndex: 'updatedAt' },
-    { title: 'Actions', key: 'actions', fixed: 'right', render: (_, record) => <Button size="small" onClick={() => navigate(detailPath(record))}>View</Button> },
+    { title: 'Actions', key: 'actions', fixed: 'right', render: (_, record) => <Button size="small" onClick={() => navigate(detailPath(record))}>{ACTION_LABELS.view}</Button> },
   ].filter(Boolean)
 
   return <DataTable rowKey="id" dataSource={transfers} columns={columns} />
@@ -64,10 +65,10 @@ export default function DeploymentTransferList() {
 
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader title="Deployment Transfer" description="운영 반영 요청, 승인 상태, 배포 전 검증 조건을 확인하는 화면" actions={[
-        <Button key="new" type="primary" icon={<PlusOutlined />}>New Transfer Request</Button>,
-        <Button key="export" icon={<DownloadOutlined />}>Export</Button>,
-        <Button key="refresh" icon={<ReloadOutlined />}>Refresh</Button>,
+      <PageHeader title={PAGE_TEXT.deploymentTransfer.title} description={PAGE_TEXT.deploymentTransfer.description} actions={[
+        <Button key="new" type="primary" icon={<PlusOutlined />}>{ACTION_LABELS.newTransferRequest}</Button>,
+        <Button key="export" icon={<DownloadOutlined />}>{ACTION_LABELS.export}</Button>,
+        <Button key="refresh" icon={<ReloadOutlined />}>{ACTION_LABELS.refresh}</Button>,
       ]} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}><SummaryCard title="Total Requests" value={summary.total} icon={<RocketOutlined />} /></Col>

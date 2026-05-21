@@ -18,6 +18,7 @@ import {
   getVulnerabilities,
 } from '../api/security'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { ACTION_LABELS, PAGE_TEXT } from '../constants'
 
 const { Text } = Typography
 
@@ -210,17 +211,17 @@ export default function SecurityList() {
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        title="Security Validation"
-        description="Repository와 Merge Request 단위의 보안 검증 상태와 차단 항목을 확인하는 화면"
+        title={PAGE_TEXT.security.title}
+        description={PAGE_TEXT.security.description}
         actions={[
           <Button key="run" type="primary" icon={<ScanOutlined />}>
-            Run Validation
+            {ACTION_LABELS.runValidation}
           </Button>,
           <Button key="export" icon={<DownloadOutlined />}>
-            Export
+            {ACTION_LABELS.export}
           </Button>,
           <Button key="refresh" icon={<ReloadOutlined />}>
-            Refresh
+            {ACTION_LABELS.refresh}
           </Button>,
         ]}
       />

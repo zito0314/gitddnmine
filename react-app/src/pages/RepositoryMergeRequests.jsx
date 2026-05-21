@@ -14,6 +14,7 @@ import {
   getRepositoryMergeRequests,
 } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { PAGE_TEXT } from '../constants'
 
 const { Text } = Typography
 
@@ -189,8 +190,8 @@ export default function RepositoryMergeRequests() {
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         eyebrow={repository?.name}
-        title="Merge Requests"
-        description="현재 Repository에 연결된 Merge Request의 승인, Pipeline, 보안 상태를 확인합니다."
+        title={PAGE_TEXT.repositoryMergeRequests.title}
+        description={PAGE_TEXT.repositoryMergeRequests.description}
       />
 
       <Card>

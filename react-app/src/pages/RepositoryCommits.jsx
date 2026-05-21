@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getRepositoryCommitSummary, getRepositoryCommits, getRepositoryDetail, getRepositoryBranches } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, SummaryCard } from '../components/common'
+import { NOT_FOUND_MESSAGES, PAGE_TEXT } from '../constants'
 
 const { Text, Title } = Typography
 
@@ -21,7 +22,7 @@ export default function RepositoryCommits() {
   const [branch, setBranch] = useState(null)
   const [author, setAuthor] = useState(null)
 
-  if (!repository) return <Card><Title level={3}>Repository not found</Title></Card>
+  if (!repository) return <Card><Title level={3}>{NOT_FOUND_MESSAGES.repository}</Title></Card>
 
   const filtered = commits.filter((commit) => {
     const q = search.trim().toLowerCase()
@@ -33,7 +34,7 @@ export default function RepositoryCommits() {
 
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader eyebrow={repository.name} title="Commits" description="현재 Repository의 커밋 이력과 변경 내역을 확인하는 화면" />
+      <PageHeader eyebrow={repository.name} title={PAGE_TEXT.repositoryCommits.title} description={PAGE_TEXT.repositoryCommits.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Total Commits" value={summary.total} icon={<CodeOutlined />} /></Col>
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Today" value={summary.today} /></Col>

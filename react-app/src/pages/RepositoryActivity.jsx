@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getRepositoryActivities, getRepositoryActivitySummary, getRepositoryDetail } from '../api/repositories'
 import { FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { NOT_FOUND_MESSAGES, PAGE_TEXT } from '../constants'
 
 const { Text, Title } = Typography
 
@@ -24,7 +25,7 @@ export default function RepositoryActivity() {
   const [type, setType] = useState(null)
   const [actor, setActor] = useState(null)
 
-  if (!repository) return <Card><Title level={3}>Repository not found</Title></Card>
+  if (!repository) return <Card><Title level={3}>{NOT_FOUND_MESSAGES.repository}</Title></Card>
 
   const filtered = activities.filter((activity) => {
     const q = search.trim().toLowerCase()
@@ -36,7 +37,7 @@ export default function RepositoryActivity() {
 
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader eyebrow={repository.name} title="Activity" description="현재 Repository의 주요 개발 활동과 시스템 이벤트를 확인하는 화면" />
+      <PageHeader eyebrow={repository.name} title={PAGE_TEXT.repositoryActivity.title} description={PAGE_TEXT.repositoryActivity.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Today Activities" value={summary.today} icon={<AuditOutlined />} /></Col>
         <Col xs={24} sm={12} xl={6}><SummaryCard title="MR Events" value={summary.mrEvents} /></Col>

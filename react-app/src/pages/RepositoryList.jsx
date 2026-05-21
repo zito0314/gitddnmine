@@ -11,6 +11,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories, getRepositorySummary } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { EMPTY_MESSAGES, PAGE_TEXT } from '../constants'
 import useRepositoryFavorites from '../hooks/useRepositoryFavorites'
 import { sortRepositoriesByFavorite } from '../utils/favorites'
 
@@ -185,8 +186,8 @@ export default function RepositoryList() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        title="Repository"
-        description="프로젝트 Repository를 관리하고 Pipeline과 보안 상태를 한눈에 확인하세요."
+        title={PAGE_TEXT.repositories.title}
+        description={PAGE_TEXT.repositories.description}
       />
 
       {/* 요약 카드 */}
@@ -276,8 +277,8 @@ export default function RepositoryList() {
         <Alert
           type="info"
           showIcon
-          message="검색 결과가 없습니다."
-          description="검색어나 필터 조건을 변경해 보세요."
+          message={EMPTY_MESSAGES.noSearchResults}
+          description={EMPTY_MESSAGES.noSearchResultsDescription}
         />
       )}
 

@@ -27,6 +27,7 @@ import {
   getAuditRelatedIds,
 } from '../api/audit'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { ACTION_LABELS, PAGE_TEXT } from '../constants'
 
 const { Paragraph, Text } = Typography
 
@@ -177,14 +178,14 @@ function AuditLog() {
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        title="Audit Log"
-        description="개발 활동, 승인, 보안 검증, 정책 변경 이력을 추적하는 감사 로그 화면"
+        title={PAGE_TEXT.audit.title}
+        description={PAGE_TEXT.audit.description}
         actions={[
           <Button key="export" icon={<DownloadOutlined />}>
-            Export CSV
+            {ACTION_LABELS.exportCsv}
           </Button>,
           <Button key="refresh" icon={<ReloadOutlined />}>
-            Refresh
+            {ACTION_LABELS.refresh}
           </Button>,
         ]}
       />

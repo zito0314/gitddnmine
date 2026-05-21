@@ -9,6 +9,7 @@ import {
   getRepositoryFileTree,
 } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, SummaryCard } from '../components/common'
+import { DEMO_MESSAGES, NOT_FOUND_MESSAGES, PAGE_TEXT } from '../constants'
 
 const { Text, Title } = Typography
 
@@ -22,7 +23,7 @@ export default function RepositoryFiles() {
   const [search, setSearch] = useState('')
   const [preview, setPreview] = useState(null)
 
-  if (!repository) return <Card><Title level={3}>Repository not found</Title></Card>
+  if (!repository) return <Card><Title level={3}>{NOT_FOUND_MESSAGES.repository}</Title></Card>
 
   const filteredFiles = files.filter((file) =>
     [file.name, file.path, file.type].join(' ').toLowerCase().includes(search.trim().toLowerCase()),
@@ -40,7 +41,7 @@ export default function RepositoryFiles() {
 
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader eyebrow={repository.name} title="Files" description="현재 Repository의 파일 구조와 주요 소스 파일을 확인하는 화면" />
+      <PageHeader eyebrow={repository.name} title={PAGE_TEXT.repositoryFiles.title} description={PAGE_TEXT.repositoryFiles.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Total Files" value={files.filter((file) => file.type === 'File').length} /></Col>
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Folders" value={files.filter((file) => file.type === 'Folder').length} /></Col>
@@ -59,7 +60,7 @@ export default function RepositoryFiles() {
       </Row>
       <Drawer title={preview?.name ?? 'File preview'} open={Boolean(preview)} onClose={() => setPreview(null)} width={520}>
         <Space orientation="vertical" size={12}>
-          <Text type="secondary">상세 파일 뷰어는 데모 범위 밖이라 미리보기 placeholder로 표시합니다.</Text>
+          <Text type="secondary">{DEMO_MESSAGES.filePreviewPlaceholder}</Text>
           <Text code>{preview?.path}</Text>
           <Text>Last commit: {preview?.lastCommit}</Text>
         </Space>

@@ -1,4 +1,5 @@
 import { Empty, Table } from 'antd'
+import { EMPTY_MESSAGES } from '../../constants'
 
 function DataTable({
   rowKey = 'id',
@@ -17,7 +18,7 @@ function DataTable({
       loading={loading}
       pagination={pagination}
       locale={{
-        emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="표시할 데이터가 없습니다." />,
+        emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={EMPTY_MESSAGES.table} />,
       }}
       scroll={{ x: 'max-content', ...tableProps.scroll }}
       {...tableProps}

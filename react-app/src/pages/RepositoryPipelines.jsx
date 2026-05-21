@@ -16,6 +16,7 @@ import {
   getRepositoryPipelineSummary,
 } from '../api/pipelines'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { ACTION_LABELS, PAGE_TEXT } from '../constants'
 
 const { Text } = Typography
 
@@ -207,14 +208,14 @@ export default function RepositoryPipelines() {
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         eyebrow={repository?.name}
-        title="Pipelines"
-        description="현재 Repository의 Pipeline 실행 상태, 실패 Job, 실행 이력을 확인하는 화면"
+        title={PAGE_TEXT.repositoryPipelines.title}
+        description={PAGE_TEXT.repositoryPipelines.description}
         actions={[
           <Button key="run" type="primary" icon={<PlayCircleOutlined />}>
-            Run Pipeline
+            {ACTION_LABELS.runPipeline}
           </Button>,
           <Button key="refresh" icon={<ReloadOutlined />}>
-            Refresh
+            {ACTION_LABELS.refresh}
           </Button>,
         ]}
       />

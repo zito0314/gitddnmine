@@ -15,21 +15,22 @@ import { Card, Divider, Flex, Menu, Tag, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
+import { REPOSITORY_NAV_LABELS } from '../../constants'
 
 const { Text, Title } = Typography
 
 const navItems = [
-  { key: '', label: 'Overview', icon: <AppstoreOutlined /> },
-  { key: 'files', label: 'Files', icon: <FileTextOutlined /> },
-  { key: 'merge-requests', label: 'Merge Requests', icon: <PullRequestOutlined /> },
-  { key: 'pipelines', label: 'Pipelines', icon: <BranchesOutlined /> },
-  { key: 'commits', label: 'Commits', icon: <NodeIndexOutlined /> },
-  { key: 'branches', label: 'Branches', icon: <CodeOutlined /> },
-  { key: 'tags', label: 'Tags', icon: <TagsOutlined /> },
-  { key: 'security', label: 'Security', icon: <SafetyCertificateOutlined /> },
-  { key: 'deployment-transfer', label: 'Deployment Transfer', icon: <DeploymentUnitOutlined /> },
-  { key: 'activity', label: 'Activity', icon: <HistoryOutlined /> },
-  { key: 'settings', label: 'Settings', icon: <SettingOutlined /> },
+  { key: '', label: REPOSITORY_NAV_LABELS.overview, icon: <AppstoreOutlined /> },
+  { key: 'files', label: REPOSITORY_NAV_LABELS.files, icon: <FileTextOutlined /> },
+  { key: 'merge-requests', label: REPOSITORY_NAV_LABELS.mergeRequests, icon: <PullRequestOutlined /> },
+  { key: 'pipelines', label: REPOSITORY_NAV_LABELS.pipelines, icon: <BranchesOutlined /> },
+  { key: 'commits', label: REPOSITORY_NAV_LABELS.commits, icon: <NodeIndexOutlined /> },
+  { key: 'branches', label: REPOSITORY_NAV_LABELS.branches, icon: <CodeOutlined /> },
+  { key: 'tags', label: REPOSITORY_NAV_LABELS.tags, icon: <TagsOutlined /> },
+  { key: 'security', label: REPOSITORY_NAV_LABELS.security, icon: <SafetyCertificateOutlined /> },
+  { key: 'deployment-transfer', label: REPOSITORY_NAV_LABELS.deploymentTransfer, icon: <DeploymentUnitOutlined /> },
+  { key: 'activity', label: REPOSITORY_NAV_LABELS.activity, icon: <HistoryOutlined /> },
+  { key: 'settings', label: REPOSITORY_NAV_LABELS.settings, icon: <SettingOutlined /> },
 ]
 
 const statusColor = {

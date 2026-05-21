@@ -22,6 +22,7 @@ import {
   getDashboardSummary,
 } from '../api/dashboard'
 import { StatusTag, SummaryCard, PageHeader } from '../components/common'
+import { ACTION_LABELS, PAGE_TEXT } from '../constants'
 
 const { Text } = Typography
 
@@ -56,14 +57,14 @@ function Dashboard() {
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        title="Dashboard"
-        description="개발 업무, 승인, 검증, 보안 이슈를 한 화면에서 확인하는 업무 대시보드"
+        title={PAGE_TEXT.dashboard.title}
+        description={PAGE_TEXT.dashboard.description}
         actions={[
           <Button key="refresh" icon={<ReloadOutlined />}>
-            Refresh
+            {ACTION_LABELS.refresh}
           </Button>,
           <Button key="create" type="primary" icon={<PlusOutlined />} onClick={() => navigate('/repositories')}>
-            Create Repository
+            {ACTION_LABELS.createRepository}
           </Button>,
         ]}
       />

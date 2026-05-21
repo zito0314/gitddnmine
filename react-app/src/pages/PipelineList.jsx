@@ -6,6 +6,7 @@ import { getMergeRequests } from '../api/mergeRequests'
 import { getPipelines } from '../api/pipelines'
 import { getRepositories } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { ACTION_LABELS, PAGE_TEXT } from '../constants'
 
 const { Text } = Typography
 
@@ -52,7 +53,7 @@ export default function PipelineList() {
 
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader title="Pipelines" description="전체 Repository의 Pipeline 실행 상태와 실패 이력을 확인하는 화면" />
+      <PageHeader title={PAGE_TEXT.pipelines.title} description={PAGE_TEXT.pipelines.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}><SummaryCard title="Total Pipelines" value={summary.total} icon={<PlayCircleOutlined />} /></Col>
         <Col xs={24} sm={12} xl={5}><SummaryCard title="Passed" value={summary.passed} tone="success" icon={<CheckCircleOutlined />} /></Col>
@@ -85,7 +86,7 @@ export default function PipelineList() {
           { title: 'Duration', key: 'duration', render: (_, record) => record.summary?.find((item) => item.label === '실제 실행 시간')?.value ?? '-' },
           { title: 'Jobs', dataIndex: 'jobs', render: (jobs = []) => <Badge status={jobs.includes('failed') ? 'error' : 'success'} text={`${jobs.length} jobs`} /> },
           { title: 'Updated at', dataIndex: 'updatedAt' },
-          { title: 'Actions', key: 'actions', fixed: 'right', render: (_, record) => <Button size="small" onClick={() => navigate(`/repositories/${record.repo}/pipelines/${record.id}`)}>View</Button> },
+          { title: 'Actions', key: 'actions', fixed: 'right', render: (_, record) => <Button size="small" onClick={() => navigate(`/repositories/${record.repo}/pipelines/${record.id}`)}>{ACTION_LABELS.view}</Button> },
         ]} />
       </Card>
     </Space>

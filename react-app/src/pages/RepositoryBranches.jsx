@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getRepositoryBranchSummary, getRepositoryBranches, getRepositoryDetail } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { NOT_FOUND_MESSAGES, PAGE_TEXT } from '../constants'
 
 const { Text, Title } = Typography
 
@@ -16,7 +17,7 @@ export default function RepositoryBranches() {
   const [protectedOnly, setProtectedOnly] = useState(null)
   const [status, setStatus] = useState(null)
 
-  if (!repository) return <Card><Title level={3}>Repository not found</Title></Card>
+  if (!repository) return <Card><Title level={3}>{NOT_FOUND_MESSAGES.repository}</Title></Card>
 
   const filtered = branches.filter((branch) => {
     const q = search.trim().toLowerCase()
@@ -29,7 +30,7 @@ export default function RepositoryBranches() {
 
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader eyebrow={repository.name} title="Branches" description="브랜치 상태, 보호 정책, 최신 커밋을 확인하는 화면" />
+      <PageHeader eyebrow={repository.name} title={PAGE_TEXT.repositoryBranches.title} description={PAGE_TEXT.repositoryBranches.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Total Branches" value={summary.total} icon={<BranchesOutlined />} /></Col>
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Protected" value={summary.protected} icon={<LockOutlined />} /></Col>

@@ -11,31 +11,32 @@ import { Badge, Flex, Layout, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
+import { GLOBAL_NAV_LABELS } from '../../constants'
 import RepositoryContextSidebar from './RepositoryContextSidebar'
 
 const { Sider } = Layout
 const { Text, Title } = Typography
 
 const navItems = [
-  { key: '/', icon: <DashboardOutlined />, label: 'Dashboard' },
-  { key: '/repositories', icon: <CodeOutlined />, label: 'Repository' },
+  { key: '/', icon: <DashboardOutlined />, label: GLOBAL_NAV_LABELS.dashboard },
+  { key: '/repositories', icon: <CodeOutlined />, label: GLOBAL_NAV_LABELS.repositories },
   {
     key: '/merge-requests',
     icon: <PullRequestOutlined />,
-    label: 'Merge Request',
+    label: GLOBAL_NAV_LABELS.mergeRequests,
     badge: 6,
   },
-  { key: '/pipelines', icon: <BranchesOutlined />, label: 'Pipeline' },
-  { key: '/deployment-transfer', icon: <DeploymentUnitOutlined />, label: 'Deployment Transfer', badge: 3 },
+  { key: '/pipelines', icon: <BranchesOutlined />, label: GLOBAL_NAV_LABELS.pipelines },
+  { key: '/deployment-transfer', icon: <DeploymentUnitOutlined />, label: GLOBAL_NAV_LABELS.deploymentTransfer, badge: 3 },
   {
     key: '/security',
     icon: <SafetyCertificateOutlined />,
-    label: 'Security Validation',
+    label: GLOBAL_NAV_LABELS.security,
     badge: 2,
     badgeStatus: 'warning',
   },
-  { key: '/audit', icon: <AuditOutlined />, label: 'Audit Log' },
-  { key: '/admin', icon: <AuditOutlined />, label: 'Admin Console' },
+  { key: '/audit', icon: <AuditOutlined />, label: GLOBAL_NAV_LABELS.audit },
+  { key: '/admin', icon: <AuditOutlined />, label: GLOBAL_NAV_LABELS.admin },
 ]
 
 function withBadge(item) {

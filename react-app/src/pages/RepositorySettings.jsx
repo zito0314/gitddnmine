@@ -3,6 +3,7 @@ import { Button, Card, Col, Descriptions, Form, Input, Row, Space, Switch, Typog
 import { useParams } from 'react-router-dom'
 import { getRepositorySettings } from '../api/repositories'
 import { PageHeader } from '../components/common'
+import { DEMO_MESSAGES, NOT_FOUND_MESSAGES, PAGE_TEXT } from '../constants'
 
 const { Text, Title } = Typography
 
@@ -14,7 +15,7 @@ export default function RepositorySettings() {
   const { repositoryId } = useParams()
   const settings = getRepositorySettings(repositoryId)
 
-  if (!settings) return <Card><Title level={3}>Repository not found</Title></Card>
+  if (!settings) return <Card><Title level={3}>{NOT_FOUND_MESSAGES.repository}</Title></Card>
 
   const { repository, branchPolicy, mergeRequestPolicy, securityPolicy, notificationPolicy } = settings
 
@@ -22,8 +23,8 @@ export default function RepositorySettings() {
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         eyebrow={repository.name}
-        title="Settings"
-        description="Repository 정책과 기본 설정을 확인하는 화면"
+        title={PAGE_TEXT.repositorySettings.title}
+        description={PAGE_TEXT.repositorySettings.description}
         actions={[<Button key="save" type="primary" icon={<SaveOutlined />} disabled>Save</Button>]}
       />
       <Card title="Repository Information">
@@ -74,7 +75,7 @@ export default function RepositorySettings() {
           </Card>
         </Col>
       </Row>
-      <Text type="secondary">Demo read-only 화면입니다. 실제 저장 기능은 연결되어 있지 않습니다.</Text>
+      <Text type="secondary">{DEMO_MESSAGES.readOnlySettings}</Text>
     </Space>
   )
 }
