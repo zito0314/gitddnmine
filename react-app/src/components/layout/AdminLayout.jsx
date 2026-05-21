@@ -37,7 +37,7 @@ export default function AdminLayout() {
         <Menu className="global-menu" mode="inline" selectedKeys={[selected]} items={adminItems} onClick={({ key }) => navigate(key)} />
       </Sider>
       <Layout className="app-main">
-        <Header className="top-header">
+        <Header className="top-header admin-top-header">
           <Flex align="center" justify="space-between" style={{ width: '100%' }}>
             <Space>
               <Text strong>Admin Console</Text>

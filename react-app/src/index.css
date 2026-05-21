@@ -129,6 +129,12 @@ body {
   backdrop-filter: blur(12px);
 }
 
+.admin-top-header {
+  display: flex;
+  grid-template-columns: none;
+  justify-content: space-between;
+}
+
 .global-search {
   width: 100%;
 }
