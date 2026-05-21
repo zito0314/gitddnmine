@@ -3,11 +3,19 @@
   --gitddn-primary-strong: #0b50d0;
   --gitddn-primary-soft: #ecf2fe;
   --gitddn-bg: #f4f5f6;
+  --gitddn-app-bg: #f4f5f6;
+  --gitddn-content-bg: #f4f5f6;
   --gitddn-surface: #ffffff;
+  --gitddn-card-bg: #ffffff;
   --gitddn-line: #e6e8ea;
+  --gitddn-border-color: #e6e8ea;
   --gitddn-text: #1e2124;
+  --gitddn-text-primary: #1e2124;
   --gitddn-muted: #6d7882;
+  --gitddn-text-secondary: #6d7882;
   --gitddn-subtle: #8a949e;
+  --gitddn-header-bg: #ffffff;
+  --gitddn-radius: 6px;
   --gitddn-shadow-sm: 0 0 2px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.08);
   color: var(--gitddn-text);
   background: var(--gitddn-bg);
@@ -22,11 +30,19 @@
   --gitddn-primary-strong: #65a9f3;
   --gitddn-primary-soft: #111a2c;
   --gitddn-bg: #000000;
+  --gitddn-app-bg: #000000;
+  --gitddn-content-bg: #000000;
   --gitddn-surface: #141414;
+  --gitddn-card-bg: #141414;
   --gitddn-line: #303030;
+  --gitddn-border-color: #303030;
   --gitddn-text: rgba(255, 255, 255, 0.85);
+  --gitddn-text-primary: rgba(255, 255, 255, 0.85);
   --gitddn-muted: rgba(255, 255, 255, 0.65);
+  --gitddn-text-secondary: rgba(255, 255, 255, 0.65);
   --gitddn-subtle: rgba(255, 255, 255, 0.45);
+  --gitddn-header-bg: #141414;
+  --gitddn-radius: 6px;
   --gitddn-shadow-sm: 0 0 0 1px rgba(255, 255, 255, 0.06);
   color-scheme: dark;
 }
@@ -48,11 +64,12 @@ body {
 
 .app-shell {
   min-height: 100vh;
+  background: var(--gitddn-app-bg);
 }
 
 .app-sidebar {
-  background: var(--gitddn-surface) !important;
-  border-right: 1px solid var(--gitddn-line);
+  background: var(--gitddn-card-bg) !important;
+  border-right: 1px solid var(--gitddn-border-color);
   box-shadow: var(--gitddn-shadow-sm);
   overflow: auto;
 }
@@ -139,8 +156,8 @@ body {
   gap: 18px;
   height: 64px;
   padding: 0 24px;
-  border-bottom: 1px solid var(--gitddn-line);
-  background: color-mix(in srgb, var(--gitddn-surface) 88%, transparent);
+  border-bottom: 1px solid var(--gitddn-border-color);
+  background: color-mix(in srgb, var(--gitddn-header-bg) 88%, transparent);
   backdrop-filter: blur(12px);
 }
 
@@ -212,6 +229,7 @@ body {
 
 .page-content {
   padding: 24px 28px 44px;
+  background: var(--gitddn-content-bg);
 }
 
 .page-header {
@@ -232,6 +250,43 @@ body {
 
 .summary-card .ant-card-body {
   min-height: 128px;
+}
+
+.design-token-modal {
+  width: 100%;
+}
+
+.token-json-editor {
+  width: 100%;
+}
+
+.token-json-editor-header {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.token-json-textarea {
+  font-family: var(--gitddn-font-mono, "SFMono-Regular", Consolas, monospace);
+  font-size: 12px;
+}
+
+.theme-preview-card {
+  background: var(--gitddn-card-bg);
+}
+
+.theme-preview-swatch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid var(--gitddn-border-color);
+}
+
+.theme-preview-swatch span {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
 }
 
 .ant-card,

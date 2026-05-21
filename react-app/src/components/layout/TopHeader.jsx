@@ -15,6 +15,7 @@ import {
   AutoComplete,
   Badge,
   Button,
+  App as AntdApp,
   Divider,
   Drawer,
   Dropdown,
@@ -23,7 +24,6 @@ import {
   Input,
   Layout,
   List,
-  message,
   Modal,
   Segmented,
   Space,
@@ -41,8 +41,9 @@ import { useAuth } from '../../auth/AuthContext'
 import { getRepositories } from '../../api/repositories'
 import { StatusTag } from '../common'
 import { UI_TEXT } from '../../constants'
-import { useThemeMode } from '../../app/useThemeMode'
-import { THEME_MODES } from '../../app/theme'
+import { DesignTokenModal } from '../theme/DesignTokenModal'
+import { useThemeTokens } from '../../hooks/useThemeTokens'
+import { THEME_MODES } from '../../theme/defaultTokens'
 
 const { Header } = Layout
 const { Text } = Typography
@@ -73,7 +74,8 @@ function TopHeader({ onToggleSidebar }) {
   const navigate = useNavigate()
   const location = useLocation()
   const auth = useAuth()
-  const { themeMode, setThemeMode } = useThemeMode()
+  const { message } = AntdApp.useApp()
+  const { mode: themeMode, setThemeMode } = useThemeTokens()
   const organizations = getHeaderOrganizations()
   const repositories = getRepositories()
   const currentUser = auth.currentUser
@@ -89,6 +91,7 @@ function TopHeader({ onToggleSidebar }) {
   const [searchOpen, setSearchOpen] = useState(false)
   const [notificationOpen, setNotificationOpen] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
+  const [designTokenOpen, setDesignTokenOpen] = useState(false)
   const [readNotificationIds, setReadNotificationIds] = useState(() =>
     readJsonStorage(NOTIFICATION_READ_STORAGE_KEY, []),
   )
@@ -262,6 +265,9 @@ function TopHeader({ onToggleSidebar }) {
             { label: <MoonOutlined />, value: THEME_MODES.dark },
           ]}
         />
+        <Button onClick={() => setDesignTokenOpen(true)}>
+          {UI_TEXT.designToken.button}
+        </Button>
         <Dropdown menu={{ items: createItems, onClick: handleQuickCreate }} trigger={['click']}>
           <Button type="primary" icon={<PlusOutlined />}>
             {UI_TEXT.quickCreate.label}
@@ -356,6 +362,7 @@ function TopHeader({ onToggleSidebar }) {
           <Text type="secondary">Quick Create, Global Search, Notification Drawer는 mock 데이터 기반으로 동작합니다.</Text>
         </Space>
       </Modal>
+      <DesignTokenModal open={designTokenOpen} onClose={() => setDesignTokenOpen(false)} />
     </Header>
   )
 }
