@@ -638,6 +638,29 @@ body {
   margin: 8px 0 0;
 }
 
+.mr-detail-tabs .ant-tabs-nav {
+  margin-bottom: 16px;
+}
+
+.mr-stage-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+}
+
+.mr-diff-preview {
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  border: 1px solid var(--gitddn-border-color);
+  border-radius: 8px;
+  background: var(--gitddn-content-bg);
+  color: var(--gitddn-text-primary);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
 .pipeline-detail-hero h2.ant-typography {
   margin: 4px 0 8px;
 }
