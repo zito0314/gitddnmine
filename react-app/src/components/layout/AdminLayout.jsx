@@ -11,6 +11,9 @@ const adminItems = [
   { key: '/admin', icon: <DashboardOutlined />, label: UI_TEXT.adminPages.admin.title },
   { key: '/admin/organization', icon: <TeamOutlined />, label: UI_TEXT.adminNavigation.organizationRoles },
   { key: '/admin/repository-policy', icon: <LockOutlined />, label: UI_TEXT.adminNavigation.repositoryPolicy },
+  { key: '/admin/repository-policy/branch-protection-templates', icon: <LockOutlined />, label: 'Branch Protection Templates' },
+  { key: '/admin/repository-policy/branch-protection-requests', icon: <LockOutlined />, label: 'Exception Requests' },
+  { key: '/admin/repository-policy/branch-protection-history', icon: <AuditOutlined />, label: 'Policy History' },
   { key: '/admin/mr-approval-policy', icon: <LockOutlined />, label: UI_TEXT.adminNavigation.mrApprovalPolicy },
   { key: '/admin/security-policy', icon: <SafetyCertificateOutlined />, label: UI_TEXT.adminNavigation.securityPolicy },
   { key: '/admin/deployment-policy', icon: <DeploymentUnitOutlined />, label: UI_TEXT.adminNavigation.deploymentPolicy },
@@ -25,7 +28,11 @@ export default function AdminLayout() {
   const navigate = useNavigate()
   const auth = useAuth()
   const { message } = AntdApp.useApp()
-  const selected = adminItems.find((item) => location.pathname === item.key)?.key ?? '/admin'
+  const selected =
+    adminItems
+      .filter((item) => item.key !== '/admin')
+      .find((item) => location.pathname.startsWith(item.key))?.key ??
+    (location.pathname === '/admin' ? '/admin' : '/admin')
 
   return (
     <Layout className="app-shell admin-shell">

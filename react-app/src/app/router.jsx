@@ -19,6 +19,8 @@ import RepositoryTags from '../pages/RepositoryTags'
 import RepositorySecurity from '../pages/RepositorySecurity'
 import RepositoryActivity from '../pages/RepositoryActivity'
 import RepositorySettings from '../pages/RepositorySettings'
+import RepositoryPolicyChangeRequest from '../pages/RepositoryPolicyChangeRequest'
+import RepositoryPolicyExceptionRequest from '../pages/RepositoryPolicyExceptionRequest'
 import MergeRequestList from '../pages/MergeRequestList'
 import MergeRequestCreate from '../pages/MergeRequestCreate'
 import MergeRequestDetail from '../pages/MergeRequestDetail'
@@ -41,6 +43,12 @@ import AuditPolicyAdmin from '../pages/admin/AuditPolicyAdmin'
 import NotificationPolicyAdmin from '../pages/admin/NotificationPolicyAdmin'
 import IntegrationAdmin from '../pages/admin/IntegrationAdmin'
 import ThemeBrandingAdmin from '../pages/admin/ThemeBrandingAdmin'
+import BranchProtectionTemplateList from '../pages/admin/BranchProtectionTemplateList'
+import BranchProtectionTemplateDetail from '../pages/admin/BranchProtectionTemplateDetail'
+import BranchProtectionTemplateForm from '../pages/admin/BranchProtectionTemplateForm'
+import BranchProtectionAppliedRepositories from '../pages/admin/BranchProtectionAppliedRepositories'
+import BranchProtectionRequestManagement from '../pages/admin/BranchProtectionRequestManagement'
+import BranchProtectionHistory from '../pages/admin/BranchProtectionHistory'
 
 export const routes = [
   { path: '/login', element: <Login /> },
@@ -85,6 +93,8 @@ export const routes = [
           { path: 'security', element: <RepositorySecurity /> },
           { path: 'activity', element: <RepositoryActivity /> },
           { path: 'settings', element: <RepositorySettings /> },
+          { path: 'settings/policy-change-request', element: <RepositoryPolicyChangeRequest /> },
+          { path: 'settings/policy-exception-request', element: <RepositoryPolicyExceptionRequest /> },
         ],
       },
       { path: 'merge-requests', element: <MergeRequestList /> },
@@ -113,6 +123,13 @@ export const routes = [
       { index: true, element: <AdminDashboard /> },
       { path: 'organization', element: <OrganizationRoleAdmin /> },
       { path: 'repository-policy', element: <RepositoryPolicyAdmin /> },
+      { path: 'repository-policy/branch-protection-templates', element: <BranchProtectionTemplateList /> },
+      { path: 'repository-policy/branch-protection-templates/new', element: <BranchProtectionTemplateForm /> },
+      { path: 'repository-policy/branch-protection-templates/:templateId', element: <BranchProtectionTemplateDetail /> },
+      { path: 'repository-policy/branch-protection-templates/:templateId/edit', element: <BranchProtectionTemplateForm /> },
+      { path: 'repository-policy/branch-protection-templates/:templateId/repositories', element: <BranchProtectionAppliedRepositories /> },
+      { path: 'repository-policy/branch-protection-requests', element: <BranchProtectionRequestManagement /> },
+      { path: 'repository-policy/branch-protection-history', element: <BranchProtectionHistory /> },
       { path: 'mr-approval-policy', element: <MrApprovalPolicyAdmin /> },
       { path: 'security-policy', element: <SecurityPolicyAdmin /> },
       { path: 'deployment-policy', element: <DeploymentPolicyAdmin /> },
