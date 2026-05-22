@@ -6,11 +6,11 @@ import {
   StarFilled,
   StarOutlined,
 } from '@ant-design/icons'
-import { Alert, Col, Row, Space, Typography } from 'antd'
+import { Alert, Col, Flex, List, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories, getRepositorySummary } from '../api/repositories'
-import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
 import { UI_TEXT } from '../constants'
 import useRepositoryFavorites from '../hooks/useRepositoryFavorites'
 import { sortRepositoriesByFavorite } from '../utils/favorites'
@@ -19,9 +19,9 @@ const { Link, Text } = Typography
 
 const STATUS_OPTIONS = [
   { value: 'approved', label: '승인 완료' },
-  { value: 'pending', label: 'Pending' },
+  { value: 'pending', label: UI_TEXT.status.labels.pending },
   { value: 'rejected', label: '승인 반려' },
-  { value: 'canceled', label: 'Canceled' },
+  { value: 'canceled', label: UI_TEXT.status.labels.canceled },
 ]
 
 const VISIBILITY_OPTIONS = [
@@ -84,102 +84,6 @@ export default function RepositoryList() {
     setFilterFavorite(null)
   }
 
-  const columns = useMemo(
-    () => [
-      {
-        key: 'favorite',
-        width: 40,
-        align: 'center',
-        render: (_, record) => (
-          <span
-            className={`favorite-btn ${record.favorite ? 'active' : ''}`}
-            onClick={(e) => {
-              e.stopPropagation()
-              toggleFavorite(record.id, record.favorite)
-            }}
-            role="button"
-            aria-label={record.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
-            style={{ cursor: 'pointer', fontSize: 16 }}
-          >
-            {record.favorite ? <StarFilled /> : <StarOutlined />}
-          </span>
-        ),
-      },
-      {
-        title: 'Repository',
-        key: 'name',
-        minWidth: 200,
-        render: (_, record) => (
-          <div className="repo-name-cell">
-            <Link
-              className="repo-name-link"
-              onClick={(e) => {
-                e.stopPropagation()
-                navigate(`/repositories/${record.id}`)
-              }}
-            >
-              {record.name}
-            </Link>
-            {record.description && (
-              <Text className="repo-description" title={record.description}>
-                {record.description}
-              </Text>
-            )}
-          </div>
-        ),
-      },
-      {
-        title: 'Group',
-        dataIndex: 'group',
-        key: 'group',
-        minWidth: 180,
-        render: (value) => <Text type="secondary">{value}</Text>,
-      },
-      {
-        title: 'Language',
-        dataIndex: 'type',
-        key: 'type',
-        width: 110,
-      },
-      {
-        title: 'Status',
-        dataIndex: 'status',
-        key: 'status',
-        width: 120,
-        render: (value) => <StatusTag status={value} />,
-      },
-      {
-        title: 'Pipeline',
-        dataIndex: 'pipelineStatus',
-        key: 'pipelineStatus',
-        width: 110,
-        render: (value) => <StatusTag status={value} />,
-      },
-      {
-        title: 'Security',
-        dataIndex: 'securityStatus',
-        key: 'securityStatus',
-        width: 110,
-        render: (value) => <StatusTag status={value} />,
-      },
-      {
-        title: 'Updated',
-        dataIndex: 'updatedAt',
-        key: 'updatedAt',
-        width: 180,
-        render: (value) => <Text type="secondary">{value}</Text>,
-      },
-      {
-        title: 'Role',
-        dataIndex: 'role',
-        key: 'role',
-        width: 130,
-        render: (value) => <Text>{value}</Text>,
-      },
-    ],
-    [navigate, toggleFavorite],
-  )
-
   const isFiltered =
     search || filterStatus || filterLanguage || filterVisibility || filterFavorite
 
@@ -194,14 +98,14 @@ export default function RepositoryList() {
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} lg={6}>
           <SummaryCard
-            title="Total Repositories"
+            title={UI_TEXT.summary.totalRepositories}
             value={summary.total}
             icon={<DatabaseOutlined />}
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <SummaryCard
-            title="Active"
+            title={UI_TEXT.summary.active}
             value={summary.active}
             icon={<CheckCircleOutlined style={{ color: '#228738' }} />}
             tone="success"
@@ -209,7 +113,7 @@ export default function RepositoryList() {
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <SummaryCard
-            title="Review Required"
+            title={UI_TEXT.summary.reviewRequired}
             value={summary.reviewRequired}
             icon={<CodeOutlined style={{ color: '#9e6a00' }} />}
             tone="warning"
@@ -217,7 +121,7 @@ export default function RepositoryList() {
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <SummaryCard
-            title="Security Blocked"
+            title={UI_TEXT.summary.securityBlocked}
             value={summary.securityBlocked}
             icon={<AlertOutlined style={{ color: '#de3412' }} />}
             tone="error"
@@ -228,14 +132,14 @@ export default function RepositoryList() {
       {/* 필터 */}
       <FilterBar
         search={{
-          placeholder: 'Repository 이름, 그룹, 설명 검색',
+          placeholder: UI_TEXT.filters.repositorySearch,
           value: search,
           onChange: setSearch,
         }}
         filters={[
           {
             key: 'status',
-            placeholder: 'Status',
+            placeholder: UI_TEXT.filters.status,
             options: STATUS_OPTIONS,
             value: filterStatus,
             onChange: setFilterStatus,
@@ -243,7 +147,7 @@ export default function RepositoryList() {
           },
           {
             key: 'language',
-            placeholder: 'Language',
+            placeholder: UI_TEXT.filters.language,
             options: languageOptions,
             value: filterLanguage,
             onChange: setFilterLanguage,
@@ -251,7 +155,7 @@ export default function RepositoryList() {
           },
           {
             key: 'visibility',
-            placeholder: 'Visibility',
+            placeholder: UI_TEXT.filters.visibility,
             options: VISIBILITY_OPTIONS,
             value: filterVisibility,
             onChange: setFilterVisibility,
@@ -259,10 +163,10 @@ export default function RepositoryList() {
           },
           {
             key: 'favorite',
-            placeholder: 'Favorite',
+            placeholder: UI_TEXT.filters.favorite,
             options: [
-              { value: 'favorites', label: '⭐ Favorites' },
-              { value: 'non-favorites', label: 'Non-favorites' },
+              { value: 'favorites', label: UI_TEXT.common.favorites },
+              { value: 'non-favorites', label: UI_TEXT.common.nonFavorites },
             ],
             value: filterFavorite,
             onChange: setFilterFavorite,
@@ -282,20 +186,55 @@ export default function RepositoryList() {
         />
       )}
 
-      {/* 테이블 */}
-      <DataTable
-        rowKey="id"
-        columns={columns}
+      <List
+        className="repository-list"
         dataSource={filtered}
-        onRow={(record) => ({
-          onClick: () => navigate(`/repositories/${record.id}`),
-          style: { cursor: 'pointer' },
-        })}
+        locale={{ emptyText: UI_TEXT.messages.empty.table }}
         pagination={{
           pageSize: 15,
-          showSizeChanger: true,
+          showSizeChanger: false,
           showTotal: (total, range) => `${range[0]}-${range[1]} / 총 ${total}개`,
         }}
+        renderItem={(repository) => (
+          <List.Item
+            className="repository-list-item"
+            onClick={() => navigate(`/repositories/${repository.id}`)}
+          >
+            <button
+              type="button"
+              className={`favorite-btn repository-list-favorite ${repository.favorite ? 'active' : ''}`}
+              onClick={(event) => {
+                event.stopPropagation()
+                toggleFavorite(repository.id, repository.favorite)
+              }}
+              aria-label={repository.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+            >
+              {repository.favorite ? <StarFilled /> : <StarOutlined />}
+            </button>
+            <div className="repository-list-content">
+              <Flex align="center" gap={8} wrap="wrap">
+                <Link
+                  className="repo-name-link"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    navigate(`/repositories/${repository.id}`)
+                  }}
+                >
+                  {repository.name}
+                </Link>
+                <StatusTag status={repository.status} />
+              </Flex>
+              {repository.description ? (
+                <Text className="repository-list-description">{repository.description}</Text>
+              ) : null}
+              <Space wrap size={[10, 4]} className="repository-list-meta">
+                <Text type="secondary">{UI_TEXT.common.group}: {repository.group}</Text>
+                <Text type="secondary">{UI_TEXT.common.language}: {repository.type}</Text>
+                <Text type="secondary">{UI_TEXT.common.updated}: {repository.updatedAt}</Text>
+              </Space>
+            </div>
+          </List.Item>
+        )}
       />
     </Space>
   )

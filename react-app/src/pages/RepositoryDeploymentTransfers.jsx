@@ -24,14 +24,14 @@ export default function RepositoryDeploymentTransfers() {
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader eyebrow={repository.name} title={UI_TEXT.pages.repositoryDeploymentTransfer.title} description={UI_TEXT.pages.repositoryDeploymentTransfer.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
-        <Col xs={24} sm={12} xl={4}><SummaryCard title="Total Requests" value={summary.total} /></Col>
-        <Col xs={24} sm={12} xl={5}><SummaryCard title="Pending Approval" value={summary.pendingApproval} tone="warning" /></Col>
-        <Col xs={24} sm={12} xl={5}><SummaryCard title="Ready to Deploy" value={summary.readyToDeploy} tone="success" /></Col>
-        <Col xs={24} sm={12} xl={5}><SummaryCard title="Blocked" value={summary.blocked} tone="danger" /></Col>
-        <Col xs={24} sm={12} xl={5}><SummaryCard title="Scheduled" value={summary.scheduled} /></Col>
+        <Col xs={24} sm={12} xl={4}><SummaryCard title={UI_TEXT.summary.totalRequests} value={summary.total} /></Col>
+        <Col xs={24} sm={12} xl={5}><SummaryCard title={UI_TEXT.summary.pendingApproval} value={summary.pendingApproval} tone="warning" /></Col>
+        <Col xs={24} sm={12} xl={5}><SummaryCard title={UI_TEXT.summary.readyToDeploy} value={summary.readyToDeploy} tone="success" /></Col>
+        <Col xs={24} sm={12} xl={5}><SummaryCard title={UI_TEXT.summary.blocked} value={summary.blocked} tone="danger" /></Col>
+        <Col xs={24} sm={12} xl={5}><SummaryCard title={UI_TEXT.summary.scheduled} value={summary.scheduled} /></Col>
       </Row>
       <Card>
-        <FilterBar search={{ placeholder: 'Transfer, MR, requester 검색', value: search, onChange: setSearch }} onReset={() => setSearch('')} />
+        <FilterBar search={{ placeholder: UI_TEXT.filters.repositoryDeploymentTransferSearch, value: search, onChange: setSearch }} onReset={() => setSearch('')} />
         <DeploymentTransferTable transfers={filtered} repositoryScoped repositoryId={repositoryId} />
       </Card>
     </Space>

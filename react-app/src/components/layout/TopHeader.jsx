@@ -359,7 +359,7 @@ function TopHeader({ onToggleSidebar }) {
         <Space orientation="vertical" size={12}>
           <Text>{UI_TEXT.help.demoGuideBody}</Text>
           <Divider />
-          <Text type="secondary">Quick Create, Global Search, Notification Drawer는 mock 데이터 기반으로 동작합니다.</Text>
+          <Text type="secondary">{UI_TEXT.topHeader.helpMockNotice}</Text>
         </Space>
       </Modal>
       <DesignTokenModal open={designTokenOpen} onClose={() => setDesignTokenOpen(false)} />

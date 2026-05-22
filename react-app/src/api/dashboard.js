@@ -135,6 +135,51 @@ export function getDashboardPipelinesData() {
   return filterItemsByRepositoryAccess(getMockSlice((data) => data.pipelines.list, []), getStoredAuthUser(), 'repo').slice(0, 6)
 }
 
+function getActivityHref(activity) {
+  if (activity.targetType === 'mergeRequest') {
+    return `/repositories/${activity.repositoryId}/merge-requests/${activity.targetId}`
+  }
+  if (activity.targetType === 'pipeline') {
+    return `/repositories/${activity.repositoryId}/pipelines/${activity.targetId}`
+  }
+  if (activity.targetType === 'security') {
+    return `/security/${activity.targetId}`
+  }
+  if (activity.targetType === 'audit') {
+    return '/audit'
+  }
+  return `/repositories/${activity.repositoryId}`
+}
+
+function getActivityStatus(activity) {
+  if (activity.type?.startsWith('security.')) return 'warning'
+  if (activity.type?.startsWith('pipeline.')) {
+    return activity.message?.toLowerCase().includes('failed') ? 'failed' : 'passed'
+  }
+  if (activity.type?.startsWith('mr.')) return 'reviewing'
+  return 'info'
+}
+
+export function getDashboardRepositoryActivities() {
+  const user = getStoredAuthUser()
+  const repositories = filterRepositoriesByAccess(
+    applyRepositoryFavorites(getMockSlice((data) => data.repositories.list, [])),
+    user,
+  )
+  const repositoryMap = new Map(repositories.map((repository) => [repository.id, repository]))
+  const allowedRepositoryIds = new Set(repositories.map((repository) => repository.id))
+
+  return getMockSlice((data) => data.activities, [])
+    .filter((activity) => allowedRepositoryIds.has(activity.repositoryId))
+    .map((activity) => ({
+      ...activity,
+      repositoryName: repositoryMap.get(activity.repositoryId)?.name ?? activity.repositoryId,
+      href: getActivityHref(activity),
+      status: getActivityStatus(activity),
+    }))
+    .slice(0, 8)
+}
+
 export function getDashboardSecurityItems() {
   const user = getStoredAuthUser()
   if (!hasPermission(user, 'security:read')) return []

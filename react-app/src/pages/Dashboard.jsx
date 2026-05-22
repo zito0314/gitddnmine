@@ -7,18 +7,17 @@ import {
   ReloadOutlined,
   SafetyCertificateOutlined,
 } from '@ant-design/icons'
-import { Alert, Button, Card, Col, Flex, Input, List, Row, Space, Table, Typography } from 'antd'
+import { Button, Card, Col, Flex, Input, List, Row, Space, Table, Tag, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
-  getDashboardAuditEvents,
   getDashboardAiPrompts,
   getDashboardAiResponse,
   getDashboardMergeRequestsData,
   getDashboardNextUpItems,
   getDashboardPipelinesData,
   getDashboardRepositoriesData,
-  getDashboardSecurityItems,
+  getDashboardRepositoryActivities,
   getDashboardSummary,
 } from '../api/dashboard'
 import { useAuth } from '../auth/AuthContext'
@@ -35,12 +34,6 @@ function getFailedJobs(pipeline) {
   return pipeline.jobs?.filter((job) => job === 'failed').length ?? 0
 }
 
-function normalizeAuditResult(log) {
-  if (log.resultClass === 'red') return 'blocked'
-  if (log.resultClass === 'orange') return 'warning'
-  return 'success'
-}
-
 function Dashboard() {
   const navigate = useNavigate()
   const auth = useAuth()
@@ -49,8 +42,7 @@ function Dashboard() {
   const repositories = getDashboardRepositoriesData()
   const mergeRequests = getDashboardMergeRequestsData()
   const pipelines = getDashboardPipelinesData()
-  const securityItems = getDashboardSecurityItems()
-  const auditEvents = getDashboardAuditEvents()
+  const activities = getDashboardRepositoryActivities()
   const prompts = getDashboardAiPrompts()
   const [aiPrompt, setAiPrompt] = useState('mr-approval')
   const [aiInput, setAiInput] = useState('')
@@ -79,28 +71,28 @@ function Dashboard() {
 
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Review Required MRs" value={summary.reviewRequiredMrs} tone="warning" icon={<PullRequestOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.reviewRequiredMrs} value={summary.reviewRequiredMrs} tone="warning" icon={<PullRequestOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="My Open MRs" value={summary.myOpenMrs} icon={<PullRequestOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.myOpenMrs} value={summary.myOpenMrs} icon={<PullRequestOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Failed Pipelines" value={summary.failedPipelines} tone="danger" icon={<AlertOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.failedPipelines} value={summary.failedPipelines} tone="danger" icon={<AlertOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Security Blocked" value={summary.securityBlocked} tone="danger" icon={<SafetyCertificateOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.securityBlocked} value={summary.securityBlocked} tone="danger" icon={<SafetyCertificateOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Pending Actions" value={summary.pendingActions} tone="warning" icon={<CheckCircleOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.pendingActions} value={summary.pendingActions} tone="warning" icon={<CheckCircleOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Today Audit Events" value={summary.todayAuditEvents} icon={<AuditOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.todayAuditEvents} value={summary.todayAuditEvents} icon={<AuditOutlined />} />
         </Col>
       </Row>
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={10}>
-          <Card title="Next Up / Action Required">
+          <Card title={UI_TEXT.sections.nextUp}>
             <List
               dataSource={nextUp}
               renderItem={(item) => (
@@ -143,7 +135,7 @@ function Dashboard() {
                   onChange={(event) => setAiInput(event.target.value)}
                   onPressEnter={() => aiInput.trim() && setAiPrompt(aiInput)}
                 />
-                <Button onClick={() => aiInput.trim() && setAiPrompt(aiInput)}>Ask</Button>
+                <Button onClick={() => aiInput.trim() && setAiPrompt(aiInput)}>{UI_TEXT.actions.search}</Button>
               </Flex>
               <Card size="small">
                 <Space orientation="vertical" size={6}>
@@ -159,25 +151,21 @@ function Dashboard() {
         </Col>
 
         <Col xs={24} xl={6}>
-          <Card title="My Repositories">
-            <Table
-              rowKey="id"
+          <Card title={UI_TEXT.sections.myRepositories}>
+            <List
               dataSource={repositories}
-              pagination={false}
-              size="small"
-              onRow={(record) => ({
-                onClick: () => navigate(`/repositories/${record.id}`),
-                style: { cursor: 'pointer' },
-              })}
-              columns={[
-                { title: 'Repository name', dataIndex: 'name', render: (value, record) => <Link to={`/repositories/${record.id}`}>{value}</Link> },
-                { title: 'Group path', dataIndex: 'group' },
-                { title: 'Role', dataIndex: 'role', width: 120 },
-                { title: 'Pipeline', dataIndex: 'pipelineStatus', width: 110, render: (value) => <StatusTag status={value} /> },
-                { title: 'Security', dataIndex: 'securityStatus', width: 110, render: (value) => <StatusTag status={value} /> },
-                { title: 'Open MR', dataIndex: 'openMrCount', width: 90 },
-                { title: 'Updated', dataIndex: 'updatedAt', width: 160 },
-              ]}
+              locale={{ emptyText: UI_TEXT.messages.empty.table }}
+              renderItem={(repository) => (
+                <List.Item
+                  className="dashboard-list-item"
+                  onClick={() => navigate(`/repositories/${repository.id}`)}
+                >
+                  <List.Item.Meta
+                    title={<Link to={`/repositories/${repository.id}`}>{repository.name}</Link>}
+                    description={<Text type="secondary">{repository.updatedAt}</Text>}
+                  />
+                </List.Item>
+              )}
             />
           </Card>
         </Col>
@@ -185,32 +173,35 @@ function Dashboard() {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={12}>
-          <Card title="Merge Requests Overview">
-            <Table
-              rowKey="id"
+          <Card title={UI_TEXT.sections.mergeRequestsOverview}>
+            <List
               dataSource={mergeRequests}
-              pagination={false}
-              size="small"
-              onRow={(record) => ({
-                onClick: () => navigate(`/repositories/${record.repo}/merge-requests/${record.id}`),
-                style: { cursor: 'pointer' },
-              })}
-              columns={[
-                { title: 'MR ID', dataIndex: 'id', width: 80, render: (id, record) => <Link to={`/repositories/${record.repo}/merge-requests/${id}`}>!{id}</Link> },
-                { title: 'Title', dataIndex: 'title' },
-                { title: 'Repository', dataIndex: 'repo', width: 160 },
-                { title: 'Review', dataIndex: 'review', width: 110, render: (value, record) => <StatusTag status={value} label={record.reviewLabel} /> },
-                { title: 'Approval', key: 'approval', width: 110, render: (_, record) => `${record.approved}/${record.required}` },
-                { title: 'Pipeline', dataIndex: 'pipeline', width: 110, render: (value) => <StatusTag status={value} /> },
-                { title: 'Security', dataIndex: 'security', width: 110, render: (value, record) => <StatusTag status={value} label={record.securityLabel} /> },
-                { title: 'Updated', dataIndex: 'updatedAt', width: 110 },
-              ]}
+              locale={{ emptyText: UI_TEXT.messages.empty.table }}
+              renderItem={(mergeRequest) => (
+                <List.Item
+                  className="dashboard-list-item"
+                  onClick={() => navigate(`/repositories/${mergeRequest.repo}/merge-requests/${mergeRequest.id}`)}
+                  actions={[<StatusTag key="review" status={mergeRequest.review} label={mergeRequest.reviewLabel} />]}
+                >
+                  <List.Item.Meta
+                    title={
+                      <Flex align="center" gap={8} wrap="wrap">
+                        <Tag>MR #{mergeRequest.id}</Tag>
+                        <Link to={`/repositories/${mergeRequest.repo}/merge-requests/${mergeRequest.id}`}>
+                          {mergeRequest.title}
+                        </Link>
+                      </Flex>
+                    }
+                    description={<Text type="secondary">{mergeRequest.repo}</Text>}
+                  />
+                </List.Item>
+              )}
             />
           </Card>
         </Col>
 
         <Col xs={24} xl={12}>
-          <Card title="Pipeline Health">
+          <Card title={UI_TEXT.sections.pipelineHealth}>
             <Table
               rowKey="id"
               dataSource={pipelines}
@@ -222,73 +213,46 @@ function Dashboard() {
               })}
               columns={[
                 { title: 'Pipeline ID', dataIndex: 'id', render: (id, record) => <Link to={`/repositories/${record.repo}/pipelines/${id}`}>#{id}</Link> },
-                { title: 'Repository', dataIndex: 'repo' },
-                { title: 'Branch', dataIndex: 'branch', render: (value) => <Text code>{value}</Text> },
-                { title: 'Status', dataIndex: 'status', render: (value) => <StatusTag status={value === 'finished' ? 'passed' : value} /> },
-                { title: 'Failed jobs', key: 'failedJobs', render: (_, record) => getFailedJobs(record) },
-                { title: 'Duration', key: 'duration', render: (_, record) => getPipelineDuration(record) },
-                { title: 'Updated', dataIndex: 'updatedAt' },
+                { title: UI_TEXT.common.repository, dataIndex: 'repo' },
+                { title: UI_TEXT.tables.branch, dataIndex: 'branch', render: (value) => <Text code>{value}</Text> },
+                { title: UI_TEXT.common.status, dataIndex: 'status', render: (value) => <StatusTag status={value === 'finished' ? 'passed' : value} /> },
+                { title: UI_TEXT.tables.failedJobs, key: 'failedJobs', render: (_, record) => getFailedJobs(record) },
+                { title: UI_TEXT.tables.duration, key: 'duration', render: (_, record) => getPipelineDuration(record) },
+                { title: UI_TEXT.common.updated, dataIndex: 'updatedAt' },
               ]}
             />
           </Card>
         </Col>
       </Row>
 
-      <Row gutter={[16, 16]}>
-        <Col xs={24} xl={12}>
-          <Card title="Security Attention">
-            <Table
-              rowKey="id"
-              dataSource={securityItems}
-              pagination={false}
-              size="small"
-              onRow={(record) => ({
-                onClick: () => navigate(`/security/${record.id}`),
-                style: { cursor: 'pointer' },
-              })}
-              columns={[
-                { title: 'Security ID', dataIndex: 'id', render: (id) => <Link to={`/security/${id}`}>{id}</Link> },
-                { title: 'Repository', dataIndex: 'repo' },
-                { title: 'MR', dataIndex: 'mrId', render: (mrId, record) => <Link to={`/repositories/${record.repo}/merge-requests/${mrId}`}>!{mrId}</Link> },
-                { title: 'Policy', dataIndex: 'policy', render: (value, record) => <StatusTag status={value} label={record.policyLabel} /> },
-                { title: 'Critical / High', key: 'risk', render: (_, record) => `${record.severity.critical} / ${record.severity.high}` },
-                { title: 'Last checked', dataIndex: 'lastCheckedAt' },
-              ]}
-            />
-          </Card>
-        </Col>
-
-        <Col xs={24} xl={12}>
-          <Card title="Recent Audit Events">
-            <List
-              dataSource={auditEvents}
-              renderItem={(event) => (
-                <List.Item onClick={() => navigate('/audit')} className="dashboard-action-item">
-                  <List.Item.Meta
-                    title={
-                      <Flex align="center" gap={8} wrap="wrap">
-                        <Text strong>{event.eventCode}</Text>
-                        <StatusTag status={event.severity === 'danger' ? 'failed' : event.severity} label={event.severity} />
-                        <StatusTag status={normalizeAuditResult(event)} label={event.result} />
-                      </Flex>
-                    }
-                    description={`${event.actorName} · ${event.targetName} · ${event.time}`}
-                  />
-                </List.Item>
-              )}
-            />
-          </Card>
-        </Col>
-      </Row>
-
-      {summary.securityBlocked > 0 ? (
-        <Alert
-          type="warning"
-          showIcon
-          message="보안 차단 항목이 있습니다."
-          description="Security Attention 영역에서 차단된 검증과 관련 MR을 확인하세요."
+      <Card title={UI_TEXT.sections.recentActivity}>
+        <List
+          dataSource={activities}
+          locale={{ emptyText: UI_TEXT.messages.empty.table }}
+          renderItem={(activity) => (
+            <List.Item
+              className="dashboard-list-item"
+              onClick={() => navigate(activity.href)}
+              actions={[<StatusTag key="status" status={activity.status} />]}
+            >
+              <List.Item.Meta
+                title={<Text strong>{activity.message}</Text>}
+                description={
+                  <Space wrap size={6}>
+                    <Text type="secondary">{activity.repositoryName}</Text>
+                    <Text type="secondary">·</Text>
+                    <Text type="secondary">{activity.actor}</Text>
+                    <Text type="secondary">·</Text>
+                    <Text type="secondary">{activity.type}</Text>
+                    <Text type="secondary">·</Text>
+                    <Text type="secondary">{activity.createdAt}</Text>
+                  </Space>
+                }
+              />
+            </List.Item>
+          )}
         />
-      ) : null}
+      </Card>
     </Space>
   )
 }

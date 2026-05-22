@@ -55,38 +55,38 @@ export default function PipelineList() {
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader title={UI_TEXT.pages.pipelines.title} description={UI_TEXT.pages.pipelines.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
-        <Col xs={24} sm={12} xl={4}><SummaryCard title="Total Pipelines" value={summary.total} icon={<PlayCircleOutlined />} /></Col>
-        <Col xs={24} sm={12} xl={5}><SummaryCard title="Passed" value={summary.passed} tone="success" icon={<CheckCircleOutlined />} /></Col>
-        <Col xs={24} sm={12} xl={5}><SummaryCard title="Failed" value={summary.failed} tone="danger" /></Col>
-        <Col xs={24} sm={12} xl={5}><SummaryCard title="Running" value={summary.running} icon={<ClockCircleOutlined />} /></Col>
-        <Col xs={24} sm={12} xl={5}><SummaryCard title="Manual Required" value={summary.manualRequired} tone="warning" icon={<ToolOutlined />} /></Col>
+        <Col xs={24} sm={12} xl={4}><SummaryCard title={UI_TEXT.summary.totalPipelines} value={summary.total} icon={<PlayCircleOutlined />} /></Col>
+        <Col xs={24} sm={12} xl={5}><SummaryCard title={UI_TEXT.summary.passed} value={summary.passed} tone="success" icon={<CheckCircleOutlined />} /></Col>
+        <Col xs={24} sm={12} xl={5}><SummaryCard title={UI_TEXT.summary.failed} value={summary.failed} tone="danger" /></Col>
+        <Col xs={24} sm={12} xl={5}><SummaryCard title={UI_TEXT.summary.running} value={summary.running} icon={<ClockCircleOutlined />} /></Col>
+        <Col xs={24} sm={12} xl={5}><SummaryCard title={UI_TEXT.summary.manualRequired} value={summary.manualRequired} tone="warning" icon={<ToolOutlined />} /></Col>
       </Row>
       <Card>
         <FilterBar
-          search={{ placeholder: 'Pipeline ID, repository, branch, commit, author, MR 검색', value: search, onChange: setSearch }}
+          search={{ placeholder: UI_TEXT.filters.pipelineSearch, value: search, onChange: setSearch }}
           filters={[
-            { key: 'repo', placeholder: 'Repository', value: repositoryId, onChange: setRepositoryId, options: repositories.map((repo) => ({ value: repo.id, label: repo.name })) },
-            { key: 'status', placeholder: 'Status', value: status, onChange: setStatus, options: options(pipelines.map((item) => item.status)) },
-            { key: 'branch', placeholder: 'Branch', value: branch, onChange: setBranch, options: options(pipelines.map((item) => item.branch)) },
-            { key: 'trigger', placeholder: 'Trigger', value: trigger, onChange: setTrigger, options: options(pipelines.map((item) => item.trigger)) },
-            { key: 'author', placeholder: 'Author', value: author, onChange: setAuthor, options: options(pipelines.map((item) => item.author)) },
-            { key: 'related', placeholder: 'Related MR', value: relatedMr, onChange: setRelatedMr, options: [{ value: 'linked', label: 'Linked' }, { value: 'none', label: 'None' }] },
+            { key: 'repo', placeholder: UI_TEXT.common.repository, value: repositoryId, onChange: setRepositoryId, options: repositories.map((repo) => ({ value: repo.id, label: repo.name })) },
+            { key: 'status', placeholder: UI_TEXT.filters.status, value: status, onChange: setStatus, options: options(pipelines.map((item) => item.status)) },
+            { key: 'branch', placeholder: UI_TEXT.tables.branch, value: branch, onChange: setBranch, options: options(pipelines.map((item) => item.branch)) },
+            { key: 'trigger', placeholder: UI_TEXT.common.trigger, value: trigger, onChange: setTrigger, options: options(pipelines.map((item) => item.trigger)) },
+            { key: 'author', placeholder: UI_TEXT.common.owner, value: author, onChange: setAuthor, options: options(pipelines.map((item) => item.author)) },
+            { key: 'related', placeholder: UI_TEXT.filters.relatedMr, value: relatedMr, onChange: setRelatedMr, options: [{ value: 'linked', label: 'Linked' }, { value: 'none', label: 'None' }] },
           ]}
           onReset={() => { setSearch(''); setRepositoryId(null); setStatus(null); setBranch(null); setTrigger(null); setAuthor(null); setRelatedMr(null) }}
         />
         <DataTable rowKey="id" dataSource={filtered} columns={[
           { title: 'Pipeline ID', dataIndex: 'id', render: (id, record) => <Link to={`/repositories/${record.repo}/pipelines/${id}`}>#{id}</Link> },
-          { title: 'Repository', dataIndex: 'repo', render: (value) => <Link to={`/repositories/${value}`}>{repoMap.get(value)?.name ?? value}</Link> },
-          { title: 'Status', dataIndex: 'status', render: (value) => <StatusTag status={value === 'finished' ? 'passed' : value} /> },
-          { title: 'Branch', dataIndex: 'branch', render: (value) => <Text code>{value}</Text> },
-          { title: 'Commit', dataIndex: 'commit', render: (value) => <Text code>{value}</Text> },
-          { title: 'Related MR', dataIndex: 'mrId', render: (mrId, record) => mrId ? <Link to={`/repositories/${record.repo}/merge-requests/${mrId}`}>!{mrId} {mrMap.get(String(mrId))?.title}</Link> : '-' },
-          { title: 'Trigger', dataIndex: 'trigger' },
-          { title: 'Author', dataIndex: 'author' },
-          { title: 'Duration', key: 'duration', render: (_, record) => record.summary?.find((item) => item.label === '실제 실행 시간')?.value ?? '-' },
-          { title: 'Jobs', dataIndex: 'jobs', render: (jobs = []) => <Badge status={jobs.includes('failed') ? 'error' : 'success'} text={`${jobs.length} jobs`} /> },
-          { title: 'Updated at', dataIndex: 'updatedAt' },
-          { title: 'Actions', key: 'actions', fixed: 'right', render: (_, record) => <Button size="small" onClick={() => navigate(`/repositories/${record.repo}/pipelines/${record.id}`)}>{UI_TEXT.actions.view}</Button> },
+          { title: UI_TEXT.common.repository, dataIndex: 'repo', render: (value) => <Link to={`/repositories/${value}`}>{repoMap.get(value)?.name ?? value}</Link> },
+          { title: UI_TEXT.common.status, dataIndex: 'status', render: (value) => <StatusTag status={value === 'finished' ? 'passed' : value} /> },
+          { title: UI_TEXT.tables.branch, dataIndex: 'branch', render: (value) => <Text code>{value}</Text> },
+          { title: UI_TEXT.common.commit, dataIndex: 'commit', render: (value) => <Text code>{value}</Text> },
+          { title: UI_TEXT.filters.relatedMr, dataIndex: 'mrId', render: (mrId, record) => mrId ? <Link to={`/repositories/${record.repo}/merge-requests/${mrId}`}>!{mrId} {mrMap.get(String(mrId))?.title}</Link> : '-' },
+          { title: UI_TEXT.common.trigger, dataIndex: 'trigger' },
+          { title: UI_TEXT.common.author, dataIndex: 'author' },
+          { title: UI_TEXT.tables.duration, key: 'duration', render: (_, record) => record.summary?.find((item) => item.label === '실제 실행 시간')?.value ?? '-' },
+          { title: UI_TEXT.common.jobs, dataIndex: 'jobs', render: (jobs = []) => <Badge status={jobs.includes('failed') ? 'error' : 'success'} text={`${jobs.length} jobs`} /> },
+          { title: UI_TEXT.common.updatedAt, dataIndex: 'updatedAt' },
+          { title: UI_TEXT.actions.view, key: 'actions', fixed: 'right', render: (_, record) => <Button size="small" onClick={() => navigate(`/repositories/${record.repo}/pipelines/${record.id}`)}>{UI_TEXT.actions.view}</Button> },
         ]} />
       </Card>
     </Space>

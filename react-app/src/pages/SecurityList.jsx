@@ -228,22 +228,22 @@ export default function SecurityList() {
 
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Total Validations" value={summary.total} icon={<SafetyCertificateOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.totalValidations} value={summary.total} icon={<SafetyCertificateOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Failed" value={summary.failed} tone="danger" icon={<ExclamationCircleOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.failed} value={summary.failed} tone="danger" icon={<ExclamationCircleOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Blocked MRs" value={summary.blockedMrs} tone="danger" icon={<StopOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.blockedMrs} value={summary.blockedMrs} tone="danger" icon={<StopOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Critical Issues" value={summary.criticalIssues} tone="danger" icon={<WarningOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.criticalIssues} value={summary.criticalIssues} tone="danger" icon={<WarningOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Warning" value={summary.warning} tone="warning" icon={<WarningOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.warning} value={summary.warning} tone="warning" icon={<WarningOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Passed" value={summary.passed} tone="success" icon={<SafetyCertificateOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.passed} value={summary.passed} tone="success" icon={<SafetyCertificateOutlined />} />
         </Col>
       </Row>
 
@@ -289,7 +289,7 @@ export default function SecurityList() {
             },
             {
               key: 'severity',
-              placeholder: 'Severity',
+              placeholder: UI_TEXT.filters.severity,
               value: severity,
               onChange: setSeverity,
               options: [
@@ -301,7 +301,7 @@ export default function SecurityList() {
             },
             {
               key: 'repository',
-              placeholder: 'Repository',
+              placeholder: UI_TEXT.common.repository,
               value: repositoryId,
               onChange: setRepositoryId,
               options: uniqueOptions(validations.map((validation) => validation.repo)),
@@ -316,7 +316,7 @@ export default function SecurityList() {
             },
             {
               key: 'author',
-              placeholder: 'Author',
+              placeholder: UI_TEXT.common.owner,
               value: author,
               onChange: setAuthor,
               options: uniqueOptions(validations.map((validation) => validation.author)),
