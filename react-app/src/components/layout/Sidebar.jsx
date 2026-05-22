@@ -112,7 +112,7 @@ function Sidebar({ collapsed, onCollapse }) {
         ) : null}
       </Flex>
 
-      {!collapsed ? <Text className="nav-title">Workspace</Text> : null}
+      {!collapsed ? <Text className="nav-title">{UI_TEXT.common.workspace}</Text> : null}
       <Menu
         className="global-menu"
         mode="inline"

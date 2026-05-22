@@ -82,7 +82,7 @@ function RepositoryContextSidebar({ repositoryId }) {
   return (
     <div className="repository-context-sidebar">
       <Divider className="sidebar-divider" />
-      <Text className="nav-title">Current Repository</Text>
+      <Text className="nav-title">{UI_TEXT.common.currentRepository}</Text>
       <Card size="small" className="sidebar-repository-card">
         <Title level={5}>{repository.name}</Title>
         <Text type="secondary">{repository.group}</Text>
@@ -92,21 +92,21 @@ function RepositoryContextSidebar({ repositoryId }) {
         </Flex>
         <dl className="repository-meta-list">
           <div>
-            <dt>Default branch</dt>
+            <dt>{UI_TEXT.common.defaultBranch}</dt>
             <dd>{repository.defaultBranch}</dd>
           </div>
           <div>
-            <dt>Updated</dt>
+            <dt>{UI_TEXT.common.updated}</dt>
             <dd>{repository.updatedAt}</dd>
           </div>
           <div>
-            <dt>Pipeline</dt>
+            <dt>{UI_TEXT.common.pipeline}</dt>
             <dd>
               <Tag color={statusColor[repository.pipelineStatus]}>{repository.pipelineStatus}</Tag>
             </dd>
           </div>
           <div>
-            <dt>Security</dt>
+            <dt>{UI_TEXT.common.security}</dt>
             <dd>
               <Tag color={statusColor[repository.securityStatus]}>{repository.securityStatus}</Tag>
             </dd>
@@ -114,7 +114,7 @@ function RepositoryContextSidebar({ repositoryId }) {
         </dl>
       </Card>
 
-      <Text className="nav-title repository-menu-title">Repository</Text>
+      <Text className="nav-title repository-menu-title">{UI_TEXT.common.repository}</Text>
       <Menu
         className="repository-menu"
         mode="inline"

@@ -79,28 +79,28 @@ function Dashboard() {
 
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Review Required MRs" value={summary.reviewRequiredMrs} tone="warning" icon={<PullRequestOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.reviewRequiredMrs} value={summary.reviewRequiredMrs} tone="warning" icon={<PullRequestOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="My Open MRs" value={summary.myOpenMrs} icon={<PullRequestOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.myOpenMrs} value={summary.myOpenMrs} icon={<PullRequestOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Failed Pipelines" value={summary.failedPipelines} tone="danger" icon={<AlertOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.failedPipelines} value={summary.failedPipelines} tone="danger" icon={<AlertOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Security Blocked" value={summary.securityBlocked} tone="danger" icon={<SafetyCertificateOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.securityBlocked} value={summary.securityBlocked} tone="danger" icon={<SafetyCertificateOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Pending Actions" value={summary.pendingActions} tone="warning" icon={<CheckCircleOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.pendingActions} value={summary.pendingActions} tone="warning" icon={<CheckCircleOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Today Audit Events" value={summary.todayAuditEvents} icon={<AuditOutlined />} />
+          <SummaryCard title={UI_TEXT.summary.todayAuditEvents} value={summary.todayAuditEvents} icon={<AuditOutlined />} />
         </Col>
       </Row>
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={10}>
-          <Card title="Next Up / Action Required">
+          <Card title={UI_TEXT.sections.nextUp}>
             <List
               dataSource={nextUp}
               renderItem={(item) => (
@@ -143,7 +143,7 @@ function Dashboard() {
                   onChange={(event) => setAiInput(event.target.value)}
                   onPressEnter={() => aiInput.trim() && setAiPrompt(aiInput)}
                 />
-                <Button onClick={() => aiInput.trim() && setAiPrompt(aiInput)}>Ask</Button>
+                <Button onClick={() => aiInput.trim() && setAiPrompt(aiInput)}>{UI_TEXT.actions.search}</Button>
               </Flex>
               <Card size="small">
                 <Space orientation="vertical" size={6}>
@@ -159,7 +159,7 @@ function Dashboard() {
         </Col>
 
         <Col xs={24} xl={6}>
-          <Card title="My Repositories">
+          <Card title={UI_TEXT.sections.myRepositories}>
             <Table
               rowKey="id"
               dataSource={repositories}
@@ -170,13 +170,13 @@ function Dashboard() {
                 style: { cursor: 'pointer' },
               })}
               columns={[
-                { title: 'Repository name', dataIndex: 'name', render: (value, record) => <Link to={`/repositories/${record.id}`}>{value}</Link> },
-                { title: 'Group path', dataIndex: 'group' },
-                { title: 'Role', dataIndex: 'role', width: 120 },
-                { title: 'Pipeline', dataIndex: 'pipelineStatus', width: 110, render: (value) => <StatusTag status={value} /> },
-                { title: 'Security', dataIndex: 'securityStatus', width: 110, render: (value) => <StatusTag status={value} /> },
-                { title: 'Open MR', dataIndex: 'openMrCount', width: 90 },
-                { title: 'Updated', dataIndex: 'updatedAt', width: 160 },
+                { title: UI_TEXT.common.repositoryName, dataIndex: 'name', render: (value, record) => <Link to={`/repositories/${record.id}`}>{value}</Link> },
+                { title: UI_TEXT.common.groupPath, dataIndex: 'group' },
+                { title: UI_TEXT.common.role, dataIndex: 'role', width: 120 },
+                { title: UI_TEXT.common.pipeline, dataIndex: 'pipelineStatus', width: 110, render: (value) => <StatusTag status={value} /> },
+                { title: UI_TEXT.common.security, dataIndex: 'securityStatus', width: 110, render: (value) => <StatusTag status={value} /> },
+                { title: UI_TEXT.common.openMr, dataIndex: 'openMrCount', width: 90 },
+                { title: UI_TEXT.common.updated, dataIndex: 'updatedAt', width: 160 },
               ]}
             />
           </Card>
@@ -185,7 +185,7 @@ function Dashboard() {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={12}>
-          <Card title="Merge Requests Overview">
+          <Card title={UI_TEXT.sections.mergeRequestsOverview}>
             <Table
               rowKey="id"
               dataSource={mergeRequests}
@@ -196,21 +196,21 @@ function Dashboard() {
                 style: { cursor: 'pointer' },
               })}
               columns={[
-                { title: 'MR ID', dataIndex: 'id', width: 80, render: (id, record) => <Link to={`/repositories/${record.repo}/merge-requests/${id}`}>!{id}</Link> },
-                { title: 'Title', dataIndex: 'title' },
-                { title: 'Repository', dataIndex: 'repo', width: 160 },
-                { title: 'Review', dataIndex: 'review', width: 110, render: (value, record) => <StatusTag status={value} label={record.reviewLabel} /> },
-                { title: 'Approval', key: 'approval', width: 110, render: (_, record) => `${record.approved}/${record.required}` },
-                { title: 'Pipeline', dataIndex: 'pipeline', width: 110, render: (value) => <StatusTag status={value} /> },
-                { title: 'Security', dataIndex: 'security', width: 110, render: (value, record) => <StatusTag status={value} label={record.securityLabel} /> },
-                { title: 'Updated', dataIndex: 'updatedAt', width: 110 },
+                { title: UI_TEXT.tables.mrId, dataIndex: 'id', width: 80, render: (id, record) => <Link to={`/repositories/${record.repo}/merge-requests/${id}`}>!{id}</Link> },
+                { title: UI_TEXT.tables.title, dataIndex: 'title' },
+                { title: UI_TEXT.common.repository, dataIndex: 'repo', width: 160 },
+                { title: UI_TEXT.tables.review, dataIndex: 'review', width: 110, render: (value, record) => <StatusTag status={value} label={record.reviewLabel} /> },
+                { title: UI_TEXT.tables.approval, key: 'approval', width: 110, render: (_, record) => `${record.approved}/${record.required}` },
+                { title: UI_TEXT.common.pipeline, dataIndex: 'pipeline', width: 110, render: (value) => <StatusTag status={value} /> },
+                { title: UI_TEXT.common.security, dataIndex: 'security', width: 110, render: (value, record) => <StatusTag status={value} label={record.securityLabel} /> },
+                { title: UI_TEXT.common.updated, dataIndex: 'updatedAt', width: 110 },
               ]}
             />
           </Card>
         </Col>
 
         <Col xs={24} xl={12}>
-          <Card title="Pipeline Health">
+          <Card title={UI_TEXT.sections.pipelineHealth}>
             <Table
               rowKey="id"
               dataSource={pipelines}
@@ -222,12 +222,12 @@ function Dashboard() {
               })}
               columns={[
                 { title: 'Pipeline ID', dataIndex: 'id', render: (id, record) => <Link to={`/repositories/${record.repo}/pipelines/${id}`}>#{id}</Link> },
-                { title: 'Repository', dataIndex: 'repo' },
-                { title: 'Branch', dataIndex: 'branch', render: (value) => <Text code>{value}</Text> },
-                { title: 'Status', dataIndex: 'status', render: (value) => <StatusTag status={value === 'finished' ? 'passed' : value} /> },
-                { title: 'Failed jobs', key: 'failedJobs', render: (_, record) => getFailedJobs(record) },
-                { title: 'Duration', key: 'duration', render: (_, record) => getPipelineDuration(record) },
-                { title: 'Updated', dataIndex: 'updatedAt' },
+                { title: UI_TEXT.common.repository, dataIndex: 'repo' },
+                { title: UI_TEXT.tables.branch, dataIndex: 'branch', render: (value) => <Text code>{value}</Text> },
+                { title: UI_TEXT.common.status, dataIndex: 'status', render: (value) => <StatusTag status={value === 'finished' ? 'passed' : value} /> },
+                { title: UI_TEXT.tables.failedJobs, key: 'failedJobs', render: (_, record) => getFailedJobs(record) },
+                { title: UI_TEXT.tables.duration, key: 'duration', render: (_, record) => getPipelineDuration(record) },
+                { title: UI_TEXT.common.updated, dataIndex: 'updatedAt' },
               ]}
             />
           </Card>
@@ -236,7 +236,7 @@ function Dashboard() {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={12}>
-          <Card title="Security Attention">
+          <Card title={UI_TEXT.sections.securityAttention}>
             <Table
               rowKey="id"
               dataSource={securityItems}
@@ -247,19 +247,19 @@ function Dashboard() {
                 style: { cursor: 'pointer' },
               })}
               columns={[
-                { title: 'Security ID', dataIndex: 'id', render: (id) => <Link to={`/security/${id}`}>{id}</Link> },
-                { title: 'Repository', dataIndex: 'repo' },
+                { title: UI_TEXT.tables.securityId, dataIndex: 'id', render: (id) => <Link to={`/security/${id}`}>{id}</Link> },
+                { title: UI_TEXT.common.repository, dataIndex: 'repo' },
                 { title: 'MR', dataIndex: 'mrId', render: (mrId, record) => <Link to={`/repositories/${record.repo}/merge-requests/${mrId}`}>!{mrId}</Link> },
-                { title: 'Policy', dataIndex: 'policy', render: (value, record) => <StatusTag status={value} label={record.policyLabel} /> },
-                { title: 'Critical / High', key: 'risk', render: (_, record) => `${record.severity.critical} / ${record.severity.high}` },
-                { title: 'Last checked', dataIndex: 'lastCheckedAt' },
+                { title: UI_TEXT.tables.policy, dataIndex: 'policy', render: (value, record) => <StatusTag status={value} label={record.policyLabel} /> },
+                { title: UI_TEXT.tables.criticalHigh, key: 'risk', render: (_, record) => `${record.severity.critical} / ${record.severity.high}` },
+                { title: UI_TEXT.tables.lastChecked, dataIndex: 'lastCheckedAt' },
               ]}
             />
           </Card>
         </Col>
 
         <Col xs={24} xl={12}>
-          <Card title="Recent Audit Events">
+          <Card title={UI_TEXT.sections.recentAuditEvents}>
             <List
               dataSource={auditEvents}
               renderItem={(event) => (
@@ -286,7 +286,7 @@ function Dashboard() {
           type="warning"
           showIcon
           message="보안 차단 항목이 있습니다."
-          description="Security Attention 영역에서 차단된 검증과 관련 MR을 확인하세요."
+          description={`${UI_TEXT.sections.securityAttention} 영역에서 차단된 검증과 관련 MR을 확인하세요.`}
         />
       ) : null}
     </Space>

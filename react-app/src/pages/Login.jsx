@@ -51,9 +51,9 @@ export default function Login() {
             <Title>{UI_TEXT.login.productName}</Title>
             <Paragraph className="login-copy">{UI_TEXT.login.description}</Paragraph>
             <Space wrap>
-              <Text type="secondary">SSO ready</Text>
-              <Text type="secondary">LDAP ready</Text>
-              <Text type="secondary">Role-based governance</Text>
+              <Text type="secondary">{UI_TEXT.login.ssoReady}</Text>
+              <Text type="secondary">{UI_TEXT.login.ldapReady}</Text>
+              <Text type="secondary">{UI_TEXT.login.roleBasedGovernance}</Text>
             </Space>
           </Space>
         </Col>

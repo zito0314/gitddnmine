@@ -19,9 +19,9 @@ const { Link, Text } = Typography
 
 const STATUS_OPTIONS = [
   { value: 'approved', label: '승인 완료' },
-  { value: 'pending', label: 'Pending' },
+  { value: 'pending', label: UI_TEXT.status.labels.pending },
   { value: 'rejected', label: '승인 반려' },
-  { value: 'canceled', label: 'Canceled' },
+  { value: 'canceled', label: UI_TEXT.status.labels.canceled },
 ]
 
 const VISIBILITY_OPTIONS = [
@@ -106,7 +106,7 @@ export default function RepositoryList() {
         ),
       },
       {
-        title: 'Repository',
+        title: UI_TEXT.common.repository,
         key: 'name',
         minWidth: 200,
         render: (_, record) => (
@@ -129,48 +129,48 @@ export default function RepositoryList() {
         ),
       },
       {
-        title: 'Group',
+        title: UI_TEXT.common.group,
         dataIndex: 'group',
         key: 'group',
         minWidth: 180,
         render: (value) => <Text type="secondary">{value}</Text>,
       },
       {
-        title: 'Language',
+        title: UI_TEXT.common.language,
         dataIndex: 'type',
         key: 'type',
         width: 110,
       },
       {
-        title: 'Status',
+        title: UI_TEXT.common.status,
         dataIndex: 'status',
         key: 'status',
         width: 120,
         render: (value) => <StatusTag status={value} />,
       },
       {
-        title: 'Pipeline',
+        title: UI_TEXT.common.pipeline,
         dataIndex: 'pipelineStatus',
         key: 'pipelineStatus',
         width: 110,
         render: (value) => <StatusTag status={value} />,
       },
       {
-        title: 'Security',
+        title: UI_TEXT.common.security,
         dataIndex: 'securityStatus',
         key: 'securityStatus',
         width: 110,
         render: (value) => <StatusTag status={value} />,
       },
       {
-        title: 'Updated',
+        title: UI_TEXT.common.updated,
         dataIndex: 'updatedAt',
         key: 'updatedAt',
         width: 180,
         render: (value) => <Text type="secondary">{value}</Text>,
       },
       {
-        title: 'Role',
+        title: UI_TEXT.common.role,
         dataIndex: 'role',
         key: 'role',
         width: 130,
@@ -194,14 +194,14 @@ export default function RepositoryList() {
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} lg={6}>
           <SummaryCard
-            title="Total Repositories"
+            title={UI_TEXT.summary.totalRepositories}
             value={summary.total}
             icon={<DatabaseOutlined />}
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <SummaryCard
-            title="Active"
+            title={UI_TEXT.summary.active}
             value={summary.active}
             icon={<CheckCircleOutlined style={{ color: '#228738' }} />}
             tone="success"
@@ -209,7 +209,7 @@ export default function RepositoryList() {
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <SummaryCard
-            title="Review Required"
+            title={UI_TEXT.summary.reviewRequired}
             value={summary.reviewRequired}
             icon={<CodeOutlined style={{ color: '#9e6a00' }} />}
             tone="warning"
@@ -217,7 +217,7 @@ export default function RepositoryList() {
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <SummaryCard
-            title="Security Blocked"
+            title={UI_TEXT.summary.securityBlocked}
             value={summary.securityBlocked}
             icon={<AlertOutlined style={{ color: '#de3412' }} />}
             tone="error"
@@ -228,14 +228,14 @@ export default function RepositoryList() {
       {/* 필터 */}
       <FilterBar
         search={{
-          placeholder: 'Repository 이름, 그룹, 설명 검색',
+          placeholder: UI_TEXT.filters.repositorySearch,
           value: search,
           onChange: setSearch,
         }}
         filters={[
           {
             key: 'status',
-            placeholder: 'Status',
+            placeholder: UI_TEXT.filters.status,
             options: STATUS_OPTIONS,
             value: filterStatus,
             onChange: setFilterStatus,
@@ -243,7 +243,7 @@ export default function RepositoryList() {
           },
           {
             key: 'language',
-            placeholder: 'Language',
+            placeholder: UI_TEXT.filters.language,
             options: languageOptions,
             value: filterLanguage,
             onChange: setFilterLanguage,
@@ -251,7 +251,7 @@ export default function RepositoryList() {
           },
           {
             key: 'visibility',
-            placeholder: 'Visibility',
+            placeholder: UI_TEXT.filters.visibility,
             options: VISIBILITY_OPTIONS,
             value: filterVisibility,
             onChange: setFilterVisibility,
@@ -259,10 +259,10 @@ export default function RepositoryList() {
           },
           {
             key: 'favorite',
-            placeholder: 'Favorite',
+            placeholder: UI_TEXT.filters.favorite,
             options: [
-              { value: 'favorites', label: '⭐ Favorites' },
-              { value: 'non-favorites', label: 'Non-favorites' },
+              { value: 'favorites', label: UI_TEXT.common.favorites },
+              { value: 'non-favorites', label: UI_TEXT.common.nonFavorites },
             ],
             value: filterFavorite,
             onChange: setFilterFavorite,

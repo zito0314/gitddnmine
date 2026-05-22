@@ -192,22 +192,22 @@ function AuditLog() {
 
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Today Events" value={summary.todayEvents} icon={<FileSearchOutlined />} />
+          <SummaryCard title="오늘 이벤트" value={summary.todayEvents} icon={<FileSearchOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Risk Events" value={summary.riskEvents} tone="danger" icon={<ExclamationCircleOutlined />} />
+          <SummaryCard title="위험 이벤트" value={summary.riskEvents} tone="danger" icon={<ExclamationCircleOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Policy Changes" value={summary.policyChanges} icon={<UserSwitchOutlined />} />
+          <SummaryCard title="정책 변경" value={summary.policyChanges} icon={<UserSwitchOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Security Blocks" value={summary.securityBlocks} tone="danger" icon={<SafetyCertificateOutlined />} />
+          <SummaryCard title="보안 차단" value={summary.securityBlocks} tone="danger" icon={<SafetyCertificateOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Approval Events" value={summary.approvalEvents} tone="success" icon={<UserSwitchOutlined />} />
+          <SummaryCard title="승인 이벤트" value={summary.approvalEvents} tone="success" icon={<UserSwitchOutlined />} />
         </Col>
         <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="Deployment Events" value={summary.deploymentEvents} icon={<SendOutlined />} />
+          <SummaryCard title="운영이관 이벤트" value={summary.deploymentEvents} icon={<SendOutlined />} />
         </Col>
       </Row>
 
@@ -221,7 +221,7 @@ function AuditLog() {
           filters={[
             {
               key: 'severity',
-              placeholder: 'Severity',
+              placeholder: UI_TEXT.filters.severity,
               value: severity,
               onChange: setSeverity,
               options: [
