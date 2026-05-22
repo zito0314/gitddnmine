@@ -4,10 +4,10 @@ export const UI_TEXT = {
     repositories: 'Repositories',
     mergeRequests: 'Merge Requests',
     pipelines: 'Pipelines',
-    security: '보안 검증',
+    security: '보안',
     deploymentTransfer: '운영이관',
-    audit: '감사 로그',
-    admin: '관리자 콘솔',
+    audit: '감사',
+    admin: '관리자',
   },
   repositoryNavigation: {
     overview: '개요',
@@ -25,8 +25,8 @@ export const UI_TEXT = {
   status: {
     labels: {
       approved: '승인 완료',
-      accepted: '승인됨',
-      allowed: '허용됨',
+      accepted: '승인',
+      allowed: '허용',
       success: '성공',
       passed: '통과',
       pass: '통과',
@@ -35,7 +35,7 @@ export const UI_TEXT = {
       failed: '실패',
       danger: '위험',
       critical: '긴급',
-      blocked: '차단됨',
+      blocked: '차단',
       rejected: '승인 반려',
       'need-check': '확인 필요',
       'need-review': '리뷰 필요',
