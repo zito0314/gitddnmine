@@ -324,6 +324,7 @@ export const UI_TEXT = {
     pipelineHealth: 'Pipeline 상태',
     securityAttention: '보안 확인 필요',
     recentAuditEvents: '최근 감사 이벤트',
+    recentActivity: '최근 Activity',
     governanceOverview: 'Governance 현황',
     recentAdminAudit: '최근 관리자 감사',
     policyHealth: '정책 상태',

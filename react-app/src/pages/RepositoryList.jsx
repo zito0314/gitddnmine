@@ -6,11 +6,11 @@ import {
   StarFilled,
   StarOutlined,
 } from '@ant-design/icons'
-import { Alert, Col, Row, Space, Typography } from 'antd'
+import { Alert, Col, Flex, List, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories, getRepositorySummary } from '../api/repositories'
-import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
 import { UI_TEXT } from '../constants'
 import useRepositoryFavorites from '../hooks/useRepositoryFavorites'
 import { sortRepositoriesByFavorite } from '../utils/favorites'
@@ -83,102 +83,6 @@ export default function RepositoryList() {
     setFilterVisibility(null)
     setFilterFavorite(null)
   }
-
-  const columns = useMemo(
-    () => [
-      {
-        key: 'favorite',
-        width: 40,
-        align: 'center',
-        render: (_, record) => (
-          <span
-            className={`favorite-btn ${record.favorite ? 'active' : ''}`}
-            onClick={(e) => {
-              e.stopPropagation()
-              toggleFavorite(record.id, record.favorite)
-            }}
-            role="button"
-            aria-label={record.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
-            style={{ cursor: 'pointer', fontSize: 16 }}
-          >
-            {record.favorite ? <StarFilled /> : <StarOutlined />}
-          </span>
-        ),
-      },
-      {
-        title: UI_TEXT.common.repository,
-        key: 'name',
-        minWidth: 200,
-        render: (_, record) => (
-          <div className="repo-name-cell">
-            <Link
-              className="repo-name-link"
-              onClick={(e) => {
-                e.stopPropagation()
-                navigate(`/repositories/${record.id}`)
-              }}
-            >
-              {record.name}
-            </Link>
-            {record.description && (
-              <Text className="repo-description" title={record.description}>
-                {record.description}
-              </Text>
-            )}
-          </div>
-        ),
-      },
-      {
-        title: UI_TEXT.common.group,
-        dataIndex: 'group',
-        key: 'group',
-        minWidth: 180,
-        render: (value) => <Text type="secondary">{value}</Text>,
-      },
-      {
-        title: UI_TEXT.common.language,
-        dataIndex: 'type',
-        key: 'type',
-        width: 110,
-      },
-      {
-        title: UI_TEXT.common.status,
-        dataIndex: 'status',
-        key: 'status',
-        width: 120,
-        render: (value) => <StatusTag status={value} />,
-      },
-      {
-        title: UI_TEXT.common.pipeline,
-        dataIndex: 'pipelineStatus',
-        key: 'pipelineStatus',
-        width: 110,
-        render: (value) => <StatusTag status={value} />,
-      },
-      {
-        title: UI_TEXT.common.security,
-        dataIndex: 'securityStatus',
-        key: 'securityStatus',
-        width: 110,
-        render: (value) => <StatusTag status={value} />,
-      },
-      {
-        title: UI_TEXT.common.updated,
-        dataIndex: 'updatedAt',
-        key: 'updatedAt',
-        width: 180,
-        render: (value) => <Text type="secondary">{value}</Text>,
-      },
-      {
-        title: UI_TEXT.common.role,
-        dataIndex: 'role',
-        key: 'role',
-        width: 130,
-        render: (value) => <Text>{value}</Text>,
-      },
-    ],
-    [navigate, toggleFavorite],
-  )
 
   const isFiltered =
     search || filterStatus || filterLanguage || filterVisibility || filterFavorite
@@ -282,20 +186,55 @@ export default function RepositoryList() {
         />
       )}
 
-      {/* 테이블 */}
-      <DataTable
-        rowKey="id"
-        columns={columns}
+      <List
+        className="repository-list"
         dataSource={filtered}
-        onRow={(record) => ({
-          onClick: () => navigate(`/repositories/${record.id}`),
-          style: { cursor: 'pointer' },
-        })}
+        locale={{ emptyText: UI_TEXT.messages.empty.table }}
         pagination={{
           pageSize: 15,
-          showSizeChanger: true,
+          showSizeChanger: false,
           showTotal: (total, range) => `${range[0]}-${range[1]} / 총 ${total}개`,
         }}
+        renderItem={(repository) => (
+          <List.Item
+            className="repository-list-item"
+            onClick={() => navigate(`/repositories/${repository.id}`)}
+          >
+            <button
+              type="button"
+              className={`favorite-btn repository-list-favorite ${repository.favorite ? 'active' : ''}`}
+              onClick={(event) => {
+                event.stopPropagation()
+                toggleFavorite(repository.id, repository.favorite)
+              }}
+              aria-label={repository.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+            >
+              {repository.favorite ? <StarFilled /> : <StarOutlined />}
+            </button>
+            <div className="repository-list-content">
+              <Flex align="center" gap={8} wrap="wrap">
+                <Link
+                  className="repo-name-link"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    navigate(`/repositories/${repository.id}`)
+                  }}
+                >
+                  {repository.name}
+                </Link>
+                <StatusTag status={repository.status} />
+              </Flex>
+              {repository.description ? (
+                <Text className="repository-list-description">{repository.description}</Text>
+              ) : null}
+              <Space wrap size={[10, 4]} className="repository-list-meta">
+                <Text type="secondary">{UI_TEXT.common.group}: {repository.group}</Text>
+                <Text type="secondary">{UI_TEXT.common.language}: {repository.type}</Text>
+                <Text type="secondary">{UI_TEXT.common.updated}: {repository.updatedAt}</Text>
+              </Space>
+            </div>
+          </List.Item>
+        )}
       />
     </Space>
   )

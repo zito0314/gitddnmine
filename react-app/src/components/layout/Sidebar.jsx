@@ -112,6 +112,7 @@ function Sidebar({ collapsed, onCollapse }) {
         ) : null}
       </Flex>
 
+      {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
       {!collapsed ? <Text className="nav-title">{UI_TEXT.common.workspace}</Text> : null}
       <Menu
         className="global-menu"
@@ -120,7 +121,6 @@ function Sidebar({ collapsed, onCollapse }) {
         items={visibleNavItems.map(withBadge)}
         onClick={({ key }) => navigate(key)}
       />
-      {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
     </Sider>
   )
 }

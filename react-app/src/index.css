@@ -576,6 +576,9 @@ body {
 }
 
 .favorite-btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
   color: #d1d5db;
   transition: color 0.15s;
   line-height: 1;
@@ -681,4 +684,56 @@ body {
 
 .dashboard-action-item {
   cursor: pointer;
+}
+
+.dashboard-list-item {
+  cursor: pointer;
+  border-radius: 8px;
+  padding-inline: 10px !important;
+  transition: background 0.15s ease;
+}
+
+.dashboard-list-item:hover {
+  background: color-mix(in srgb, var(--gitddn-primary) 8%, transparent);
+}
+
+.repository-list {
+  border: 1px solid var(--gitddn-border-color);
+  border-radius: 8px;
+  background: var(--gitddn-card-bg);
+}
+
+.repository-list-item {
+  cursor: pointer;
+  align-items: flex-start !important;
+  gap: 12px;
+  padding: 16px !important;
+  transition: background 0.15s ease;
+}
+
+.repository-list-item:hover {
+  background: color-mix(in srgb, var(--gitddn-primary) 8%, transparent);
+}
+
+.repository-list-favorite {
+  width: 28px;
+  height: 28px;
+  margin-top: 1px;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.repository-list-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.repository-list-description {
+  display: block;
+  margin-top: 4px;
+  color: var(--gitddn-text-secondary);
+}
+
+.repository-list-meta {
+  margin-top: 8px;
 }

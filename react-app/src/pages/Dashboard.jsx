@@ -7,18 +7,17 @@ import {
   ReloadOutlined,
   SafetyCertificateOutlined,
 } from '@ant-design/icons'
-import { Alert, Button, Card, Col, Flex, Input, List, Row, Space, Table, Typography } from 'antd'
+import { Button, Card, Col, Flex, Input, List, Row, Space, Table, Tag, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
-  getDashboardAuditEvents,
   getDashboardAiPrompts,
   getDashboardAiResponse,
   getDashboardMergeRequestsData,
   getDashboardNextUpItems,
   getDashboardPipelinesData,
   getDashboardRepositoriesData,
-  getDashboardSecurityItems,
+  getDashboardRepositoryActivities,
   getDashboardSummary,
 } from '../api/dashboard'
 import { useAuth } from '../auth/AuthContext'
@@ -35,12 +34,6 @@ function getFailedJobs(pipeline) {
   return pipeline.jobs?.filter((job) => job === 'failed').length ?? 0
 }
 
-function normalizeAuditResult(log) {
-  if (log.resultClass === 'red') return 'blocked'
-  if (log.resultClass === 'orange') return 'warning'
-  return 'success'
-}
-
 function Dashboard() {
   const navigate = useNavigate()
   const auth = useAuth()
@@ -49,8 +42,7 @@ function Dashboard() {
   const repositories = getDashboardRepositoriesData()
   const mergeRequests = getDashboardMergeRequestsData()
   const pipelines = getDashboardPipelinesData()
-  const securityItems = getDashboardSecurityItems()
-  const auditEvents = getDashboardAuditEvents()
+  const activities = getDashboardRepositoryActivities()
   const prompts = getDashboardAiPrompts()
   const [aiPrompt, setAiPrompt] = useState('mr-approval')
   const [aiInput, setAiInput] = useState('')
@@ -160,24 +152,20 @@ function Dashboard() {
 
         <Col xs={24} xl={6}>
           <Card title={UI_TEXT.sections.myRepositories}>
-            <Table
-              rowKey="id"
+            <List
               dataSource={repositories}
-              pagination={false}
-              size="small"
-              onRow={(record) => ({
-                onClick: () => navigate(`/repositories/${record.id}`),
-                style: { cursor: 'pointer' },
-              })}
-              columns={[
-                { title: UI_TEXT.common.repositoryName, dataIndex: 'name', render: (value, record) => <Link to={`/repositories/${record.id}`}>{value}</Link> },
-                { title: UI_TEXT.common.groupPath, dataIndex: 'group' },
-                { title: UI_TEXT.common.role, dataIndex: 'role', width: 120 },
-                { title: UI_TEXT.common.pipeline, dataIndex: 'pipelineStatus', width: 110, render: (value) => <StatusTag status={value} /> },
-                { title: UI_TEXT.common.security, dataIndex: 'securityStatus', width: 110, render: (value) => <StatusTag status={value} /> },
-                { title: UI_TEXT.common.openMr, dataIndex: 'openMrCount', width: 90 },
-                { title: UI_TEXT.common.updated, dataIndex: 'updatedAt', width: 160 },
-              ]}
+              locale={{ emptyText: UI_TEXT.messages.empty.table }}
+              renderItem={(repository) => (
+                <List.Item
+                  className="dashboard-list-item"
+                  onClick={() => navigate(`/repositories/${repository.id}`)}
+                >
+                  <List.Item.Meta
+                    title={<Link to={`/repositories/${repository.id}`}>{repository.name}</Link>}
+                    description={<Text type="secondary">{repository.updatedAt}</Text>}
+                  />
+                </List.Item>
+              )}
             />
           </Card>
         </Col>
@@ -186,25 +174,28 @@ function Dashboard() {
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={12}>
           <Card title={UI_TEXT.sections.mergeRequestsOverview}>
-            <Table
-              rowKey="id"
+            <List
               dataSource={mergeRequests}
-              pagination={false}
-              size="small"
-              onRow={(record) => ({
-                onClick: () => navigate(`/repositories/${record.repo}/merge-requests/${record.id}`),
-                style: { cursor: 'pointer' },
-              })}
-              columns={[
-                { title: UI_TEXT.tables.mrId, dataIndex: 'id', width: 80, render: (id, record) => <Link to={`/repositories/${record.repo}/merge-requests/${id}`}>!{id}</Link> },
-                { title: UI_TEXT.tables.title, dataIndex: 'title' },
-                { title: UI_TEXT.common.repository, dataIndex: 'repo', width: 160 },
-                { title: UI_TEXT.tables.review, dataIndex: 'review', width: 110, render: (value, record) => <StatusTag status={value} label={record.reviewLabel} /> },
-                { title: UI_TEXT.tables.approval, key: 'approval', width: 110, render: (_, record) => `${record.approved}/${record.required}` },
-                { title: UI_TEXT.common.pipeline, dataIndex: 'pipeline', width: 110, render: (value) => <StatusTag status={value} /> },
-                { title: UI_TEXT.common.security, dataIndex: 'security', width: 110, render: (value, record) => <StatusTag status={value} label={record.securityLabel} /> },
-                { title: UI_TEXT.common.updated, dataIndex: 'updatedAt', width: 110 },
-              ]}
+              locale={{ emptyText: UI_TEXT.messages.empty.table }}
+              renderItem={(mergeRequest) => (
+                <List.Item
+                  className="dashboard-list-item"
+                  onClick={() => navigate(`/repositories/${mergeRequest.repo}/merge-requests/${mergeRequest.id}`)}
+                  actions={[<StatusTag key="review" status={mergeRequest.review} label={mergeRequest.reviewLabel} />]}
+                >
+                  <List.Item.Meta
+                    title={
+                      <Flex align="center" gap={8} wrap="wrap">
+                        <Tag>MR #{mergeRequest.id}</Tag>
+                        <Link to={`/repositories/${mergeRequest.repo}/merge-requests/${mergeRequest.id}`}>
+                          {mergeRequest.title}
+                        </Link>
+                      </Flex>
+                    }
+                    description={<Text type="secondary">{mergeRequest.repo}</Text>}
+                  />
+                </List.Item>
+              )}
             />
           </Card>
         </Col>
@@ -234,61 +225,34 @@ function Dashboard() {
         </Col>
       </Row>
 
-      <Row gutter={[16, 16]}>
-        <Col xs={24} xl={12}>
-          <Card title={UI_TEXT.sections.securityAttention}>
-            <Table
-              rowKey="id"
-              dataSource={securityItems}
-              pagination={false}
-              size="small"
-              onRow={(record) => ({
-                onClick: () => navigate(`/security/${record.id}`),
-                style: { cursor: 'pointer' },
-              })}
-              columns={[
-                { title: UI_TEXT.tables.securityId, dataIndex: 'id', render: (id) => <Link to={`/security/${id}`}>{id}</Link> },
-                { title: UI_TEXT.common.repository, dataIndex: 'repo' },
-                { title: 'MR', dataIndex: 'mrId', render: (mrId, record) => <Link to={`/repositories/${record.repo}/merge-requests/${mrId}`}>!{mrId}</Link> },
-                { title: UI_TEXT.tables.policy, dataIndex: 'policy', render: (value, record) => <StatusTag status={value} label={record.policyLabel} /> },
-                { title: UI_TEXT.tables.criticalHigh, key: 'risk', render: (_, record) => `${record.severity.critical} / ${record.severity.high}` },
-                { title: UI_TEXT.tables.lastChecked, dataIndex: 'lastCheckedAt' },
-              ]}
-            />
-          </Card>
-        </Col>
-
-        <Col xs={24} xl={12}>
-          <Card title={UI_TEXT.sections.recentAuditEvents}>
-            <List
-              dataSource={auditEvents}
-              renderItem={(event) => (
-                <List.Item onClick={() => navigate('/audit')} className="dashboard-action-item">
-                  <List.Item.Meta
-                    title={
-                      <Flex align="center" gap={8} wrap="wrap">
-                        <Text strong>{event.eventCode}</Text>
-                        <StatusTag status={event.severity === 'danger' ? 'failed' : event.severity} label={event.severity} />
-                        <StatusTag status={normalizeAuditResult(event)} label={event.result} />
-                      </Flex>
-                    }
-                    description={`${event.actorName} · ${event.targetName} · ${event.time}`}
-                  />
-                </List.Item>
-              )}
-            />
-          </Card>
-        </Col>
-      </Row>
-
-      {summary.securityBlocked > 0 ? (
-        <Alert
-          type="warning"
-          showIcon
-          message="보안 차단 항목이 있습니다."
-          description={`${UI_TEXT.sections.securityAttention} 영역에서 차단된 검증과 관련 MR을 확인하세요.`}
+      <Card title={UI_TEXT.sections.recentActivity}>
+        <List
+          dataSource={activities}
+          locale={{ emptyText: UI_TEXT.messages.empty.table }}
+          renderItem={(activity) => (
+            <List.Item
+              className="dashboard-list-item"
+              onClick={() => navigate(activity.href)}
+              actions={[<StatusTag key="status" status={activity.status} />]}
+            >
+              <List.Item.Meta
+                title={<Text strong>{activity.message}</Text>}
+                description={
+                  <Space wrap size={6}>
+                    <Text type="secondary">{activity.repositoryName}</Text>
+                    <Text type="secondary">·</Text>
+                    <Text type="secondary">{activity.actor}</Text>
+                    <Text type="secondary">·</Text>
+                    <Text type="secondary">{activity.type}</Text>
+                    <Text type="secondary">·</Text>
+                    <Text type="secondary">{activity.createdAt}</Text>
+                  </Space>
+                }
+              />
+            </List.Item>
+          )}
         />
-      ) : null}
+      </Card>
     </Space>
   )
 }
