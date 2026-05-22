@@ -1,6 +1,7 @@
 import { SaveOutlined } from '@ant-design/icons'
-import { Button, Card, Col, Descriptions, Form, Input, Row, Space, Switch, Typography } from 'antd'
-import { useParams } from 'react-router-dom'
+import { Alert, Button, Card, Col, Descriptions, Form, Input, Row, Space, Switch, Tag, Typography } from 'antd'
+import { useNavigate, useParams } from 'react-router-dom'
+import { getBranchProtectionTemplateForRepository } from '../api/branchProtectionPolicies'
 import { getRepositorySettings } from '../api/repositories'
 import { PageHeader } from '../components/common'
 import { UI_TEXT } from '../constants'
@@ -13,11 +14,13 @@ function PolicySwitch({ label, checked }) {
 
 export default function RepositorySettings() {
   const { repositoryId } = useParams()
+  const navigate = useNavigate()
   const settings = getRepositorySettings(repositoryId)
 
   if (!settings) return <Card><Title level={3}>{UI_TEXT.messages.notFound.repository}</Title></Card>
 
   const { repository, branchPolicy, mergeRequestPolicy, securityPolicy, notificationPolicy } = settings
+  const branchProtectionTemplate = getBranchProtectionTemplateForRepository(repositoryId)
 
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
@@ -36,6 +39,34 @@ export default function RepositorySettings() {
           <Descriptions.Item label="Owner">{repository.role}</Descriptions.Item>
           <Descriptions.Item label="Language">{repository.type}</Descriptions.Item>
         </Descriptions>
+      </Card>
+      <Card
+        title="Current Branch Protection Template"
+        extra={
+          <Space>
+            <Button onClick={() => navigate(`/repositories/${repositoryId}/settings/policy-change-request`)}>Request Policy Change</Button>
+            <Button type="primary" onClick={() => navigate(`/repositories/${repositoryId}/settings/policy-exception-request`)}>Request Exception</Button>
+          </Space>
+        }
+      >
+        <Space direction="vertical" size={12} style={{ width: '100%' }}>
+          <Alert
+            type="info"
+            showIcon
+            message="Branch protection templates are managed by Admin. Repository owners can request changes or exceptions within the allowed scope."
+          />
+          <Descriptions column={{ xs: 1, md: 2 }} bordered>
+            <Descriptions.Item label="Template name">{branchProtectionTemplate.name}</Descriptions.Item>
+            <Descriptions.Item label="Version">{branchProtectionTemplate.version}</Descriptions.Item>
+            <Descriptions.Item label="Target branches">
+              <Space wrap>{branchProtectionTemplate.targetBranches.map((branch) => <Tag key={branch}>{branch}</Tag>)}</Space>
+            </Descriptions.Item>
+            <Descriptions.Item label="Applied at">{branchProtectionTemplate.updatedAt}</Descriptions.Item>
+          </Descriptions>
+          <Space direction="vertical">
+            {branchProtectionTemplate.summary.map((item) => <Text key={item}>- {item}</Text>)}
+          </Space>
+        </Space>
       </Card>
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={12}>
