@@ -97,7 +97,7 @@ function Sidebar({ collapsed, onCollapse }) {
       collapsedWidth={72}
       onCollapse={onCollapse}
       theme="light"
-      width={repositoryId && !collapsed ? 292 : 248}
+      width={236}
       className="app-sidebar"
     >
       <Flex align="center" gap={10} className="brand">

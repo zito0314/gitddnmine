@@ -13,7 +13,10 @@ function AppLayout() {
     <Layout className="app-shell">
       <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
       <Layout className="app-main">
-        <TopHeader onToggleSidebar={() => setCollapsed((value) => !value)} />
+        <TopHeader
+          collapsed={collapsed}
+          onToggleSidebar={() => setCollapsed((value) => !value)}
+        />
         <Content className="page-content">
           <Outlet />
         </Content>

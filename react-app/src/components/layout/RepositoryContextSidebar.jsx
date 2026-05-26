@@ -11,13 +11,13 @@ import {
   SettingOutlined,
   TagsOutlined,
 } from '@ant-design/icons'
-import { Card, Divider, Flex, Menu, Tag, Typography } from 'antd'
+import { Avatar, Divider, Flex, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
 import { UI_TEXT } from '../../constants'
 
-const { Text, Title } = Typography
+const { Text } = Typography
 
 const navItems = [
   { key: '', label: UI_TEXT.repositoryNavigation.overview, icon: <AppstoreOutlined /> },
@@ -32,15 +32,6 @@ const navItems = [
   { key: 'activity', label: UI_TEXT.repositoryNavigation.activity, icon: <HistoryOutlined /> },
   { key: 'settings', label: UI_TEXT.repositoryNavigation.settings, icon: <SettingOutlined /> },
 ]
-
-const statusColor = {
-  passed: 'success',
-  approved: 'success',
-  blocked: 'error',
-  failed: 'error',
-  running: 'warning',
-  pending: 'warning',
-}
 
 function RepositoryContextSidebar({ repositoryId }) {
   const location = useLocation()
@@ -83,36 +74,19 @@ function RepositoryContextSidebar({ repositoryId }) {
     <div className="repository-context-sidebar">
       <Divider className="sidebar-divider" />
       <Text className="nav-title">{UI_TEXT.common.currentRepository}</Text>
-      <Card size="small" className="sidebar-repository-card">
-        <Title level={5}>{repository.name}</Title>
-        <Text type="secondary">{repository.group}</Text>
-        <Flex gap={6} wrap="wrap" className="sidebar-repository-tags">
-          <Tag>{repository.visibility}</Tag>
-          <Tag color="blue">{repository.role}</Tag>
-        </Flex>
-        <dl className="repository-meta-list">
-          <div>
-            <dt>{UI_TEXT.common.defaultBranch}</dt>
-            <dd>{repository.defaultBranch}</dd>
-          </div>
-          <div>
-            <dt>{UI_TEXT.common.updated}</dt>
-            <dd>{repository.updatedAt}</dd>
-          </div>
-          <div>
-            <dt>{UI_TEXT.common.pipeline}</dt>
-            <dd>
-              <Tag color={statusColor[repository.pipelineStatus]}>{repository.pipelineStatus}</Tag>
-            </dd>
-          </div>
-          <div>
-            <dt>{UI_TEXT.common.security}</dt>
-            <dd>
-              <Tag color={statusColor[repository.securityStatus]}>{repository.securityStatus}</Tag>
-            </dd>
-          </div>
-        </dl>
-      </Card>
+      <Flex align="center" gap={10} className="sidebar-repository-summary">
+        <Avatar size={32} className="sidebar-repository-avatar">
+          {repository.name?.charAt(0)?.toUpperCase() ?? 'R'}
+        </Avatar>
+        <div className="sidebar-repository-copy">
+          <Text strong ellipsis className="sidebar-repository-name">
+            {repository.name}
+          </Text>
+          <Text type="secondary" ellipsis className="sidebar-repository-group">
+            {repository.group}
+          </Text>
+        </div>
+      </Flex>
 
       <Text className="nav-title repository-menu-title">{UI_TEXT.common.repository}</Text>
       <Menu
