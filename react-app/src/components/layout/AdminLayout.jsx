@@ -1,5 +1,5 @@
 import { AuditOutlined, BellOutlined, BgColorsOutlined, DashboardOutlined, DeploymentUnitOutlined, LinkOutlined, LockOutlined, SafetyCertificateOutlined, SettingOutlined, TeamOutlined } from '@ant-design/icons'
-import { App as AntdApp, Breadcrumb, Button, Flex, Layout, Menu, Space, Typography } from 'antd'
+import { App as AntdApp, Avatar, Breadcrumb, Button, Flex, Layout, Menu, Space, Typography } from 'antd'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthContext'
 import { UI_TEXT } from '../../constants'
@@ -65,7 +65,7 @@ export default function AdminLayout() {
     <Layout className="app-shell admin-shell">
       <Sider theme="light" width={280} className="app-sidebar">
         <Flex align="center" gap={10} className="brand">
-          <div className="brand-mark">g</div>
+          <Avatar shape="square" size={32} className="brand-mark">g</Avatar>
           <div>
             <Title level={1} className="brand-name">gitddn</Title>
             <Text className="brand-sub">{UI_TEXT.navigation.admin}</Text>
@@ -78,7 +78,7 @@ export default function AdminLayout() {
         <Header className="top-header admin-top-header">
           <Flex align="center" justify="space-between" style={{ width: '100%' }}>
             <Space size={12}>
-              <span className="header-page-icon"><SettingOutlined /></span>
+              <Avatar shape="square" size={30} icon={<SettingOutlined />} className="header-page-icon" />
               <Breadcrumb className="header-breadcrumb" separator="›" items={breadcrumbItems} />
             </Space>
             <Space>

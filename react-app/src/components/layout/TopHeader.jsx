@@ -346,7 +346,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
             onClick={onToggleSidebar}
           />
         </Tooltip>
-        <span className="header-page-icon">{headerLocation.icon}</span>
+        <Avatar shape="square" size={30} icon={headerLocation.icon} className="header-page-icon" />
         <Breadcrumb
           className="header-breadcrumb"
           separator="›"

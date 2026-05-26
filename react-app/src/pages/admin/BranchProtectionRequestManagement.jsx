@@ -8,7 +8,7 @@ import {
 import { getRepositoryById } from '../../api/repositories'
 import { PageHeader, StatusTag, SummaryCard } from '../../components/common'
 
-const { Text } = Typography
+const { Paragraph, Text } = Typography
 
 export default function BranchProtectionRequestManagement() {
   const navigate = useNavigate()
@@ -68,7 +68,9 @@ export default function BranchProtectionRequestManagement() {
             <Text>Repository: {getRepositoryById(selected.repositoryId)?.name ?? selected.repositoryId}</Text>
             <Text>Template: {getBranchProtectionTemplateById(selected.templateId)?.name}</Text>
             <Text>Requested by: {selected.requestedBy} ({selected.requestedRole})</Text>
-            <pre className="audit-json-preview">{JSON.stringify(selected.requestedChanges, null, 2)}</pre>
+            <Paragraph code className="audit-json-preview">
+              {JSON.stringify(selected.requestedChanges, null, 2)}
+            </Paragraph>
             <Space>
               <Button type="primary" onClick={() => message.success('Request approved')}>Approve</Button>
               <Button danger onClick={() => message.success('Request rejected')}>Reject</Button>

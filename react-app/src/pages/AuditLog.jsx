@@ -345,9 +345,9 @@ function AuditDrawer({ log, onClose }) {
           </Card>
 
           <Card size="small" title="Raw metadata">
-            <Text code className="audit-json-preview">
+            <Paragraph code className="audit-json-preview">
               {JSON.stringify({ ...log, related: ids }, null, 2)}
-            </Text>
+            </Paragraph>
           </Card>
 
           <Card size="small" title="Event Context">

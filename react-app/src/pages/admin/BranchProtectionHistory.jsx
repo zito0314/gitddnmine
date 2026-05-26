@@ -6,7 +6,7 @@ import {
 } from '../../api/branchProtectionPolicies'
 import { PageHeader, StatusTag } from '../../components/common'
 
-const { Text } = Typography
+const { Paragraph, Text } = Typography
 
 export default function BranchProtectionHistory() {
   const histories = getBranchProtectionPolicyHistories()
@@ -41,7 +41,9 @@ export default function BranchProtectionHistory() {
                 </Space>
                 <Text>{history.message}</Text>
                 <Text type="secondary">{history.actor} · {history.createdAt}</Text>
-                <pre className="audit-json-preview">{JSON.stringify({ before: history.before, after: history.after }, null, 2)}</pre>
+                <Paragraph code className="audit-json-preview">
+                  {JSON.stringify({ before: history.before, after: history.after }, null, 2)}
+                </Paragraph>
               </Space>
             ),
           }))}

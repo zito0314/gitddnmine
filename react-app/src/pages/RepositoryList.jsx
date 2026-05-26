@@ -6,7 +6,7 @@ import {
   StarFilled,
   StarOutlined,
 } from '@ant-design/icons'
-import { Alert, Col, Flex, List, Row, Space, Typography } from 'antd'
+import { Alert, Button, Col, Flex, List, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories, getRepositorySummary } from '../api/repositories'
@@ -200,17 +200,17 @@ export default function RepositoryList() {
             className="repository-list-item"
             onClick={() => navigate(`/repositories/${repository.id}`)}
           >
-            <button
-              type="button"
-              className={`favorite-btn repository-list-favorite ${repository.favorite ? 'active' : ''}`}
+            <Button
+              type="text"
+              shape="circle"
+              className={`repository-list-favorite ${repository.favorite ? 'active' : ''}`}
+              icon={repository.favorite ? <StarFilled /> : <StarOutlined />}
               onClick={(event) => {
                 event.stopPropagation()
                 toggleFavorite(repository.id, repository.favorite)
               }}
               aria-label={repository.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
-            >
-              {repository.favorite ? <StarFilled /> : <StarOutlined />}
-            </button>
+            />
             <div className="repository-list-content">
               <Flex align="center" gap={8} wrap="wrap">
                 <Link

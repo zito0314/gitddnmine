@@ -11,7 +11,7 @@ import {
   SettingOutlined,
   TagsOutlined,
 } from '@ant-design/icons'
-import { Avatar, Divider, Flex, Menu, Typography } from 'antd'
+import { Avatar, Card, Divider, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
@@ -74,19 +74,25 @@ function RepositoryContextSidebar({ repositoryId }) {
     <div className="repository-context-sidebar">
       <Divider className="sidebar-divider" />
       <Text className="nav-title">{UI_TEXT.common.currentRepository}</Text>
-      <Flex align="center" gap={10} className="sidebar-repository-summary">
-        <Avatar size={32} className="sidebar-repository-avatar">
-          {repository.name?.charAt(0)?.toUpperCase() ?? 'R'}
-        </Avatar>
-        <div className="sidebar-repository-copy">
-          <Text strong ellipsis className="sidebar-repository-name">
-            {repository.name}
-          </Text>
-          <Text type="secondary" ellipsis className="sidebar-repository-group">
-            {repository.group}
-          </Text>
-        </div>
-      </Flex>
+      <Card size="small" className="sidebar-repository-summary">
+        <Card.Meta
+          avatar={(
+            <Avatar size={32} className="sidebar-repository-avatar">
+              {repository.name?.charAt(0)?.toUpperCase() ?? 'R'}
+            </Avatar>
+          )}
+          title={(
+            <Text strong ellipsis className="sidebar-repository-name">
+              {repository.name}
+            </Text>
+          )}
+          description={(
+            <Text type="secondary" ellipsis className="sidebar-repository-group">
+              {repository.group}
+            </Text>
+          )}
+        />
+      </Card>
 
       <Text className="nav-title repository-menu-title">{UI_TEXT.common.repository}</Text>
       <Menu

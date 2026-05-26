@@ -199,11 +199,9 @@ function PipelineDetail() {
       </Row>
 
       <Card title="Pipeline Logs Preview">
-        <Space orientation="vertical" size={4} className="pipeline-log-preview">
-          {logs.map((line, index) => (
-            <Text code key={`${line}-${index}`}>{line}</Text>
-          ))}
-        </Space>
+        <Paragraph code className="pipeline-log-preview">
+          {logs.map((line) => `${line}\n`)}
+        </Paragraph>
       </Card>
     </Space>
   )

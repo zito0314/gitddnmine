@@ -1,5 +1,5 @@
 import { LockOutlined, MailOutlined } from '@ant-design/icons'
-import { Alert, Button, Card, Col, Form, Input, Row, Space, Typography } from 'antd'
+import { Alert, Avatar, Button, Card, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { getMockUsers } from '../api/auth'
@@ -47,7 +47,9 @@ export default function Login() {
       <Row className="login-shell" gutter={[24, 24]} align="middle">
         <Col xs={24} lg={12}>
           <Space orientation="vertical" size={18}>
-            <div className="login-brand-mark">g</div>
+            <Avatar shape="square" size={54} className="login-brand-mark">
+              g
+            </Avatar>
             <Title>{UI_TEXT.login.productName}</Title>
             <Paragraph className="login-copy">{UI_TEXT.login.description}</Paragraph>
             <Space wrap>

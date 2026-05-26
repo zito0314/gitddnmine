@@ -7,7 +7,7 @@ import {
   PullRequestOutlined,
   SafetyCertificateOutlined,
 } from '@ant-design/icons'
-import { Badge, Flex, Layout, Menu, Typography } from 'antd'
+import { Avatar, Badge, Flex, Layout, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
@@ -101,7 +101,9 @@ function Sidebar({ collapsed, onCollapse }) {
       className="app-sidebar"
     >
       <Flex align="center" gap={10} className="brand">
-        <div className="brand-mark">g</div>
+        <Avatar shape="square" size={32} className="brand-mark">
+          g
+        </Avatar>
         {!collapsed ? (
           <div>
             <Title level={1} className="brand-name">

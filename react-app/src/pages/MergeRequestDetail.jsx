@@ -548,9 +548,9 @@ function ChangesTab({ changes, files }) {
               </Flex>
             ),
             children: (
-              <pre className="mr-diff-preview">
+              <Paragraph code className="mr-diff-preview">
                 {file.diff.map((line) => `${line}\n`)}
-              </pre>
+              </Paragraph>
             ),
           }))}
         />

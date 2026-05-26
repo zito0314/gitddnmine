@@ -89,15 +89,10 @@ body {
   margin-bottom: 12px;
 }
 
-.brand-mark {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  color: #fff;
+.brand-mark.ant-avatar {
+  color: #ffffff;
   font-weight: 900;
-  background: linear-gradient(135deg, #4c87f6, #0b50d0);
+  background: var(--gitddn-primary);
 }
 
 .brand-name.ant-typography {
@@ -229,13 +224,8 @@ body {
   justify-content: center;
 }
 
-.header-page-icon {
-  display: inline-grid;
+.header-page-icon.ant-avatar {
   flex: 0 0 auto;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 7px;
   color: var(--gitddn-primary);
   background: var(--gitddn-primary-soft);
   font-size: 15px;
@@ -480,28 +470,23 @@ body {
   margin-top: 12px;
 }
 
-.summary-card-icon {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+.summary-card-icon.ant-avatar {
   color: var(--gitddn-primary);
   background: var(--gitddn-primary-soft);
   font-size: 18px;
 }
 
-.summary-card-danger .summary-card-icon {
+.summary-card-danger .summary-card-icon.ant-avatar {
   color: #de3412;
   background: #fdefec;
 }
 
-.summary-card-warning .summary-card-icon {
+.summary-card-warning .summary-card-icon.ant-avatar {
   color: #9e6a00;
   background: #fff3db;
 }
 
-.summary-card-success .summary-card-icon {
+.summary-card-success .summary-card-icon.ant-avatar {
   color: #228738;
   background: #eaf6ec;
 }
@@ -522,13 +507,21 @@ body {
   padding-bottom: 14px;
 }
 
-.sidebar-repository-summary {
-  min-height: 48px;
+.sidebar-repository-summary.ant-card {
   margin: 0 12px 12px;
-  padding: 8px;
-  border: 1px solid color-mix(in srgb, var(--gitddn-border-color) 76%, transparent);
-  border-radius: 8px;
   background: color-mix(in srgb, var(--gitddn-primary) 4%, var(--gitddn-sidebar-bg));
+}
+
+.sidebar-repository-summary.ant-card .ant-card-body {
+  padding: 8px;
+}
+
+.sidebar-repository-summary .ant-card-meta {
+  align-items: center;
+}
+
+.sidebar-repository-summary .ant-card-meta-detail {
+  min-width: 0;
 }
 
 .sidebar-repository-avatar {
@@ -583,16 +576,11 @@ body {
   width: min(1120px, 100%);
 }
 
-.login-brand-mark {
-  width: 54px;
-  height: 54px;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
+.login-brand-mark.ant-avatar {
   color: #ffffff;
   font-size: 28px;
   font-weight: 900;
-  background: linear-gradient(135deg, #4c87f6, #0b50d0);
+  background: var(--gitddn-primary);
 }
 
 .login-copy {
@@ -685,19 +673,6 @@ body {
   max-width: 260px;
 }
 
-.favorite-btn {
-  border: 0;
-  background: transparent;
-  padding: 0;
-  color: #d1d5db;
-  transition: color 0.15s;
-  line-height: 1;
-}
-
-.favorite-btn.active {
-  color: #faad14;
-}
-
 .summary-cards-row {
   margin-bottom: 4px;
 }
@@ -759,8 +734,13 @@ body {
   padding: 6px 10px;
 }
 
-.mr-diff-preview {
+.mr-diff-preview.ant-typography {
   margin: 0;
+  white-space: pre-wrap;
+}
+
+.mr-diff-preview.ant-typography code {
+  display: block;
   padding: 12px;
   overflow: auto;
   border: 1px solid var(--gitddn-border-color);
@@ -779,17 +759,18 @@ body {
   margin-top: 16px;
 }
 
-.pipeline-log-preview {
+.pipeline-log-preview.ant-typography {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.pipeline-log-preview.ant-typography code {
+  display: block;
   width: 100%;
   padding: 12px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   background: #f8fafc;
-}
-
-.pipeline-log-preview .ant-typography {
-  display: block;
-  white-space: pre-wrap;
   color: #334155;
 }
 
@@ -806,8 +787,12 @@ body {
 }
 
 .audit-json-preview.ant-typography {
-  display: block;
+  margin: 0;
   white-space: pre-wrap;
+}
+
+.audit-json-preview.ant-typography code {
+  display: block;
   padding: 12px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
@@ -848,12 +833,16 @@ body {
   background: color-mix(in srgb, var(--gitddn-primary) 8%, transparent);
 }
 
-.repository-list-favorite {
+.repository-list-favorite.ant-btn {
   width: 28px;
   height: 28px;
   margin-top: 1px;
-  cursor: pointer;
+  color: #d1d5db;
   font-size: 17px;
+}
+
+.repository-list-favorite.ant-btn.active {
+  color: #faad14;
 }
 
 .repository-list-content {

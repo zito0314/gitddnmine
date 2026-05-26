@@ -1,4 +1,4 @@
-import { Card, Flex, Statistic, Typography } from 'antd'
+import { Avatar, Card, Flex, Statistic, Typography } from 'antd'
 
 const { Text } = Typography
 
@@ -23,7 +23,9 @@ function SummaryCard({
     >
       <Flex align="flex-start" justify="space-between" gap={12}>
         <Statistic title={title} value={value} suffix={suffix} prefix={prefix} />
-        {icon ? <div className="summary-card-icon">{icon}</div> : null}
+        {icon ? (
+          <Avatar shape="square" size={36} icon={icon} className="summary-card-icon" />
+        ) : null}
       </Flex>
       {description ? (
         <Text type="secondary" className="summary-card-description">
