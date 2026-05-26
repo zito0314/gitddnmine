@@ -3,9 +3,10 @@ import { App as AntdApp, Avatar, Breadcrumb, Button, Flex, Layout, Menu, Space, 
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthContext'
 import { UI_TEXT } from '../../constants'
+import GitddnLogo from '../common/GitddnLogo'
 
 const { Content, Header, Sider } = Layout
-const { Text, Title } = Typography
+const { Text } = Typography
 
 const adminItems = [
   { key: '/admin', icon: <DashboardOutlined />, label: UI_TEXT.adminPages.admin.title },
@@ -64,12 +65,8 @@ export default function AdminLayout() {
   return (
     <Layout className="app-shell admin-shell">
       <Sider theme="light" width={280} className="app-sidebar">
-        <Flex align="center" gap={10} className="brand">
-          <Avatar shape="square" size={32} className="brand-mark">g</Avatar>
-          <div>
-            <Title level={1} className="brand-name">gitddn</Title>
-            <Text className="brand-sub">{UI_TEXT.navigation.admin}</Text>
-          </div>
+        <Flex align="center" className="brand">
+          <GitddnLogo />
         </Flex>
         <Text className="nav-title">{UI_TEXT.common.governanceAdmin}</Text>
         <Menu className="global-menu" mode="inline" selectedKeys={[selected]} items={adminItems} onClick={({ key }) => navigate(key)} />

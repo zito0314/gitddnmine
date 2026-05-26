@@ -98,30 +98,33 @@ body {
 
 .brand {
   min-height: 64px;
-  padding: 13px 16px;
+  padding: 0 16px;
   border-bottom: 1px solid var(--gitddn-line);
   margin-bottom: 14px;
 }
 
-.brand-mark.ant-avatar {
-  color: #ffffff;
-  font-weight: 900;
-  background: var(--gitddn-primary);
-}
-
-.brand-name.ant-typography {
-  margin: 0;
-  color: var(--gitddn-sidebar-selected-text);
-  font-size: 18px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.brand-sub {
+.gitddn-logo {
   display: block;
-  margin-top: 4px;
-  color: var(--gitddn-sidebar-group-text);
-  font-size: 11px;
+  width: 103px;
+  height: 25px;
+  color: #000000;
+  --gitddn-logo-eye: var(--gitddn-sidebar-bg);
+}
+
+:root[data-theme='dark'] .app-sidebar .gitddn-logo {
+  color: #ffffff;
+}
+
+.gitddn-logo-compact {
+  width: 27px;
+  height: 25px;
+}
+
+.gitddn-logo-large {
+  width: 164px;
+  height: 40px;
+  color: var(--gitddn-text-primary);
+  --gitddn-logo-eye: var(--gitddn-content-bg);
 }
 
 .nav-title {
@@ -594,11 +597,9 @@ body {
   width: min(1120px, 100%);
 }
 
-.login-brand-mark.ant-avatar {
-  color: #ffffff;
-  font-size: 28px;
-  font-weight: 900;
-  background: var(--gitddn-primary);
+.login-brand-logo {
+  color: var(--gitddn-text-primary);
+  --gitddn-logo-eye: #ffffff;
 }
 
 .login-copy {

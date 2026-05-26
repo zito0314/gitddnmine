@@ -7,16 +7,17 @@ import {
   PullRequestOutlined,
   SafetyCertificateOutlined,
 } from '@ant-design/icons'
-import { Avatar, Badge, Flex, Layout, Menu, Typography } from 'antd'
+import { Badge, Flex, Layout, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
 import { useAuth } from '../../auth/AuthContext'
 import { UI_TEXT } from '../../constants'
+import GitddnLogo from '../common/GitddnLogo'
 import RepositoryContextSidebar from './RepositoryContextSidebar'
 
 const { Sider } = Layout
-const { Text, Title } = Typography
+const { Text } = Typography
 
 const navItems = [
   { key: '/', icon: <DashboardOutlined />, label: UI_TEXT.navigation.dashboard },
@@ -100,18 +101,8 @@ function Sidebar({ collapsed, onCollapse }) {
       width={236}
       className="app-sidebar"
     >
-      <Flex align="center" gap={10} className="brand">
-        <Avatar shape="square" size={32} className="brand-mark">
-          g
-        </Avatar>
-        {!collapsed ? (
-          <div>
-            <Title level={1} className="brand-name">
-              gitddn
-            </Title>
-            <Text className="brand-sub">DevSecOps Governance</Text>
-          </div>
-        ) : null}
+      <Flex align="center" className="brand">
+        <GitddnLogo compact={collapsed} />
       </Flex>
 
       {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}

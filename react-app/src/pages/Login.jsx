@@ -1,9 +1,10 @@
 import { LockOutlined, MailOutlined } from '@ant-design/icons'
-import { Alert, Avatar, Button, Card, Col, Form, Input, Row, Space, Typography } from 'antd'
+import { Alert, Button, Card, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { getMockUsers } from '../api/auth'
 import { useAuth } from '../auth/AuthContext'
+import GitddnLogo from '../components/common/GitddnLogo'
 import { UI_TEXT } from '../constants'
 
 const { Paragraph, Text, Title } = Typography
@@ -47,10 +48,7 @@ export default function Login() {
       <Row className="login-shell" gutter={[24, 24]} align="middle">
         <Col xs={24} lg={12}>
           <Space orientation="vertical" size={18}>
-            <Avatar shape="square" size={54} className="login-brand-mark">
-              g
-            </Avatar>
-            <Title>{UI_TEXT.login.productName}</Title>
+            <GitddnLogo size="large" className="login-brand-logo" />
             <Paragraph className="login-copy">{UI_TEXT.login.description}</Paragraph>
             <Space wrap>
               <Text type="secondary">{UI_TEXT.login.ssoReady}</Text>
