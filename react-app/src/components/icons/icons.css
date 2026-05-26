@@ -11,3 +11,11 @@
   height: 1em;
   fill: currentColor;
 }
+
+.app-svg-icon > svg [fill]:not([fill="none"]) {
+  fill: currentColor;
+}
+
+.app-svg-icon > svg [stroke]:not([stroke="none"]) {
+  stroke: currentColor;
+}
