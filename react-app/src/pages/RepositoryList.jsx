@@ -5,7 +5,7 @@ import {
   DatabaseOutlined,
   StarFilled,
   StarOutlined,
-} from '@ant-design/icons'
+} from '../components/icons'
 import { Alert, Button, Col, Flex, List, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'

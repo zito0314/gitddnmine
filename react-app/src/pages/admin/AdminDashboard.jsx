@@ -1,4 +1,4 @@
-import { ApiOutlined, SafetyCertificateOutlined, TeamOutlined } from '@ant-design/icons'
+import { ApiOutlined, SafetyCertificateOutlined, TeamOutlined } from '../../components/icons'
 import { Card, Col, List, Row, Space } from 'antd'
 import { getAdminAuditLogs, getAdminSummary, getDeploymentPolicies, getMrApprovalPolicies, getRepositoryPolicies, getSecurityPolicies } from '../../api/admin'
 import { PageHeader, StatusTag, SummaryCard } from '../../components/common'

@@ -1,4 +1,4 @@
-import { AuditOutlined, BellOutlined, BgColorsOutlined, DashboardOutlined, DeploymentUnitOutlined, LinkOutlined, LockOutlined, SafetyCertificateOutlined, SettingOutlined, TeamOutlined } from '@ant-design/icons'
+import { AuditOutlined, BellOutlined, BgColorsOutlined, DashboardOutlined, DeploymentUnitOutlined, LinkOutlined, LockOutlined, SafetyCertificateOutlined, SettingOutlined, TeamOutlined } from '../icons'
 import { App as AntdApp, Avatar, Breadcrumb, Button, Flex, Layout, Menu, Space, Typography } from 'antd'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthContext'

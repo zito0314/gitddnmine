@@ -6,7 +6,7 @@ import {
   DeploymentUnitOutlined,
   PullRequestOutlined,
   SafetyCertificateOutlined,
-} from '@ant-design/icons'
+} from '../icons'
 import { Badge, Flex, Layout, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'

@@ -6,7 +6,7 @@ import {
   ScanOutlined,
   StopOutlined,
   WarningOutlined,
-} from '@ant-design/icons'
+} from '../components/icons'
 import { Alert, Badge, Button, Card, Col, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'

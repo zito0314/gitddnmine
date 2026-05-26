@@ -4,7 +4,7 @@ import {
   ClockCircleOutlined,
   CodeOutlined,
   PlayCircleOutlined,
-} from '@ant-design/icons'
+} from '../components/icons'
 import {
   Alert,
   Button,

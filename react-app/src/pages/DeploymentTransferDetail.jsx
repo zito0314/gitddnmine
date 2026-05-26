@@ -1,4 +1,4 @@
-import { AuditOutlined, CheckCircleOutlined, ClockCircleOutlined, RocketOutlined, SafetyCertificateOutlined } from '@ant-design/icons'
+import { AuditOutlined, CheckCircleOutlined, ClockCircleOutlined, RocketOutlined, SafetyCertificateOutlined } from '../components/icons'
 import { Card, Col, Descriptions, List, Progress, Row, Space, Timeline, Typography } from 'antd'
 import { Link, useParams } from 'react-router-dom'
 import { getDeploymentTransferDetail } from '../api/deploymentTransfers'

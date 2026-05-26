@@ -6,7 +6,7 @@ import {
   GitlabOutlined,
   SafetyCertificateOutlined,
   UserOutlined,
-} from '@ant-design/icons'
+} from '../components/icons'
 import {
   Alert,
   App as AntdApp,

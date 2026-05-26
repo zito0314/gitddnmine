@@ -10,7 +10,7 @@ import {
   SafetyCertificateOutlined,
   SettingOutlined,
   TagsOutlined,
-} from '@ant-design/icons'
+} from '../icons'
 import { Avatar, Card, Divider, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'

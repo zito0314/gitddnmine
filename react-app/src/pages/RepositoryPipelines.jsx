@@ -5,7 +5,7 @@ import {
   PlayCircleOutlined,
   ReloadOutlined,
   ToolOutlined,
-} from '@ant-design/icons'
+} from '../components/icons'
 import { Badge, Button, Card, Col, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'

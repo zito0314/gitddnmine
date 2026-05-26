@@ -1,4 +1,4 @@
-import { CheckCircleOutlined, DownloadOutlined, PlusOutlined, ReloadOutlined, RocketOutlined, StopOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, DownloadOutlined, PlusOutlined, ReloadOutlined, RocketOutlined, StopOutlined } from '../components/icons'
 import { Button, Card, Col, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'

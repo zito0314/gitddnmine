@@ -9,7 +9,7 @@ import {
   SafetyCertificateOutlined,
   StarFilled,
   StarOutlined,
-} from '@ant-design/icons'
+} from '../components/icons'
 import { Alert, Card, Col, Descriptions, Flex, List, Row, Space, Table, Timeline, Typography } from 'antd'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getRepositoryOverview } from '../api/repositories'

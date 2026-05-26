@@ -1,4 +1,4 @@
-import { LockOutlined, MailOutlined } from '@ant-design/icons'
+import { LockOutlined, MailOutlined } from '../components/icons'
 import { Alert, Button, Card, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'

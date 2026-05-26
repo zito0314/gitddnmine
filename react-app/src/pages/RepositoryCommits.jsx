@@ -1,4 +1,4 @@
-import { CodeOutlined, TeamOutlined } from '@ant-design/icons'
+import { CodeOutlined, TeamOutlined } from '../components/icons'
 import { Button, Card, Col, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'

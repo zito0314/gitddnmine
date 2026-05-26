@@ -1,4 +1,4 @@
-import { CheckCircleOutlined, ClockCircleOutlined, PlayCircleOutlined, ToolOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, ClockCircleOutlined, PlayCircleOutlined, ToolOutlined } from '../components/icons'
 import { Badge, Button, Card, Col, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'

@@ -4,7 +4,7 @@ import {
   CodeOutlined,
   SafetyCertificateOutlined,
   WarningOutlined,
-} from '@ant-design/icons'
+} from '../components/icons'
 import {
   Alert,
   Card,

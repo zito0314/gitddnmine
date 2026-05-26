@@ -1,4 +1,4 @@
-import { AuditOutlined, SafetyCertificateOutlined } from '@ant-design/icons'
+import { AuditOutlined, SafetyCertificateOutlined } from '../components/icons'
 import { Card, Col, List, Row, Space, Timeline, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'

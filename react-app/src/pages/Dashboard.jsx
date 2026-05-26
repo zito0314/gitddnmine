@@ -6,7 +6,7 @@ import {
   PullRequestOutlined,
   ReloadOutlined,
   SafetyCertificateOutlined,
-} from '@ant-design/icons'
+} from '../components/icons'
 import { Button, Card, Col, Flex, Input, List, Row, Space, Table, Tag, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'

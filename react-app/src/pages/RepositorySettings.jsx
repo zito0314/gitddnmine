@@ -1,4 +1,4 @@
-import { SaveOutlined } from '@ant-design/icons'
+import { SaveOutlined } from '../components/icons'
 import { Alert, Button, Card, Col, Descriptions, Form, Input, Row, Space, Switch, Tag, Typography } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getBranchProtectionTemplateForRepository } from '../api/branchProtectionPolicies'

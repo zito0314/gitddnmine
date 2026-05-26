@@ -1,5 +1,5 @@
 import { Alert, Button, Input, Space, Typography, Upload } from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
+import { UploadOutlined } from '../icons'
 
 const { Text } = Typography
 

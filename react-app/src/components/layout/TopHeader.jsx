@@ -13,7 +13,7 @@ import {
   SettingOutlined,
   SunOutlined,
   UserOutlined,
-} from '@ant-design/icons'
+} from '../icons'
 import {
   Avatar,
   AutoComplete,

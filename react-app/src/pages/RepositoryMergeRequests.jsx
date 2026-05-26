@@ -4,7 +4,7 @@ import {
   ExclamationCircleOutlined,
   PullRequestOutlined,
   SafetyCertificateOutlined,
-} from '@ant-design/icons'
+} from '../components/icons'
 import { Button, Card, Col, Flex, Progress, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'

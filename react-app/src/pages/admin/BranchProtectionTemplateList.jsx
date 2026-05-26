@@ -1,4 +1,4 @@
-import { PlusOutlined } from '@ant-design/icons'
+import { PlusOutlined } from '../../components/icons'
 import { Button, Card, Col, Input, Row, Select, Space, Table, Tag, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'

@@ -1,4 +1,4 @@
-import { BranchesOutlined, LockOutlined } from '@ant-design/icons'
+import { BranchesOutlined, LockOutlined } from '../components/icons'
 import { Button, Card, Col, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'

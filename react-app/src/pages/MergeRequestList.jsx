@@ -1,4 +1,4 @@
-import { CheckCircleOutlined, ExclamationCircleOutlined, PullRequestOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, ExclamationCircleOutlined, PullRequestOutlined } from '../components/icons'
 import { Button, Card, Col, Progress, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'

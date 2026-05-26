@@ -1,4 +1,4 @@
-import { EyeOutlined, FileOutlined, FolderOutlined } from '@ant-design/icons'
+import { EyeOutlined, FileOutlined, FolderOutlined } from '../components/icons'
 import { Button, Card, Col, Drawer, Row, Select, Space, Tree, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
