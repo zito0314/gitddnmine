@@ -1,0 +1,13 @@
+.app-svg-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.app-svg-icon > svg {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+}

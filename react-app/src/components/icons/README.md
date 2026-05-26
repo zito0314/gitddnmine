@@ -1,25 +1,28 @@
 # Icons
 
-Use this folder as the single entry point for application icons.
+Use this folder as the single entry point for application icons. App icons are
+rendered from local SVG files in `svg/`, not imported directly from
+`@ant-design/icons`.
 
 ## Add an icon
 
-1. Import the Ant Design icon in `index.js` with an `Ant` prefix.
-2. Export it with the app-facing name.
-3. Import icons from this folder in feature files.
+1. Add the SVG file to `svg/`.
+2. Import the SVG in `index.jsx` with `?raw`.
+3. Export it with `createIcon`.
+4. Import icons from this folder in feature files.
 
 ```js
-import { DeleteOutlined as AntDeleteOutlined } from '@ant-design/icons'
+import deleteOutlinedSvg from './svg/delete-outlined.svg?raw'
 
-export const DeleteOutlined = AntDeleteOutlined
+export const DeleteOutlined = createIcon(deleteOutlinedSvg)
 ```
 
 ## Replace an icon globally
 
-Change the exported component in `index.js`.
+Change the SVG assigned to the exported component in `index.jsx`.
 
 ```js
-export const PlusOutlined = AntRocketOutlined
+export const PlusOutlined = createIcon(rocketOutlinedSvg)
 ```
 
-Avoid importing directly from `@ant-design/icons` outside this folder.
+Avoid importing directly from `@ant-design/icons` in application code.
