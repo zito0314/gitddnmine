@@ -67,6 +67,8 @@ export function applyThemeCssVariables(theme) {
     '--gitddn-text-secondary': token.colorTextSecondary,
     '--gitddn-subtle': token.colorTextTertiary || token.colorTextDescription,
     '--gitddn-header-bg': token.colorBgContainer,
+    '--gitddn-sidebar-bg': token.colorBgContainer,
+    '--gitddn-sidebar-text': token.colorTextSecondary,
     '--gitddn-radius': radius,
   }
 

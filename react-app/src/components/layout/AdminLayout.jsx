@@ -1,6 +1,6 @@
-import { AuditOutlined, BellOutlined, BgColorsOutlined, DashboardOutlined, DeploymentUnitOutlined, LinkOutlined, LockOutlined, SafetyCertificateOutlined, TeamOutlined } from '@ant-design/icons'
-import { App as AntdApp, Button, Flex, Layout, Menu, Space, Typography } from 'antd'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { AuditOutlined, BellOutlined, BgColorsOutlined, DashboardOutlined, DeploymentUnitOutlined, LinkOutlined, LockOutlined, SafetyCertificateOutlined, SettingOutlined, TeamOutlined } from '@ant-design/icons'
+import { App as AntdApp, Breadcrumb, Button, Flex, Layout, Menu, Space, Typography } from 'antd'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthContext'
 import { UI_TEXT } from '../../constants'
 
@@ -23,11 +23,38 @@ const adminItems = [
   { key: '/admin/theme', icon: <BgColorsOutlined />, label: UI_TEXT.adminNavigation.themeBranding },
 ]
 
+const adminBreadcrumbLabels = {
+  organization: 'Organization Roles',
+  'repository-policy': 'Repository Policy',
+  'mr-approval-policy': 'MR Approval Policy',
+  'security-policy': 'Security Policy',
+  'deployment-policy': 'Deployment Policy',
+  'audit-policy': 'Audit Policy',
+  'notification-policy': 'Notification Policy',
+  integration: 'Integration',
+  theme: 'Theme Branding',
+}
+
+function makeAdminBreadcrumb(pathname) {
+  if (pathname === '/admin') {
+    return [{ title: <span className="header-breadcrumb-current">Admin Console</span> }]
+  }
+
+  const [, , section] = pathname.split('/')
+  const currentLabel = adminBreadcrumbLabels[section] ?? UI_TEXT.navigation.admin
+
+  return [
+    { title: <Link to="/admin">Admin Console</Link> },
+    { title: <span className="header-breadcrumb-current">{currentLabel}</span> },
+  ]
+}
+
 export default function AdminLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   const auth = useAuth()
   const { message } = AntdApp.useApp()
+  const breadcrumbItems = makeAdminBreadcrumb(location.pathname)
   const selected =
     adminItems
       .filter((item) => item.key !== '/admin')
@@ -50,9 +77,9 @@ export default function AdminLayout() {
       <Layout className="app-main">
         <Header className="top-header admin-top-header">
           <Flex align="center" justify="space-between" style={{ width: '100%' }}>
-            <Space>
-              <Text strong>{UI_TEXT.navigation.admin}</Text>
-              <Text type="secondary">Policy-based Governance Platform</Text>
+            <Space size={12}>
+              <span className="header-page-icon"><SettingOutlined /></span>
+              <Breadcrumb className="header-breadcrumb" separator="›" items={breadcrumbItems} />
             </Space>
             <Space>
               <Button type="primary" onClick={() => navigate('/')}>{UI_TEXT.topHeader.backToUserPlatform}</Button>

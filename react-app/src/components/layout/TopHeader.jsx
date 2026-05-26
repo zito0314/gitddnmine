@@ -1,7 +1,11 @@
 import {
   BellOutlined,
+  CodeOutlined,
   DownOutlined,
   GlobalOutlined,
+  HomeOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
   MoonOutlined,
   PlusOutlined,
   QuestionCircleOutlined,
@@ -14,6 +18,7 @@ import {
   Avatar,
   AutoComplete,
   Badge,
+  Breadcrumb,
   Button,
   App as AntdApp,
   Divider,
@@ -28,10 +33,11 @@ import {
   Segmented,
   Space,
   Tag,
+  Tooltip,
   Typography,
 } from 'antd'
 import { useMemo, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   getGlobalSearchSuggestions,
   getHeaderOrganizations,
@@ -50,6 +56,40 @@ const { Text } = Typography
 
 const ORGANIZATION_STORAGE_KEY = UI_TEXT.organizations.storageKey
 const NOTIFICATION_READ_STORAGE_KEY = 'gitddn.notifications.read'
+
+const repositorySectionLabels = {
+  files: UI_TEXT.repositoryNavigation.files,
+  'merge-requests': UI_TEXT.repositoryNavigation.mergeRequests,
+  pipelines: UI_TEXT.repositoryNavigation.pipelines,
+  commits: UI_TEXT.repositoryNavigation.commits,
+  branches: UI_TEXT.repositoryNavigation.branches,
+  tags: UI_TEXT.repositoryNavigation.tags,
+  security: UI_TEXT.repositoryNavigation.security,
+  'deployment-transfer': UI_TEXT.repositoryNavigation.deploymentTransfer,
+  activity: UI_TEXT.repositoryNavigation.activity,
+  settings: UI_TEXT.repositoryNavigation.settings,
+}
+
+const globalSectionLabels = {
+  repositories: UI_TEXT.navigation.repositories,
+  'merge-requests': UI_TEXT.navigation.mergeRequests,
+  pipelines: UI_TEXT.navigation.pipelines,
+  security: 'Security',
+  audit: UI_TEXT.navigation.audit,
+  'deployment-transfer': UI_TEXT.navigation.deploymentTransfer,
+}
+
+const adminSectionLabels = {
+  organization: 'Organization Roles',
+  'repository-policy': 'Repository Policy',
+  'mr-approval-policy': 'MR Approval Policy',
+  'security-policy': 'Security Policy',
+  'deployment-policy': 'Deployment Policy',
+  'audit-policy': 'Audit Policy',
+  'notification-policy': 'Notification Policy',
+  integration: 'Integration',
+  theme: 'Theme Branding',
+}
 
 function readJsonStorage(key, fallback) {
   try {
@@ -70,7 +110,86 @@ function getRepositoryIdFromPath(pathname) {
   return repositoryId && repositoryId !== 'new' ? repositoryId : null
 }
 
-function TopHeader({ onToggleSidebar }) {
+function makeBreadcrumbItem(label, path, current = false) {
+  return {
+    title: current ? (
+      <span className="header-breadcrumb-current">{label}</span>
+    ) : path ? (
+      <Link to={path}>{label}</Link>
+    ) : (
+      <span>{label}</span>
+    ),
+  }
+}
+
+function buildHeaderLocation(pathname, repository) {
+  if (pathname === '/') {
+    return {
+      icon: <HomeOutlined />,
+      items: [makeBreadcrumbItem('Home', '/', true)],
+    }
+  }
+
+  if (pathname.startsWith('/admin')) {
+    const [, , section] = pathname.split('/')
+    const currentLabel = adminSectionLabels[section] ?? UI_TEXT.navigation.admin
+    return {
+      icon: <SettingOutlined />,
+      items:
+        pathname === '/admin'
+          ? [makeBreadcrumbItem('Admin Console', '/admin', true)]
+          : [
+              makeBreadcrumbItem('Admin Console', '/admin'),
+              makeBreadcrumbItem(currentLabel, pathname, true),
+            ],
+    }
+  }
+
+  const repositoryMatch = pathname.match(/^\/repositories\/([^/]+)(?:\/([^/]+))?(?:\/([^/]+))?/)
+  if (repositoryMatch && repositoryMatch[1] !== 'new') {
+    const [, repositoryId, section, detailId] = repositoryMatch
+    const repositoryName = repository?.name ?? repositoryId
+    const items = [
+      makeBreadcrumbItem('Repository', '/repositories'),
+      makeBreadcrumbItem(repositoryName, `/repositories/${repositoryId}`, !section),
+    ]
+
+    if (section) {
+      items.push(
+        makeBreadcrumbItem(
+          repositorySectionLabels[section] ?? section,
+          `/repositories/${repositoryId}/${section}`,
+          !detailId || detailId === 'new',
+        ),
+      )
+    }
+
+    if (detailId && detailId !== 'new') {
+      items.push(makeBreadcrumbItem(section === 'merge-requests' ? `#${detailId}` : detailId, pathname, true))
+    }
+
+    return {
+      icon: <CodeOutlined />,
+      items,
+    }
+  }
+
+  const [, section, detailId] = pathname.split('/')
+  const sectionLabel = globalSectionLabels[section] ?? 'Home'
+  const items = [makeBreadcrumbItem(sectionLabel, `/${section}`, !detailId)]
+
+  if (detailId) {
+    const detailLabel = section === 'merge-requests' ? `#${detailId}` : detailId
+    items.push(makeBreadcrumbItem(detailLabel, pathname, true))
+  }
+
+  return {
+    icon: <HomeOutlined />,
+    items,
+  }
+}
+
+function TopHeader({ collapsed, onToggleSidebar }) {
   const navigate = useNavigate()
   const location = useLocation()
   const auth = useAuth()
@@ -81,7 +200,14 @@ function TopHeader({ onToggleSidebar }) {
   const currentUser = auth.currentUser
   const notifications = getNotifications()
   const currentRepositoryId = getRepositoryIdFromPath(location.pathname)
+  const currentRepository = currentRepositoryId
+    ? repositories.find((repository) => repository.id === currentRepositoryId)
+    : null
   const isAdminPath = location.pathname.startsWith('/admin')
+  const headerLocation = useMemo(
+    () => buildHeaderLocation(location.pathname, currentRepository),
+    [currentRepository, location.pathname],
+  )
 
   const [organizationKey, setOrganizationKey] = useState(() => {
     const storedKey = window.localStorage.getItem(ORGANIZATION_STORAGE_KEY)
@@ -211,8 +337,48 @@ function TopHeader({ onToggleSidebar }) {
 
   return (
     <Header className="top-header">
-      <Flex align="center" gap={10} className="header-left">
-        <Button type="text" icon={<SettingOutlined />} onClick={onToggleSidebar} />
+      <Flex align="center" gap={12} className="header-left">
+        <Tooltip title="Toggle navigation">
+          <Button
+            type="text"
+            className="header-icon-button"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={onToggleSidebar}
+          />
+        </Tooltip>
+        <span className="header-page-icon">{headerLocation.icon}</span>
+        <Breadcrumb
+          className="header-breadcrumb"
+          separator="›"
+          items={headerLocation.items}
+        />
+      </Flex>
+
+      <Space size={8} className="header-actions">
+        <AutoComplete
+          className="global-search"
+          open={searchOpen}
+          value={searchValue}
+          options={searchOptions}
+          notFoundContent={<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.globalSearch.empty} />}
+          classNames={{ popup: { root: 'global-search-overlay' } }}
+          onSelect={(href) => {
+            setSearchValue('')
+            navigateTo(href)
+          }}
+          onSearch={(value) => {
+            setSearchValue(value)
+            setSearchOpen(true)
+          }}
+          onFocus={() => setSearchOpen(true)}
+          onBlur={() => setSearchOpen(false)}
+        >
+          <Input
+            prefix={<SearchOutlined />}
+            placeholder={UI_TEXT.globalSearch.placeholder}
+            allowClear
+          />
+        </AutoComplete>
         <Dropdown
           menu={{
             items: organizationItems,
@@ -222,39 +388,11 @@ function TopHeader({ onToggleSidebar }) {
           }}
           trigger={['click']}
         >
-          <Button icon={<GlobalOutlined />}>
+          <Button className="header-organization-button" icon={<GlobalOutlined />}>
             <span>{selectedOrganization?.label}</span>
             <DownOutlined />
           </Button>
         </Dropdown>
-      </Flex>
-
-      <AutoComplete
-        className="global-search"
-        open={searchOpen}
-        value={searchValue}
-        options={searchOptions}
-        notFoundContent={<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.globalSearch.empty} />}
-        classNames={{ popup: { root: 'global-search-overlay' } }}
-        onSelect={(href) => {
-          setSearchValue('')
-          navigateTo(href)
-        }}
-        onSearch={(value) => {
-          setSearchValue(value)
-          setSearchOpen(true)
-        }}
-        onFocus={() => setSearchOpen(true)}
-        onBlur={() => setSearchOpen(false)}
-      >
-        <Input
-          prefix={<SearchOutlined />}
-          placeholder={UI_TEXT.globalSearch.placeholder}
-          allowClear
-        />
-      </AutoComplete>
-
-      <Space size={8} className="header-actions">
         <Segmented
           aria-label="Theme mode"
           size="small"
@@ -265,7 +403,7 @@ function TopHeader({ onToggleSidebar }) {
             { label: <MoonOutlined />, value: THEME_MODES.dark },
           ]}
         />
-        <Button onClick={() => setDesignTokenOpen(true)}>
+        <Button className="header-token-button" onClick={() => setDesignTokenOpen(true)}>
           {UI_TEXT.designToken.button}
         </Button>
         <Dropdown menu={{ items: createItems, onClick: handleQuickCreate }} trigger={['click']}>
@@ -286,13 +424,16 @@ function TopHeader({ onToggleSidebar }) {
           }}
           trigger={['click']}
         >
-          <Button icon={<QuestionCircleOutlined />} />
+          <Button className="header-ask-button" icon={<QuestionCircleOutlined />}>
+            Ask
+          </Button>
         </Dropdown>
         {auth.isAdmin ? (
           <Button onClick={() => navigate(isAdminPath ? '/' : '/admin')}>
             {isAdminPath ? UI_TEXT.topHeader.backToUserPlatform : UI_TEXT.topHeader.adminConsole}
           </Button>
         ) : null}
+        <Divider type="vertical" className="header-avatar-divider" />
         <Dropdown
           menu={{
             items: userItems,

@@ -13773,6 +13773,19 @@ const mockData = {
       ]
     }
   ],
+  "mrMergePolicies": [
+    {
+      "id": "mcp-finance-standard",
+      "name": "금융권 표준 MR Merge 조건",
+      "minimumApprovals": 2,
+      "requirePipelineSuccess": true,
+      "requireSecurityValidation": true,
+      "requireResolvedDiscussions": true,
+      "requireNoConflicts": true,
+      "requireDeploymentApproval": true,
+      "allowedMergeRoles": ["Maintainer", "Admin"]
+    }
+  ],
   "branchProtectionTemplates": [
     {
       "id": "bpt-standard-v12",
