@@ -1,6 +1,5 @@
 import {
   AuditOutlined,
-  BranchesOutlined,
   CodeOutlined,
   DashboardOutlined,
   DeploymentUnitOutlined,
@@ -28,7 +27,6 @@ const navItems = [
     label: UI_TEXT.navigation.mergeRequests,
     badge: 6,
   },
-  { key: '/pipelines', icon: <BranchesOutlined />, label: UI_TEXT.navigation.pipelines },
   { key: '/deployment-transfer', icon: <DeploymentUnitOutlined />, label: UI_TEXT.navigation.deploymentTransfer, badge: 3 },
   {
     key: '/security',
@@ -38,7 +36,6 @@ const navItems = [
     badgeStatus: 'warning',
   },
   { key: '/audit', icon: <AuditOutlined />, label: UI_TEXT.navigation.audit },
-  { key: '/admin', icon: <AuditOutlined />, label: UI_TEXT.navigation.admin },
 ]
 
 function withBadge(item) {

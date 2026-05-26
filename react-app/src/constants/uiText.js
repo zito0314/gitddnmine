@@ -1,12 +1,12 @@
 export const UI_TEXT = {
   navigation: {
-    dashboard: '대시보드',
-    repositories: 'Repositories',
+    dashboard: '홈',
+    repositories: '저장소',
     mergeRequests: 'Merge Requests',
     pipelines: 'Pipelines',
-    security: '보안 검증',
+    security: '보안',
     deploymentTransfer: '운영이관',
-    audit: '감사 로그',
+    audit: '감사',
     admin: '관리자 콘솔',
   },
   repositoryNavigation: {
