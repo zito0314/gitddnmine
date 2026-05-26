@@ -45,6 +45,9 @@ export function applyThemeCssVariables(theme) {
   if (typeof document === 'undefined') return
 
   const token = normalizeThemeToken(theme).token
+  const components = normalizeThemeToken(theme).components
+  const menu = components.Menu ?? {}
+  const layout = components.Layout ?? {}
   const root = document.documentElement
   const bg = token.colorBgLayout || token.colorBgBase
   const border = token.colorBorder || token.colorBorderSecondary
@@ -67,8 +70,15 @@ export function applyThemeCssVariables(theme) {
     '--gitddn-text-secondary': token.colorTextSecondary,
     '--gitddn-subtle': token.colorTextTertiary || token.colorTextDescription,
     '--gitddn-header-bg': token.colorBgContainer,
-    '--gitddn-sidebar-bg': token.colorBgContainer,
-    '--gitddn-sidebar-text': token.colorTextSecondary,
+    '--gitddn-sidebar-bg': layout.lightSiderBg || menu.itemBg || token.colorBgContainer,
+    '--gitddn-sidebar-text': menu.itemColor || token.colorTextSecondary,
+    '--gitddn-sidebar-text-active': menu.itemSelectedColor || token.colorText,
+    '--gitddn-sidebar-hover-bg': menu.itemHoverBg || token.controlItemBgHover,
+    '--gitddn-sidebar-hover-text': menu.itemHoverColor || token.colorText,
+    '--gitddn-sidebar-selected-bg': menu.itemSelectedBg || token.controlItemBgActive,
+    '--gitddn-sidebar-selected-text': menu.itemSelectedColor || token.colorText,
+    '--gitddn-sidebar-submenu-bg': menu.subMenuItemBg || token.colorFillAlter,
+    '--gitddn-sidebar-group-text': menu.groupTitleColor || token.colorTextTertiary || token.colorTextDescription,
     '--gitddn-radius': radius,
   }
 
