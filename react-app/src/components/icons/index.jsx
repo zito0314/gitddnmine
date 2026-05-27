@@ -28,6 +28,7 @@ import diamondFilledSvg from './svg/DiamondFilled.svg?raw'
 import diamondOutlinedSvg from './svg/DiamondOutlined.svg?raw'
 import downloadOutlinedSvg from './svg/DownloadOutlined.svg?raw'
 import downOutlinedSvg from './svg/DownOutlined.svg?raw'
+import editOutlinedSvg from './svg/EditOutlined.svg?raw'
 import exclamationCircleOutlinedSvg from './svg/ExclamationCircleOutlined.svg?raw'
 import eyeOutlinedSvg from './svg/EyeOutlined.svg?raw'
 import ellipsisOutlinedSvg from './svg/EllipsisOutlined.svg?raw'
@@ -131,6 +132,7 @@ export const DiamondFilled = createIcon(diamondFilledSvg)
 export const DiamondOutlined = createIcon(diamondOutlinedSvg)
 export const DownloadOutlined = createIcon(downloadOutlinedSvg)
 export const DownOutlined = createIcon(downOutlinedSvg)
+export const EditOutlined = createIcon(editOutlinedSvg)
 export const ExclamationCircleOutlined = createIcon(exclamationCircleOutlinedSvg)
 export const EyeOutlined = createIcon(eyeOutlinedSvg)
 export const EllipsisOutlined = createIcon(ellipsisOutlinedSvg)

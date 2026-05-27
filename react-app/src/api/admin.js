@@ -1,11 +1,12 @@
 import { getMockSlice } from './mockClient'
+import { getManagedOrganizations } from './organizations'
 
 export function getAdminSummary() {
   return getMockSlice((data) => data.admin.summary, {})
 }
 
 export function getOrganizations() {
-  return getMockSlice((data) => data.organizations, [])
+  return getManagedOrganizations({ includeInactive: true })
 }
 
 export function getUsers() {

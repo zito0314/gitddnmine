@@ -33,13 +33,14 @@ import {
   Tag,
   Typography,
 } from 'antd'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   getGlobalSearchSuggestions,
   getHeaderOrganizations,
   getNotifications,
 } from '../../api/common'
+import { ORGANIZATION_CHANGED_EVENT } from '../../api/organizations'
 import { useAuth } from '../../auth/AuthContext'
 import { getRepositories } from '../../api/repositories'
 import { StatusTag } from '../common'
@@ -192,7 +193,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
   const auth = useAuth()
   const { message } = AntdApp.useApp()
   const { mode: themeMode, setThemeMode } = useThemeTokens()
-  const organizations = getHeaderOrganizations()
+  const [organizations, setOrganizations] = useState(() => getHeaderOrganizations())
   const repositories = getRepositories()
   const currentUser = auth.currentUser
   const notifications = getNotifications()
@@ -214,6 +215,18 @@ function TopHeader({ collapsed, onToggleSidebar }) {
   const [readNotificationIds, setReadNotificationIds] = useState(() =>
     readJsonStorage(NOTIFICATION_READ_STORAGE_KEY, []),
   )
+
+  useEffect(() => {
+    const syncOrganizations = () => setOrganizations(getHeaderOrganizations())
+
+    window.addEventListener(ORGANIZATION_CHANGED_EVENT, syncOrganizations)
+    window.addEventListener('storage', syncOrganizations)
+
+    return () => {
+      window.removeEventListener(ORGANIZATION_CHANGED_EVENT, syncOrganizations)
+      window.removeEventListener('storage', syncOrganizations)
+    }
+  }, [])
 
   const selectedOrganization =
     organizations.find((organization) => organization.key === window.localStorage.getItem(ORGANIZATION_STORAGE_KEY)) ?? organizations[0]

@@ -1,12 +1,13 @@
 import { getMockSlice } from './mockClient'
 import { filterItemsByRepositoryAccess, filterRepositoriesByAccess, getStoredAuthUser, hasPermission, isAdmin } from '../auth/permissions'
+import { getManagedOrganizations } from './organizations'
 
 export function getUsers() {
   return getMockSlice((data) => data.user.users, [])
 }
 
 export function getOrganizations() {
-  return getMockSlice((data) => data.organizations, [])
+  return getManagedOrganizations()
 }
 
 export function getHeaderOrganizations() {

@@ -9,9 +9,10 @@ import {
   MergeRequestOutlined,
 } from '../icons'
 import { Button, Dropdown, Flex, Layout, Menu } from 'antd'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getHeaderOrganizations } from '../../api/common'
+import { ORGANIZATION_CHANGED_EVENT } from '../../api/organizations'
 import { getRepositoryDetail } from '../../api/repositories'
 import { useAuth } from '../../auth/AuthContext'
 import { UI_TEXT } from '../../constants'
@@ -45,10 +46,10 @@ function Sidebar({ collapsed, onCollapse }) {
   const location = useLocation()
   const navigate = useNavigate()
   const auth = useAuth()
-  const organizations = getHeaderOrganizations()
+  const [organizations, setOrganizations] = useState(() => getHeaderOrganizations())
   const [organizationKey, setOrganizationKey] = useState(() => {
     const storedKey = window.localStorage.getItem(ORGANIZATION_STORAGE_KEY)
-    return storedKey || organizations[0]?.key
+    return storedKey || getHeaderOrganizations()[0]?.key
   })
   const visibleNavItems = useMemo(
     () =>
@@ -100,6 +101,27 @@ function Sidebar({ collapsed, onCollapse }) {
     window.localStorage.setItem(ORGANIZATION_STORAGE_KEY, key)
     window.location.reload()
   }
+
+  useEffect(() => {
+    const syncOrganizations = () => {
+      const nextOrganizations = getHeaderOrganizations()
+      const storedKey = window.localStorage.getItem(ORGANIZATION_STORAGE_KEY)
+      const nextOrganizationKey = nextOrganizations.some((organization) => organization.key === storedKey)
+        ? storedKey
+        : nextOrganizations[0]?.key
+
+      setOrganizations(nextOrganizations)
+      setOrganizationKey(nextOrganizationKey)
+    }
+
+    window.addEventListener(ORGANIZATION_CHANGED_EVENT, syncOrganizations)
+    window.addEventListener('storage', syncOrganizations)
+
+    return () => {
+      window.removeEventListener(ORGANIZATION_CHANGED_EVENT, syncOrganizations)
+      window.removeEventListener('storage', syncOrganizations)
+    }
+  }, [])
 
   return (
     <Sider
