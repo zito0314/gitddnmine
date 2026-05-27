@@ -8,7 +8,7 @@ import {
   LockOutlined,
   MergeRequestOutlined,
 } from '../icons'
-import { Button, ConfigProvider, Dropdown, Flex, Layout, Menu, Typography } from 'antd'
+import { Button, ConfigProvider, Dropdown, Flex, Layout, Menu } from 'antd'
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getHeaderOrganizations } from '../../api/common'
@@ -19,7 +19,6 @@ import { GitddnLogo } from '../custom'
 import RepositoryContextSidebar from './RepositoryContextSidebar'
 
 const { Sider } = Layout
-const { Text } = Typography
 
 const ORGANIZATION_STORAGE_KEY = UI_TEXT.organizations.storageKey
 
@@ -98,6 +97,17 @@ function Sidebar({ collapsed, onCollapse }) {
 
     return [match?.key ?? '/']
   }, [location.pathname, visibleNavItems])
+  const workspaceMenuItems = useMemo(
+    () => [
+      {
+        key: 'workspace',
+        type: 'group',
+        label: UI_TEXT.common.workspace,
+        children: visibleNavItems,
+      },
+    ],
+    [visibleNavItems],
+  )
 
   const selectedOrganization =
     organizations.find((organization) => organization.key === organizationKey) ?? organizations[0]
@@ -154,12 +164,11 @@ function Sidebar({ collapsed, onCollapse }) {
 
           <Flex vertical className="sidebar-navigation">
             {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
-            {!collapsed ? <Text className="nav-title">{UI_TEXT.common.workspace}</Text> : null}
             <Menu
               className="global-menu"
               mode="inline"
               selectedKeys={selectedKeys}
-              items={visibleNavItems}
+              items={workspaceMenuItems}
               onClick={({ key }) => {
                 const nextItem = visibleNavItems.find((item) => item.key === key)
                 navigate(nextItem?.route ?? key)

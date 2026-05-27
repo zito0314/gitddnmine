@@ -191,21 +191,7 @@ body {
 
 .app-sidebar .ant-menu {
   background: transparent;
-  border-inline-end: 0 !important;
   padding: 0;
-}
-
-.app-sidebar .ant-menu .ant-menu-item {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.app-sidebar .ant-menu .ant-menu-item-selected {
-  font-weight: 700;
-}
-
-.app-sidebar .ant-menu .ant-menu-item-selected::after {
-  display: none;
 }
 
 .app-sidebar .ant-menu .ant-menu-item .ant-menu-title-content {
