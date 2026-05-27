@@ -9,7 +9,7 @@ import {
   SettingOutlined,
   TagsOutlined,
 } from '../icons'
-import { Avatar, Card, Divider, Menu, Typography } from 'antd'
+import { Avatar, Card, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
@@ -68,7 +68,6 @@ function RepositoryContextSidebar({ repositoryId }) {
 
   return (
     <div className="repository-context-sidebar">
-      <Divider className="sidebar-divider" />
       <Text className="nav-title">{UI_TEXT.common.currentRepository}</Text>
       <Card size="small" className="sidebar-repository-summary">
         <Card.Meta
@@ -90,7 +89,6 @@ function RepositoryContextSidebar({ repositoryId }) {
         />
       </Card>
 
-      <Text className="nav-title repository-menu-title">{UI_TEXT.common.repository}</Text>
       <Menu
         className="repository-menu"
         mode="inline"

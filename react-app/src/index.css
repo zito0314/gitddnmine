@@ -574,10 +574,6 @@ body {
   width: 280px;
 }
 
-.sidebar-divider {
-  margin: 12px 12px;
-}
-
 .repository-context-sidebar {
   padding-bottom: 14px;
 }
@@ -625,10 +621,6 @@ body {
 .sidebar-repository-group {
   color: var(--gitddn-text-secondary);
   font-size: 11px;
-}
-
-.repository-menu-title {
-  margin-top: 6px;
 }
 
 .repository-menu.ant-menu {
