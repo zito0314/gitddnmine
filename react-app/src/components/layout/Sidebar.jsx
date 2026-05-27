@@ -8,7 +8,7 @@ import {
   LockOutlined,
   MergeRequestOutlined,
 } from '../icons'
-import { Dropdown, Flex, Layout, Menu } from 'antd'
+import { Button, Dropdown, Flex, Layout, Menu } from 'antd'
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getHeaderOrganizations } from '../../api/common'
@@ -120,8 +120,7 @@ function Sidebar({ collapsed, onCollapse }) {
           onClick={() => navigate('/')}
         />
 
-        <Dropdown.Button
-          className="sidebar-organization-button"
+        <Dropdown
           menu={{
             items: organizationItems,
             selectable: true,
@@ -129,12 +128,21 @@ function Sidebar({ collapsed, onCollapse }) {
             onClick: handleOrganizationChange,
           }}
           trigger={['click']}
-          type="text"
-          icon={<DownOutlined />}
         >
-          <GlobalOutlined />
-          {!collapsed ? <span>{selectedOrganization?.label}</span> : null}
-        </Dropdown.Button>
+          <Button
+            className="sidebar-organization-button"
+            icon={<GlobalOutlined />}
+            type="text"
+            block={!collapsed}
+          >
+            {!collapsed ? (
+              <>
+                <span>{selectedOrganization?.label}</span>
+                <DownOutlined />
+              </>
+            ) : null}
+          </Button>
+        </Dropdown>
 
         <Flex vertical className="sidebar-navigation">
           {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
