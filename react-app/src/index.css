@@ -756,11 +756,13 @@ body {
   margin-top: 34px;
 }
 
+.dashboard-ai-empty {
+  padding-left: 4px;
+}
+
 .dashboard-ai-loading {
-  color: var(--gitddn-primary);
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: 2px;
+  min-height: 38px;
+  padding-left: 4px;
 }
 
 .dashboard-ai-question.ant-tag {
@@ -772,6 +774,14 @@ body {
   color: var(--gitddn-text-primary);
   font-size: 14px;
   white-space: normal;
+}
+
+.dashboard-ai-answer {
+  max-width: min(720px, 86%);
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--gitddn-primary) 12%, var(--gitddn-border-color));
+  border-radius: 0 14px 14px;
+  background: color-mix(in srgb, var(--gitddn-card-bg) 88%, transparent);
 }
 
 .dashboard-ai-input.ant-input-affix-wrapper {

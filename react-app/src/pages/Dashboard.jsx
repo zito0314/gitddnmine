@@ -1,9 +1,5 @@
-import {
-  ArrowRightOutlined,
-  RobotOutlined,
-  StarFilled,
-} from '../components/icons'
-import { Avatar, Button, Card, Col, Flex, Input, List, Row, Space, Tabs, Tag, Typography } from 'antd'
+import { StarFilled } from '../components/icons'
+import { Avatar, Button, Card, Col, Flex, List, Row, Space, Tabs, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -15,7 +11,7 @@ import {
 } from '../api/dashboard'
 import { useAuth } from '../auth/AuthContext'
 import { PageHeader, StatusTag } from '../components/common'
-import { GitddnLogo } from '../components/custom'
+import { DashboardAiChat } from '../components/custom'
 import { UI_TEXT } from '../constants'
 
 const { Text } = Typography
@@ -69,12 +65,9 @@ function Dashboard() {
   const activities = getDashboardRepositoryActivities()
   const prompts = getDashboardAiPrompts()
   const currentUserName = auth.currentUser?.name ?? 'Jito'
-  const [aiPrompt, setAiPrompt] = useState('pipeline-failure')
-  const [aiInput, setAiInput] = useState('')
   const [nextUpTab, setNextUpTab] = useState('all')
   const [activityTab, setActivityTab] = useState('all')
   const [quickAccessTab, setQuickAccessTab] = useState('starred')
-  const aiResponse = getDashboardAiResponse(aiPrompt)
   const filteredNextUp = nextUp.filter((item) => nextUpTab === 'all' || getNextUpTabKey(item) === nextUpTab)
   const filteredActivities = activities.filter((activity) => {
     if (activityTab === 'all') return true
@@ -90,41 +83,12 @@ function Dashboard() {
     <Space direction="vertical" size={24} className="dashboard-home">
       <PageHeader title={UI_TEXT.pages.dashboard.title} />
 
-      <Card className="dashboard-ai-panel" variant="borderless">
-        <Flex justify="space-between" align="flex-start" gap={24}>
-          <Space direction="vertical" size={16} className="dashboard-ai-content">
-            <GitddnLogo compact className="dashboard-ai-logo" />
-            <Space direction="vertical" size={4}>
-              <Text>안녕하세요, <Text strong className="dashboard-ai-user">{currentUserName}</Text>님! 오늘 처리할 업무를 분석했어요.</Text>
-              <Text strong className="dashboard-ai-summary">
-                승인 대기 MR 4건, Pipeline 실패 2건, 보안 이슈 1건이 있습니다. 어떤 것부터 살펴볼까요?
-              </Text>
-            </Space>
-            <Space wrap>
-              {visiblePrompts.map((prompt) => (
-                <Button key={prompt.key} size="small" className="dashboard-ai-chip" onClick={() => setAiPrompt(prompt.key)}>
-                  {prompt.label}
-                </Button>
-              ))}
-            </Space>
-          </Space>
-          <Button type="text" icon={<ArrowRightOutlined />} onClick={() => navigate(aiResponse.links[0]?.href ?? '/merge-requests')} />
-        </Flex>
-        <Flex className="dashboard-ai-thread" vertical gap={18}>
-          <Text className="dashboard-ai-loading">...</Text>
-          <Flex justify="flex-end">
-            <Tag className="dashboard-ai-question">{aiResponse.title}</Tag>
-          </Flex>
-          <Input
-            className="dashboard-ai-input"
-            placeholder="업무를 질문하거나 요청해 보세요..."
-            value={aiInput}
-            onChange={(event) => setAiInput(event.target.value)}
-            onPressEnter={() => aiInput.trim() && setAiPrompt(aiInput)}
-            suffix={<RobotOutlined />}
-          />
-        </Flex>
-      </Card>
+      <DashboardAiChat
+        currentUserName={currentUserName}
+        prompts={visiblePrompts}
+        getResponse={getDashboardAiResponse}
+        onOpenResponse={(href) => navigate(href)}
+      />
 
       <Row gutter={[16, 16]} align="top">
         <Col xs={24} xl={17}>
