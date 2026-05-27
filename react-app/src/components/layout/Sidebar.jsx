@@ -2,7 +2,6 @@ import {
   AuditOutlined,
   DeploymentUnitOutlined,
   DownOutlined,
-  GitCommitOutlined,
   GitRepositoryOutlined,
   GlobalOutlined,
   GoBackOutlined,
@@ -47,14 +46,8 @@ const sidebarMenuTheme = {
 
 const navItems = [
   { key: '/', route: '/', icon: <HomeOutlined />, label: UI_TEXT.navigation.dashboard },
-  { key: '/repositories', route: '/repositories', icon: <GitRepositoryOutlined />, label: 'Git 저장소' },
+  { key: '/repositories', route: '/repositories', icon: <GitRepositoryOutlined />, label: UI_TEXT.navigation.repositories },
   { key: '/merge-requests', route: '/merge-requests', icon: <MergeRequestOutlined />, label: UI_TEXT.navigation.mergeRequests },
-  {
-    key: '/activity',
-    route: '/audit',
-    icon: <GitCommitOutlined />,
-    label: 'Activity',
-  },
   {
     key: '/security',
     route: '/security',
@@ -66,7 +59,7 @@ const navItems = [
     key: '/audit',
     route: '/audit',
     icon: <AuditOutlined />,
-    label: 'Audit Log',
+    label: UI_TEXT.navigation.audit,
   },
 ]
 

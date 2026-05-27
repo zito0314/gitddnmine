@@ -42,7 +42,7 @@ export default function OrganizationRoleAdmin() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        title="Organization & Roles"
+        title={UI_TEXT.adminNavigation.organizationRoles}
         description="조직, 사용자, 팀, Role mapping, GitLab role mapping, 화면 권한 mapping을 관리합니다."
       />
       <Row gutter={[16, 16]}>

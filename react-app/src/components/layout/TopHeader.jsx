@@ -69,21 +69,21 @@ const globalSectionLabels = {
   repositories: UI_TEXT.navigation.repositories,
   'merge-requests': UI_TEXT.navigation.mergeRequests,
   pipelines: UI_TEXT.navigation.pipelines,
-  security: 'Security',
+  security: UI_TEXT.navigation.security,
   audit: UI_TEXT.navigation.audit,
   'deployment-transfer': UI_TEXT.navigation.deploymentTransfer,
 }
 
 const adminSectionLabels = {
-  organization: 'Organization Roles',
-  'repository-policy': 'Repository Policy',
-  'mr-approval-policy': 'MR Approval Policy',
-  'security-policy': 'Security Policy',
-  'deployment-policy': 'Deployment Policy',
-  'audit-policy': 'Audit Policy',
-  'notification-policy': 'Notification Policy',
-  integration: 'Integration',
-  theme: 'Theme Branding',
+  organization: UI_TEXT.adminNavigation.organizationRoles,
+  'repository-policy': UI_TEXT.adminNavigation.repositoryPolicy,
+  'mr-approval-policy': UI_TEXT.adminNavigation.mrApprovalPolicy,
+  'security-policy': UI_TEXT.adminNavigation.securityPolicy,
+  'deployment-policy': UI_TEXT.adminNavigation.deploymentPolicy,
+  'audit-policy': UI_TEXT.adminNavigation.auditPolicy,
+  'notification-policy': UI_TEXT.adminNavigation.notificationPolicy,
+  integration: UI_TEXT.adminNavigation.integration,
+  theme: UI_TEXT.adminNavigation.themeBranding,
 }
 
 function readJsonStorage(key, fallback) {
@@ -121,7 +121,7 @@ function buildHeaderLocation(pathname, repository) {
   if (pathname === '/') {
     return {
       icon: <HomeOutlined />,
-      items: [makeBreadcrumbItem('Home', '/', true)],
+      items: [makeBreadcrumbItem(UI_TEXT.navigation.dashboard, '/', true)],
     }
   }
 
@@ -132,9 +132,9 @@ function buildHeaderLocation(pathname, repository) {
       icon: <SettingOutlined />,
       items:
         pathname === '/admin'
-          ? [makeBreadcrumbItem('Admin Console', '/admin', true)]
+          ? [makeBreadcrumbItem(UI_TEXT.navigation.admin, '/admin', true)]
           : [
-              makeBreadcrumbItem('Admin Console', '/admin'),
+              makeBreadcrumbItem(UI_TEXT.navigation.admin, '/admin'),
               makeBreadcrumbItem(currentLabel, pathname, true),
             ],
     }
@@ -145,7 +145,7 @@ function buildHeaderLocation(pathname, repository) {
     const [, repositoryId, section, detailId] = repositoryMatch
     const repositoryName = repository?.name ?? repositoryId
     const items = [
-      makeBreadcrumbItem('Repository', '/repositories'),
+      makeBreadcrumbItem(UI_TEXT.navigation.repositories, '/repositories'),
       makeBreadcrumbItem(repositoryName, `/repositories/${repositoryId}`, !section),
     ]
 

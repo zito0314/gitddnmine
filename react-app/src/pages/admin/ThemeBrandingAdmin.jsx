@@ -1,6 +1,7 @@
 import { Card, Col, ColorPicker, Form, Input, Row, Select, Space, Typography } from 'antd'
 import { getThemeSettings } from '../../api/admin'
 import { PageHeader } from '../../components/common'
+import { UI_TEXT } from '../../constants'
 
 const { Title, Text } = Typography
 
@@ -9,7 +10,7 @@ export default function ThemeBrandingAdmin() {
 
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader title="Theme & Branding" description="Organization logo, primary color, accent color, mode, product name을 관리합니다." />
+      <PageHeader title={UI_TEXT.adminNavigation.themeBranding} description="Organization logo, primary color, accent color, mode, product name을 관리합니다." />
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={14}>
           <Card>

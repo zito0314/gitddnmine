@@ -1,27 +1,31 @@
+const NAVIGATION_LABELS = {
+  dashboard: '홈',
+  repositories: 'Git 저장소',
+  mergeRequests: 'Merge Requests',
+  pipelines: 'Pipelines',
+  security: '보안',
+  deploymentTransfer: '운영이관',
+  audit: 'Audit Log',
+  admin: '관리자 콘솔',
+}
+
+const REPOSITORY_NAVIGATION_LABELS = {
+  overview: '개요',
+  files: '파일',
+  mergeRequests: NAVIGATION_LABELS.mergeRequests,
+  pipelines: NAVIGATION_LABELS.pipelines,
+  commits: 'Commits',
+  branches: 'Branches',
+  tags: 'Tags',
+  security: NAVIGATION_LABELS.security,
+  deploymentTransfer: NAVIGATION_LABELS.deploymentTransfer,
+  activity: 'Activity',
+  settings: '설정',
+}
+
 export const UI_TEXT = {
-  navigation: {
-    dashboard: '홈',
-    repositories: '저장소',
-    mergeRequests: 'Merge Requests',
-    pipelines: 'Pipelines',
-    security: '보안',
-    deploymentTransfer: '운영이관',
-    audit: '감사',
-    admin: '관리자 콘솔',
-  },
-  repositoryNavigation: {
-    overview: '개요',
-    files: '파일',
-    mergeRequests: 'Merge Requests',
-    pipelines: 'Pipelines',
-    commits: 'Commits',
-    branches: 'Branches',
-    tags: 'Tags',
-    security: '보안',
-    deploymentTransfer: '운영이관',
-    activity: '활동',
-    settings: '설정',
-  },
+  navigation: NAVIGATION_LABELS,
+  repositoryNavigation: REPOSITORY_NAVIGATION_LABELS,
   status: {
     labels: {
       approved: '승인 완료',
@@ -136,73 +140,77 @@ export const UI_TEXT = {
   },
   pages: {
     dashboard: {
-      title: '대시보드',
+      title: NAVIGATION_LABELS.dashboard,
       description: '개발 업무, 승인, 검증, 보안 이슈를 한 화면에서 확인하는 업무 대시보드',
     },
     repositories: {
-      title: 'Repository',
+      title: NAVIGATION_LABELS.repositories,
       description: '프로젝트 Repository를 관리하고 Pipeline과 보안 상태를 한눈에 확인하세요.',
     },
     mergeRequests: {
-      title: 'Merge Requests',
+      title: NAVIGATION_LABELS.mergeRequests,
       description: '전체 Repository의 MR 승인, 검증, 병합 상태를 확인하는 화면',
     },
     pipelines: {
-      title: 'Pipelines',
+      title: NAVIGATION_LABELS.pipelines,
       description: '전체 Repository의 Pipeline 실행 상태와 실패 이력을 확인하는 화면',
     },
     security: {
-      title: '보안 검증',
+      title: NAVIGATION_LABELS.security,
       description: 'Repository와 Merge Request 단위의 보안 검증 상태와 차단 항목을 확인하는 화면',
     },
     deploymentTransfer: {
-      title: '운영이관',
+      title: NAVIGATION_LABELS.deploymentTransfer,
       description: '운영 반영 요청, 승인 상태, 배포 전 검증 조건을 확인하는 화면',
     },
     audit: {
-      title: '감사 로그',
+      title: NAVIGATION_LABELS.audit,
       description: '개발 활동, 승인, 보안 검증, 정책 변경 이력을 추적하는 감사 로그 화면',
     },
     repositoryFiles: {
-      title: '파일',
+      title: REPOSITORY_NAVIGATION_LABELS.files,
       description: '현재 Repository의 파일 구조와 주요 소스 파일을 확인하는 화면',
     },
     repositoryCommits: {
-      title: 'Commits',
+      title: REPOSITORY_NAVIGATION_LABELS.commits,
       description: '현재 Repository의 커밋 이력과 변경 내역을 확인하는 화면',
     },
     repositoryBranches: {
-      title: 'Branches',
+      title: REPOSITORY_NAVIGATION_LABELS.branches,
       description: '브랜치 상태, 보호 정책, 최신 커밋을 확인하는 화면',
     },
     repositoryTags: {
-      title: 'Tags',
+      title: REPOSITORY_NAVIGATION_LABELS.tags,
       description: '배포 기준 태그와 릴리즈 이력을 확인하는 화면',
     },
+    repositorySecurity: {
+      title: REPOSITORY_NAVIGATION_LABELS.security,
+      description: '현재 Repository의 보안 검증 상태와 정책 판단 결과를 확인하는 화면',
+    },
     repositoryActivity: {
-      title: '활동',
+      title: REPOSITORY_NAVIGATION_LABELS.activity,
       description: '현재 Repository의 주요 개발 활동과 시스템 이벤트를 확인하는 화면',
     },
     repositorySettings: {
-      title: '설정',
+      title: REPOSITORY_NAVIGATION_LABELS.settings,
       description: 'Repository 정책과 기본 설정을 확인하는 화면',
     },
     repositoryMergeRequests: {
-      title: 'Merge Requests',
+      title: REPOSITORY_NAVIGATION_LABELS.mergeRequests,
       description: '현재 Repository에 연결된 Merge Request의 승인, Pipeline, 보안 상태를 확인합니다.',
     },
     repositoryPipelines: {
-      title: 'Pipelines',
+      title: REPOSITORY_NAVIGATION_LABELS.pipelines,
       description: '현재 Repository의 Pipeline 실행 상태, 실패 Job, 실행 이력을 확인하는 화면',
     },
     repositoryDeploymentTransfer: {
-      title: '운영이관',
+      title: REPOSITORY_NAVIGATION_LABELS.deploymentTransfer,
       description: '특정 Repository의 운영이관 요청 목록입니다.',
     },
   },
   adminPages: {
     admin: {
-      title: '관리자 콘솔',
+      title: NAVIGATION_LABELS.admin,
       description: '조직, 권한, 정책, 연동, 테마 설정을 관리하는 관리자 콘솔',
     },
   },

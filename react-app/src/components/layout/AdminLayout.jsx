@@ -25,27 +25,27 @@ const adminItems = [
 ]
 
 const adminBreadcrumbLabels = {
-  organization: 'Organization Roles',
-  'repository-policy': 'Repository Policy',
-  'mr-approval-policy': 'MR Approval Policy',
-  'security-policy': 'Security Policy',
-  'deployment-policy': 'Deployment Policy',
-  'audit-policy': 'Audit Policy',
-  'notification-policy': 'Notification Policy',
-  integration: 'Integration',
-  theme: 'Theme Branding',
+  organization: UI_TEXT.adminNavigation.organizationRoles,
+  'repository-policy': UI_TEXT.adminNavigation.repositoryPolicy,
+  'mr-approval-policy': UI_TEXT.adminNavigation.mrApprovalPolicy,
+  'security-policy': UI_TEXT.adminNavigation.securityPolicy,
+  'deployment-policy': UI_TEXT.adminNavigation.deploymentPolicy,
+  'audit-policy': UI_TEXT.adminNavigation.auditPolicy,
+  'notification-policy': UI_TEXT.adminNavigation.notificationPolicy,
+  integration: UI_TEXT.adminNavigation.integration,
+  theme: UI_TEXT.adminNavigation.themeBranding,
 }
 
 function makeAdminBreadcrumb(pathname) {
   if (pathname === '/admin') {
-    return [{ title: <span className="header-breadcrumb-current">Admin Console</span> }]
+    return [{ title: <span className="header-breadcrumb-current">{UI_TEXT.navigation.admin}</span> }]
   }
 
   const [, , section] = pathname.split('/')
   const currentLabel = adminBreadcrumbLabels[section] ?? UI_TEXT.navigation.admin
 
   return [
-    { title: <Link to="/admin">Admin Console</Link> },
+    { title: <Link to="/admin">{UI_TEXT.navigation.admin}</Link> },
     { title: <span className="header-breadcrumb-current">{currentLabel}</span> },
   ]
 }
