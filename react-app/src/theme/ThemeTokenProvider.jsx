@@ -3,11 +3,12 @@ import { defaultDarkTheme, defaultLightTheme, THEME_MODES } from './defaultToken
 import {
   clearThemeTokenStorage,
   loadTokensFromStorage,
+  mergeTheme,
   persistDarkTheme,
   persistLightTheme,
   persistThemeMode,
 } from './tokenStorage'
-import { applyThemeCssVariables, buildAntdTheme, normalizeThemeToken } from './tokenUtils'
+import { applyThemeCssVariables, buildAntdTheme } from './tokenUtils'
 import { ThemeTokenContext } from './themeTokenContext'
 
 export function ThemeTokenProvider({ children }) {
@@ -26,14 +27,14 @@ export function ThemeTokenProvider({ children }) {
   }, [])
 
   const applyLightTheme = useCallback((json) => {
-    const normalized = normalizeThemeToken(json)
+    const normalized = mergeTheme(defaultLightTheme, json)
     setLightTheme(normalized)
     persistLightTheme(normalized)
     setThemeMode(THEME_MODES.light)
   }, [setThemeMode])
 
   const applyDarkTheme = useCallback((json) => {
-    const normalized = normalizeThemeToken(json)
+    const normalized = mergeTheme(defaultDarkTheme, json)
     setDarkTheme(normalized)
     persistDarkTheme(normalized)
     setThemeMode(THEME_MODES.dark)

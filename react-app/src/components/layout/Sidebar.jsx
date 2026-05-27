@@ -8,7 +8,7 @@ import {
   LockOutlined,
   MergeRequestOutlined,
 } from '../icons'
-import { Button, ConfigProvider, Dropdown, Flex, Layout, Menu } from 'antd'
+import { Button, Dropdown, Flex, Layout, Menu } from 'antd'
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getHeaderOrganizations } from '../../api/common'
@@ -21,26 +21,6 @@ import RepositoryContextSidebar from './RepositoryContextSidebar'
 const { Sider } = Layout
 
 const ORGANIZATION_STORAGE_KEY = UI_TEXT.organizations.storageKey
-
-const sidebarMenuTheme = {
-  components: {
-    Menu: {
-      itemBg: 'transparent',
-      itemColor: 'var(--gitddn-sidebar-text)',
-      itemHoverBg: 'var(--gitddn-sidebar-hover-bg)',
-      itemHoverColor: 'var(--gitddn-sidebar-hover-text)',
-      itemSelectedBg: 'var(--gitddn-sidebar-selected-bg)',
-      itemSelectedColor: 'var(--gitddn-sidebar-selected-text)',
-      subMenuItemBg: 'var(--gitddn-sidebar-submenu-bg)',
-      groupTitleColor: 'var(--gitddn-sidebar-group-text)',
-      itemHeight: 40,
-      itemBorderRadius: 8,
-      itemMarginBlock: 4,
-      itemMarginInline: 8,
-      iconMarginInlineEnd: 10,
-    },
-  },
-}
 
 const navItems = [
   { key: '/', route: '/', icon: <HomeOutlined />, label: UI_TEXT.navigation.dashboard },
@@ -131,55 +111,53 @@ function Sidebar({ collapsed, onCollapse }) {
       width={236}
       className="app-sidebar"
     >
-      <ConfigProvider theme={sidebarMenuTheme}>
-        <Flex vertical className="sidebar-shell">
-          <Menu
-            className="sidebar-logo-menu"
-            mode="inline"
-            selectable={false}
-            items={logoMenuItems}
-          />
+      <Flex vertical className="sidebar-shell">
+        <Menu
+          className="sidebar-logo-menu"
+          mode="inline"
+          selectable={false}
+          items={logoMenuItems}
+        />
 
-          <Dropdown
-            menu={{
-              items: organizationItems,
-              selectable: true,
-              selectedKeys: selectedOrganization?.key ? [selectedOrganization.key] : [],
-              onClick: handleOrganizationChange,
-            }}
-            trigger={['click']}
+        <Dropdown
+          menu={{
+            items: organizationItems,
+            selectable: true,
+            selectedKeys: selectedOrganization?.key ? [selectedOrganization.key] : [],
+            onClick: handleOrganizationChange,
+          }}
+          trigger={['click']}
+        >
+          <Button
+            className="sidebar-organization-button"
+            icon={<GlobalOutlined />}
+            type="text"
+            block={!collapsed}
           >
-            <Button
-              className="sidebar-organization-button"
-              icon={<GlobalOutlined />}
-              type="text"
-              block={!collapsed}
-            >
-              {!collapsed ? (
-                <>
-                  <span>{selectedOrganization?.label}</span>
-                  <DownOutlined />
-                </>
-              ) : null}
-            </Button>
-          </Dropdown>
+            {!collapsed ? (
+              <>
+                <span>{selectedOrganization?.label}</span>
+                <DownOutlined />
+              </>
+            ) : null}
+          </Button>
+        </Dropdown>
 
-          <Flex vertical className="sidebar-navigation">
-            {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
-            {!collapsed ? <span className="nav-title">{UI_TEXT.common.workspace}</span> : null}
-            <Menu
-              className="global-menu"
-              mode="inline"
-              selectedKeys={selectedKeys}
-              items={visibleNavItems}
-              onClick={({ key }) => {
-                const nextItem = visibleNavItems.find((item) => item.key === key)
-                navigate(nextItem?.route ?? key)
-              }}
-            />
-          </Flex>
+        <Flex vertical className="sidebar-navigation">
+          {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
+          {!collapsed ? <span className="nav-title">{UI_TEXT.common.workspace}</span> : null}
+          <Menu
+            className="global-menu"
+            mode="inline"
+            selectedKeys={selectedKeys}
+            items={visibleNavItems}
+            onClick={({ key }) => {
+              const nextItem = visibleNavItems.find((item) => item.key === key)
+              navigate(nextItem?.route ?? key)
+            }}
+          />
         </Flex>
-      </ConfigProvider>
+      </Flex>
     </Sider>
   )
 }
