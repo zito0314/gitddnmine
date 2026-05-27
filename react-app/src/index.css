@@ -85,6 +85,13 @@ body {
   background: var(--gitddn-app-bg);
 }
 
+.app-sidebar:not(.ant-layout-sider-collapsed) {
+  flex: 0 0 236px !important;
+  min-width: 236px !important;
+  max-width: 236px !important;
+  width: 236px !important;
+}
+
 .app-sidebar {
   background: var(--gitddn-sidebar-bg) !important;
   border-right: 1px solid var(--gitddn-border-color);
@@ -189,12 +196,12 @@ body {
 }
 
 .app-sidebar .ant-menu .ant-menu-item {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .app-sidebar .ant-menu .ant-menu-item-selected {
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .app-sidebar .ant-menu .ant-menu-item-selected::after {
@@ -207,14 +214,6 @@ body {
 
 .app-sidebar .ant-menu .ant-menu-item .ant-flex {
   min-width: 0;
-}
-
-.sidebar-menu-label {
-  width: 100%;
-}
-
-.sidebar-menu-chevron {
-  font-size: 14px;
 }
 
 .app-sidebar .ant-menu .ant-menu-item-disabled {

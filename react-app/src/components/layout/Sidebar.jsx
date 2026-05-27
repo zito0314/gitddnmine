@@ -36,11 +36,11 @@ const sidebarMenuTheme = {
       itemSelectedColor: 'var(--gitddn-sidebar-selected-text)',
       subMenuItemBg: 'var(--gitddn-sidebar-submenu-bg)',
       groupTitleColor: 'var(--gitddn-sidebar-group-text)',
-      itemHeight: 74,
-      itemBorderRadius: 18,
-      itemMarginBlock: 2,
-      itemMarginInline: 22,
-      iconMarginInlineEnd: 16,
+      itemHeight: 40,
+      itemBorderRadius: 8,
+      itemMarginBlock: 4,
+      itemMarginInline: 8,
+      iconMarginInlineEnd: 10,
     },
   },
 }
@@ -59,25 +59,16 @@ const navItems = [
     key: '/security',
     route: '/security',
     icon: <LockOutlined />,
-    label: <MenuLabelWithChevron label={UI_TEXT.navigation.security} />,
+    label: UI_TEXT.navigation.security,
   },
   { key: '/deployment-transfer', route: '/deployment-transfer', icon: <DeploymentUnitOutlined />, label: UI_TEXT.navigation.deploymentTransfer },
   {
     key: '/audit',
     route: '/audit',
     icon: <AuditOutlined />,
-    label: <MenuLabelWithChevron label="Audit Log" />,
+    label: 'Audit Log',
   },
 ]
-
-function MenuLabelWithChevron({ label }) {
-  return (
-    <Flex align="center" justify="space-between" gap={8} className="sidebar-menu-label">
-      <span>{label}</span>
-      <DownOutlined className="sidebar-menu-chevron" />
-    </Flex>
-  )
-}
 
 function Sidebar({ collapsed, onCollapse }) {
   const location = useLocation()
