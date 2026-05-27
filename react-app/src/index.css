@@ -224,6 +224,10 @@ body {
   border-inline-end: 0;
 }
 
+.app-sidebar .ant-menu:not(.sidebar-logo-menu) .ant-menu-item {
+  padding-inline: 10px !important;
+}
+
 .app-sidebar .ant-menu .ant-menu-item .ant-menu-title-content {
   min-width: 0;
 }
