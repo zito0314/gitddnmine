@@ -18,8 +18,10 @@ import clipboardListOutlinedSvg from './svg/ClipboardListOutlined.svg?raw'
 import clockCircleOutlinedSvg from './svg/ClockCircleOutlined.svg?raw'
 import codeOutlinedSvg from './svg/CodeOutlined.svg?raw'
 import commentOutlinedSvg from './svg/CommentOutlined.svg?raw'
+import copyOutlinedSvg from './svg/CopyOutlined.svg?raw'
 import dashboardOutlinedSvg from './svg/DashboardOutlined.svg?raw'
 import databaseOutlinedSvg from './svg/DatabaseOutlined.svg?raw'
+import deleteOutlinedSvg from './svg/DeleteOutlined.svg?raw'
 import deploymentUnitOutlinedSvg from './svg/DeploymentUnitOutlined.svg?raw'
 import deployUploadOutlinedSvg from './svg/DeployUploadOutlined.svg?raw'
 import diamondFilledSvg from './svg/DiamondFilled.svg?raw'
@@ -28,6 +30,8 @@ import downloadOutlinedSvg from './svg/DownloadOutlined.svg?raw'
 import downOutlinedSvg from './svg/DownOutlined.svg?raw'
 import exclamationCircleOutlinedSvg from './svg/ExclamationCircleOutlined.svg?raw'
 import eyeOutlinedSvg from './svg/EyeOutlined.svg?raw'
+import ellipsisOutlinedSvg from './svg/EllipsisOutlined.svg?raw'
+import fileAddOutlinedSvg from './svg/FileAddOutlined.svg?raw'
 import fileCheckOutlinedSvg from './svg/FileCheckOutlined.svg?raw'
 import fileCodeOutlinedSvg from './svg/FileCodeOutlined.svg?raw'
 import fileInputOutlinedSvg from './svg/FileInputOutlined.svg?raw'
@@ -117,8 +121,10 @@ export const ClipboardListOutlined = createIcon(clipboardListOutlinedSvg)
 export const ClockCircleOutlined = createIcon(clockCircleOutlinedSvg)
 export const CodeOutlined = createIcon(codeOutlinedSvg)
 export const CommentOutlined = createIcon(commentOutlinedSvg)
+export const CopyOutlined = createIcon(copyOutlinedSvg)
 export const DashboardOutlined = createIcon(dashboardOutlinedSvg)
 export const DatabaseOutlined = createIcon(databaseOutlinedSvg)
+export const DeleteOutlined = createIcon(deleteOutlinedSvg)
 export const DeploymentUnitOutlined = createIcon(deploymentUnitOutlinedSvg)
 export const DeployUploadOutlined = createIcon(deployUploadOutlinedSvg)
 export const DiamondFilled = createIcon(diamondFilledSvg)
@@ -127,6 +133,8 @@ export const DownloadOutlined = createIcon(downloadOutlinedSvg)
 export const DownOutlined = createIcon(downOutlinedSvg)
 export const ExclamationCircleOutlined = createIcon(exclamationCircleOutlinedSvg)
 export const EyeOutlined = createIcon(eyeOutlinedSvg)
+export const EllipsisOutlined = createIcon(ellipsisOutlinedSvg)
+export const FileAddOutlined = createIcon(fileAddOutlinedSvg)
 export const FileCheckOutlined = createIcon(fileCheckOutlinedSvg)
 export const FileCodeOutlined = createIcon(fileCodeOutlinedSvg)
 export const FileInputOutlined = createIcon(fileInputOutlinedSvg)

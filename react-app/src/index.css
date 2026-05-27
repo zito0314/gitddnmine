@@ -957,6 +957,93 @@ body {
   margin: 14px 0 0;
 }
 
+.repository-files-page {
+  width: 100%;
+}
+
+.repository-files-title {
+  min-width: 0;
+}
+
+.repository-files-title h2.ant-typography {
+  max-width: min(760px, 72vw);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.repository-files-avatar {
+  flex: 0 0 auto;
+  background: var(--gitddn-primary);
+  font-weight: 800;
+}
+
+.repository-branch-select {
+  min-width: 124px;
+}
+
+.repository-latest-commit .ant-card-body {
+  padding: 20px 24px;
+}
+
+.repository-files-table .ant-table {
+  overflow: hidden;
+  border: 1px solid var(--gitddn-border-color);
+  border-radius: 8px;
+}
+
+.repository-files-table .ant-table-thead > tr > th {
+  white-space: nowrap;
+}
+
+.repository-readme-card .ant-card-body {
+  min-height: 360px;
+  padding: 32px 28px;
+}
+
+.repository-info-panel {
+  position: sticky;
+  top: 88px;
+}
+
+.repository-info-panel .ant-list-item {
+  padding-inline: 0;
+}
+
+.repository-transfer-list .ant-list-item {
+  align-items: flex-start;
+  padding-block: 14px;
+}
+
+.repository-transfer-list .ant-btn-link {
+  height: auto;
+  padding: 0;
+}
+
+.repository-code-dropdown {
+  width: min(560px, calc(100vw - 48px));
+  padding: 20px 24px 16px;
+  border: 1px solid var(--gitddn-border-color);
+  border-radius: 8px;
+  background: var(--gitddn-card-bg);
+  box-shadow: var(--gitddn-shadow-lg);
+}
+
+.repository-code-dropdown h5.ant-typography {
+  margin: 0 0 12px;
+}
+
+.repository-code-dropdown .ant-input-affix-wrapper {
+  margin-bottom: 18px;
+}
+
+.repository-code-dropdown .ant-divider {
+  margin: 0 0 18px;
+}
+
+.repository-code-dropdown .ant-list-item {
+  padding-inline: 0;
+}
+
 .mr-detail-hero h2.ant-typography {
   margin: 4px 0 8px;
 }
