@@ -216,7 +216,7 @@ export const UI_TEXT = {
     inputPlaceholder: 'Ask gitddn AI about MR, pipeline, security, deployment...',
   },
   topHeader: {
-    adminConsole: '관리자 콘솔',
+    adminConsole: '관리자 메뉴',
     backToUserPlatform: '사용자 플랫폼으로 돌아가기',
     organizationSwitched: '조직이 전환되었습니다:',
     helpMockNotice: 'Quick Create, Global Search, 알림 Drawer는 mock 데이터 기반으로 동작합니다.',

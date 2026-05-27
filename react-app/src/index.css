@@ -295,18 +295,10 @@ body {
   align-items: center;
 }
 
-.header-icon-button.ant-btn,
 .header-actions .ant-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-}
-
-.header-page-icon.ant-avatar {
-  flex: 0 0 auto;
-  color: var(--gitddn-primary);
-  background: var(--gitddn-primary-soft);
-  font-size: 15px;
 }
 
 .header-breadcrumb {
@@ -666,10 +658,6 @@ body {
 @media (max-width: 1320px) {
   .global-search {
     width: 260px;
-  }
-
-  .header-actions > .ant-space-item:has(.header-token-button) {
-    display: none;
   }
 }
 

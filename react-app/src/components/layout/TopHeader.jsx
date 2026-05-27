@@ -2,8 +2,6 @@ import {
   BellOutlined,
   CodeOutlined,
   HomeOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   MoonOutlined,
   PlusOutlined,
   QuestionCircleOutlined,
@@ -13,8 +11,8 @@ import {
   UserOutlined,
 } from '../icons'
 import {
-  Avatar,
   AutoComplete,
+  Avatar,
   Badge,
   Breadcrumb,
   Button,
@@ -31,7 +29,6 @@ import {
   Segmented,
   Space,
   Tag,
-  Tooltip,
   Typography,
 } from 'antd'
 import { useMemo, useState } from 'react'
@@ -187,7 +184,7 @@ function buildHeaderLocation(pathname, repository) {
   }
 }
 
-function TopHeader({ collapsed, onToggleSidebar }) {
+function TopHeader() {
   const navigate = useNavigate()
   const location = useLocation()
   const auth = useAuth()
@@ -311,25 +308,24 @@ function TopHeader({ collapsed, onToggleSidebar }) {
       ),
     },
     { type: 'divider' },
+    auth.isAdmin
+      ? {
+          key: 'admin-menu',
+          label: isAdminPath ? UI_TEXT.topHeader.backToUserPlatform : UI_TEXT.topHeader.adminConsole,
+        }
+      : null,
+    { key: 'design-token', label: UI_TEXT.designToken.button },
+    { type: 'divider' },
     { key: 'my-profile', label: UI_TEXT.userMenu.myProfile },
     { key: 'my-activity', label: UI_TEXT.userMenu.myActivity },
     { key: 'preferences', label: UI_TEXT.userMenu.preferences },
     { type: 'divider' },
     { key: 'sign-out', label: UI_TEXT.auth.signOut },
-  ]
+  ].filter(Boolean)
 
   return (
     <Header className="top-header">
       <Flex align="center" gap={12} className="header-left">
-        <Tooltip title="Toggle navigation">
-          <Button
-            type="text"
-            className="header-icon-button"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={onToggleSidebar}
-          />
-        </Tooltip>
-        <Avatar shape="square" size={30} icon={headerLocation.icon} className="header-page-icon" />
         <Breadcrumb
           className="header-breadcrumb"
           separator="›"
@@ -357,9 +353,9 @@ function TopHeader({ collapsed, onToggleSidebar }) {
           onBlur={() => setSearchOpen(false)}
         >
           <Input
-            prefix={<SearchOutlined />}
-            placeholder={UI_TEXT.globalSearch.placeholder}
+            placeholder="검색어를 입력하세요."
             allowClear
+            suffix={<SearchOutlined />}
           />
         </AutoComplete>
         <Segmented
@@ -372,17 +368,11 @@ function TopHeader({ collapsed, onToggleSidebar }) {
             { label: <MoonOutlined />, value: THEME_MODES.dark },
           ]}
         />
-        <Button className="header-token-button" onClick={() => setDesignTokenOpen(true)}>
-          {UI_TEXT.designToken.button}
-        </Button>
         <Dropdown menu={{ items: createItems, onClick: handleQuickCreate }} trigger={['click']}>
-          <Button type="primary" icon={<PlusOutlined />}>
+          <Button icon={<PlusOutlined />}>
             {UI_TEXT.quickCreate.label}
           </Button>
         </Dropdown>
-        <Badge count={unreadCount} size="small">
-          <Button icon={<BellOutlined />} onClick={() => setNotificationOpen(true)} />
-        </Badge>
         <Dropdown
           menu={{
             items: helpItems,
@@ -397,17 +387,23 @@ function TopHeader({ collapsed, onToggleSidebar }) {
             Ask
           </Button>
         </Dropdown>
-        {auth.isAdmin ? (
-          <Button onClick={() => navigate(isAdminPath ? '/' : '/admin')}>
-            {isAdminPath ? UI_TEXT.topHeader.backToUserPlatform : UI_TEXT.topHeader.adminConsole}
-          </Button>
-        ) : null}
+        <Badge count={unreadCount} size="small">
+          <Button icon={<BellOutlined />} onClick={() => setNotificationOpen(true)} />
+        </Badge>
         <Divider type="vertical" className="header-avatar-divider" />
         <Dropdown
           menu={{
             items: userItems,
             onClick: async ({ key }) => {
               if (key === 'profile') return
+              if (key === 'admin-menu') {
+                navigate(isAdminPath ? '/' : '/admin')
+                return
+              }
+              if (key === 'design-token') {
+                setDesignTokenOpen(true)
+                return
+              }
               if (key === 'sign-out') {
                 await auth.logout()
                 message.success(UI_TEXT.auth.signedOut)
