@@ -378,6 +378,10 @@ body {
   background: var(--gitddn-content-bg);
 }
 
+.page-content-dashboard {
+  padding: 40px 175px;
+}
+
 .page-header {
   margin-bottom: 18px;
 }
@@ -698,6 +702,10 @@ body {
   .page-content {
     padding: 18px;
   }
+
+  .page-content-dashboard {
+    padding: 24px;
+  }
 }
 /* === RepositoryList 추가 스타일 === */
 
@@ -723,7 +731,7 @@ body {
 
 .dashboard-home {
   width: min(100%, 1336px);
-  margin: 24px auto 0;
+  margin: 0 auto;
 }
 
 .dashboard-home .page-header {

@@ -80,7 +80,7 @@ function Dashboard() {
   const visiblePrompts = prompts.slice(0, 4)
 
   return (
-    <Space direction="vertical" size={24} className="dashboard-home">
+    <Space direction="vertical" size={32} className="dashboard-home">
       <PageHeader title={UI_TEXT.pages.dashboard.title} />
 
       <DashboardAiChat
