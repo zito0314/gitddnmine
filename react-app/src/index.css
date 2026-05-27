@@ -344,13 +344,6 @@ body {
   flex: 1;
 }
 
-.global-search .ant-select-selector {
-  padding: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
 .global-search-option {
   width: 100%;
   padding: 6px 2px;
