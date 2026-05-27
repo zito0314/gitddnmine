@@ -10,6 +10,13 @@ SVG files use the same PascalCase names as the app icon exports:
 - `svg/CheckCircleOutlined.svg`
 - `svg/StarFilled.svg`
 
+Normalize uploaded SVGs before adding them:
+
+- use PascalCase Ant-style names, such as `FileCodeOutlined.svg`
+- remove fixed `width` and `height`
+- keep the root `viewBox`
+- use `currentColor` for visible `fill` or `stroke`
+
 ## Add an icon
 
 1. Add the SVG file to `svg/` using the app icon name.
