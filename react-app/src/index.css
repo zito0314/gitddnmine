@@ -1062,6 +1062,15 @@ body {
   background: color-mix(in srgb, var(--gitddn-primary) 8%, transparent);
 }
 
+.repository-list-item-disabled {
+  cursor: not-allowed;
+  background: color-mix(in srgb, var(--gitddn-card-bg) 86%, var(--gitddn-line));
+}
+
+.repository-list-item-disabled:hover {
+  background: color-mix(in srgb, var(--gitddn-card-bg) 86%, var(--gitddn-line));
+}
+
 .repository-list-favorite.ant-btn {
   width: 28px;
   height: 28px;
@@ -1074,17 +1083,26 @@ body {
   color: #faad14;
 }
 
-.repository-list-content {
+.repository-list-thumbnail.ant-avatar {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--gitddn-primary-soft);
+  color: var(--gitddn-primary-strong);
+  font-weight: 700;
+  line-height: 40px;
+}
+
+.repository-list .ant-list-item-meta {
   min-width: 0;
   flex: 1;
 }
 
-.repository-list-description {
-  display: block;
-  margin-top: 4px;
+.repository-list-disabled-name {
   color: var(--gitddn-text-secondary);
 }
 
 .repository-list-meta {
-  margin-top: 8px;
+  width: 100%;
 }
