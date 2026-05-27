@@ -107,12 +107,6 @@ body {
   min-height: 100%;
 }
 
-.brand {
-  min-height: 92px;
-  padding: 32px 36px 14px;
-  margin-bottom: 18px;
-}
-
 .gitddn-logo {
   display: block;
   width: 103px;
@@ -187,6 +181,28 @@ body {
 
 .sidebar-navigation {
   flex: 1;
+}
+
+.app-sidebar .sidebar-logo-menu.ant-menu {
+  padding-top: 28px;
+  margin-bottom: 18px;
+}
+
+.app-sidebar .sidebar-logo-menu.ant-menu .sidebar-logo-menu-item.ant-menu-item {
+  height: 46px;
+  line-height: 46px;
+  margin-inline: 28px;
+  padding-inline: 8px !important;
+  cursor: default;
+}
+
+.app-sidebar .sidebar-logo-menu.ant-menu .sidebar-logo-menu-item.ant-menu-item:hover {
+  background: transparent;
+}
+
+.ant-layout-sider-collapsed .sidebar-logo-menu.ant-menu .sidebar-logo-menu-item.ant-menu-item {
+  margin-inline: 16px;
+  padding-inline: 6px !important;
 }
 
 .app-sidebar .ant-menu {

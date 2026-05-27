@@ -108,6 +108,16 @@ function Sidebar({ collapsed, onCollapse }) {
     ],
     [visibleNavItems],
   )
+  const logoMenuItems = useMemo(
+    () => [
+      {
+        key: 'logo',
+        className: 'sidebar-logo-menu-item',
+        label: <GitddnLogo compact={collapsed} />,
+      },
+    ],
+    [collapsed],
+  )
 
   const selectedOrganization =
     organizations.find((organization) => organization.key === organizationKey) ?? organizations[0]
@@ -134,9 +144,12 @@ function Sidebar({ collapsed, onCollapse }) {
     >
       <ConfigProvider theme={sidebarMenuTheme}>
         <Flex vertical className="sidebar-shell">
-          <Flex align="center" className="brand">
-            <GitddnLogo compact={collapsed} />
-          </Flex>
+          <Menu
+            className="sidebar-logo-menu"
+            mode="inline"
+            selectable={false}
+            items={logoMenuItems}
+          />
 
           <Dropdown
             menu={{
