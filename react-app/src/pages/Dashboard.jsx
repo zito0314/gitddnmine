@@ -1,102 +1,169 @@
 import {
-  AlertOutlined,
-  AuditOutlined,
-  CheckCircleOutlined,
-  PlusOutlined,
-  PullRequestOutlined,
-  ReloadOutlined,
-  SafetyCertificateOutlined,
+  ArrowRightOutlined,
+  RobotOutlined,
+  StarFilled,
 } from '../components/icons'
-import { Button, Card, Col, Flex, Input, List, Row, Space, Table, Tag, Typography } from 'antd'
+import { Avatar, Button, Card, Col, Flex, Input, List, Row, Space, Tabs, Tag, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   getDashboardAiPrompts,
   getDashboardAiResponse,
-  getDashboardMergeRequestsData,
   getDashboardNextUpItems,
-  getDashboardPipelinesData,
   getDashboardRepositoriesData,
   getDashboardRepositoryActivities,
-  getDashboardSummary,
 } from '../api/dashboard'
 import { useAuth } from '../auth/AuthContext'
-import { StatusTag, SummaryCard, PageHeader } from '../components/common'
+import { PageHeader, StatusTag } from '../components/common'
+import { GitddnLogo } from '../components/custom'
 import { UI_TEXT } from '../constants'
 
 const { Text } = Typography
 
-function getPipelineDuration(pipeline) {
-  return pipeline.summary?.find((item) => item.label === '실제 실행 시간')?.value ?? '-'
+const nextUpTabs = [
+  { key: 'all', label: '전체' },
+  { key: 'urgent', label: '긴급' },
+  { key: 'review', label: '승인 필요' },
+  { key: 'failed', label: '실패' },
+  { key: 'deployment', label: '운영이관' },
+  { key: 'security', label: '보안 검증' },
+]
+
+const activityTabs = [
+  { key: 'all', label: '전체' },
+  { key: 'repository', label: 'Repository' },
+  { key: 'project', label: 'Project' },
+]
+
+function getNextUpTabKey(item) {
+  const text = [item.type, item.status, item.title].join(' ').toLowerCase()
+
+  if (text.includes('pipeline') || text.includes('failed')) return 'failed'
+  if (text.includes('merge request') || text.includes('review')) return 'review'
+  if (text.includes('deployment')) return 'deployment'
+  if (text.includes('security')) return 'security'
+  return 'urgent'
 }
 
-function getFailedJobs(pipeline) {
-  return pipeline.jobs?.filter((job) => job === 'failed').length ?? 0
+function getActionLabel(item) {
+  if (item.type === 'Pipeline') return '실패 원인 보기'
+  if (item.type === 'Merge Request') return '리뷰하기'
+  if (item.type === 'Security') return '조치 가이드 보기'
+  return '요청 보기'
+}
+
+function getRepositoryInitials(name) {
+  return String(name ?? 'repo')
+    .split(/[-_ ]+/)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
 }
 
 function Dashboard() {
   const navigate = useNavigate()
   const auth = useAuth()
-  const summary = getDashboardSummary()
   const nextUp = getDashboardNextUpItems()
   const repositories = getDashboardRepositoriesData()
-  const mergeRequests = getDashboardMergeRequestsData()
-  const pipelines = getDashboardPipelinesData()
   const activities = getDashboardRepositoryActivities()
   const prompts = getDashboardAiPrompts()
-  const [aiPrompt, setAiPrompt] = useState('mr-approval')
+  const currentUserName = auth.currentUser?.name ?? 'Jito'
+  const [aiPrompt, setAiPrompt] = useState('pipeline-failure')
   const [aiInput, setAiInput] = useState('')
+  const [nextUpTab, setNextUpTab] = useState('all')
+  const [activityTab, setActivityTab] = useState('all')
+  const [quickAccessTab, setQuickAccessTab] = useState('starred')
   const aiResponse = getDashboardAiResponse(aiPrompt)
+  const filteredNextUp = nextUp.filter((item) => nextUpTab === 'all' || getNextUpTabKey(item) === nextUpTab)
+  const filteredActivities = activities.filter((activity) => {
+    if (activityTab === 'all') return true
+    if (activityTab === 'repository') return activity.targetType !== 'mergeRequest'
+    return activity.targetType === 'mergeRequest'
+  })
+  const quickAccessRepositories = quickAccessTab === 'starred'
+    ? repositories.filter((repository) => repository.favorite).concat(repositories.filter((repository) => !repository.favorite))
+    : repositories
+  const visiblePrompts = prompts.slice(0, 4)
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader
-        title={UI_TEXT.pages.dashboard.title}
-        description={UI_TEXT.pages.dashboard.description}
-        actions={[
-          <Button key="refresh" icon={<ReloadOutlined />}>
-            {UI_TEXT.actions.refresh}
-          </Button>,
-          <Button
-            key="create"
-            type="primary"
-            icon={<PlusOutlined />}
-            disabled={!auth.hasPermission('repository:create-request')}
-            onClick={() => navigate('/repositories/new')}
+    <Space direction="vertical" size={24} className="dashboard-home">
+      <PageHeader title={UI_TEXT.pages.dashboard.title} />
+
+      <Card className="dashboard-ai-panel" variant="borderless">
+        <Flex justify="space-between" align="flex-start" gap={24}>
+          <Space direction="vertical" size={16} className="dashboard-ai-content">
+            <GitddnLogo compact className="dashboard-ai-logo" />
+            <Space direction="vertical" size={4}>
+              <Text>안녕하세요, <Text strong className="dashboard-ai-user">{currentUserName}</Text>님! 오늘 처리할 업무를 분석했어요.</Text>
+              <Text strong className="dashboard-ai-summary">
+                승인 대기 MR 4건, Pipeline 실패 2건, 보안 이슈 1건이 있습니다. 어떤 것부터 살펴볼까요?
+              </Text>
+            </Space>
+            <Space wrap>
+              {visiblePrompts.map((prompt) => (
+                <Button key={prompt.key} size="small" className="dashboard-ai-chip" onClick={() => setAiPrompt(prompt.key)}>
+                  {prompt.label}
+                </Button>
+              ))}
+            </Space>
+          </Space>
+          <Button type="text" icon={<ArrowRightOutlined />} onClick={() => navigate(aiResponse.links[0]?.href ?? '/merge-requests')} />
+        </Flex>
+        <Flex className="dashboard-ai-thread" vertical gap={18}>
+          <Text className="dashboard-ai-loading">...</Text>
+          <Flex justify="flex-end">
+            <Tag className="dashboard-ai-question">{aiResponse.title}</Tag>
+          </Flex>
+          <Input
+            className="dashboard-ai-input"
+            placeholder="업무를 질문하거나 요청해 보세요..."
+            value={aiInput}
+            onChange={(event) => setAiInput(event.target.value)}
+            onPressEnter={() => aiInput.trim() && setAiPrompt(aiInput)}
+            suffix={<RobotOutlined />}
+          />
+        </Flex>
+      </Card>
+
+      <Row gutter={[16, 16]} align="top">
+        <Col xs={24} xl={17}>
+          <Card
+            className="dashboard-work-card"
+            title={
+              <Flex align="center" gap={8} wrap="wrap">
+                <Text strong>Next up</Text>
+                <Text type="secondary" className="dashboard-card-hint">AI 어시스턴트가 업무 우선순위에 따라 요약해두었어요.</Text>
+              </Flex>
+            }
+            extra={<Button type="link" size="small" onClick={() => navigate('/merge-requests')}>전체보기</Button>}
           >
-            {UI_TEXT.actions.createRepository}
-          </Button>,
-        ]}
-      />
-
-      <Row gutter={[12, 12]} className="summary-cards-row">
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title={UI_TEXT.summary.reviewRequiredMrs} value={summary.reviewRequiredMrs} tone="warning" icon={<PullRequestOutlined />} />
-        </Col>
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title={UI_TEXT.summary.myOpenMrs} value={summary.myOpenMrs} icon={<PullRequestOutlined />} />
-        </Col>
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title={UI_TEXT.summary.failedPipelines} value={summary.failedPipelines} tone="danger" icon={<AlertOutlined />} />
-        </Col>
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title={UI_TEXT.summary.securityBlocked} value={summary.securityBlocked} tone="danger" icon={<SafetyCertificateOutlined />} />
-        </Col>
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title={UI_TEXT.summary.pendingActions} value={summary.pendingActions} tone="warning" icon={<CheckCircleOutlined />} />
-        </Col>
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title={UI_TEXT.summary.todayAuditEvents} value={summary.todayAuditEvents} icon={<AuditOutlined />} />
-        </Col>
-      </Row>
-
-      <Row gutter={[16, 16]}>
-        <Col xs={24} xl={10}>
-          <Card title={UI_TEXT.sections.nextUp}>
+            <Tabs
+              activeKey={nextUpTab}
+              onChange={setNextUpTab}
+              items={nextUpTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
+            />
             <List
-              dataSource={nextUp}
+              dataSource={filteredNextUp.slice(0, 3)}
+              locale={{ emptyText: UI_TEXT.messages.empty.table }}
               renderItem={(item) => (
-                <List.Item onClick={() => navigate(item.href)} className="dashboard-action-item">
+                <List.Item
+                  className="dashboard-next-item"
+                  onClick={() => navigate(item.href)}
+                  actions={[
+                    <Button
+                      key="action"
+                      type={item.type === 'Merge Request' ? 'primary' : 'default'}
+                      size="small"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        navigate(item.href)
+                      }}
+                    >
+                      {getActionLabel(item)}
+                    </Button>,
+                  ]}
+                >
                   <List.Item.Meta
                     title={
                       <Flex align="center" gap={8} wrap="wrap">
@@ -104,12 +171,33 @@ function Dashboard() {
                         <StatusTag status={item.status} />
                       </Flex>
                     }
-                    description={
-                      <Space direction="vertical" size={2}>
-                        <Text type="secondary">{item.type} · {item.target}</Text>
-                        <Text type="secondary">{item.updatedAt}</Text>
-                      </Space>
-                    }
+                    description={`${item.target} · ${item.updatedAt}`}
+                  />
+                </List.Item>
+              )}
+            />
+          </Card>
+
+          <Card
+            className="dashboard-work-card"
+            title={<Text strong>최근 활동</Text>}
+            extra={<Button type="link" size="small" onClick={() => navigate('/audit')}>전체보기</Button>}
+          >
+            <Tabs
+              activeKey={activityTab}
+              onChange={setActivityTab}
+              items={activityTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
+            />
+            <List
+              className="dashboard-activity-list"
+              dataSource={filteredActivities.slice(0, 4)}
+              locale={{ emptyText: UI_TEXT.messages.empty.table }}
+              renderItem={(activity) => (
+                <List.Item className="dashboard-activity-item" onClick={() => navigate(activity.href)}>
+                  <List.Item.Meta
+                    avatar={<BadgeDot />}
+                    title={<Text>{activity.actor}님이 <Link to={activity.href}>{activity.message}</Link></Text>}
+                    description={`${activity.repositoryName} · ${activity.createdAt}`}
                   />
                 </List.Item>
               )}
@@ -117,52 +205,30 @@ function Dashboard() {
           </Card>
         </Col>
 
-        <Col xs={24} xl={8}>
-          <Card title={UI_TEXT.dashboardAi.title}>
-            <Space direction="vertical" size={12} style={{ width: '100%' }}>
-              <Text type="secondary">{UI_TEXT.dashboardAi.description}</Text>
-              <Space wrap>
-                {prompts.map((prompt) => (
-                  <Button key={prompt.key} size="small" type={aiPrompt === prompt.key ? 'primary' : 'default'} onClick={() => setAiPrompt(prompt.key)}>
-                    {prompt.label}
-                  </Button>
-                ))}
-              </Space>
-              <Flex gap={8}>
-                <Input
-                  placeholder={UI_TEXT.dashboardAi.inputPlaceholder}
-                  value={aiInput}
-                  onChange={(event) => setAiInput(event.target.value)}
-                  onPressEnter={() => aiInput.trim() && setAiPrompt(aiInput)}
-                />
-                <Button onClick={() => aiInput.trim() && setAiPrompt(aiInput)}>{UI_TEXT.actions.search}</Button>
-              </Flex>
-              <Card size="small">
-                <Space direction="vertical" size={6}>
-                  <Text strong>{aiResponse.title}</Text>
-                  <Text>{aiResponse.body}</Text>
-                  <Space wrap>
-                    {aiResponse.links.map((link) => <Link key={link.href} to={link.href}>{link.label}</Link>)}
-                  </Space>
-                </Space>
-              </Card>
-            </Space>
-          </Card>
-        </Col>
-
-        <Col xs={24} xl={6}>
-          <Card title={UI_TEXT.sections.myRepositories}>
+        <Col xs={24} xl={7}>
+          <Card className="dashboard-quick-card" title="Quick Access">
+            <Tabs
+              activeKey={quickAccessTab}
+              onChange={setQuickAccessTab}
+              type="card"
+              size="small"
+              items={[
+                { key: 'recent', label: 'Recently Viewed' },
+                { key: 'starred', label: 'Starred Repository' },
+              ]}
+            />
             <List
-              dataSource={repositories}
+              dataSource={quickAccessRepositories.slice(0, 7)}
               locale={{ emptyText: UI_TEXT.messages.empty.table }}
               renderItem={(repository) => (
                 <List.Item
-                  className="dashboard-list-item"
+                  className="dashboard-quick-item"
                   onClick={() => navigate(`/repositories/${repository.id}`)}
+                  actions={[<StarFilled key="star" className="dashboard-quick-star" />]}
                 >
                   <List.Item.Meta
+                    avatar={<Avatar size={24} className="dashboard-repo-avatar">{getRepositoryInitials(repository.name)}</Avatar>}
                     title={<Link to={`/repositories/${repository.id}`}>{repository.name}</Link>}
-                    description={<Text type="secondary">{repository.updatedAt}</Text>}
                   />
                 </List.Item>
               )}
@@ -170,91 +236,12 @@ function Dashboard() {
           </Card>
         </Col>
       </Row>
-
-      <Row gutter={[16, 16]}>
-        <Col xs={24} xl={12}>
-          <Card title={UI_TEXT.sections.mergeRequestsOverview}>
-            <List
-              dataSource={mergeRequests}
-              locale={{ emptyText: UI_TEXT.messages.empty.table }}
-              renderItem={(mergeRequest) => (
-                <List.Item
-                  className="dashboard-list-item"
-                  onClick={() => navigate(`/repositories/${mergeRequest.repo}/merge-requests/${mergeRequest.id}`)}
-                  actions={[<StatusTag key="review" status={mergeRequest.review} label={mergeRequest.reviewLabel} />]}
-                >
-                  <List.Item.Meta
-                    title={
-                      <Flex align="center" gap={8} wrap="wrap">
-                        <Tag>MR #{mergeRequest.id}</Tag>
-                        <Link to={`/repositories/${mergeRequest.repo}/merge-requests/${mergeRequest.id}`}>
-                          {mergeRequest.title}
-                        </Link>
-                      </Flex>
-                    }
-                    description={<Text type="secondary">{mergeRequest.repo}</Text>}
-                  />
-                </List.Item>
-              )}
-            />
-          </Card>
-        </Col>
-
-        <Col xs={24} xl={12}>
-          <Card title={UI_TEXT.sections.pipelineHealth}>
-            <Table
-              rowKey="id"
-              dataSource={pipelines}
-              pagination={false}
-              size="small"
-              onRow={(record) => ({
-                onClick: () => navigate(`/repositories/${record.repo}/pipelines/${record.id}`),
-                style: { cursor: 'pointer' },
-              })}
-              columns={[
-                { title: 'Pipeline ID', dataIndex: 'id', render: (id, record) => <Link to={`/repositories/${record.repo}/pipelines/${id}`}>#{id}</Link> },
-                { title: UI_TEXT.common.repository, dataIndex: 'repo' },
-                { title: UI_TEXT.tables.branch, dataIndex: 'branch', render: (value) => <Text code>{value}</Text> },
-                { title: UI_TEXT.common.status, dataIndex: 'status', render: (value) => <StatusTag status={value === 'finished' ? 'passed' : value} /> },
-                { title: UI_TEXT.tables.failedJobs, key: 'failedJobs', render: (_, record) => getFailedJobs(record) },
-                { title: UI_TEXT.tables.duration, key: 'duration', render: (_, record) => getPipelineDuration(record) },
-                { title: UI_TEXT.common.updated, dataIndex: 'updatedAt' },
-              ]}
-            />
-          </Card>
-        </Col>
-      </Row>
-
-      <Card title={UI_TEXT.sections.recentActivity}>
-        <List
-          dataSource={activities}
-          locale={{ emptyText: UI_TEXT.messages.empty.table }}
-          renderItem={(activity) => (
-            <List.Item
-              className="dashboard-list-item"
-              onClick={() => navigate(activity.href)}
-              actions={[<StatusTag key="status" status={activity.status} />]}
-            >
-              <List.Item.Meta
-                title={<Text strong>{activity.message}</Text>}
-                description={
-                  <Space wrap size={6}>
-                    <Text type="secondary">{activity.repositoryName}</Text>
-                    <Text type="secondary">·</Text>
-                    <Text type="secondary">{activity.actor}</Text>
-                    <Text type="secondary">·</Text>
-                    <Text type="secondary">{activity.type}</Text>
-                    <Text type="secondary">·</Text>
-                    <Text type="secondary">{activity.createdAt}</Text>
-                  </Space>
-                }
-              />
-            </List.Item>
-          )}
-        />
-      </Card>
     </Space>
   )
+}
+
+function BadgeDot() {
+  return <span className="dashboard-activity-dot" />
 }
 
 export default Dashboard

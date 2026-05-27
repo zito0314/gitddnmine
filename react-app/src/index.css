@@ -709,8 +709,204 @@ body {
   max-width: 260px;
 }
 
-.summary-cards-row {
+.dashboard-home {
+  width: min(100%, 1336px);
+  margin: 24px auto 0;
+}
+
+.dashboard-home .page-header {
+  margin-bottom: 8px;
+}
+
+.dashboard-ai-panel.ant-card {
+  overflow: hidden;
+  border-radius: 36px;
+  background:
+    radial-gradient(circle at 6% 8%, color-mix(in srgb, var(--gitddn-primary) 14%, transparent), transparent 30%),
+    linear-gradient(135deg, color-mix(in srgb, var(--gitddn-primary) 12%, var(--gitddn-card-bg)) 0%, var(--gitddn-content-bg) 64%, var(--gitddn-card-bg) 100%);
+}
+
+.dashboard-ai-panel .ant-card-body {
+  padding: 32px 34px 20px;
+}
+
+.dashboard-ai-content {
+  min-width: 0;
+}
+
+.dashboard-ai-logo.gitddn-logo {
+  color: var(--gitddn-text-primary);
+  --gitddn-logo-eye: var(--gitddn-card-bg);
+}
+
+.dashboard-ai-user {
+  color: var(--gitddn-primary);
+}
+
+.dashboard-ai-summary {
+  font-size: 16px;
+}
+
+.dashboard-ai-chip.ant-btn {
+  border: 0;
+  background: color-mix(in srgb, var(--gitddn-card-bg) 82%, transparent);
+}
+
+.dashboard-ai-thread {
+  margin-top: 34px;
+}
+
+.dashboard-ai-loading {
+  color: var(--gitddn-primary);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.dashboard-ai-question.ant-tag {
+  max-width: 100%;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 10px 10px 0 10px;
+  background: var(--gitddn-card-bg);
+  color: var(--gitddn-text-primary);
+  font-size: 14px;
+  white-space: normal;
+}
+
+.dashboard-ai-input.ant-input-affix-wrapper {
+  height: 48px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--gitddn-card-bg);
+  box-shadow: none;
+}
+
+.dashboard-work-card.ant-card,
+.dashboard-quick-card.ant-card {
+  border-color: var(--gitddn-border-color);
+  border-radius: 14px;
+}
+
+.dashboard-work-card + .dashboard-work-card {
+  margin-top: 16px;
+}
+
+.dashboard-work-card .ant-card-head,
+.dashboard-quick-card .ant-card-head {
+  min-height: 48px;
+  border-bottom: 0;
+}
+
+.dashboard-card-hint {
+  color: var(--gitddn-primary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.dashboard-work-card .ant-tabs-nav,
+.dashboard-quick-card .ant-tabs-nav {
+  margin-bottom: 0;
+}
+
+.dashboard-work-card .ant-tabs-tab {
+  padding: 8px 0;
+}
+
+.dashboard-next-item.ant-list-item {
+  min-height: 78px;
+  padding: 16px 0 !important;
+  cursor: pointer;
+}
+
+.dashboard-next-item.ant-list-item:hover,
+.dashboard-quick-item.ant-list-item:hover,
+.dashboard-activity-item.ant-list-item:hover {
+  background: color-mix(in srgb, var(--gitddn-primary) 5%, transparent);
+}
+
+.dashboard-next-item .ant-list-item-meta-title {
   margin-bottom: 4px;
+}
+
+.dashboard-quick-card .ant-card-body {
+  padding-top: 8px;
+}
+
+.dashboard-quick-card .ant-tabs-nav-list {
+  width: 100%;
+}
+
+.dashboard-quick-card .ant-tabs-tab {
+  flex: 1;
+  justify-content: center;
+  margin: 0 !important;
+}
+
+.dashboard-quick-card .ant-tabs-tab-btn {
+  width: 100%;
+  text-align: center;
+}
+
+.dashboard-quick-item.ant-list-item {
+  padding: 9px 0 !important;
+  cursor: pointer;
+}
+
+.dashboard-quick-item .ant-list-item-meta {
+  align-items: center;
+}
+
+.dashboard-quick-item .ant-list-item-meta-title {
+  margin: 0;
+}
+
+.dashboard-quick-item .ant-list-item-meta-title a {
+  color: var(--gitddn-text-primary);
+  font-weight: 700;
+}
+
+.dashboard-repo-avatar.ant-avatar {
+  background: color-mix(in srgb, var(--gitddn-primary) 72%, #ffffff);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.dashboard-quick-star {
+  color: var(--gitddn-primary);
+  font-size: 18px;
+}
+
+.dashboard-activity-list {
+  position: relative;
+}
+
+.dashboard-activity-list::before {
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 5px;
+  width: 1px;
+  background: var(--gitddn-border-color);
+  content: '';
+}
+
+.dashboard-activity-item.ant-list-item {
+  padding: 12px 0 !important;
+  cursor: pointer;
+}
+
+.dashboard-activity-dot {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-top: 6px;
+  border: 2px solid var(--gitddn-card-bg);
+  border-radius: 50%;
+  background: var(--gitddn-sidebar-text);
+  box-shadow: 0 0 0 1px var(--gitddn-border-color);
 }
 
 .repository-overview-hero h2.ant-typography {

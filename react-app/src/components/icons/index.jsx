@@ -6,6 +6,7 @@ import appstoreOutlinedSvg from './svg/AppstoreOutlined.svg?raw'
 import archiveOutlinedSvg from './svg/ArchiveOutlined.svg?raw'
 import arrowLeftBarOutlinedSvg from './svg/ArrowLeftBarOutlined.svg?raw'
 import arrowRightBarOutlinedSvg from './svg/ArrowRightBarOutlined.svg?raw'
+import arrowRightOutlinedSvg from './svg/ArrowRightOutlined.svg?raw'
 import auditOutlinedSvg from './svg/AuditOutlined.svg?raw'
 import bellOutlinedSvg from './svg/BellOutlined.svg?raw'
 import bgColorsOutlinedSvg from './svg/BgColorsOutlined.svg?raw'
@@ -64,6 +65,7 @@ import pullRequestClosedOutlinedSvg from './svg/PullRequestClosedOutlined.svg?ra
 import pullRequestOutlinedSvg from './svg/PullRequestOutlined.svg?raw'
 import questionCircleOutlinedSvg from './svg/QuestionCircleOutlined.svg?raw'
 import reloadOutlinedSvg from './svg/ReloadOutlined.svg?raw'
+import robotOutlinedSvg from './svg/RobotOutlined.svg?raw'
 import rocketOutlinedSvg from './svg/RocketOutlined.svg?raw'
 import safetyCertificateOutlinedSvg from './svg/SafetyCertificateOutlined.svg?raw'
 import saveOutlinedSvg from './svg/SaveOutlined.svg?raw'
@@ -103,6 +105,7 @@ export const AppstoreOutlined = createIcon(appstoreOutlinedSvg)
 export const ArchiveOutlined = createIcon(archiveOutlinedSvg)
 export const ArrowLeftBarOutlined = createIcon(arrowLeftBarOutlinedSvg)
 export const ArrowRightBarOutlined = createIcon(arrowRightBarOutlinedSvg)
+export const ArrowRightOutlined = createIcon(arrowRightOutlinedSvg)
 export const AuditOutlined = createIcon(auditOutlinedSvg)
 export const BellOutlined = createIcon(bellOutlinedSvg)
 export const BgColorsOutlined = createIcon(bgColorsOutlinedSvg)
@@ -161,6 +164,7 @@ export const PullRequestClosedOutlined = createIcon(pullRequestClosedOutlinedSvg
 export const PullRequestOutlined = createIcon(pullRequestOutlinedSvg)
 export const QuestionCircleOutlined = createIcon(questionCircleOutlinedSvg)
 export const ReloadOutlined = createIcon(reloadOutlinedSvg)
+export const RobotOutlined = createIcon(robotOutlinedSvg)
 export const RocketOutlined = createIcon(rocketOutlinedSvg)
 export const SafetyCertificateOutlined = createIcon(safetyCertificateOutlinedSvg)
 export const SaveOutlined = createIcon(saveOutlinedSvg)
