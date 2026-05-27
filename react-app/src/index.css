@@ -193,8 +193,8 @@ body {
 .app-sidebar .sidebar-logo-menu.ant-menu .sidebar-logo-menu-item.ant-menu-item {
   height: 46px;
   line-height: 46px;
-  margin-inline: 28px;
-  padding-inline: 8px !important;
+  margin: 20px;
+  padding: 0 !important;
   cursor: default;
 }
 
@@ -203,8 +203,8 @@ body {
 }
 
 .ant-layout-sider-collapsed .sidebar-logo-menu.ant-menu .sidebar-logo-menu-item.ant-menu-item {
-  margin-inline: 16px;
-  padding-inline: 6px !important;
+  margin: 20px;
+  padding: 0 !important;
 }
 
 .app-sidebar .ant-menu {
