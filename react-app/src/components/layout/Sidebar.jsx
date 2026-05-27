@@ -1,14 +1,16 @@
 import {
   AuditOutlined,
-  CodeOutlined,
-  DashboardOutlined,
   DeploymentUnitOutlined,
   DownOutlined,
+  GitCommitOutlined,
+  GitRepositoryOutlined,
   GlobalOutlined,
-  PullRequestOutlined,
-  SafetyCertificateOutlined,
+  GoBackOutlined,
+  HomeOutlined,
+  LockOutlined,
+  MergeRequestOutlined,
 } from '../icons'
-import { Badge, Button, ConfigProvider, Dropdown, Flex, Layout, Menu, Typography } from 'antd'
+import { Button, ConfigProvider, Dropdown, Flex, Layout, Menu, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getHeaderOrganizations } from '../../api/common'
@@ -34,53 +36,47 @@ const sidebarMenuTheme = {
       itemSelectedColor: 'var(--gitddn-sidebar-selected-text)',
       subMenuItemBg: 'var(--gitddn-sidebar-submenu-bg)',
       groupTitleColor: 'var(--gitddn-sidebar-group-text)',
-      itemHeight: 40,
-      itemBorderRadius: 8,
-      itemMarginBlock: 4,
-      itemMarginInline: 8,
-      iconMarginInlineEnd: 10,
+      itemHeight: 74,
+      itemBorderRadius: 18,
+      itemMarginBlock: 2,
+      itemMarginInline: 22,
+      iconMarginInlineEnd: 16,
     },
   },
 }
 
 const navItems = [
-  { key: '/', icon: <DashboardOutlined />, label: UI_TEXT.navigation.dashboard },
-  { key: '/repositories', icon: <CodeOutlined />, label: UI_TEXT.navigation.repositories },
+  { key: '/', route: '/', icon: <HomeOutlined />, label: UI_TEXT.navigation.dashboard },
+  { key: '/repositories', route: '/repositories', icon: <GitRepositoryOutlined />, label: 'Git 저장소' },
+  { key: '/merge-requests', route: '/merge-requests', icon: <MergeRequestOutlined />, label: UI_TEXT.navigation.mergeRequests },
   {
-    key: '/merge-requests',
-    icon: <PullRequestOutlined />,
-    label: UI_TEXT.navigation.mergeRequests,
-    badge: 6,
+    key: '/activity',
+    route: '/audit',
+    icon: <GitCommitOutlined />,
+    label: 'Activity',
   },
-  { key: '/deployment-transfer', icon: <DeploymentUnitOutlined />, label: UI_TEXT.navigation.deploymentTransfer, badge: 3 },
   {
     key: '/security',
-    icon: <SafetyCertificateOutlined />,
-    label: UI_TEXT.navigation.security,
-    badge: 2,
-    badgeStatus: 'warning',
+    route: '/security',
+    icon: <LockOutlined />,
+    label: <MenuLabelWithChevron label={UI_TEXT.navigation.security} />,
   },
-  { key: '/audit', icon: <AuditOutlined />, label: UI_TEXT.navigation.audit },
+  { key: '/deployment-transfer', route: '/deployment-transfer', icon: <DeploymentUnitOutlined />, label: UI_TEXT.navigation.deploymentTransfer },
+  {
+    key: '/audit',
+    route: '/audit',
+    icon: <AuditOutlined />,
+    label: <MenuLabelWithChevron label="Audit Log" />,
+  },
 ]
 
-function withBadge(item) {
-  const { badge, badgeStatus, ...menuItem } = item
-
-  return {
-    ...menuItem,
-    label: (
-      <Flex align="center" justify="space-between" gap={8}>
-        <span>{item.label}</span>
-        {badge ? (
-          <Badge
-            count={badge}
-            color={badgeStatus === 'warning' ? '#9e6a00' : '#256ef4'}
-            size="small"
-          />
-        ) : null}
-      </Flex>
-    ),
-  }
+function MenuLabelWithChevron({ label }) {
+  return (
+    <Flex align="center" justify="space-between" gap={8} className="sidebar-menu-label">
+      <span>{label}</span>
+      <DownOutlined className="sidebar-menu-chevron" />
+    </Flex>
+  )
 }
 
 function Sidebar({ collapsed, onCollapse }) {
@@ -111,9 +107,11 @@ function Sidebar({ collapsed, onCollapse }) {
   }, [location.pathname])
 
   const selectedKeys = useMemo(() => {
+    if (location.pathname === '/audit') return ['/audit']
+
     const match = visibleNavItems
       .filter((item) => item.key !== '/')
-      .find((item) => location.pathname.startsWith(item.key))
+      .find((item) => location.pathname.startsWith(item.route))
 
     return [match?.key ?? '/']
   }, [location.pathname, visibleNavItems])
@@ -141,44 +139,62 @@ function Sidebar({ collapsed, onCollapse }) {
       width={236}
       className="app-sidebar"
     >
-      <Flex align="center" className="brand">
-        <GitddnLogo compact={collapsed} />
-      </Flex>
-
       <ConfigProvider theme={sidebarMenuTheme}>
-        <Dropdown
-          menu={{
-            items: organizationItems,
-            selectable: true,
-            selectedKeys: selectedOrganization?.key ? [selectedOrganization.key] : [],
-            onClick: handleOrganizationChange,
-          }}
-          trigger={['click']}
-        >
-          <Button
-            className="sidebar-organization-button"
-            icon={<GlobalOutlined />}
-            type="text"
-            block={!collapsed}
-          >
-            {!collapsed ? (
-              <>
-                <span>{selectedOrganization?.label}</span>
-                <DownOutlined />
-              </>
-            ) : null}
-          </Button>
-        </Dropdown>
+        <Flex vertical className="sidebar-shell">
+          <Flex align="center" className="brand">
+            <GitddnLogo compact={collapsed} />
+          </Flex>
 
-        {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
-        {!collapsed ? <Text className="nav-title">{UI_TEXT.common.workspace}</Text> : null}
-        <Menu
-          className="global-menu"
-          mode="inline"
-          selectedKeys={selectedKeys}
-          items={visibleNavItems.map(withBadge)}
-          onClick={({ key }) => navigate(key)}
-        />
+          <Dropdown
+            menu={{
+              items: organizationItems,
+              selectable: true,
+              selectedKeys: selectedOrganization?.key ? [selectedOrganization.key] : [],
+              onClick: handleOrganizationChange,
+            }}
+            trigger={['click']}
+          >
+            <Button
+              className="sidebar-organization-button"
+              icon={<GlobalOutlined />}
+              type="text"
+              block={!collapsed}
+            >
+              {!collapsed ? (
+                <>
+                  <span>{selectedOrganization?.label}</span>
+                  <DownOutlined />
+                </>
+              ) : null}
+            </Button>
+          </Dropdown>
+
+          <Flex vertical className="sidebar-navigation">
+            {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
+            {!collapsed ? <Text className="nav-title">{UI_TEXT.common.workspace}</Text> : null}
+            <Menu
+              className="global-menu"
+              mode="inline"
+              selectedKeys={selectedKeys}
+              items={visibleNavItems}
+              onClick={({ key }) => {
+                const nextItem = visibleNavItems.find((item) => item.key === key)
+                navigate(nextItem?.route ?? key)
+              }}
+            />
+          </Flex>
+
+          <Flex className="sidebar-footer">
+            <Button
+              type="text"
+              className="sidebar-collapse-button"
+              icon={<GoBackOutlined />}
+              onClick={() => onCollapse(!collapsed)}
+            >
+              {!collapsed ? '사이드바 접기' : null}
+            </Button>
+          </Flex>
+        </Flex>
       </ConfigProvider>
     </Sider>
   )
