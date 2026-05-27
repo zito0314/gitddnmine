@@ -47,6 +47,7 @@ import {
 import { getPipelineJobs, getPipelineStages } from '../api/pipelines'
 import { getRepositoryById } from '../api/repositories'
 import { StatusTag, SummaryCard } from '../components/common'
+import { CodePreview } from '../components/custom'
 
 const { Paragraph, Text, Title } = Typography
 
@@ -548,9 +549,9 @@ function ChangesTab({ changes, files }) {
               </Flex>
             ),
             children: (
-              <Paragraph code className="mr-diff-preview">
+              <CodePreview variant="diff" className="mr-diff-preview">
                 {file.diff.map((line) => `${line}\n`)}
-              </Paragraph>
+              </CodePreview>
             ),
           }))}
         />

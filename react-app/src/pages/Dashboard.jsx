@@ -49,7 +49,7 @@ function Dashboard() {
   const aiResponse = getDashboardAiResponse(aiPrompt)
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         title={UI_TEXT.pages.dashboard.title}
         description={UI_TEXT.pages.dashboard.description}
@@ -105,7 +105,7 @@ function Dashboard() {
                       </Flex>
                     }
                     description={
-                      <Space orientation="vertical" size={2}>
+                      <Space direction="vertical" size={2}>
                         <Text type="secondary">{item.type} · {item.target}</Text>
                         <Text type="secondary">{item.updatedAt}</Text>
                       </Space>
@@ -119,7 +119,7 @@ function Dashboard() {
 
         <Col xs={24} xl={8}>
           <Card title={UI_TEXT.dashboardAi.title}>
-            <Space orientation="vertical" size={12} style={{ width: '100%' }}>
+            <Space direction="vertical" size={12} style={{ width: '100%' }}>
               <Text type="secondary">{UI_TEXT.dashboardAi.description}</Text>
               <Space wrap>
                 {prompts.map((prompt) => (
@@ -138,7 +138,7 @@ function Dashboard() {
                 <Button onClick={() => aiInput.trim() && setAiPrompt(aiInput)}>{UI_TEXT.actions.search}</Button>
               </Flex>
               <Card size="small">
-                <Space orientation="vertical" size={6}>
+                <Space direction="vertical" size={6}>
                   <Text strong>{aiResponse.title}</Text>
                   <Text>{aiResponse.body}</Text>
                   <Space wrap>

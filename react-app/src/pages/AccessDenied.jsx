@@ -12,7 +12,7 @@ export default function AccessDenied() {
   return (
     <div className="access-denied-page">
       <Card className="access-denied-card">
-        <Space orientation="vertical" size={16}>
+        <Space direction="vertical" size={16}>
           <Title level={2}>{UI_TEXT.accessDenied.title}</Title>
           <Paragraph type="secondary">{UI_TEXT.accessDenied.description}</Paragraph>
           <Space wrap>

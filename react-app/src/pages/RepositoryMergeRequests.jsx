@@ -103,7 +103,7 @@ export default function RepositoryMergeRequests() {
       dataIndex: 'title',
       minWidth: 280,
       render: (title, record) => (
-        <Space orientation="vertical" size={2}>
+        <Space direction="vertical" size={2}>
           <Link to={`/repositories/${repositoryId}/merge-requests/${record.id}`}>{title}</Link>
           <Text type="secondary">{record.summary}</Text>
         </Space>
@@ -114,7 +114,7 @@ export default function RepositoryMergeRequests() {
       key: 'branch',
       width: 220,
       render: (_, record) => (
-        <Space orientation="vertical" size={2}>
+        <Space direction="vertical" size={2}>
           <Text code>{record.source}</Text>
           <Text type="secondary">→ {record.target}</Text>
         </Space>
@@ -134,7 +134,7 @@ export default function RepositoryMergeRequests() {
       render: (_, record) => {
         const percent = record.required ? Math.round((record.approved / record.required) * 100) : 0
         return (
-          <Space orientation="vertical" size={2} style={{ width: '100%' }}>
+          <Space direction="vertical" size={2} style={{ width: '100%' }}>
             <Text>
               {record.approved}/{record.required} approved
             </Text>
@@ -187,7 +187,7 @@ export default function RepositoryMergeRequests() {
   ]
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         eyebrow={repository?.name}
         title={UI_TEXT.pages.repositoryMergeRequests.title}

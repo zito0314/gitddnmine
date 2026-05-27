@@ -36,7 +36,7 @@ export default function RepositoryActivity() {
   })
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader eyebrow={repository.name} title={UI_TEXT.pages.repositoryActivity.title} description={UI_TEXT.pages.repositoryActivity.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Today Activities" value={summary.today} icon={<AuditOutlined />} /></Col>
@@ -64,7 +64,7 @@ export default function RepositoryActivity() {
                 <List.Item>
                   <List.Item.Meta
                     title={<Space wrap><Text strong>{activity.actor}</Text><StatusTag status={activity.type?.startsWith('security') ? 'warning' : 'passed'} label={activity.type} /></Space>}
-                    description={<Space orientation="vertical" size={2}><Text>{activity.message}</Text><Text type="secondary">{activity.createdAt} · target {link ? <Link to={link}>{activity.targetId}</Link> : activity.targetId}</Text></Space>}
+                    description={<Space direction="vertical" size={2}><Text>{activity.message}</Text><Text type="secondary">{activity.createdAt} · target {link ? <Link to={link}>{activity.targetId}</Link> : activity.targetId}</Text></Space>}
                   />
                 </List.Item>
               ),

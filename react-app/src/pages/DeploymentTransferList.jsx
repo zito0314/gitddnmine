@@ -64,7 +64,7 @@ export default function DeploymentTransferList() {
   })
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader title={UI_TEXT.pages.deploymentTransfer.title} description={UI_TEXT.pages.deploymentTransfer.description} actions={[
         <Button key="new" type="primary" icon={<PlusOutlined />}>{UI_TEXT.actions.newTransferRequest}</Button>,
         <Button key="export" icon={<DownloadOutlined />}>{UI_TEXT.actions.export}</Button>,

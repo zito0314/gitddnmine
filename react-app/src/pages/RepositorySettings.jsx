@@ -23,7 +23,7 @@ export default function RepositorySettings() {
   const branchProtectionTemplate = getBranchProtectionTemplateForRepository(repositoryId)
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         eyebrow={repository.name}
         title={UI_TEXT.pages.repositorySettings.title}

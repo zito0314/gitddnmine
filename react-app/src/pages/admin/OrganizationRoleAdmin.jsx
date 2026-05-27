@@ -40,7 +40,7 @@ const roleModel = [
 
 export default function OrganizationRoleAdmin() {
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         title="Organization & Roles"
         description="조직, 사용자, 팀, Role mapping, GitLab role mapping, 화면 권한 mapping을 관리합니다."

@@ -3,6 +3,7 @@ function GitddnLogo({ compact = false, size = 'default', className = '' }) {
     .filter(Boolean)
     .join(' ')
 
+  // Brand artwork is a product-specific SVG asset, so it stays as custom UI.
   if (compact) {
     return (
       <svg className={classes} viewBox="0 0 27 25" fill="none" aria-label="gitddn">

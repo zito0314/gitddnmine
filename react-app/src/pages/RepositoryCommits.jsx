@@ -33,7 +33,7 @@ export default function RepositoryCommits() {
   })
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader eyebrow={repository.name} title={UI_TEXT.pages.repositoryCommits.title} description={UI_TEXT.pages.repositoryCommits.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Total Commits" value={summary.total} icon={<CodeOutlined />} /></Col>
@@ -53,7 +53,7 @@ export default function RepositoryCommits() {
         />
         <DataTable rowKey="id" dataSource={filtered} columns={[
           { title: 'Commit', dataIndex: 'sha', render: (value) => <Text code>{value}</Text> },
-          { title: 'Message', dataIndex: 'title', render: (value, record) => <Space orientation="vertical" size={2}><Text strong>{value}</Text><Text type="secondary">{record.description}</Text></Space> },
+          { title: 'Message', dataIndex: 'title', render: (value, record) => <Space direction="vertical" size={2}><Text strong>{value}</Text><Text type="secondary">{record.description}</Text></Space> },
           { title: 'Author', dataIndex: 'author' },
           { title: 'Branch', dataIndex: 'branch', render: (value) => <Text code>{value}</Text> },
           { title: 'Changed files', dataIndex: 'changedFiles', render: (value) => value ?? '-' },

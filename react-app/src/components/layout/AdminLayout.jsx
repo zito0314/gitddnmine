@@ -3,7 +3,7 @@ import { App as AntdApp, Avatar, Breadcrumb, Button, Flex, Layout, Menu, Space, 
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthContext'
 import { UI_TEXT } from '../../constants'
-import GitddnLogo from '../common/GitddnLogo'
+import { GitddnLogo } from '../custom'
 
 const { Content, Header, Sider } = Layout
 const { Text } = Typography

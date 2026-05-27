@@ -144,7 +144,7 @@ export default function SecurityList() {
       render: (mrId, record) => {
         const mergeRequest = mergeRequestMap.get(String(mrId))
         return (
-          <Space orientation="vertical" size={2}>
+          <Space direction="vertical" size={2}>
             <Link to={`/repositories/${record.repo}/merge-requests/${mrId}`}>
               !{mrId} {mergeRequest?.title ?? record.mrTitle}
             </Link>
@@ -209,7 +209,7 @@ export default function SecurityList() {
   ]
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         title={UI_TEXT.pages.security.title}
         description={UI_TEXT.pages.security.description}

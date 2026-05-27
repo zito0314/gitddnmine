@@ -27,6 +27,7 @@ import {
   getAuditRelatedIds,
 } from '../api/audit'
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { CodePreview } from '../components/custom'
 import { UI_TEXT } from '../constants'
 
 const { Paragraph, Text } = Typography
@@ -130,7 +131,7 @@ function AuditLog() {
       key: 'event',
       minWidth: 240,
       render: (_, record) => (
-        <Space orientation="vertical" size={2}>
+        <Space direction="vertical" size={2}>
           <Text strong>{record.title}</Text>
           <Text type="secondary">{record.eventCode}</Text>
         </Space>
@@ -176,7 +177,7 @@ function AuditLog() {
   ]
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         title={UI_TEXT.pages.audit.title}
         description={UI_TEXT.pages.audit.description}
@@ -313,7 +314,7 @@ function AuditDrawer({ log, onClose }) {
   return (
     <Drawer open={Boolean(log)} onClose={onClose} title="Audit Detail" width={560}>
       {log ? (
-        <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+        <Space direction="vertical" size={16} style={{ width: '100%' }}>
           <Descriptions column={1} bordered size="small">
             <Descriptions.Item label="Audit ID">{log.id}</Descriptions.Item>
             <Descriptions.Item label="Event code">{log.eventCode}</Descriptions.Item>
@@ -345,16 +346,16 @@ function AuditDrawer({ log, onClose }) {
           </Card>
 
           <Card size="small" title="Raw metadata">
-            <Paragraph code className="audit-json-preview">
+            <CodePreview variant="json" className="audit-json-preview">
               {JSON.stringify({ ...log, related: ids }, null, 2)}
-            </Paragraph>
+            </CodePreview>
           </Card>
 
           <Card size="small" title="Event Context">
             <Timeline
               items={relatedEvents.map((event) => ({
                 content: (
-                  <Space orientation="vertical" size={2}>
+                  <Space direction="vertical" size={2}>
                     <Text>{event.title}</Text>
                     <Text type="secondary">{event.time} · {event.message}</Text>
                   </Space>

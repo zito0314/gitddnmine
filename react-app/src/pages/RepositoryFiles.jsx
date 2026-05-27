@@ -40,7 +40,7 @@ export default function RepositoryFiles() {
   ]
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader eyebrow={repository.name} title={UI_TEXT.pages.repositoryFiles.title} description={UI_TEXT.pages.repositoryFiles.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Total Files" value={files.filter((file) => file.type === 'File').length} /></Col>
@@ -59,7 +59,7 @@ export default function RepositoryFiles() {
         <Col xs={24} lg={17}><Card><DataTable rowKey="id" dataSource={filteredFiles} columns={columns} /></Card></Col>
       </Row>
       <Drawer title={preview?.name ?? 'File preview'} open={Boolean(preview)} onClose={() => setPreview(null)} width={520}>
-        <Space orientation="vertical" size={12}>
+        <Space direction="vertical" size={12}>
           <Text type="secondary">{UI_TEXT.messages.demo.filePreviewPlaceholder}</Text>
           <Text code>{preview?.path}</Text>
           <Text>Last commit: {preview?.lastCommit}</Text>

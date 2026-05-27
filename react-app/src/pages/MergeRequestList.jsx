@@ -48,7 +48,7 @@ export default function MergeRequestList() {
   })
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader title={UI_TEXT.pages.mergeRequests.title} description={UI_TEXT.pages.mergeRequests.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}><SummaryCard title={UI_TEXT.summary.totalMrs} value={summary.total} icon={<PullRequestOutlined />} /></Col>
@@ -72,7 +72,7 @@ export default function MergeRequestList() {
         />
         <DataTable rowKey="id" dataSource={filtered} columns={[
           { title: UI_TEXT.tables.mrId, dataIndex: 'id', render: (id, record) => <Link to={`/repositories/${record.repo}/merge-requests/${id}`}>!{id}</Link> },
-          { title: `${UI_TEXT.tables.title} / ${UI_TEXT.common.description}`, dataIndex: 'title', render: (value, record) => <Space orientation="vertical" size={2}><Link to={`/repositories/${record.repo}/merge-requests/${record.id}`}>{value}</Link><Text type="secondary">{record.summary}</Text></Space> },
+          { title: `${UI_TEXT.tables.title} / ${UI_TEXT.common.description}`, dataIndex: 'title', render: (value, record) => <Space direction="vertical" size={2}><Link to={`/repositories/${record.repo}/merge-requests/${record.id}`}>{value}</Link><Text type="secondary">{record.summary}</Text></Space> },
           { title: UI_TEXT.common.repository, dataIndex: 'repo', render: (value) => <Link to={`/repositories/${value}`}>{repoMap.get(value)?.name ?? value}</Link> },
           { title: 'Source → Target branch', key: 'branch', render: (_, record) => <Text code>{record.source} → {record.target}</Text> },
           { title: UI_TEXT.common.author, dataIndex: 'author' },

@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
 import { useAuth } from '../../auth/AuthContext'
 import { UI_TEXT } from '../../constants'
-import GitddnLogo from '../common/GitddnLogo'
+import { GitddnLogo } from '../custom'
 import RepositoryContextSidebar from './RepositoryContextSidebar'
 
 const { Sider } = Layout

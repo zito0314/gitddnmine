@@ -133,7 +133,7 @@ export default function DeploymentTransferCreate() {
   }
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         eyebrow={repository?.name}
         title={UI_TEXT.deploymentTransferCreate.title}
@@ -250,7 +250,7 @@ export default function DeploymentTransferCreate() {
         </Col>
 
         <Col xs={24} xl={9}>
-          <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+          <Space direction="vertical" size={16} style={{ width: '100%' }}>
             <Card title={UI_TEXT.deploymentTransferCreate.gatePreview}>
               <List
                 dataSource={preview.gates}

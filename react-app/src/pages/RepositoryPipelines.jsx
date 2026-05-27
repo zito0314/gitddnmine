@@ -150,7 +150,7 @@ export default function RepositoryPipelines() {
         if (!mergeRequest) return <Text type="secondary">-</Text>
 
         return (
-          <Space orientation="vertical" size={2}>
+          <Space direction="vertical" size={2}>
             <Link to={`/repositories/${repositoryId}/merge-requests/${mrId}`}>!{mrId} {mergeRequest.title}</Link>
             <Text type="secondary">{mergeRequest.reviewLabel}</Text>
           </Space>
@@ -172,7 +172,7 @@ export default function RepositoryPipelines() {
       render: (jobs) => {
         const summary = getJobSummary(jobs)
         return (
-          <Space orientation="vertical" size={2}>
+          <Space direction="vertical" size={2}>
             <Badge status={summary.details.includes('failed') ? 'error' : 'success'} text={summary.label} />
             {summary.details ? <Text type="secondary">{summary.details}</Text> : null}
           </Space>
@@ -205,7 +205,7 @@ export default function RepositoryPipelines() {
   ]
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         eyebrow={repository?.name}
         title={UI_TEXT.pages.repositoryPipelines.title}

@@ -1,4 +1,4 @@
-import { Card, Space, Tag, Typography } from 'antd'
+import { Card, ColorPicker, Space, Tag, Typography } from 'antd'
 import { normalizeThemeToken } from '../../theme/tokenUtils'
 
 const { Text, Title } = Typography
@@ -20,7 +20,7 @@ export function ThemePreviewCard({ title, theme }) {
           <Tag>{token.colorBgContainer || 'container'}</Tag>
           <Tag>{token.colorBorder || 'border'}</Tag>
         </Space>
-        <div
+        <Space
           className="theme-preview-swatch"
           style={{
             background: token.colorBgContainer,
@@ -29,9 +29,9 @@ export function ThemePreviewCard({ title, theme }) {
             borderRadius: token.borderRadius,
           }}
         >
-          <span style={{ background: token.colorPrimary }} />
+          <ColorPicker value={token.colorPrimary} disabled size="small" />
           <Text style={{ color: token.colorText }}>Ant Design token preview</Text>
-        </div>
+        </Space>
       </Space>
     </Card>
   )

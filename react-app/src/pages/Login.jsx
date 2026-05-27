@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { getMockUsers } from '../api/auth'
 import { useAuth } from '../auth/AuthContext'
-import GitddnLogo from '../components/common/GitddnLogo'
+import { GitddnLogo } from '../components/custom'
 import { UI_TEXT } from '../constants'
 
 const { Paragraph, Text, Title } = Typography
@@ -47,7 +47,7 @@ export default function Login() {
     <div className="login-page">
       <Row className="login-shell" gutter={[24, 24]} align="middle">
         <Col xs={24} lg={12}>
-          <Space orientation="vertical" size={18}>
+          <Space direction="vertical" size={18}>
             <GitddnLogo size="large" className="login-brand-logo" />
             <Paragraph className="login-copy">{UI_TEXT.login.description}</Paragraph>
             <Space wrap>
@@ -59,7 +59,7 @@ export default function Login() {
         </Col>
         <Col xs={24} lg={12}>
           <Card className="login-card">
-            <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+            <Space direction="vertical" size={16} style={{ width: '100%' }}>
               <div>
                 <Title level={3}>{UI_TEXT.auth.signIn}</Title>
                 <Text type="secondary">{UI_TEXT.login.formDescription}</Text>
@@ -74,11 +74,11 @@ export default function Login() {
                 </Form.Item>
                 <Button type="primary" htmlType="submit" block>{UI_TEXT.auth.signIn}</Button>
               </Form>
-              <Space orientation="vertical" size={8} style={{ width: '100%' }}>
+              <Space direction="vertical" size={8} style={{ width: '100%' }}>
                 <Text strong>{UI_TEXT.login.demoAccounts}</Text>
                 {users.map((user) => (
                   <Card key={user.id} size="small" hoverable onClick={() => fillDemoAccount(user)}>
-                    <Space orientation="vertical" size={2}>
+                    <Space direction="vertical" size={2}>
                       <Text strong>{user.roleLabel}</Text>
                       <Text type="secondary">{user.email} / {user.password}</Text>
                       <Text type="secondary">{user.department}</Text>

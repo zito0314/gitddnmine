@@ -14,7 +14,7 @@ export default function AdminDashboard() {
     { title: '운영이관 정책', items: getDeploymentPolicies() },
   ]
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader title={UI_TEXT.adminPages.admin.title} description={UI_TEXT.adminPages.admin.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}><SummaryCard title={UI_TEXT.adminSummary.organizations} value={summary.organizations} icon={<TeamOutlined />} /></Col>

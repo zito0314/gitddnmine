@@ -29,7 +29,7 @@ export default function RepositoryBranches() {
   })
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader eyebrow={repository.name} title={UI_TEXT.pages.repositoryBranches.title} description={UI_TEXT.pages.repositoryBranches.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Total Branches" value={summary.total} icon={<BranchesOutlined />} /></Col>

@@ -22,7 +22,7 @@ export default function MergeRequestCreate() {
   }
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader eyebrow={repository.name} title="New Merge Request" description="Source branch와 Target branch를 선택하고 MR 정보를 입력하는 화면" />
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={16}>
@@ -47,7 +47,7 @@ export default function MergeRequestCreate() {
         </Col>
         <Col xs={24} lg={8}>
           <Card title="Preview">
-            <Space orientation="vertical">
+            <Space direction="vertical">
               <Title level={4}>{values.title || 'Merge request title'}</Title>
               <Text code>{values.source || 'source'} → {values.target || repository.defaultBranch}</Text>
               <Text>Reviewer: {(values.reviewer ?? []).join(', ') || '-'}</Text>

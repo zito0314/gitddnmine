@@ -22,6 +22,7 @@ import { Link, useParams } from 'react-router-dom'
 import { getRepositoryById } from '../api/repositories'
 import { getPipelineOverview } from '../api/pipelines'
 import { StatusTag, SummaryCard } from '../components/common'
+import { CodePreview } from '../components/custom'
 
 const { Paragraph, Text, Title } = Typography
 
@@ -66,7 +67,7 @@ function PipelineDetail() {
     : null
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <Card className="pipeline-detail-hero">
         <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
           <div>
@@ -132,7 +133,7 @@ function PipelineDetail() {
           items={stages.map((stage) => ({
             title: stage.name,
             description: (
-              <Space orientation="vertical" size={4}>
+              <Space direction="vertical" size={4}>
                 <StatusTag status={normalizeStatus(stage.status)} />
                 <Text type="secondary">{stage.jobs?.length ?? 0} jobs</Text>
               </Space>
@@ -199,9 +200,9 @@ function PipelineDetail() {
       </Row>
 
       <Card title="Pipeline Logs Preview">
-        <Paragraph code className="pipeline-log-preview">
+        <CodePreview variant="log" className="pipeline-log-preview">
           {logs.map((line) => `${line}\n`)}
-        </Paragraph>
+        </CodePreview>
       </Card>
     </Space>
   )

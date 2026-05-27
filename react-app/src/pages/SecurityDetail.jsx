@@ -71,7 +71,7 @@ function SecurityDetail() {
   const gates = ['Secret Detection', 'SAST', 'Dependency Scan', 'Container Scan', 'License Policy', 'Security Approval']
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <Card className="security-detail-hero">
         <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
           <div>
@@ -210,7 +210,7 @@ function SecurityDetail() {
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={10}>
           <Card title="Recommended Actions">
-            <Space orientation="vertical" size={10}>
+            <Space direction="vertical" size={10}>
               {[
                 'Remove hardcoded token and rotate exposed credentials.',
                 'Upgrade vulnerable dependency to the approved version.',
@@ -232,7 +232,7 @@ function SecurityDetail() {
               items={activities.map((activity) => ({
                 icon: <SafetyCertificateOutlined />,
                 content: (
-                  <Space orientation="vertical" size={2}>
+                  <Space direction="vertical" size={2}>
                     <Text>{activity.message}</Text>
                     <Text type="secondary">{activity.actor} · {activity.createdAt}</Text>
                   </Space>

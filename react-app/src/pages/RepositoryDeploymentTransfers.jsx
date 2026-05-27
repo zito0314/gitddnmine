@@ -21,7 +21,7 @@ export default function RepositoryDeploymentTransfers() {
   const filtered = transfers.filter((item) => [item.id, item.mrId, item.requestedBy, item.targetEnvironment, item.policyDecision].join(' ').toLowerCase().includes(search.trim().toLowerCase()))
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader eyebrow={repository.name} title={UI_TEXT.pages.repositoryDeploymentTransfer.title} description={UI_TEXT.pages.repositoryDeploymentTransfer.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}><SummaryCard title={UI_TEXT.summary.totalRequests} value={summary.total} /></Col>

@@ -52,7 +52,7 @@ export default function PipelineList() {
   })
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader title={UI_TEXT.pages.pipelines.title} description={UI_TEXT.pages.pipelines.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}><SummaryCard title={UI_TEXT.summary.totalPipelines} value={summary.total} icon={<PlayCircleOutlined />} /></Col>

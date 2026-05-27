@@ -30,7 +30,7 @@ export default function DeploymentTransferDetail() {
   const transferBase = repositoryId ? `${base}/deployment-transfer` : '/deployment-transfer'
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader eyebrow={repository?.name} title={transfer.id} description="운영이관 요청의 승인, 검증, 배포 계획, Audit 이력을 확인합니다." />
       <Card>
         <Descriptions column={{ xs: 1, md: 2, xl: 3 }} bordered>
@@ -110,7 +110,7 @@ export default function DeploymentTransferDetail() {
         </Col>
         <Col xs={24} xl={12}>
           <Card title="Activity / Audit History">
-            <Timeline items={transfer.activities.map((item) => ({ dot: <RocketOutlined />, children: <Space orientation="vertical" size={2}><Space><StatusTag status={item.type} label={item.type} /><Text strong>{item.actor}</Text></Space><Text>{item.message}</Text><Text type="secondary">{item.createdAt}</Text></Space> }))} />
+            <Timeline items={transfer.activities.map((item) => ({ dot: <RocketOutlined />, children: <Space direction="vertical" size={2}><Space><StatusTag status={item.type} label={item.type} /><Text strong>{item.actor}</Text></Space><Text>{item.message}</Text><Text type="secondary">{item.createdAt}</Text></Space> }))} />
           </Card>
         </Col>
       </Row>

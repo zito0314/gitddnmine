@@ -20,7 +20,7 @@ export default function RepositoryCreate() {
   }
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader title="Create Repository" description="신규 Repository 생성 요청 정보를 입력하는 화면" />
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={16}>
@@ -43,7 +43,7 @@ export default function RepositoryCreate() {
                   </Form.Item>
                   {selectedTemplate ? (
                     <Card size="small" title="Selected policy summary">
-                      <Space orientation="vertical">
+                      <Space direction="vertical">
                         {selectedTemplate.summary.map((item) => <Text key={item}>- {item}</Text>)}
                       </Space>
                     </Card>
@@ -58,7 +58,7 @@ export default function RepositoryCreate() {
         </Col>
         <Col xs={24} lg={8}>
           <Card title="Preview">
-            <Space orientation="vertical">
+            <Space direction="vertical">
               <Title level={4}>{values.name || 'Repository name'}</Title>
               <Text type="secondary">{values.description || '설명이 여기에 표시됩니다.'}</Text>
               <Text>Path: {values.path || '-'}</Text>
