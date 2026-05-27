@@ -3,7 +3,6 @@ import {
   CodeOutlined,
   DeploymentUnitOutlined,
   FileTextOutlined,
-  HistoryOutlined,
   NodeIndexOutlined,
   PullRequestOutlined,
   SafetyCertificateOutlined,
@@ -27,7 +26,6 @@ const navItems = [
   { key: 'tags', label: UI_TEXT.repositoryNavigation.tags, icon: <TagsOutlined /> },
   { key: 'security', label: UI_TEXT.repositoryNavigation.security, icon: <SafetyCertificateOutlined /> },
   { key: 'deployment-transfer', label: UI_TEXT.repositoryNavigation.deploymentTransfer, icon: <DeploymentUnitOutlined /> },
-  { key: 'activity', label: UI_TEXT.repositoryNavigation.activity, icon: <HistoryOutlined /> },
   { key: 'settings', label: UI_TEXT.repositoryNavigation.settings, icon: <SettingOutlined /> },
 ]
 
