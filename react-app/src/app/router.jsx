@@ -9,7 +9,6 @@ import Login from '../pages/Login'
 import AccessDenied from '../pages/AccessDenied'
 import RepositoryList from '../pages/RepositoryList'
 import RepositoryCreate from '../pages/RepositoryCreate'
-import RepositoryDetail from '../pages/RepositoryDetail'
 import RepositoryFiles from '../pages/RepositoryFiles'
 import RepositoryMergeRequests from '../pages/RepositoryMergeRequests'
 import RepositoryPipelines from '../pages/RepositoryPipelines'
@@ -77,7 +76,7 @@ export const routes = [
         path: 'repositories/:repositoryId',
         element: <RepositoryLayout />,
         children: [
-          { index: true, element: <RepositoryDetail /> },
+          { index: true, element: <Navigate to="files" replace /> },
           { path: 'files', element: <RepositoryFiles /> },
           { path: 'merge-requests', element: <RepositoryMergeRequests /> },
           { path: 'merge-requests/new', element: <MergeRequestCreate /> },

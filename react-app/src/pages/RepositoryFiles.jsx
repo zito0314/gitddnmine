@@ -9,6 +9,7 @@ import {
   getRepositoryFileTree,
 } from '../api/repositories'
 import { DataTable, FilterBar, PageHeader, SummaryCard } from '../components/common'
+import RepositoryHero from '../components/repository/RepositoryHero'
 import { UI_TEXT } from '../constants'
 
 const { Text, Title } = Typography
@@ -41,6 +42,7 @@ export default function RepositoryFiles() {
 
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
+      <RepositoryHero repository={repository} />
       <PageHeader eyebrow={repository.name} title={UI_TEXT.pages.repositoryFiles.title} description={UI_TEXT.pages.repositoryFiles.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Total Files" value={files.filter((file) => file.type === 'File').length} /></Col>

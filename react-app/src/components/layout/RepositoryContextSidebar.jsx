@@ -1,5 +1,4 @@
 import {
-  AppstoreOutlined,
   BranchesOutlined,
   CodeOutlined,
   DeploymentUnitOutlined,
@@ -20,7 +19,6 @@ import { UI_TEXT } from '../../constants'
 const { Text } = Typography
 
 const navItems = [
-  { key: '', label: UI_TEXT.repositoryNavigation.overview, icon: <AppstoreOutlined /> },
   { key: 'files', label: UI_TEXT.repositoryNavigation.files, icon: <FileTextOutlined /> },
   { key: 'merge-requests', label: UI_TEXT.repositoryNavigation.mergeRequests, icon: <PullRequestOutlined /> },
   { key: 'pipelines', label: UI_TEXT.repositoryNavigation.pipelines, icon: <BranchesOutlined /> },

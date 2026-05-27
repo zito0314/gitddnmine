@@ -117,6 +117,7 @@ function Sidebar({ collapsed, onCollapse }) {
           mode="inline"
           selectable={false}
           items={logoMenuItems}
+          onClick={() => navigate('/')}
         />
 
         <Dropdown

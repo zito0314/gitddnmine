@@ -7,44 +7,14 @@ import {
   GitlabOutlined,
   PullRequestOutlined,
   SafetyCertificateOutlined,
-  StarFilled,
-  StarOutlined,
 } from '../components/icons'
 import { Alert, Card, Col, Descriptions, Flex, List, Row, Space, Table, Timeline, Typography } from 'antd'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getRepositoryOverview } from '../api/repositories'
 import { DataTable, StatusTag, SummaryCard } from '../components/common'
+import RepositoryHero from '../components/repository/RepositoryHero'
 
-const { Paragraph, Text, Title } = Typography
-
-function RepositoryHero({ repository }) {
-  return (
-    <Card className="repository-overview-hero">
-      <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
-        <div>
-          <Space size={8} align="center">
-            {repository.favorite ? <StarFilled className="repo-favorite-icon" /> : <StarOutlined />}
-            <Title level={2}>{repository.name}</Title>
-          </Space>
-          <Paragraph type="secondary">{repository.description}</Paragraph>
-        </div>
-        <Space wrap>
-          <StatusTag status={repository.status} />
-          <StatusTag status={repository.pipelineStatus} label={`Pipeline ${repository.pipelineStatus}`} />
-          <StatusTag status={repository.securityStatus} label={`Security ${repository.securityStatus}`} />
-        </Space>
-      </Flex>
-
-      <Descriptions className="repository-overview-meta" size="small" column={{ xs: 1, md: 2, xl: 4 }}>
-        <Descriptions.Item label="Group / Project path">{repository.group}</Descriptions.Item>
-        <Descriptions.Item label="Visibility">{repository.visibility}</Descriptions.Item>
-        <Descriptions.Item label="Default branch">{repository.defaultBranch}</Descriptions.Item>
-        <Descriptions.Item label="Current user role">{repository.role}</Descriptions.Item>
-        <Descriptions.Item label="Last updated">{repository.updatedAt}</Descriptions.Item>
-      </Descriptions>
-    </Card>
-  )
-}
+const { Paragraph, Text } = Typography
 
 function RepositoryDetail() {
   const { repositoryId } = useParams()
