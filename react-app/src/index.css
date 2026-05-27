@@ -173,10 +173,10 @@ body {
 
 .nav-title {
   display: block;
-  padding: 0 38px 12px;
-  color: var(--gitddn-neutral-10);
+  padding: 0 20px 8px 0;
+  color: var(--gitddn-sidebar-group-text);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 800;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -188,6 +188,8 @@ body {
 .app-sidebar .sidebar-logo-menu.ant-menu {
   padding: 0;
   margin: 0;
+  border-bottom: 0;
+  border-inline-end: 0;
 }
 
 .app-sidebar .sidebar-logo-menu.ant-menu .sidebar-logo-menu-item.ant-menu-item {
@@ -219,6 +221,7 @@ body {
 .app-sidebar .ant-menu {
   background: transparent;
   padding: 0;
+  border-inline-end: 0;
 }
 
 .app-sidebar .ant-menu .ant-menu-item .ant-menu-title-content {
