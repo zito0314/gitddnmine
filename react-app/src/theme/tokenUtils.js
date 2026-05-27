@@ -59,7 +59,7 @@ export function applyThemeCssVariables(theme) {
     '--gitddn-primary-soft': token.colorPrimaryBg || token.controlItemBgActive,
     '--gitddn-bg': bg,
     '--gitddn-app-bg': bg,
-    '--gitddn-content-bg': bg,
+    '--gitddn-content-bg': '#ffffff',
     '--gitddn-surface': token.colorBgContainer || token.colorBgBase,
     '--gitddn-card-bg': token.colorBgContainer,
     '--gitddn-line': border,

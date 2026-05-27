@@ -4,7 +4,7 @@
   --gitddn-primary-soft: #ecf2fe;
   --gitddn-bg: #f4f5f6;
   --gitddn-app-bg: #f4f5f6;
-  --gitddn-content-bg: #f4f5f6;
+  --gitddn-content-bg: #ffffff;
   --gitddn-surface: #ffffff;
   --gitddn-card-bg: #ffffff;
   --gitddn-line: #e6e8ea;
@@ -41,7 +41,7 @@
   --gitddn-primary-soft: #111a2c;
   --gitddn-bg: #000000;
   --gitddn-app-bg: #000000;
-  --gitddn-content-bg: #000000;
+  --gitddn-content-bg: #ffffff;
   --gitddn-surface: #141414;
   --gitddn-card-bg: #141414;
   --gitddn-line: #303030;
@@ -242,6 +242,7 @@ body {
 
 .app-main {
   min-width: 0;
+  background: var(--gitddn-content-bg);
 }
 
 .top-header {
