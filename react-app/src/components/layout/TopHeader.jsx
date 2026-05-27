@@ -2,6 +2,8 @@ import {
   BellOutlined,
   CodeOutlined,
   HomeOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
   MoonOutlined,
   PlusOutlined,
   QuestionCircleOutlined,
@@ -184,7 +186,7 @@ function buildHeaderLocation(pathname, repository) {
   }
 }
 
-function TopHeader() {
+function TopHeader({ collapsed, onToggleSidebar }) {
   const navigate = useNavigate()
   const location = useLocation()
   const auth = useAuth()
@@ -326,6 +328,13 @@ function TopHeader() {
   return (
     <Header className="top-header">
       <Flex align="center" gap={12} className="header-left">
+        <Button
+          aria-label={collapsed ? '사이드바 펼치기' : '사이드바 접기'}
+          type="text"
+          className="header-sidebar-toggle"
+          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          onClick={onToggleSidebar}
+        />
         <Breadcrumb
           className="header-breadcrumb"
           separator="›"

@@ -4,7 +4,6 @@ import {
   DownOutlined,
   GitRepositoryOutlined,
   GlobalOutlined,
-  GoBackOutlined,
   HomeOutlined,
   LockOutlined,
   MergeRequestOutlined,
@@ -166,17 +165,6 @@ function Sidebar({ collapsed, onCollapse }) {
                 navigate(nextItem?.route ?? key)
               }}
             />
-          </Flex>
-
-          <Flex className="sidebar-footer">
-            <Button
-              type="text"
-              className="sidebar-collapse-button"
-              icon={<GoBackOutlined />}
-              onClick={() => onCollapse(!collapsed)}
-            >
-              {!collapsed ? '사이드바 접기' : null}
-            </Button>
           </Flex>
         </Flex>
       </ConfigProvider>
