@@ -126,24 +126,40 @@ body {
   height: 25px;
 }
 
-.sidebar-organization-button.ant-btn {
+.sidebar-organization-button.ant-btn-group {
   width: calc(100% - 44px);
   height: 38px;
   margin: 0 22px 22px;
-  padding-inline: 12px;
-  justify-content: flex-start;
-  color: var(--gitddn-sidebar-text);
-  background: var(--gitddn-sidebar-selected-bg);
-  border: 1px solid var(--gitddn-border-color);
-  border-radius: 8px;
 }
 
-.sidebar-organization-button.ant-btn:hover {
+.sidebar-organization-button.ant-btn-group > .ant-btn {
+  height: 38px;
+  color: var(--gitddn-sidebar-text);
+  background: var(--gitddn-sidebar-selected-bg);
+  border-color: var(--gitddn-border-color);
+}
+
+.sidebar-organization-button.ant-btn-group > .ant-btn:first-child {
+  min-width: 0;
+  flex: 1;
+  justify-content: flex-start;
+  padding-inline: 12px;
+  border-start-start-radius: 8px;
+  border-end-start-radius: 8px;
+}
+
+.sidebar-organization-button.ant-btn-group > .ant-btn:last-child {
+  flex: 0 0 auto;
+  border-start-end-radius: 8px;
+  border-end-end-radius: 8px;
+}
+
+.sidebar-organization-button.ant-btn-group > .ant-btn:hover {
   color: var(--gitddn-sidebar-hover-text);
   background: var(--gitddn-sidebar-hover-bg);
 }
 
-.sidebar-organization-button.ant-btn > span:not(.anticon) {
+.sidebar-organization-button.ant-btn-group > .ant-btn:first-child > span:not(.anticon) {
   min-width: 0;
   flex: 1;
   overflow: hidden;
@@ -152,16 +168,18 @@ body {
   white-space: nowrap;
 }
 
-.sidebar-organization-button.ant-btn .anticon:last-child {
-  flex: 0 0 auto;
-  margin-inline-start: auto;
-}
-
-.ant-layout-sider-collapsed .sidebar-organization-button.ant-btn {
+.ant-layout-sider-collapsed .sidebar-organization-button.ant-btn-group {
   width: 40px;
   margin-inline: 16px;
-  padding-inline: 0;
+}
+
+.ant-layout-sider-collapsed .sidebar-organization-button.ant-btn-group > .ant-btn:first-child {
   justify-content: center;
+  padding-inline: 0;
+}
+
+.ant-layout-sider-collapsed .sidebar-organization-button.ant-btn-group > .ant-btn:last-child {
+  display: none;
 }
 
 .gitddn-logo-large {
