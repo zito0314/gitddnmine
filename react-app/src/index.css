@@ -191,11 +191,20 @@ body {
 }
 
 .app-sidebar .sidebar-logo-menu.ant-menu .sidebar-logo-menu-item.ant-menu-item {
-  height: 46px;
-  line-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  height: auto;
+  line-height: 1;
   margin: 20px;
   padding: 0 !important;
   cursor: default;
+}
+
+.app-sidebar .sidebar-logo-menu.ant-menu .sidebar-logo-menu-item.ant-menu-item .ant-menu-title-content {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .app-sidebar .sidebar-logo-menu.ant-menu .sidebar-logo-menu-item.ant-menu-item:hover {
