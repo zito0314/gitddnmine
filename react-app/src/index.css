@@ -14,6 +14,7 @@
   --gitddn-muted: #6d7882;
   --gitddn-text-secondary: #6d7882;
   --gitddn-subtle: #8a949e;
+  --gitddn-neutral-10: #7c7e87;
   --gitddn-header-bg: #ffffff;
   --gitddn-sidebar-bg: #fafafa;
   --gitddn-sidebar-text: rgba(0, 0, 0, 0.88);
@@ -50,6 +51,7 @@
   --gitddn-muted: rgba(255, 255, 255, 0.65);
   --gitddn-text-secondary: rgba(255, 255, 255, 0.65);
   --gitddn-subtle: rgba(255, 255, 255, 0.45);
+  --gitddn-neutral-10: #eaeaec;
   --gitddn-header-bg: #141414;
   --gitddn-sidebar-bg: #001529;
   --gitddn-sidebar-text: rgba(255, 255, 255, 0.65);
@@ -172,10 +174,10 @@ body {
 .nav-title {
   display: block;
   padding: 0 38px 12px;
-  color: var(--gitddn-sidebar-group-text);
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1.2;
+  color: var(--gitddn-neutral-10);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
   text-transform: uppercase;
 }
 
@@ -184,8 +186,8 @@ body {
 }
 
 .app-sidebar .sidebar-logo-menu.ant-menu {
-  padding-top: 28px;
-  margin-bottom: 18px;
+  padding: 0;
+  margin: 0;
 }
 
 .app-sidebar .sidebar-logo-menu.ant-menu .sidebar-logo-menu-item.ant-menu-item {

@@ -69,6 +69,7 @@ export function applyThemeCssVariables(theme) {
     '--gitddn-muted': token.colorTextSecondary,
     '--gitddn-text-secondary': token.colorTextSecondary,
     '--gitddn-subtle': token.colorTextTertiary || token.colorTextDescription,
+    '--gitddn-neutral-10': token['neutral.10'] || menu.groupTitleColor || token.colorTextTertiary || token.colorTextDescription,
     '--gitddn-header-bg': token.colorBgContainer,
     '--gitddn-sidebar-bg': layout.lightSiderBg || menu.itemBg || token.colorBgContainer,
     '--gitddn-sidebar-text': menu.itemColor || token.colorTextSecondary,

@@ -97,17 +97,6 @@ function Sidebar({ collapsed, onCollapse }) {
 
     return [match?.key ?? '/']
   }, [location.pathname, visibleNavItems])
-  const workspaceMenuItems = useMemo(
-    () => [
-      {
-        key: 'workspace',
-        type: 'group',
-        label: UI_TEXT.common.workspace,
-        children: visibleNavItems,
-      },
-    ],
-    [visibleNavItems],
-  )
   const logoMenuItems = useMemo(
     () => [
       {
@@ -177,11 +166,12 @@ function Sidebar({ collapsed, onCollapse }) {
 
           <Flex vertical className="sidebar-navigation">
             {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
+            {!collapsed ? <span className="nav-title">{UI_TEXT.common.workspace}</span> : null}
             <Menu
               className="global-menu"
               mode="inline"
               selectedKeys={selectedKeys}
-              items={workspaceMenuItems}
+              items={visibleNavItems}
               onClick={({ key }) => {
                 const nextItem = visibleNavItems.find((item) => item.key === key)
                 navigate(nextItem?.route ?? key)
