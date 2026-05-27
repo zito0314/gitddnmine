@@ -9,11 +9,12 @@ import {
   SettingOutlined,
   TagsOutlined,
 } from '../icons'
-import { Avatar, Card, Menu, Typography } from 'antd'
+import { Card, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
 import { UI_TEXT } from '../../constants'
+import RepositoryAvatar from '../repository/RepositoryAvatar'
 
 const { Text } = Typography
 
@@ -72,9 +73,7 @@ function RepositoryContextSidebar({ repositoryId }) {
       <Card size="small" className="sidebar-repository-summary">
         <Card.Meta
           avatar={(
-            <Avatar size={32} className="sidebar-repository-avatar">
-              {repository.name?.charAt(0)?.toUpperCase() ?? 'R'}
-            </Avatar>
+            <RepositoryAvatar repository={repository} size={32} className="sidebar-repository-avatar" />
           )}
           title={(
             <Text strong ellipsis className="sidebar-repository-name">

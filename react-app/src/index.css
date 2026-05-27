@@ -578,11 +578,13 @@ body {
   min-width: 0;
 }
 
-.sidebar-repository-avatar {
+.repository-avatar.ant-avatar {
   flex: 0 0 auto;
-  color: #ffffff;
-  background: var(--gitddn-primary);
   font-weight: 800;
+}
+
+.sidebar-repository-avatar {
+  font-size: 12px;
 }
 
 .sidebar-repository-copy {
@@ -889,9 +891,7 @@ body {
 }
 
 .dashboard-repo-avatar.ant-avatar {
-  background: color-mix(in srgb, var(--gitddn-primary) 72%, #ffffff);
   font-size: 11px;
-  font-weight: 700;
 }
 
 .dashboard-quick-star {
@@ -972,9 +972,7 @@ body {
 }
 
 .repository-files-avatar {
-  flex: 0 0 auto;
-  background: var(--gitddn-primary);
-  font-weight: 800;
+  font-size: 13px;
 }
 
 .repository-branch-select {
@@ -1171,13 +1169,9 @@ body {
 }
 
 .repository-list-thumbnail.ant-avatar {
-  flex: 0 0 auto;
   width: 40px;
   height: 40px;
   border-radius: 8px;
-  background: var(--gitddn-primary-soft);
-  color: var(--gitddn-primary-strong);
-  font-weight: 700;
   line-height: 40px;
 }
 

@@ -1,5 +1,5 @@
 import { StarFilled } from '../components/icons'
-import { Avatar, Button, Card, Col, Flex, List, Row, Space, Tabs, Typography } from 'antd'
+import { Button, Card, Col, Flex, List, Row, Space, Tabs, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -12,6 +12,7 @@ import {
 import { useAuth } from '../auth/AuthContext'
 import { PageHeader, StatusTag } from '../components/common'
 import { DashboardAiChat } from '../components/custom'
+import RepositoryAvatar from '../components/repository/RepositoryAvatar'
 import { UI_TEXT } from '../constants'
 
 const { Text } = Typography
@@ -46,15 +47,6 @@ function getActionLabel(item) {
   if (item.type === 'Merge Request') return '리뷰하기'
   if (item.type === 'Security') return '조치 가이드 보기'
   return '요청 보기'
-}
-
-function getRepositoryInitials(name) {
-  return String(name ?? 'repo')
-    .split(/[-_ ]+/)
-    .map((part) => part[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
 }
 
 function Dashboard() {
@@ -191,7 +183,7 @@ function Dashboard() {
                   actions={[<StarFilled key="star" className="dashboard-quick-star" />]}
                 >
                   <List.Item.Meta
-                    avatar={<Avatar size={24} className="dashboard-repo-avatar">{getRepositoryInitials(repository.name)}</Avatar>}
+                    avatar={<RepositoryAvatar repository={repository} size={24} className="dashboard-repo-avatar" />}
                     title={<Link to={`/repositories/${repository.id}`}>{repository.name}</Link>}
                   />
                 </List.Item>

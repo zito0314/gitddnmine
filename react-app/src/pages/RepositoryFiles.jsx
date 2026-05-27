@@ -50,15 +50,12 @@ import {
 } from '../api/repositories'
 import { getDeploymentTransfersByRepositoryId } from '../api/deploymentTransfers'
 import { StatusTag } from '../components/common'
+import RepositoryAvatar from '../components/repository/RepositoryAvatar'
 import { UI_TEXT } from '../constants'
 
 const { Paragraph, Text, Title } = Typography
 
 const downloadOptions = ['zip', 'tar.gz', 'tar.bz2', 'tar']
-
-function getRepositoryInitial(repository) {
-  return repository?.name?.charAt(0)?.toUpperCase() ?? 'R'
-}
 
 function getMetricValue(repository, label, fallback) {
   return repository.metrics?.find((metric) => metric.label === label)?.value ?? fallback
@@ -183,7 +180,7 @@ export default function RepositoryFiles() {
     <Space className="repository-files-page" direction="vertical" size={20}>
       <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
         <Space align="start" size={12} className="repository-files-title">
-          <Avatar shape="square" className="repository-files-avatar">{getRepositoryInitial(repository)}</Avatar>
+          <RepositoryAvatar repository={repository} className="repository-files-avatar" />
           <Title level={2}>{repository.name}</Title>
         </Space>
         <Tooltip title={repository.favorite ? '즐겨찾기 저장소' : '즐겨찾기 추가'}>

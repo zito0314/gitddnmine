@@ -2,12 +2,13 @@ import {
   StarFilled,
   StarOutlined,
 } from '../components/icons'
-import { Alert, Avatar, Button, Flex, List, Modal, Space, Tabs, Typography } from 'antd'
+import { Alert, Button, Flex, List, Modal, Space, Tabs, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories } from '../api/repositories'
 import { useAuth } from '../auth/AuthContext'
 import { FilterBar, PageHeader, StatusTag } from '../components/common'
+import RepositoryAvatar from '../components/repository/RepositoryAvatar'
 import { UI_TEXT } from '../constants'
 import useRepositoryFavorites from '../hooks/useRepositoryFavorites'
 import { sortRepositoriesByFavorite } from '../utils/favorites'
@@ -38,10 +39,6 @@ const VISIBILITY_OPTIONS = [
 
 function getRejectReason(repository) {
   return repository.rejectReason || repository.rejectionReason || '반려 사유가 등록되지 않았습니다.'
-}
-
-function getRepositoryInitial(repository) {
-  return repository.name?.trim()?.[0]?.toUpperCase() ?? '?'
 }
 
 export default function RepositoryList() {
@@ -268,9 +265,7 @@ export default function RepositoryList() {
             />
             <List.Item.Meta
               avatar={(
-                <Avatar shape="square" className="repository-list-thumbnail">
-                  {getRepositoryInitial(repository)}
-                </Avatar>
+                <RepositoryAvatar repository={repository} className="repository-list-thumbnail" />
               )}
               title={(
                 <Flex align="center" gap={8} wrap="wrap">

@@ -1,6 +1,7 @@
 import { StarFilled, StarOutlined } from '../icons'
 import { Card, Descriptions, Flex, Space, Typography } from 'antd'
 import { StatusTag } from '../common'
+import RepositoryAvatar from './RepositoryAvatar'
 
 const { Paragraph, Title } = Typography
 
@@ -10,6 +11,7 @@ function RepositoryHero({ repository }) {
       <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
         <div>
           <Space size={8} align="center">
+            <RepositoryAvatar repository={repository} size={48} className="repository-overview-avatar" />
             {repository.favorite ? <StarFilled className="repo-favorite-icon" /> : <StarOutlined />}
             <Title level={2}>{repository.name}</Title>
           </Space>
