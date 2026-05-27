@@ -1,16 +1,12 @@
 import {
-  AlertOutlined,
-  CheckCircleOutlined,
-  CodeOutlined,
-  DatabaseOutlined,
   StarFilled,
   StarOutlined,
 } from '../components/icons'
-import { Alert, Button, Col, Flex, List, Row, Space, Typography } from 'antd'
+import { Alert, Button, Flex, List, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getRepositories, getRepositorySummary } from '../api/repositories'
-import { FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
+import { getRepositories } from '../api/repositories'
+import { FilterBar, PageHeader, StatusTag } from '../components/common'
 import { UI_TEXT } from '../constants'
 import useRepositoryFavorites from '../hooks/useRepositoryFavorites'
 import { sortRepositoriesByFavorite } from '../utils/favorites'
@@ -34,7 +30,6 @@ export default function RepositoryList() {
   const navigate = useNavigate()
   const { favorites, toggleFavorite } = useRepositoryFavorites()
   const allRepos = useMemo(() => getRepositories(), [])
-  const summary = useMemo(() => getRepositorySummary(), [])
 
   // 언어 옵션을 데이터에서 추출
   const languageOptions = useMemo(() => {
@@ -93,41 +88,6 @@ export default function RepositoryList() {
         title={UI_TEXT.pages.repositories.title}
         description={UI_TEXT.pages.repositories.description}
       />
-
-      {/* 요약 카드 */}
-      <Row gutter={[12, 12]} className="summary-cards-row">
-        <Col xs={24} sm={12} lg={6}>
-          <SummaryCard
-            title={UI_TEXT.summary.totalRepositories}
-            value={summary.total}
-            icon={<DatabaseOutlined />}
-          />
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <SummaryCard
-            title={UI_TEXT.summary.active}
-            value={summary.active}
-            icon={<CheckCircleOutlined style={{ color: '#228738' }} />}
-            tone="success"
-          />
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <SummaryCard
-            title={UI_TEXT.summary.reviewRequired}
-            value={summary.reviewRequired}
-            icon={<CodeOutlined style={{ color: '#9e6a00' }} />}
-            tone="warning"
-          />
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <SummaryCard
-            title={UI_TEXT.summary.securityBlocked}
-            value={summary.securityBlocked}
-            icon={<AlertOutlined style={{ color: '#de3412' }} />}
-            tone="error"
-          />
-        </Col>
-      </Row>
 
       {/* 필터 */}
       <FilterBar
