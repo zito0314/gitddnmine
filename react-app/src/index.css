@@ -612,6 +612,15 @@ body {
   border-inline-end: 0;
 }
 
+.ant-layout-sider-collapsed .repository-context-sidebar {
+  padding-bottom: 8px;
+}
+
+.ant-layout-sider-collapsed .repository-context-sidebar .nav-title,
+.ant-layout-sider-collapsed .sidebar-repository-summary.ant-card {
+  display: none;
+}
+
 .placeholder-page {
   min-height: calc(100vh - 132px);
 }

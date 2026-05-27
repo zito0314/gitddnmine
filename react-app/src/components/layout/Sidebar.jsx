@@ -167,7 +167,7 @@ function Sidebar({ collapsed, onCollapse }) {
         </Dropdown>
 
         <Flex vertical className="sidebar-navigation">
-          {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
+          {repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
           {!collapsed ? <span className="nav-title">{UI_TEXT.common.workspace}</span> : null}
           <Menu
             className="global-menu"
