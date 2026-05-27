@@ -3,12 +3,15 @@ import {
   CodeOutlined,
   DashboardOutlined,
   DeploymentUnitOutlined,
+  DownOutlined,
+  GlobalOutlined,
   PullRequestOutlined,
   SafetyCertificateOutlined,
 } from '../icons'
-import { Badge, Flex, Layout, Menu, Typography } from 'antd'
-import { useMemo } from 'react'
+import { Badge, Button, Dropdown, Flex, Layout, Menu, Typography } from 'antd'
+import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { getHeaderOrganizations } from '../../api/common'
 import { getRepositoryDetail } from '../../api/repositories'
 import { useAuth } from '../../auth/AuthContext'
 import { UI_TEXT } from '../../constants'
@@ -17,6 +20,8 @@ import RepositoryContextSidebar from './RepositoryContextSidebar'
 
 const { Sider } = Layout
 const { Text } = Typography
+
+const ORGANIZATION_STORAGE_KEY = UI_TEXT.organizations.storageKey
 
 const navItems = [
   { key: '/', icon: <DashboardOutlined />, label: UI_TEXT.navigation.dashboard },
@@ -62,6 +67,11 @@ function Sidebar({ collapsed, onCollapse }) {
   const location = useLocation()
   const navigate = useNavigate()
   const auth = useAuth()
+  const organizations = getHeaderOrganizations()
+  const [organizationKey, setOrganizationKey] = useState(() => {
+    const storedKey = window.localStorage.getItem(ORGANIZATION_STORAGE_KEY)
+    return storedKey || organizations[0]?.key
+  })
   const visibleNavItems = useMemo(
     () =>
       navItems.filter((item) => {
@@ -88,6 +98,19 @@ function Sidebar({ collapsed, onCollapse }) {
     return [match?.key ?? '/']
   }, [location.pathname, visibleNavItems])
 
+  const selectedOrganization =
+    organizations.find((organization) => organization.key === organizationKey) ?? organizations[0]
+  const organizationItems = organizations.map((organization) => ({
+    key: organization.key,
+    label: organization.label,
+  }))
+
+  const handleOrganizationChange = ({ key }) => {
+    setOrganizationKey(key)
+    window.localStorage.setItem(ORGANIZATION_STORAGE_KEY, key)
+    window.location.reload()
+  }
+
   return (
     <Sider
       breakpoint="lg"
@@ -101,6 +124,30 @@ function Sidebar({ collapsed, onCollapse }) {
       <Flex align="center" className="brand">
         <GitddnLogo compact={collapsed} />
       </Flex>
+
+      <Dropdown
+        menu={{
+          items: organizationItems,
+          selectable: true,
+          selectedKeys: selectedOrganization?.key ? [selectedOrganization.key] : [],
+          onClick: handleOrganizationChange,
+        }}
+        trigger={['click']}
+      >
+        <Button
+          className="sidebar-organization-button"
+          icon={<GlobalOutlined />}
+          type="text"
+          block={!collapsed}
+        >
+          {!collapsed ? (
+            <>
+              <span>{selectedOrganization?.label}</span>
+              <DownOutlined />
+            </>
+          ) : null}
+        </Button>
+      </Dropdown>
 
       {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
       {!collapsed ? <Text className="nav-title">{UI_TEXT.common.workspace}</Text> : null}

@@ -120,6 +120,44 @@ body {
   height: 25px;
 }
 
+.sidebar-organization-button.ant-btn {
+  width: calc(100% - 16px);
+  height: 38px;
+  margin: 0 8px 14px;
+  padding-inline: 12px;
+  justify-content: flex-start;
+  color: var(--gitddn-sidebar-text);
+  background: var(--gitddn-sidebar-selected-bg);
+  border: 1px solid var(--gitddn-border-color);
+  border-radius: 8px;
+}
+
+.sidebar-organization-button.ant-btn:hover {
+  color: var(--gitddn-sidebar-hover-text);
+  background: var(--gitddn-sidebar-hover-bg);
+}
+
+.sidebar-organization-button.ant-btn > span:not(.anticon) {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-organization-button.ant-btn .anticon:last-child {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+}
+
+.ant-layout-sider-collapsed .sidebar-organization-button.ant-btn {
+  width: 40px;
+  margin-inline: 16px;
+  padding-inline: 0;
+  justify-content: center;
+}
+
 .gitddn-logo-large {
   width: 164px;
   height: 40px;
@@ -267,15 +305,6 @@ body {
 .header-breadcrumb-current {
   color: var(--gitddn-text-primary);
   font-weight: 700;
-}
-
-.header-organization-button.ant-btn {
-  max-width: 188px;
-}
-
-.header-organization-button span:not(.anticon) {
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .header-ask-button.ant-btn {
@@ -620,7 +649,6 @@ body {
     width: 260px;
   }
 
-  .header-actions > .ant-space-item:has(.header-organization-button),
   .header-actions > .ant-space-item:has(.header-token-button) {
     display: none;
   }
@@ -646,9 +674,7 @@ body {
     white-space: nowrap;
   }
 
-  .header-organization-button,
   .header-actions .ant-segmented,
-  .header-actions > .ant-space-item:has(.header-organization-button),
   .header-actions > .ant-space-item:has(.ant-segmented) {
     display: none;
   }

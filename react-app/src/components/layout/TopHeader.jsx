@@ -1,8 +1,6 @@
 import {
   BellOutlined,
   CodeOutlined,
-  DownOutlined,
-  GlobalOutlined,
   HomeOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -209,10 +207,6 @@ function TopHeader({ collapsed, onToggleSidebar }) {
     [currentRepository, location.pathname],
   )
 
-  const [organizationKey, setOrganizationKey] = useState(() => {
-    const storedKey = window.localStorage.getItem(ORGANIZATION_STORAGE_KEY)
-    return storedKey || organizations[0]?.key
-  })
   const [searchValue, setSearchValue] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
   const [notificationOpen, setNotificationOpen] = useState(false)
@@ -223,7 +217,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
   )
 
   const selectedOrganization =
-    organizations.find((organization) => organization.key === organizationKey) ?? organizations[0]
+    organizations.find((organization) => organization.key === window.localStorage.getItem(ORGANIZATION_STORAGE_KEY)) ?? organizations[0]
   const searchResults = useMemo(() => getGlobalSearchSuggestions(searchValue), [searchValue])
   const unreadCount = notifications.filter(
     (notification) => !readNotificationIds.includes(notification.id),
@@ -243,13 +237,6 @@ function TopHeader({ collapsed, onToggleSidebar }) {
       </Flex>
     ),
   }))
-
-  const handleOrganizationChange = ({ key }) => {
-    const nextOrganization = organizations.find((organization) => organization.key === key)
-    setOrganizationKey(key)
-    window.localStorage.setItem(ORGANIZATION_STORAGE_KEY, key)
-    message.success(`${UI_TEXT.topHeader.organizationSwitched} ${nextOrganization?.label ?? key}`)
-  }
 
   const navigateTo = (href) => {
     setSearchOpen(false)
@@ -299,10 +286,6 @@ function TopHeader({ collapsed, onToggleSidebar }) {
     navigateTo(notification.targetLink)
   }
 
-  const organizationItems = organizations.map((organization) => ({
-    key: organization.key,
-    label: organization.label,
-  }))
   const createItems = [
     auth.hasPermission('repository:create-request') ? { key: 'repository', label: UI_TEXT.quickCreate.repository } : null,
     auth.hasPermission('mr:create') ? { key: 'merge-request', label: UI_TEXT.quickCreate.mergeRequest } : null,
@@ -379,20 +362,6 @@ function TopHeader({ collapsed, onToggleSidebar }) {
             allowClear
           />
         </AutoComplete>
-        <Dropdown
-          menu={{
-            items: organizationItems,
-            selectable: true,
-            selectedKeys: selectedOrganization?.key ? [selectedOrganization.key] : [],
-            onClick: handleOrganizationChange,
-          }}
-          trigger={['click']}
-        >
-          <Button className="header-organization-button" icon={<GlobalOutlined />}>
-            <span>{selectedOrganization?.label}</span>
-            <DownOutlined />
-          </Button>
-        </Dropdown>
         <Segmented
           aria-label="Theme mode"
           size="small"
