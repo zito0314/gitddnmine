@@ -775,10 +775,6 @@ body {
   margin-top: 34px;
 }
 
-.dashboard-ai-empty {
-  padding-left: 4px;
-}
-
 .dashboard-ai-loading {
   min-height: 38px;
   padding-left: 4px;
@@ -809,6 +805,17 @@ body {
   border-radius: 999px;
   background: var(--gitddn-card-bg);
   box-shadow: none;
+}
+
+.dashboard-ai-reset-button.ant-btn {
+  width: 28px;
+  height: 28px;
+  color: var(--gitddn-text-secondary);
+}
+
+.dashboard-ai-reset-button.ant-btn:hover {
+  color: var(--gitddn-primary);
+  background: color-mix(in srgb, var(--gitddn-primary) 10%, transparent);
 }
 
 .dashboard-work-card.ant-card,

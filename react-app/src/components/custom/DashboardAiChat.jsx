@@ -1,5 +1,5 @@
-import { ArrowRightOutlined, RobotOutlined } from '../icons'
-import { Button, Card, Flex, Input, Space, Spin, Tag, Typography } from 'antd'
+import { ArrowRightOutlined, ReloadOutlined } from '../icons'
+import { Button, Card, Flex, Input, Space, Spin, Tag, Tooltip, Typography } from 'antd'
 import { useEffect, useRef, useState } from 'react'
 import GitddnLogo from './GitddnLogo'
 
@@ -39,6 +39,14 @@ function DashboardAiChat({ currentUserName, prompts, getResponse, onOpenResponse
     submitPrompt(inputValue, inputValue)
   }
 
+  const handleReset = () => {
+    window.clearTimeout(timerRef.current)
+    setInputValue('')
+    setMessages([])
+    setLoading(false)
+    setLastResponse(null)
+  }
+
   return (
     <Card className="dashboard-ai-panel" variant="borderless">
       <Flex justify="space-between" align="flex-start" gap={24}>
@@ -73,9 +81,6 @@ function DashboardAiChat({ currentUserName, prompts, getResponse, onOpenResponse
       </Flex>
 
       <Flex className="dashboard-ai-thread" vertical gap={14}>
-        {messages.length === 0 && !loading ? (
-          <Text type="secondary" className="dashboard-ai-empty">추천 질문을 선택하거나 아래 입력창에 업무를 물어보세요.</Text>
-        ) : null}
         {messages.map((message, index) => (
           <Flex key={`${message.role}-${index}`} justify={message.role === 'user' ? 'flex-end' : 'flex-start'}>
             {message.role === 'user' ? (
@@ -107,7 +112,18 @@ function DashboardAiChat({ currentUserName, prompts, getResponse, onOpenResponse
           value={inputValue}
           onChange={(event) => setInputValue(event.target.value)}
           onPressEnter={handleInputSubmit}
-          suffix={<RobotOutlined />}
+          suffix={
+            <Tooltip title="채팅 초기화">
+              <Button
+                aria-label="채팅 초기화"
+                className="dashboard-ai-reset-button"
+                type="text"
+                size="small"
+                icon={<ReloadOutlined />}
+                onClick={handleReset}
+              />
+            </Tooltip>
+          }
           disabled={loading}
         />
       </Flex>
