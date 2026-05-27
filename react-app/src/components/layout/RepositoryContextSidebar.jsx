@@ -1,9 +1,9 @@
 import {
-  BranchesOutlined,
-  CodeOutlined,
   DeploymentUnitOutlined,
   FileTextOutlined,
+  GitGraphOutlined,
   NodeIndexOutlined,
+  PipelinesOutlined,
   PullRequestOutlined,
   SafetyCertificateOutlined,
   SettingOutlined,
@@ -21,9 +21,9 @@ const { Text } = Typography
 const navItems = [
   { key: 'files', label: UI_TEXT.repositoryNavigation.files, icon: <FileTextOutlined /> },
   { key: 'merge-requests', label: UI_TEXT.repositoryNavigation.mergeRequests, icon: <PullRequestOutlined /> },
-  { key: 'pipelines', label: UI_TEXT.repositoryNavigation.pipelines, icon: <BranchesOutlined /> },
+  { key: 'pipelines', label: UI_TEXT.repositoryNavigation.pipelines, icon: <PipelinesOutlined /> },
   { key: 'commits', label: UI_TEXT.repositoryNavigation.commits, icon: <NodeIndexOutlined /> },
-  { key: 'branches', label: UI_TEXT.repositoryNavigation.branches, icon: <CodeOutlined /> },
+  { key: 'branches', label: UI_TEXT.repositoryNavigation.branches, icon: <GitGraphOutlined /> },
   { key: 'tags', label: UI_TEXT.repositoryNavigation.tags, icon: <TagsOutlined /> },
   { key: 'security', label: UI_TEXT.repositoryNavigation.security, icon: <SafetyCertificateOutlined /> },
   { key: 'deployment-transfer', label: UI_TEXT.repositoryNavigation.deploymentTransfer, icon: <DeploymentUnitOutlined /> },

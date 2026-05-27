@@ -42,6 +42,7 @@ import fileSearchOutlinedSvg from './svg/FileSearchOutlined.svg?raw'
 import fileTextOutlinedSvg from './svg/FileTextOutlined.svg?raw'
 import folderOutlinedSvg from './svg/FolderOutlined.svg?raw'
 import gitCommitOutlinedSvg from './svg/GitCommitOutlined.svg?raw'
+import gitGraphOutlinedSvg from './svg/GitGraphOutlined.svg?raw'
 import gitlabOutlinedSvg from './svg/GitlabOutlined.svg?raw'
 import gitRepositoryOutlinedSvg from './svg/GitRepositoryOutlined.svg?raw'
 import globalOutlinedSvg from './svg/GlobalOutlined.svg?raw'
@@ -64,6 +65,7 @@ import moonOutlinedSvg from './svg/MoonOutlined.svg?raw'
 import nodeIndexOutlinedSvg from './svg/NodeIndexOutlined.svg?raw'
 import panelLeftOutlinedSvg from './svg/PanelLeftOutlined.svg?raw'
 import peopleOutlinedSvg from './svg/PeopleOutlined.svg?raw'
+import pipelinesOutlinedSvg from './svg/PipelinesOutlined.svg?raw'
 import playCircleOutlinedSvg from './svg/PlayCircleOutlined.svg?raw'
 import plusOutlinedSvg from './svg/PlusOutlined.svg?raw'
 import pullRequestClosedOutlinedSvg from './svg/PullRequestClosedOutlined.svg?raw'
@@ -146,6 +148,7 @@ export const FileSearchOutlined = createIcon(fileSearchOutlinedSvg)
 export const FileTextOutlined = createIcon(fileTextOutlinedSvg)
 export const FolderOutlined = createIcon(folderOutlinedSvg)
 export const GitCommitOutlined = createIcon(gitCommitOutlinedSvg)
+export const GitGraphOutlined = createIcon(gitGraphOutlinedSvg)
 export const GitlabOutlined = createIcon(gitlabOutlinedSvg)
 export const GitRepositoryOutlined = createIcon(gitRepositoryOutlinedSvg)
 export const GlobalOutlined = createIcon(globalOutlinedSvg)
@@ -168,6 +171,7 @@ export const MoonOutlined = createIcon(moonOutlinedSvg)
 export const NodeIndexOutlined = createIcon(nodeIndexOutlinedSvg)
 export const PanelLeftOutlined = createIcon(panelLeftOutlinedSvg)
 export const PeopleOutlined = createIcon(peopleOutlinedSvg)
+export const PipelinesOutlined = createIcon(pipelinesOutlinedSvg)
 export const PlayCircleOutlined = createIcon(playCircleOutlinedSvg)
 export const PlusOutlined = createIcon(plusOutlinedSvg)
 export const PullRequestClosedOutlined = createIcon(pullRequestClosedOutlinedSvg)
