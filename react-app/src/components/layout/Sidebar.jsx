@@ -8,7 +8,7 @@ import {
   PullRequestOutlined,
   SafetyCertificateOutlined,
 } from '../icons'
-import { Badge, Button, Dropdown, Flex, Layout, Menu, Typography } from 'antd'
+import { Badge, Button, ConfigProvider, Dropdown, Flex, Layout, Menu, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getHeaderOrganizations } from '../../api/common'
@@ -22,6 +22,26 @@ const { Sider } = Layout
 const { Text } = Typography
 
 const ORGANIZATION_STORAGE_KEY = UI_TEXT.organizations.storageKey
+
+const sidebarMenuTheme = {
+  components: {
+    Menu: {
+      itemBg: 'transparent',
+      itemColor: 'var(--gitddn-sidebar-text)',
+      itemHoverBg: 'var(--gitddn-sidebar-hover-bg)',
+      itemHoverColor: 'var(--gitddn-sidebar-hover-text)',
+      itemSelectedBg: 'var(--gitddn-sidebar-selected-bg)',
+      itemSelectedColor: 'var(--gitddn-sidebar-selected-text)',
+      subMenuItemBg: 'var(--gitddn-sidebar-submenu-bg)',
+      groupTitleColor: 'var(--gitddn-sidebar-group-text)',
+      itemHeight: 40,
+      itemBorderRadius: 8,
+      itemMarginBlock: 4,
+      itemMarginInline: 8,
+      iconMarginInlineEnd: 10,
+    },
+  },
+}
 
 const navItems = [
   { key: '/', icon: <DashboardOutlined />, label: UI_TEXT.navigation.dashboard },
@@ -125,39 +145,41 @@ function Sidebar({ collapsed, onCollapse }) {
         <GitddnLogo compact={collapsed} />
       </Flex>
 
-      <Dropdown
-        menu={{
-          items: organizationItems,
-          selectable: true,
-          selectedKeys: selectedOrganization?.key ? [selectedOrganization.key] : [],
-          onClick: handleOrganizationChange,
-        }}
-        trigger={['click']}
-      >
-        <Button
-          className="sidebar-organization-button"
-          icon={<GlobalOutlined />}
-          type="text"
-          block={!collapsed}
+      <ConfigProvider theme={sidebarMenuTheme}>
+        <Dropdown
+          menu={{
+            items: organizationItems,
+            selectable: true,
+            selectedKeys: selectedOrganization?.key ? [selectedOrganization.key] : [],
+            onClick: handleOrganizationChange,
+          }}
+          trigger={['click']}
         >
-          {!collapsed ? (
-            <>
-              <span>{selectedOrganization?.label}</span>
-              <DownOutlined />
-            </>
-          ) : null}
-        </Button>
-      </Dropdown>
+          <Button
+            className="sidebar-organization-button"
+            icon={<GlobalOutlined />}
+            type="text"
+            block={!collapsed}
+          >
+            {!collapsed ? (
+              <>
+                <span>{selectedOrganization?.label}</span>
+                <DownOutlined />
+              </>
+            ) : null}
+          </Button>
+        </Dropdown>
 
-      {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
-      {!collapsed ? <Text className="nav-title">{UI_TEXT.common.workspace}</Text> : null}
-      <Menu
-        className="global-menu"
-        mode="inline"
-        selectedKeys={selectedKeys}
-        items={visibleNavItems.map(withBadge)}
-        onClick={({ key }) => navigate(key)}
-      />
+        {!collapsed && repositoryId ? <RepositoryContextSidebar repositoryId={repositoryId} /> : null}
+        {!collapsed ? <Text className="nav-title">{UI_TEXT.common.workspace}</Text> : null}
+        <Menu
+          className="global-menu"
+          mode="inline"
+          selectedKeys={selectedKeys}
+          items={visibleNavItems.map(withBadge)}
+          onClick={({ key }) => navigate(key)}
+        />
+      </ConfigProvider>
     </Sider>
   )
 }

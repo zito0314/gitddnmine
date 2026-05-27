@@ -181,27 +181,7 @@ body {
   padding: 0;
 }
 
-.app-sidebar .ant-menu-submenu > .ant-menu {
-  background: var(--gitddn-sidebar-submenu-bg) !important;
-}
-
-.app-sidebar .ant-menu .ant-menu-item {
-  height: 40px;
-  margin: 4px 8px;
-  padding-inline: 12px !important;
-  border-radius: 8px;
-  color: var(--gitddn-sidebar-text);
-  line-height: 40px;
-}
-
-.app-sidebar .ant-menu .ant-menu-item:hover {
-  color: var(--gitddn-sidebar-hover-text);
-  background: var(--gitddn-sidebar-hover-bg);
-}
-
 .app-sidebar .ant-menu .ant-menu-item-selected {
-  color: var(--gitddn-sidebar-selected-text);
-  background: var(--gitddn-sidebar-selected-bg);
   font-weight: 650;
 }
 
