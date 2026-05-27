@@ -374,12 +374,8 @@ body {
 }
 
 .page-content {
-  padding: 24px 28px 44px;
-  background: var(--gitddn-content-bg);
-}
-
-.page-content-dashboard {
   padding: 40px 175px;
+  background: var(--gitddn-content-bg);
 }
 
 .page-header {
@@ -700,10 +696,6 @@ body {
   }
 
   .page-content {
-    padding: 18px;
-  }
-
-  .page-content-dashboard {
     padding: 24px;
   }
 }
@@ -730,8 +722,8 @@ body {
 }
 
 .dashboard-home {
-  width: min(100%, 1336px);
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 }
 
 .dashboard-home .page-header {
