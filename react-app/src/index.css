@@ -806,22 +806,6 @@ body {
   background: color-mix(in srgb, var(--gitddn-primary) 10%, transparent);
 }
 
-.dashboard-work-card.ant-card,
-.dashboard-quick-card.ant-card {
-  border-color: var(--gitddn-border-color);
-  border-radius: 14px;
-}
-
-.dashboard-work-card + .dashboard-work-card {
-  margin-top: 16px;
-}
-
-.dashboard-work-card .ant-card-head,
-.dashboard-quick-card .ant-card-head {
-  min-height: 48px;
-  border-bottom: 0;
-}
-
 .dashboard-card-hint {
   color: var(--gitddn-primary);
   font-size: 12px;
@@ -851,10 +835,6 @@ body {
 
 .dashboard-next-item .ant-list-item-meta-title {
   margin-bottom: 4px;
-}
-
-.dashboard-quick-card .ant-card-body {
-  padding-top: 8px;
 }
 
 .dashboard-quick-card .ant-tabs-nav-list {

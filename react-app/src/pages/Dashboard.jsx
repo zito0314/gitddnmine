@@ -1,5 +1,5 @@
 import { StarFilled } from '../components/icons'
-import { Button, Card, Col, Flex, List, Row, Space, Tabs, Typography } from 'antd'
+import { Button, Card, Col, ConfigProvider, Flex, List, Row, Space, Tabs, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -31,6 +31,20 @@ const activityTabs = [
   { key: 'repository', label: 'Repository' },
   { key: 'project', label: 'Project' },
 ]
+
+const dashboardCardTheme = {
+  token: {
+    borderRadiusLG: 14,
+  },
+  components: {
+    Card: {
+      headerBg: 'transparent',
+      headerHeight: 48,
+      headerPadding: 24,
+      bodyPadding: 24,
+    },
+  },
+}
 
 function getNextUpTabKey(item) {
   const text = [item.type, item.status, item.title].join(' ').toLowerCase()
@@ -82,116 +96,120 @@ function Dashboard() {
         onOpenResponse={(href) => navigate(href)}
       />
 
-      <Row gutter={[16, 16]} align="top">
-        <Col xs={24} xl={17}>
-          <Card
-            className="dashboard-work-card"
-            title={
-              <Flex align="center" gap={8} wrap="wrap">
-                <Text strong>Next up</Text>
-                <Text type="secondary" className="dashboard-card-hint">AI 어시스턴트가 업무 우선순위에 따라 요약해두었어요.</Text>
-              </Flex>
-            }
-            extra={<Button type="link" size="small" onClick={() => navigate('/merge-requests')}>전체보기</Button>}
-          >
-            <Tabs
-              activeKey={nextUpTab}
-              onChange={setNextUpTab}
-              items={nextUpTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
-            />
-            <List
-              dataSource={filteredNextUp.slice(0, 3)}
-              locale={{ emptyText: UI_TEXT.messages.empty.table }}
-              renderItem={(item) => (
-                <List.Item
-                  className="dashboard-next-item"
-                  onClick={() => navigate(item.href)}
-                  actions={[
-                    <Button
-                      key="action"
-                      type={item.type === 'Merge Request' ? 'primary' : 'default'}
-                      size="small"
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        navigate(item.href)
-                      }}
+      <ConfigProvider theme={dashboardCardTheme}>
+        <Row gutter={[16, 16]} align="top">
+          <Col xs={24} xl={17}>
+            <Space direction="vertical" size={16} style={{ width: '100%' }}>
+              <Card
+                className="dashboard-work-card"
+                title={
+                  <Flex align="center" gap={8} wrap="wrap">
+                    <Text strong>Next up</Text>
+                    <Text type="secondary" className="dashboard-card-hint">AI 어시스턴트가 업무 우선순위에 따라 요약해두었어요.</Text>
+                  </Flex>
+                }
+                extra={<Button type="link" size="small" onClick={() => navigate('/merge-requests')}>전체보기</Button>}
+              >
+                <Tabs
+                  activeKey={nextUpTab}
+                  onChange={setNextUpTab}
+                  items={nextUpTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
+                />
+                <List
+                  dataSource={filteredNextUp.slice(0, 3)}
+                  locale={{ emptyText: UI_TEXT.messages.empty.table }}
+                  renderItem={(item) => (
+                    <List.Item
+                      className="dashboard-next-item"
+                      onClick={() => navigate(item.href)}
+                      actions={[
+                        <Button
+                          key="action"
+                          type={item.type === 'Merge Request' ? 'primary' : 'default'}
+                          size="small"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            navigate(item.href)
+                          }}
+                        >
+                          {getActionLabel(item)}
+                        </Button>,
+                      ]}
                     >
-                      {getActionLabel(item)}
-                    </Button>,
-                  ]}
-                >
-                  <List.Item.Meta
-                    title={
-                      <Flex align="center" gap={8} wrap="wrap">
-                        <Text strong>{item.title}</Text>
-                        <StatusTag status={item.status} />
-                      </Flex>
-                    }
-                    description={`${item.target} · ${item.updatedAt}`}
-                  />
-                </List.Item>
-              )}
-            />
-          </Card>
+                      <List.Item.Meta
+                        title={
+                          <Flex align="center" gap={8} wrap="wrap">
+                            <Text strong>{item.title}</Text>
+                            <StatusTag status={item.status} />
+                          </Flex>
+                        }
+                        description={`${item.target} · ${item.updatedAt}`}
+                      />
+                    </List.Item>
+                  )}
+                />
+              </Card>
 
-          <Card
-            className="dashboard-work-card"
-            title={<Text strong>최근 활동</Text>}
-            extra={<Button type="link" size="small" onClick={() => navigate('/audit')}>전체보기</Button>}
-          >
-            <Tabs
-              activeKey={activityTab}
-              onChange={setActivityTab}
-              items={activityTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
-            />
-            <List
-              className="dashboard-activity-list"
-              dataSource={filteredActivities.slice(0, 4)}
-              locale={{ emptyText: UI_TEXT.messages.empty.table }}
-              renderItem={(activity) => (
-                <List.Item className="dashboard-activity-item" onClick={() => navigate(activity.href)}>
-                  <List.Item.Meta
-                    avatar={<BadgeDot />}
-                    title={<Text>{activity.actor}님이 <Link to={activity.href}>{activity.message}</Link></Text>}
-                    description={`${activity.repositoryName} · ${activity.createdAt}`}
-                  />
-                </List.Item>
-              )}
-            />
-          </Card>
-        </Col>
+              <Card
+                className="dashboard-work-card"
+                title={<Text strong>최근 활동</Text>}
+                extra={<Button type="link" size="small" onClick={() => navigate('/audit')}>전체보기</Button>}
+              >
+                <Tabs
+                  activeKey={activityTab}
+                  onChange={setActivityTab}
+                  items={activityTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
+                />
+                <List
+                  className="dashboard-activity-list"
+                  dataSource={filteredActivities.slice(0, 4)}
+                  locale={{ emptyText: UI_TEXT.messages.empty.table }}
+                  renderItem={(activity) => (
+                    <List.Item className="dashboard-activity-item" onClick={() => navigate(activity.href)}>
+                      <List.Item.Meta
+                        avatar={<BadgeDot />}
+                        title={<Text>{activity.actor}님이 <Link to={activity.href}>{activity.message}</Link></Text>}
+                        description={`${activity.repositoryName} · ${activity.createdAt}`}
+                      />
+                    </List.Item>
+                  )}
+                />
+              </Card>
+            </Space>
+          </Col>
 
-        <Col xs={24} xl={7}>
-          <Card className="dashboard-quick-card" title="Quick Access">
-            <Tabs
-              activeKey={quickAccessTab}
-              onChange={setQuickAccessTab}
-              type="card"
-              size="small"
-              items={[
-                { key: 'recent', label: 'Recently Viewed' },
-                { key: 'starred', label: 'Starred Repository' },
-              ]}
-            />
-            <List
-              dataSource={quickAccessRepositories.slice(0, 7)}
-              locale={{ emptyText: UI_TEXT.messages.empty.table }}
-              renderItem={(repository) => (
-                <List.Item
-                  className="dashboard-quick-item"
-                  onClick={() => navigate(`/repositories/${repository.id}`)}
+          <Col xs={24} xl={7}>
+            <Card className="dashboard-quick-card" title="Quick Access" styles={{ body: { paddingTop: 8 } }}>
+              <Tabs
+                activeKey={quickAccessTab}
+                onChange={setQuickAccessTab}
+                type="card"
+                size="small"
+                items={[
+                  { key: 'recent', label: 'Recently Viewed' },
+                  { key: 'starred', label: 'Starred Repository' },
+                ]}
+              />
+              <List
+                dataSource={quickAccessRepositories.slice(0, 7)}
+                locale={{ emptyText: UI_TEXT.messages.empty.table }}
+                renderItem={(repository) => (
+                  <List.Item
+                    className="dashboard-quick-item"
+                    onClick={() => navigate(`/repositories/${repository.id}`)}
                   actions={[<StarFilled key="star" className="dashboard-quick-star" />]}
                 >
                   <List.Item.Meta
-                    avatar={<RepositoryAvatar repository={repository} size={24} className="dashboard-repo-avatar" />}
-                    title={<Link to={`/repositories/${repository.id}`}>{repository.name}</Link>}
-                  />
-                </List.Item>
-              )}
-            />
-          </Card>
-        </Col>
-      </Row>
+                      avatar={<RepositoryAvatar repository={repository} size={24} className="dashboard-repo-avatar" />}
+                      title={<Link to={`/repositories/${repository.id}`}>{repository.name}</Link>}
+                    />
+                  </List.Item>
+                )}
+              />
+            </Card>
+          </Col>
+        </Row>
+      </ConfigProvider>
     </Space>
   )
 }
