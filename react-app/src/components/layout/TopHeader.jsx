@@ -26,7 +26,6 @@ import {
   Flex,
   Input,
   Layout,
-  List,
   Modal,
   Segmented,
   Space,
@@ -451,32 +450,33 @@ function TopHeader({ collapsed, onToggleSidebar }) {
         size="default"
         extra={<Button size="small" onClick={markAllNotificationsRead}>{UI_TEXT.notifications.markAllRead}</Button>}
       >
-        <List
-          dataSource={notifications}
-          locale={{ emptyText: UI_TEXT.notifications.empty }}
-          renderItem={(notification) => {
+        {notifications.length ? (
+          <Space direction="vertical" size={8} style={{ width: '100%' }}>
+            {notifications.map((notification) => {
             const read = readNotificationIds.includes(notification.id)
             return (
-              <List.Item onClick={() => openNotification(notification)} className="notification-item">
-                <List.Item.Meta
-                  title={
-                    <Flex align="center" gap={8} wrap="wrap">
-                      <Text strong={!read}>{notification.title}</Text>
-                      <StatusTag status={notification.severity} />
-                      {!read ? <Badge status="processing" /> : null}
-                    </Flex>
-                  }
-                  description={
-                    <Space direction="vertical" size={4}>
-                      <Text type="secondary">{notification.message}</Text>
-                      <Text type="secondary">{notification.createdAt}</Text>
-                    </Space>
-                  }
-                />
-              </List.Item>
+              <Space
+                key={notification.id}
+                direction="vertical"
+                size={4}
+                onClick={() => openNotification(notification)}
+                className="notification-item"
+                style={{ width: '100%' }}
+              >
+                <Flex align="center" gap={8} wrap="wrap">
+                  <Text strong={!read}>{notification.title}</Text>
+                  <StatusTag status={notification.severity} />
+                  {!read ? <Badge status="processing" /> : null}
+                </Flex>
+                <Text type="secondary">{notification.message}</Text>
+                <Text type="secondary">{notification.createdAt}</Text>
+              </Space>
             )
-          }}
-        />
+            })}
+          </Space>
+        ) : (
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.notifications.empty} />
+        )}
       </Drawer>
 
       <Modal

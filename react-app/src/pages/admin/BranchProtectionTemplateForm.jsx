@@ -111,7 +111,7 @@ export default function BranchProtectionTemplateForm() {
           <Card title="Preview">
             <Title level={4}>{watchedValues?.name || initialValues.name || 'Branch Protection Template'}</Title>
             <Text type="secondary">{watchedValues?.description || initialValues.description || '정책 설명이 표시됩니다.'}</Text>
-            <ListPreview items={preview.length ? preview : buildSummary(initialValues)} />
+            <SummaryPreview items={preview.length ? preview : buildSummary(initialValues)} />
           </Card>
         </Col>
       </Row>
@@ -119,6 +119,6 @@ export default function BranchProtectionTemplateForm() {
   )
 }
 
-function ListPreview({ items }) {
+function SummaryPreview({ items }) {
   return <Space direction="vertical" style={{ marginTop: 16 }}>{items.map((item) => <Text key={item}>- {item}</Text>)}</Space>
 }
