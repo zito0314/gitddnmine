@@ -26,7 +26,6 @@ import {
   Flex,
   Input,
   Layout,
-  List,
   Modal,
   Segmented,
   Space,
@@ -43,7 +42,7 @@ import {
 import { ORGANIZATION_CHANGED_EVENT } from '../../api/organizations'
 import { useAuth } from '../../auth/AuthContext'
 import { getRepositories } from '../../api/repositories'
-import { StatusTag } from '../common'
+import { RecordRow, RecordStack, StatusTag } from '../common'
 import { UI_TEXT } from '../../constants'
 import { DesignTokenModal } from '../theme/DesignTokenModal'
 import { useThemeTokens } from '../../hooks/useThemeTokens'
@@ -239,7 +238,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
     value: item.href,
     label: (
       <Flex align="flex-start" justify="space-between" gap={12} className="global-search-option">
-        <Space direction="vertical" size={2}>
+        <Space orientation="vertical" size={2}>
           <Flex align="center" gap={6} wrap="wrap">
             <Tag>{item.type}</Tag>
             <Text strong>{item.title}</Text>
@@ -316,7 +315,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
       key: 'profile',
       disabled: true,
       label: (
-        <Space direction="vertical" size={0}>
+        <Space orientation="vertical" size={0}>
           <Text strong>{currentUser?.name}</Text>
           <Text type="secondary">{currentUser?.role} · {selectedOrganization?.label}</Text>
           <Text type="secondary">{currentUser?.email}</Text>
@@ -451,32 +450,31 @@ function TopHeader({ collapsed, onToggleSidebar }) {
         size="default"
         extra={<Button size="small" onClick={markAllNotificationsRead}>{UI_TEXT.notifications.markAllRead}</Button>}
       >
-        <List
-          dataSource={notifications}
-          locale={{ emptyText: UI_TEXT.notifications.empty }}
-          renderItem={(notification) => {
+        <RecordStack emptyText={UI_TEXT.notifications.empty} bordered={false} gap={8}>
+          {notifications.map((notification) => {
             const read = readNotificationIds.includes(notification.id)
             return (
-              <List.Item onClick={() => openNotification(notification)} className="notification-item">
-                <List.Item.Meta
-                  title={
-                    <Flex align="center" gap={8} wrap="wrap">
-                      <Text strong={!read}>{notification.title}</Text>
-                      <StatusTag status={notification.severity} />
-                      {!read ? <Badge status="processing" /> : null}
-                    </Flex>
-                  }
-                  description={
-                    <Space direction="vertical" size={4}>
-                      <Text type="secondary">{notification.message}</Text>
-                      <Text type="secondary">{notification.createdAt}</Text>
-                    </Space>
-                  }
-                />
-              </List.Item>
+              <RecordRow
+                key={notification.id}
+                density="compact"
+                onClick={() => openNotification(notification)}
+                title={<Text strong={!read}>{notification.title}</Text>}
+                titleExtra={(
+                  <>
+                    <StatusTag status={notification.severity} />
+                    {!read ? <Badge status="processing" /> : null}
+                  </>
+                )}
+                description={(
+                  <Space orientation="vertical" size={4}>
+                    <Text type="secondary">{notification.message}</Text>
+                    <Text type="secondary">{notification.createdAt}</Text>
+                  </Space>
+                )}
+              />
             )
-          }}
-        />
+          })}
+        </RecordStack>
       </Drawer>
 
       <Modal
@@ -485,7 +483,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
         onCancel={() => setHelpOpen(false)}
         footer={<Button type="primary" onClick={() => setHelpOpen(false)}>OK</Button>}
       >
-        <Space direction="vertical" size={12}>
+        <Space orientation="vertical" size={12}>
           <Text>{UI_TEXT.help.demoGuideBody}</Text>
           <Divider />
           <Text type="secondary">{UI_TEXT.topHeader.helpMockNotice}</Text>

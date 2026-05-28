@@ -4,12 +4,12 @@ import {
   StarFilled,
   StarOutlined,
 } from '../components/icons'
-import { App as AntdApp, Avatar, Button, Card, Empty, Flex, Input, List, Select, Space, Tag, Tooltip, Typography } from 'antd'
+import { App as AntdApp, Avatar, Button, Card, Flex, Input, Select, Space, Tag, Tooltip, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories, getRepositoryRequests } from '../api/repositories'
 import { useAuth } from '../auth/AuthContext'
-import { PageHeader } from '../components/common'
+import { PageHeader, RecordRow, RecordStack } from '../components/common'
 import { UI_TEXT } from '../constants'
 import useRepositoryFavorites from '../hooks/useRepositoryFavorites'
 import { sortRepositoriesByFavorite } from '../utils/favorites'
@@ -179,37 +179,40 @@ export default function RepositoryList() {
     const meta = REQUEST_STATUS_META[request.status] ?? REQUEST_STATUS_META.canceled
 
     return (
-      <List.Item
-        actions={[
-          <Text key="time" type="secondary">{request.requestedAtText}</Text>,
-          request.status === 'pending' ? (
-            <Button key="cancel" onClick={() => handleCancelRequest(request)}>요청취소</Button>
-          ) : null,
-          request.status === 'rejected' ? (
-            <Button key="reason" danger onClick={() => handleShowRejectReason(request)}>반려사유</Button>
-          ) : null,
-        ].filter(Boolean)}
-      >
-        <List.Item.Meta
-          title={(
-            <Flex align="center" gap={8} wrap="wrap">
-              <Text strong>{request.path}</Text>
-              <Tag color={meta.color}>{meta.label}</Tag>
-            </Flex>
-          )}
-          description={<Text type="secondary">{request.description} · {request.language}</Text>}
-        />
-      </List.Item>
+      <RecordRow
+        key={request.id}
+        title={<Text strong>{request.path}</Text>}
+        titleExtra={<Tag color={meta.color}>{meta.label}</Tag>}
+        description={<Text type="secondary">{request.description} · {request.language}</Text>}
+        meta={<Text type="secondary">{request.requestedAtText}</Text>}
+        actions={request.status === 'pending' || request.status === 'rejected' ? (
+          <>
+            {request.status === 'pending' ? (
+              <Button onClick={() => handleCancelRequest(request)}>요청취소</Button>
+            ) : null}
+            {request.status === 'rejected' ? (
+              <Button danger onClick={() => handleShowRejectReason(request)}>반려사유</Button>
+            ) : null}
+          </>
+        ) : null}
+      />
     )
   }
 
   const renderRepositoryItem = (repository, showStatus = false) => (
-    <List.Item
-      className="repository-list-item"
-      onClick={() => navigate(`/repositories/${repository.id}`)}
-      actions={[
-        <Text key="updated" type="secondary">{repository.updatedAt}</Text>,
-        <Tooltip key="favorite" title={repository.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}>
+    <RecordRow
+      key={repository.id}
+      leading={<Avatar shape="square" size={44}>{getInitial(repository.name)}</Avatar>}
+      title={<Text strong>{repository.path}</Text>}
+      titleExtra={showStatus && repository.status ? (
+        <Tag color={REPOSITORY_STATUS_META[repository.status]?.color}>
+          {REPOSITORY_STATUS_META[repository.status]?.label ?? repository.status}
+        </Tag>
+      ) : null}
+      description={<Text type="secondary">{repository.description} · {repository.type}</Text>}
+      meta={<Text type="secondary">{repository.updatedAt}</Text>}
+      actions={(
+        <Tooltip title={repository.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}>
           <Button
             type="text"
             shape="circle"
@@ -218,28 +221,20 @@ export default function RepositoryList() {
             onClick={(event) => handleFavoriteClick(event, repository)}
             aria-label={repository.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
           />
-        </Tooltip>,
-      ]}
-    >
-      <List.Item.Meta
-        avatar={<Avatar shape="square" size={44}>{getInitial(repository.name)}</Avatar>}
-        title={(
-          <Flex align="center" gap={8} wrap="wrap">
-            <Text strong>{repository.path}</Text>
-            {showStatus && repository.status ? (
-              <Tag color={REPOSITORY_STATUS_META[repository.status]?.color}>
-                {REPOSITORY_STATUS_META[repository.status]?.label ?? repository.status}
-              </Tag>
-            ) : null}
-          </Flex>
-        )}
-        description={<Text type="secondary">{repository.description} · {repository.type}</Text>}
-      />
-    </List.Item>
+        </Tooltip>
+      )}
+      onClick={() => navigate(`/repositories/${repository.id}`)}
+    />
+  )
+
+  const renderRepositoryRows = (items, emptyDescription, renderItem) => (
+    <RecordStack emptyText={emptyDescription}>
+      {items.map(renderItem)}
+    </RecordStack>
   )
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         title={UI_TEXT.pages.repositories.title}
         description={`${currentUserName}님이 속한 저장소의 모든 목록이에요.`}
@@ -268,11 +263,7 @@ export default function RepositoryList() {
             )}
             styles={{ body: { display: requestCollapsed ? 'none' : undefined } }}
           >
-            <List
-              dataSource={filteredRequests}
-              locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="요청한 저장소가 없습니다." /> }}
-              renderItem={renderRequestItem}
-            />
+            {renderRepositoryRows(filteredRequests, '요청한 저장소가 없습니다.', renderRequestItem)}
           </Card>
 
           <Card
@@ -283,22 +274,12 @@ export default function RepositoryList() {
               </Space>
             )}
           >
-            <List
-              className="repository-list"
-              dataSource={visibleManagedRepositories}
-              locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="저장소가 없습니다." /> }}
-              renderItem={(repository) => renderRepositoryItem(repository, true)}
-            />
+            {renderRepositoryRows(visibleManagedRepositories, '저장소가 없습니다.', (repository) => renderRepositoryItem(repository, true))}
           </Card>
         </>
       ) : (
         <Card>
-          <List
-            className="repository-list"
-            dataSource={filteredRepositories}
-            locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="저장소가 없습니다." /> }}
-            renderItem={(repository) => renderRepositoryItem(repository)}
-          />
+          {renderRepositoryRows(filteredRepositories, '저장소가 없습니다.', (repository) => renderRepositoryItem(repository))}
         </Card>
       )}
     </Space>

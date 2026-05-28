@@ -27,7 +27,6 @@ import {
   Dropdown,
   Flex,
   Input,
-  List,
   Row,
   Segmented,
   Select,
@@ -49,7 +48,7 @@ import {
   getRepositoryTags,
 } from '../api/repositories'
 import { getDeploymentTransfersByRepositoryId } from '../api/deploymentTransfers'
-import { StatusTag } from '../components/common'
+import { RecordRow, RecordStack, StatusTag } from '../components/common'
 import RepositoryAvatar from '../components/repository/RepositoryAvatar'
 import { UI_TEXT } from '../constants'
 
@@ -125,7 +124,7 @@ export default function RepositoryFiles() {
       dataIndex: 'lastCommit',
       ellipsis: true,
       render: (value, record) => (
-        <Space direction="vertical" size={0}>
+        <Space orientation="vertical" size={0}>
           <Text>{record.type === 'Folder' ? `${value} 파일 업데이트` : latestCommit.title}</Text>
           <Text type="secondary" code>{value}</Text>
         </Space>
@@ -150,19 +149,21 @@ export default function RepositoryFiles() {
       />
       <Divider />
       <Title level={5}>Open with</Title>
-      <List
-        size="small"
-        dataSource={[
+      <RecordStack bordered={false} gap={8}>
+        {[
           { title: 'Web IDE', actions: [<Button key="open" size="small">.</Button>] },
           { title: 'Visual Studio Code', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
           { title: 'IntelliJ IDEA', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
-        ]}
-        renderItem={(item) => (
-          <List.Item actions={item.actions}>
-            <Text>{item.title}</Text>
-          </List.Item>
-        )}
-      />
+        ].map((item) => (
+          <RecordRow
+            key={item.title}
+            density="compact"
+            align="center"
+            title={<Text>{item.title}</Text>}
+            actions={item.actions}
+          />
+        ))}
+      </RecordStack>
       <Divider />
       <Title level={5}>Download source code</Title>
       <Segmented block options={downloadOptions} />
@@ -177,7 +178,7 @@ export default function RepositoryFiles() {
   ]
 
   return (
-    <Space className="repository-files-page" direction="vertical" size={20}>
+    <Space className="repository-files-page" orientation="vertical" size={20}>
       <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
         <Space align="start" size={12} className="repository-files-title">
           <RepositoryAvatar repository={repository} className="repository-files-avatar" />
@@ -190,7 +191,7 @@ export default function RepositoryFiles() {
 
       <Row gutter={[20, 20]}>
         <Col xs={24} xl={17}>
-          <Space direction="vertical" size={16} style={{ width: '100%' }}>
+          <Space orientation="vertical" size={16} style={{ width: '100%' }}>
             <Flex align="center" justify="space-between" gap={12} wrap="wrap">
               <Select
                 className="repository-branch-select"
@@ -232,7 +233,7 @@ export default function RepositoryFiles() {
               <Flex align="center" justify="space-between" gap={16} wrap="wrap">
                 <Space size={12}>
                   <Avatar src="https://api.dicebear.com/7.x/initials/svg?seed=Kim" />
-                  <Space direction="vertical" size={2}>
+                  <Space orientation="vertical" size={2}>
                     <Text strong>{latestCommit.title}</Text>
                     <Text type="secondary">작성자: {latestCommit.author} · {latestCommit.createdAt}</Text>
                   </Space>
@@ -274,39 +275,39 @@ export default function RepositoryFiles() {
 
         <Col xs={24} xl={7}>
           <Card className="repository-info-panel" title="저장소 정보">
-            <List
-              size="small"
-              dataSource={repositoryInfoItems}
-              renderItem={(item) => (
-                <List.Item>
-                  <Space>
-                    {item.icon}
-                    <Text strong>{item.label}</Text>
-                  </Space>
-                </List.Item>
-              )}
-            />
+            <RecordStack bordered={false} gap={10}>
+              {repositoryInfoItems.map((item) => (
+                <RecordRow
+                  key={item.key}
+                  density="compact"
+                  align="center"
+                  leading={item.icon}
+                  title={<Text strong>{item.label}</Text>}
+                />
+              ))}
+            </RecordStack>
             <Divider />
-            <Space direction="vertical" size={6}>
+            <Space orientation="vertical" size={6}>
               <Text strong>생성일</Text>
               <Text type="secondary">2024.06.13</Text>
             </Space>
             <Divider />
             <Title level={5}>최근 운영 이관</Title>
-            <List
-              className="repository-transfer-list"
-              dataSource={deploymentTransfers.slice(0, 3)}
-              locale={{ emptyText: '진행 중인 운영이관이 없습니다.' }}
-              renderItem={(item) => (
-                <List.Item>
-                  <Space direction="vertical" size={4}>
-                    <Text strong>({getTransferStatusLabel(item)}) {item.deploymentPlan?.changeReason ?? item.id}</Text>
-                    <Text type="secondary">{item.deploymentPlan?.checklistNote ?? '운영 반영 검토가 진행 중입니다.'}</Text>
-                    <Button type="link" size="small">진행 현황 보기 →</Button>
-                  </Space>
-                </List.Item>
-              )}
-            />
+            <RecordStack emptyText="진행 중인 운영이관이 없습니다." bordered={false} gap={14} className="repository-transfer-list">
+              {deploymentTransfers.slice(0, 3).map((item) => (
+                <RecordRow
+                  key={item.id}
+                  density="compact"
+                  title={<Text strong>({getTransferStatusLabel(item)}) {item.deploymentPlan?.changeReason ?? item.id}</Text>}
+                  description={(
+                    <Space orientation="vertical" size={4}>
+                      <Text type="secondary">{item.deploymentPlan?.checklistNote ?? '운영 반영 검토가 진행 중입니다.'}</Text>
+                      <Button type="link" size="small">진행 현황 보기 →</Button>
+                    </Space>
+                  )}
+                />
+              ))}
+            </RecordStack>
           </Card>
         </Col>
       </Row>

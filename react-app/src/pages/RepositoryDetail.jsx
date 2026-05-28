@@ -8,7 +8,7 @@ import {
   PullRequestOutlined,
   SafetyCertificateOutlined,
 } from '../components/icons'
-import { Alert, Card, Col, Descriptions, Flex, List, Row, Space, Table, Timeline, Typography } from 'antd'
+import { Alert, Card, Col, Descriptions, Empty, Flex, Row, Space, Table, Timeline, Typography } from 'antd'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getRepositoryOverview } from '../api/repositories'
 import { DataTable, StatusTag, SummaryCard } from '../components/common'
@@ -40,7 +40,7 @@ function RepositoryDetail() {
   const recentActivities = activities.slice(0, 6)
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <RepositoryHero repository={repository} />
 
       <Row gutter={[12, 12]}>
@@ -67,29 +67,25 @@ function RepositoryDetail() {
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={14}>
           <Card title="Next up">
-            <List
-              dataSource={nextUp}
-              locale={{ emptyText: '현재 조치가 필요한 항목이 없습니다.' }}
-              renderItem={(item) => (
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={<CheckCircleOutlined className="next-up-icon" />}
-                    title={
+            {nextUp.length ? (
+              <Space orientation="vertical" size={12} style={{ width: '100%' }}>
+                {nextUp.map((item) => (
+                  <Flex key={item.id} align="flex-start" gap={12}>
+                    <CheckCircleOutlined className="next-up-icon" />
+                    <Space orientation="vertical" size={2}>
                       <Flex align="center" gap={8} wrap="wrap">
                         <Text strong>{item.title}</Text>
                         <StatusTag status={item.status} />
                       </Flex>
-                    }
-                    description={
-                      <Space direction="vertical" size={2}>
-                        <Text type="secondary">{item.type}</Text>
-                        <Text type="secondary">{item.description}</Text>
-                      </Space>
-                    }
-                  />
-                </List.Item>
-              )}
-            />
+                      <Text type="secondary">{item.type}</Text>
+                      <Text type="secondary">{item.description}</Text>
+                    </Space>
+                  </Flex>
+                ))}
+              </Space>
+            ) : (
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="현재 조치가 필요한 항목이 없습니다." />
+            )}
           </Card>
         </Col>
 
@@ -193,7 +189,7 @@ function RepositoryDetail() {
               items={recentActivities.map((activity) => ({
                 dot: <GitlabOutlined />,
                 children: (
-                  <Space direction="vertical" size={2}>
+                  <Space orientation="vertical" size={2}>
                     <Text>{activity.message}</Text>
                     <Text type="secondary">
                       {activity.actor} · {activity.createdAt}
