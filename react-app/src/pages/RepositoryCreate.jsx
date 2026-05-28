@@ -28,6 +28,7 @@ export default function RepositoryCreate() {
   const [selectedTemplateId, setSelectedTemplateId] = useState(null)
   const [memberEmail, setMemberEmail] = useState('')
   const [members, setMembers] = useState([])
+  const [submitted, setSubmitted] = useState(false)
   const selectedTemplate = templates.find((template) => template.id === selectedTemplateId)
   const canCreateRepositoryRequest = auth.isAdmin || auth.isInternalUser
 
@@ -63,7 +64,7 @@ export default function RepositoryCreate() {
       cancelText: '취소',
       onOk: () => {
         message.success('저장소 생성 요청이 제출되었어요. 관리자가 검토한 후 승인 여부가 반영됩니다.')
-        navigate('/repositories')
+        setSubmitted(true)
       },
     })
   }
@@ -75,6 +76,27 @@ export default function RepositoryCreate() {
         title="접근 권한이 없습니다."
         subTitle="저장소 생성 요청은 Admin 또는 Internal User만 사용할 수 있어요."
         extra={<Button type="primary" onClick={() => navigate('/repositories')}>저장소 목록으로 이동</Button>}
+      />
+    )
+  }
+
+  if (submitted) {
+    return (
+      <Result
+        status="success"
+        title="저장소 생성 요청되었습니다."
+        subTitle={(
+          <>
+            요청은 관리자 검토 후에 승인 상태로 변경됩니다.
+            <br />
+            승인 완료 시 저장소 목록에서 상세화면으로 진입할 수 있습니다.
+          </>
+        )}
+        extra={(
+          <Button type="primary" onClick={() => navigate('/repositories')}>
+            저장소 목록으로 이동하기
+          </Button>
+        )}
       />
     )
   }
