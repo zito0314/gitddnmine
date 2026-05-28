@@ -343,16 +343,27 @@ export function getRepositoryBranches(repositoryId) {
     ...pipelines.map((pipeline) => pipeline.branch),
   ].filter(Boolean))
 
-  return [...branchNames].map((name) => ({
-    name,
-    protected: name === repository?.defaultBranch || name === 'develop',
-    default: name === repository?.defaultBranch,
-    status: name === repository?.defaultBranch ? 'active' : name.includes('feature') ? 'active' : 'stale',
-    lastCommit: repository?.branches?.find((branch) => branch.name === name)?.latestCommit?.sha ?? commits.find((commit) => commit.branch === name)?.sha ?? '91a42df0',
-    lastAuthor: repository?.branches?.find((branch) => branch.name === name)?.latestCommit?.author ?? commits.find((commit) => commit.branch === name)?.author ?? 'System',
-    updatedAt: repository?.branches?.find((branch) => branch.name === name)?.latestCommit?.timeText ?? commits.find((commit) => commit.branch === name)?.createdAt ?? repository?.updatedAt ?? '-',
-    latestCommit: repository?.branches?.find((branch) => branch.name === name)?.latestCommit ?? normalizeBranchCommit(commits.find((commit) => commit.branch === name)),
-  }))
+  return [...branchNames].map((name) => {
+    const mockBranch = repository?.branches?.find((branch) => branch.name === name)
+    const commit = commits.find((commit) => commit.branch === name)
+    const isDefault = name === repository?.defaultBranch
+    const isProtected = mockBranch?.isProtected ?? (isDefault || name === 'develop')
+
+    return {
+      name,
+      protected: isProtected,
+      default: isDefault,
+      isDefault,
+      isProtected,
+      status: isDefault ? 'active' : name.includes('feature') || name.includes('hotfix') ? 'active' : 'stale',
+      lastCommit: mockBranch?.latestCommit?.sha ?? commit?.sha ?? '91a42df0',
+      lastAuthor: mockBranch?.latestCommit?.author ?? commit?.author ?? 'System',
+      updatedAt: mockBranch?.updatedAt ?? mockBranch?.latestCommit?.timeText ?? commit?.createdAt ?? repository?.updatedAt ?? '-',
+      latestCommit: mockBranch?.latestCommit ?? normalizeBranchCommit(commit),
+      aheadCount: mockBranch?.aheadCount ?? 0,
+      behindCount: mockBranch?.behindCount ?? 0,
+    }
+  })
 }
 
 function normalizeBranchCommit(commit) {

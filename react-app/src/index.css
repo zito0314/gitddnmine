@@ -1633,6 +1633,38 @@ body {
   width: 100%;
 }
 
+/* Branch List Page */
+.branch-list-page {}
+
+.branch-filter-bar {}
+
+.branch-row {
+  padding: 14px 0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.branch-row:hover {
+  background: var(--ant-color-bg-text-hover, rgba(0, 0, 0, 0.04));
+}
+
+.branch-name-text {
+  word-break: break-all;
+}
+
+.branch-commit-meta {
+  min-width: 0;
+}
+
+.branch-divergence {
+  white-space: nowrap;
+}
+
+.branch-actions {
+  flex-shrink: 0;
+}
+
 /* Tag List Page */
 .tag-list-page {}
 

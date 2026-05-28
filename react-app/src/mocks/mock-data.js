@@ -1571,25 +1571,26 @@ const mockData = {
       ],
       "branches": [
         {
-          "name": "feature/payment-exception",
+          "name": "main",
+          "isDefault": true,
+          "isProtected": true,
+          "aheadCount": 0,
+          "behindCount": 0,
+          "updatedAt": "2026-05-28",
           "latestCommit": {
-            "message": "로그인 정책 예외 케이스 응답값 개선",
-            "author": "김동현",
-            "timeText": "2시간 전",
-            "sha": "7e14d754"
-          }
-        },
-        {
-          "name": "feature/login-policy",
-          "latestCommit": {
-            "message": "인증 정책 응답값 개선",
-            "author": "Jito",
-            "timeText": "20분 전",
-            "sha": "7e14d754"
+            "message": "Branch policy validation flow 정리",
+            "author": "Min",
+            "timeText": "20분 전 업데이트",
+            "sha": "91a42df0"
           }
         },
         {
           "name": "develop",
+          "isDefault": false,
+          "isProtected": true,
+          "aheadCount": 12,
+          "behindCount": 0,
+          "updatedAt": "2026-05-28",
           "latestCommit": {
             "message": "develop 브랜치 빌드 안정화",
             "author": "김동현",
@@ -1598,12 +1599,73 @@ const mockData = {
           }
         },
         {
-          "name": "main",
+          "name": "feature/login-policy",
+          "isDefault": false,
+          "isProtected": false,
+          "aheadCount": 3,
+          "behindCount": 8,
+          "updatedAt": "2026-05-27",
           "latestCommit": {
-            "message": "Branch policy validation flow 정리",
-            "author": "Min",
-            "timeText": "2시간 전",
-            "sha": "91a42df0"
+            "message": "인증 정책 응답값 개선",
+            "author": "Jito",
+            "timeText": "어제",
+            "sha": "7e14d754"
+          }
+        },
+        {
+          "name": "feature/payment-exception",
+          "isDefault": false,
+          "isProtected": false,
+          "aheadCount": 5,
+          "behindCount": 12,
+          "updatedAt": "2026-05-27",
+          "latestCommit": {
+            "message": "로그인 정책 예외 케이스 응답값 개선",
+            "author": "김동현",
+            "timeText": "어제",
+            "sha": "7e14d754"
+          }
+        },
+        {
+          "name": "release/1.2.0",
+          "isDefault": false,
+          "isProtected": true,
+          "aheadCount": 999,
+          "behindCount": 34,
+          "updatedAt": "2026-05-26",
+          "latestCommit": {
+            "message": "운영 반영 전 영향도 점검 추가",
+            "author": "Kim",
+            "timeText": "2026.05.26",
+            "sha": "8f6d2ab1"
+          }
+        },
+        {
+          "name": "hotfix/auth-timeout",
+          "isDefault": false,
+          "isProtected": false,
+          "aheadCount": 2,
+          "behindCount": 42,
+          "updatedAt": "2026-05-25",
+          "latestCommit": {
+            "message": "세션 만료 처리 긴급 수정",
+            "author": "Park",
+            "timeText": "2026.05.25",
+            "sha": "4ac81e02"
+          }
+        },
+        {
+          "name": "feature/auth-policy",
+          "isDefault": false,
+          "isProtected": false,
+          "aheadCount": 7,
+          "behindCount": 14,
+          "updatedAt": "2026-05-24",
+          "latestCommit": {
+            "message": "인증 정책 테스트 케이스 보강",
+            "author": "Jito",
+            "timeText": "2026.05.24",
+            "sha": "4ac81e02"
           }
         }
       ],

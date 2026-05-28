@@ -178,7 +178,7 @@ export const UI_TEXT = {
     },
     repositoryBranches: {
       title: REPOSITORY_NAVIGATION_LABELS.branches,
-      description: '브랜치 상태, 보호 정책, 최신 커밋을 확인하는 화면',
+      description: '현재 Repository의 Branch 이력과 최신 Commit 상태를 확인합니다.',
     },
     repositoryGitGraph: {
       title: REPOSITORY_NAVIGATION_LABELS.gitGraph,
