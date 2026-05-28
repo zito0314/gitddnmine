@@ -26,7 +26,6 @@ import {
   Flex,
   Input,
   Layout,
-  List,
   Modal,
   Segmented,
   Space,
@@ -239,7 +238,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
     value: item.href,
     label: (
       <Flex align="flex-start" justify="space-between" gap={12} className="global-search-option">
-        <Space direction="vertical" size={2}>
+        <Space orientation="vertical" size={2}>
           <Flex align="center" gap={6} wrap="wrap">
             <Tag>{item.type}</Tag>
             <Text strong>{item.title}</Text>
@@ -316,7 +315,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
       key: 'profile',
       disabled: true,
       label: (
-        <Space direction="vertical" size={0}>
+        <Space orientation="vertical" size={0}>
           <Text strong>{currentUser?.name}</Text>
           <Text type="secondary">{currentUser?.role} · {selectedOrganization?.label}</Text>
           <Text type="secondary">{currentUser?.email}</Text>
@@ -451,32 +450,33 @@ function TopHeader({ collapsed, onToggleSidebar }) {
         size="default"
         extra={<Button size="small" onClick={markAllNotificationsRead}>{UI_TEXT.notifications.markAllRead}</Button>}
       >
-        <List
-          dataSource={notifications}
-          locale={{ emptyText: UI_TEXT.notifications.empty }}
-          renderItem={(notification) => {
+        {notifications.length ? (
+          <Space orientation="vertical" size={8} style={{ width: '100%' }}>
+            {notifications.map((notification) => {
             const read = readNotificationIds.includes(notification.id)
             return (
-              <List.Item onClick={() => openNotification(notification)} className="notification-item">
-                <List.Item.Meta
-                  title={
-                    <Flex align="center" gap={8} wrap="wrap">
-                      <Text strong={!read}>{notification.title}</Text>
-                      <StatusTag status={notification.severity} />
-                      {!read ? <Badge status="processing" /> : null}
-                    </Flex>
-                  }
-                  description={
-                    <Space direction="vertical" size={4}>
-                      <Text type="secondary">{notification.message}</Text>
-                      <Text type="secondary">{notification.createdAt}</Text>
-                    </Space>
-                  }
-                />
-              </List.Item>
+              <Space
+                key={notification.id}
+                direction="vertical"
+                size={4}
+                onClick={() => openNotification(notification)}
+                className="notification-item"
+                style={{ width: '100%' }}
+              >
+                <Flex align="center" gap={8} wrap="wrap">
+                  <Text strong={!read}>{notification.title}</Text>
+                  <StatusTag status={notification.severity} />
+                  {!read ? <Badge status="processing" /> : null}
+                </Flex>
+                <Text type="secondary">{notification.message}</Text>
+                <Text type="secondary">{notification.createdAt}</Text>
+              </Space>
             )
-          }}
-        />
+            })}
+          </Space>
+        ) : (
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.notifications.empty} />
+        )}
       </Drawer>
 
       <Modal
@@ -485,7 +485,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
         onCancel={() => setHelpOpen(false)}
         footer={<Button type="primary" onClick={() => setHelpOpen(false)}>OK</Button>}
       >
-        <Space direction="vertical" size={12}>
+        <Space orientation="vertical" size={12}>
           <Text>{UI_TEXT.help.demoGuideBody}</Text>
           <Divider />
           <Text type="secondary">{UI_TEXT.topHeader.helpMockNotice}</Text>

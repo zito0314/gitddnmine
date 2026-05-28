@@ -1,5 +1,5 @@
 import { StarFilled } from '../components/icons'
-import { Button, Card, Col, ConfigProvider, Flex, List, Row, Space, Tabs, Typography } from 'antd'
+import { Button, Card, Col, ConfigProvider, Empty, Flex, Row, Space, Tabs, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -86,7 +86,7 @@ function Dashboard() {
   const visiblePrompts = prompts.slice(0, 4)
 
   return (
-    <Space direction="vertical" size={32} className="dashboard-home">
+    <Space orientation="vertical" size={32} className="dashboard-home">
       <PageHeader title={UI_TEXT.pages.dashboard.title} />
 
       <DashboardAiChat
@@ -99,7 +99,7 @@ function Dashboard() {
       <ConfigProvider theme={dashboardCardTheme}>
         <Row gutter={[16, 16]} align="top">
           <Col xs={24} xl={17}>
-            <Space direction="vertical" size={16} style={{ width: '100%' }}>
+            <Space orientation="vertical" size={16} style={{ width: '100%' }}>
               <Card
                 className="dashboard-work-card"
                 title={
@@ -115,16 +115,26 @@ function Dashboard() {
                   onChange={setNextUpTab}
                   items={nextUpTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
                 />
-                <List
-                  dataSource={filteredNextUp.slice(0, 3)}
-                  locale={{ emptyText: UI_TEXT.messages.empty.table }}
-                  renderItem={(item) => (
-                    <List.Item
-                      className="dashboard-next-item"
-                      onClick={() => navigate(item.href)}
-                      actions={[
+                {filteredNextUp.length ? (
+                  <Space orientation="vertical" size={0} style={{ width: '100%' }}>
+                    {filteredNextUp.slice(0, 3).map((item) => (
+                      <Flex
+                        key={item.key}
+                        className="dashboard-next-item"
+                        align="center"
+                        justify="space-between"
+                        gap={12}
+                        wrap="wrap"
+                        onClick={() => navigate(item.href)}
+                      >
+                        <Space orientation="vertical" size={4}>
+                          <Flex align="center" gap={8} wrap="wrap">
+                            <Text strong>{item.title}</Text>
+                            <StatusTag status={item.status} />
+                          </Flex>
+                          <Text type="secondary">{item.target} · {item.updatedAt}</Text>
+                        </Space>
                         <Button
-                          key="action"
                           type={item.type === 'Merge Request' ? 'primary' : 'default'}
                           size="small"
                           onClick={(event) => {
@@ -133,21 +143,13 @@ function Dashboard() {
                           }}
                         >
                           {getActionLabel(item)}
-                        </Button>,
-                      ]}
-                    >
-                      <List.Item.Meta
-                        title={
-                          <Flex align="center" gap={8} wrap="wrap">
-                            <Text strong>{item.title}</Text>
-                            <StatusTag status={item.status} />
-                          </Flex>
-                        }
-                        description={`${item.target} · ${item.updatedAt}`}
-                      />
-                    </List.Item>
-                  )}
-                />
+                        </Button>
+                      </Flex>
+                    ))}
+                  </Space>
+                ) : (
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.messages.empty.table} />
+                )}
               </Card>
 
               <Card
@@ -160,20 +162,27 @@ function Dashboard() {
                   onChange={setActivityTab}
                   items={activityTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
                 />
-                <List
-                  className="dashboard-activity-list"
-                  dataSource={filteredActivities.slice(0, 4)}
-                  locale={{ emptyText: UI_TEXT.messages.empty.table }}
-                  renderItem={(activity) => (
-                    <List.Item className="dashboard-activity-item" onClick={() => navigate(activity.href)}>
-                      <List.Item.Meta
-                        avatar={<BadgeDot />}
-                        title={<Text>{activity.actor}님이 <Link to={activity.href}>{activity.message}</Link></Text>}
-                        description={`${activity.repositoryName} · ${activity.createdAt}`}
-                      />
-                    </List.Item>
-                  )}
-                />
+                {filteredActivities.length ? (
+                  <Space orientation="vertical" size={0} className="dashboard-activity-list">
+                    {filteredActivities.slice(0, 4).map((activity) => (
+                      <Flex
+                        key={activity.id}
+                        className="dashboard-activity-item"
+                        align="flex-start"
+                        gap={12}
+                        onClick={() => navigate(activity.href)}
+                      >
+                        <BadgeDot />
+                        <Space orientation="vertical" size={2}>
+                          <Text>{activity.actor}님이 <Link to={activity.href}>{activity.message}</Link></Text>
+                          <Text type="secondary">{activity.repositoryName} · {activity.createdAt}</Text>
+                        </Space>
+                      </Flex>
+                    ))}
+                  </Space>
+                ) : (
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.messages.empty.table} />
+                )}
               </Card>
             </Space>
           </Col>
@@ -190,22 +199,28 @@ function Dashboard() {
                   { key: 'starred', label: 'Starred Repository' },
                 ]}
               />
-              <List
-                dataSource={quickAccessRepositories.slice(0, 7)}
-                locale={{ emptyText: UI_TEXT.messages.empty.table }}
-                renderItem={(repository) => (
-                  <List.Item
-                    className="dashboard-quick-item"
-                    onClick={() => navigate(`/repositories/${repository.id}`)}
-                  actions={[<StarFilled key="star" className="dashboard-quick-star" />]}
-                >
-                  <List.Item.Meta
-                      avatar={<RepositoryAvatar repository={repository} size={24} className="dashboard-repo-avatar" />}
-                      title={<Link to={`/repositories/${repository.id}`}>{repository.name}</Link>}
-                    />
-                  </List.Item>
-                )}
-              />
+              {quickAccessRepositories.length ? (
+                <Space orientation="vertical" size={0} style={{ width: '100%' }}>
+                  {quickAccessRepositories.slice(0, 7).map((repository) => (
+                    <Flex
+                      key={repository.id}
+                      className="dashboard-quick-item"
+                      align="center"
+                      justify="space-between"
+                      gap={8}
+                      onClick={() => navigate(`/repositories/${repository.id}`)}
+                    >
+                      <Space size={8}>
+                        <RepositoryAvatar repository={repository} size={24} className="dashboard-repo-avatar" />
+                        <Link to={`/repositories/${repository.id}`}>{repository.name}</Link>
+                      </Space>
+                      <StarFilled className="dashboard-quick-star" />
+                    </Flex>
+                  ))}
+                </Space>
+              ) : (
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.messages.empty.table} />
+              )}
             </Card>
           </Col>
         </Row>

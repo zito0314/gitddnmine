@@ -25,9 +25,9 @@ import {
   Col,
   Divider,
   Dropdown,
+  Empty,
   Flex,
   Input,
-  List,
   Row,
   Segmented,
   Select,
@@ -125,7 +125,7 @@ export default function RepositoryFiles() {
       dataIndex: 'lastCommit',
       ellipsis: true,
       render: (value, record) => (
-        <Space direction="vertical" size={0}>
+        <Space orientation="vertical" size={0}>
           <Text>{record.type === 'Folder' ? `${value} 파일 업데이트` : latestCommit.title}</Text>
           <Text type="secondary" code>{value}</Text>
         </Space>
@@ -150,19 +150,18 @@ export default function RepositoryFiles() {
       />
       <Divider />
       <Title level={5}>Open with</Title>
-      <List
-        size="small"
-        dataSource={[
+      <Space orientation="vertical" size={8} style={{ width: '100%' }}>
+        {[
           { title: 'Web IDE', actions: [<Button key="open" size="small">.</Button>] },
           { title: 'Visual Studio Code', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
           { title: 'IntelliJ IDEA', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
-        ]}
-        renderItem={(item) => (
-          <List.Item actions={item.actions}>
+        ].map((item) => (
+          <Flex key={item.title} align="center" justify="space-between" gap={12}>
             <Text>{item.title}</Text>
-          </List.Item>
-        )}
-      />
+            <Space>{item.actions}</Space>
+          </Flex>
+        ))}
+      </Space>
       <Divider />
       <Title level={5}>Download source code</Title>
       <Segmented block options={downloadOptions} />
@@ -190,7 +189,7 @@ export default function RepositoryFiles() {
 
       <Row gutter={[20, 20]}>
         <Col xs={24} xl={17}>
-          <Space direction="vertical" size={16} style={{ width: '100%' }}>
+          <Space orientation="vertical" size={16} style={{ width: '100%' }}>
             <Flex align="center" justify="space-between" gap={12} wrap="wrap">
               <Select
                 className="repository-branch-select"
@@ -232,7 +231,7 @@ export default function RepositoryFiles() {
               <Flex align="center" justify="space-between" gap={16} wrap="wrap">
                 <Space size={12}>
                   <Avatar src="https://api.dicebear.com/7.x/initials/svg?seed=Kim" />
-                  <Space direction="vertical" size={2}>
+                  <Space orientation="vertical" size={2}>
                     <Text strong>{latestCommit.title}</Text>
                     <Text type="secondary">작성자: {latestCommit.author} · {latestCommit.createdAt}</Text>
                   </Space>
@@ -274,39 +273,36 @@ export default function RepositoryFiles() {
 
         <Col xs={24} xl={7}>
           <Card className="repository-info-panel" title="저장소 정보">
-            <List
-              size="small"
-              dataSource={repositoryInfoItems}
-              renderItem={(item) => (
-                <List.Item>
+            <Space orientation="vertical" size={10} style={{ width: '100%' }}>
+              {repositoryInfoItems.map((item) => (
+                <Flex key={item.key} align="center">
                   <Space>
                     {item.icon}
                     <Text strong>{item.label}</Text>
                   </Space>
-                </List.Item>
-              )}
-            />
+                </Flex>
+              ))}
+            </Space>
             <Divider />
-            <Space direction="vertical" size={6}>
+            <Space orientation="vertical" size={6}>
               <Text strong>생성일</Text>
               <Text type="secondary">2024.06.13</Text>
             </Space>
             <Divider />
             <Title level={5}>최근 운영 이관</Title>
-            <List
-              className="repository-transfer-list"
-              dataSource={deploymentTransfers.slice(0, 3)}
-              locale={{ emptyText: '진행 중인 운영이관이 없습니다.' }}
-              renderItem={(item) => (
-                <List.Item>
-                  <Space direction="vertical" size={4}>
+            {deploymentTransfers.length ? (
+              <Space orientation="vertical" size={14} className="repository-transfer-list">
+                {deploymentTransfers.slice(0, 3).map((item) => (
+                  <Space key={item.id} direction="vertical" size={4}>
                     <Text strong>({getTransferStatusLabel(item)}) {item.deploymentPlan?.changeReason ?? item.id}</Text>
                     <Text type="secondary">{item.deploymentPlan?.checklistNote ?? '운영 반영 검토가 진행 중입니다.'}</Text>
                     <Button type="link" size="small">진행 현황 보기 →</Button>
                   </Space>
-                </List.Item>
-              )}
-            />
+                ))}
+              </Space>
+            ) : (
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="진행 중인 운영이관이 없습니다." />
+            )}
           </Card>
         </Col>
       </Row>

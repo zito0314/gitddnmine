@@ -830,20 +830,16 @@ body {
   padding: 8px 0;
 }
 
-.dashboard-next-item.ant-list-item {
+.dashboard-next-item {
   min-height: 78px;
-  padding: 16px 0 !important;
+  padding: 16px 0;
   cursor: pointer;
 }
 
-.dashboard-next-item.ant-list-item:hover,
-.dashboard-quick-item.ant-list-item:hover,
-.dashboard-activity-item.ant-list-item:hover {
+.dashboard-next-item:hover,
+.dashboard-quick-item:hover,
+.dashboard-activity-item:hover {
   background: color-mix(in srgb, var(--gitddn-primary) 5%, transparent);
-}
-
-.dashboard-next-item .ant-list-item-meta-title {
-  margin-bottom: 4px;
 }
 
 .dashboard-quick-card .ant-tabs-nav-list {
@@ -861,20 +857,12 @@ body {
   text-align: center;
 }
 
-.dashboard-quick-item.ant-list-item {
-  padding: 9px 0 !important;
+.dashboard-quick-item {
+  padding: 9px 0;
   cursor: pointer;
 }
 
-.dashboard-quick-item .ant-list-item-meta {
-  align-items: center;
-}
-
-.dashboard-quick-item .ant-list-item-meta-title {
-  margin: 0;
-}
-
-.dashboard-quick-item .ant-list-item-meta-title a {
+.dashboard-quick-item a {
   color: var(--gitddn-text-primary);
   font-weight: 700;
 }
@@ -902,8 +890,8 @@ body {
   content: '';
 }
 
-.dashboard-activity-item.ant-list-item {
-  padding: 12px 0 !important;
+.dashboard-activity-item {
+  padding: 12px 0;
   cursor: pointer;
 }
 
@@ -992,11 +980,7 @@ body {
   top: 88px;
 }
 
-.repository-info-panel .ant-list-item {
-  padding-inline: 0;
-}
-
-.repository-transfer-list .ant-list-item {
+.repository-transfer-list {
   align-items: flex-start;
   padding-block: 14px;
 }
@@ -1620,11 +1604,6 @@ body {
   line-height: 40px;
 }
 
-.repository-list .ant-list-item-meta {
-  min-width: 0;
-  flex: 1;
-}
-
 .repository-list-disabled-name {
   color: var(--gitddn-text-secondary);
 }
@@ -1633,7 +1612,7 @@ body {
   width: 100%;
 }
 
-/* Branch List Page */
+/* Branch Page */
 .branch-list-page {}
 
 .branch-filter-bar {}
@@ -1665,7 +1644,7 @@ body {
   flex-shrink: 0;
 }
 
-/* Tag List Page */
+/* Tag Page */
 .tag-list-page {}
 
 .tag-filter-tabs .ant-tabs-nav { margin-bottom: 0; }

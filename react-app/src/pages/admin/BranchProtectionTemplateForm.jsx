@@ -72,7 +72,7 @@ export default function BranchProtectionTemplateForm() {
   }
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader title={isEdit ? 'Edit Branch Protection Template' : 'Create Branch Protection Template'} description="관리자가 브랜치 보호 정책 템플릿을 생성하거나 수정합니다." />
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={16}>
@@ -111,7 +111,7 @@ export default function BranchProtectionTemplateForm() {
           <Card title="Preview">
             <Title level={4}>{watchedValues?.name || initialValues.name || 'Branch Protection Template'}</Title>
             <Text type="secondary">{watchedValues?.description || initialValues.description || '정책 설명이 표시됩니다.'}</Text>
-            <ListPreview items={preview.length ? preview : buildSummary(initialValues)} />
+            <SummaryPreview items={preview.length ? preview : buildSummary(initialValues)} />
           </Card>
         </Col>
       </Row>
@@ -119,6 +119,6 @@ export default function BranchProtectionTemplateForm() {
   )
 }
 
-function ListPreview({ items }) {
-  return <Space direction="vertical" style={{ marginTop: 16 }}>{items.map((item) => <Text key={item}>- {item}</Text>)}</Space>
+function SummaryPreview({ items }) {
+  return <Space orientation="vertical" style={{ marginTop: 16 }}>{items.map((item) => <Text key={item}>- {item}</Text>)}</Space>
 }
