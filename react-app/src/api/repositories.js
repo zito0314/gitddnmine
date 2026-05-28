@@ -7,6 +7,10 @@ export function getRepositories() {
   return sortRepositoriesByFavorite(filterRepositoriesByAccess(repositories, getStoredAuthUser()))
 }
 
+export function getRepositoryRequests() {
+  return getMockSlice((data) => data.repositories.requests, [])
+}
+
 export function getRepositoryById(repositoryId) {
   const repositories = getRepositories()
   const repository = findById(repositories, repositoryId)
