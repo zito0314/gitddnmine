@@ -49,19 +49,31 @@ export function getRepositoryPipelineSummary(repositoryId) {
 
 export function getPipelineJobs(pipelineId) {
   const jobs = getJobs().filter((job) => String(job.pipelineId) === String(pipelineId))
-  if (jobs.length > 0) return jobs
+  if (jobs.length > 0) {
+    return jobs.map((job) => ({
+      ...job,
+      id: String(job.id) === String(pipelineId) ? `${pipelineId}-${job.name}` : job.id,
+      routeId: String(job.id) === String(pipelineId) ? `${pipelineId}-${job.name}` : job.id,
+      elapsedText: job.elapsedText ?? job.duration ?? '-',
+      runtimeText: job.runtimeText ?? job.duration ?? '-',
+      finishedAt: job.finishedAt ?? (job.status === 'pending' || job.status === 'created' ? '-' : job.startedAt),
+    }))
+  }
 
   const pipeline = getPipelineDetail(pipelineId)
   return (
     pipeline?.stages?.flatMap((stage) =>
       (stage.jobs ?? []).map((job, index) => ({
         id: `${pipelineId}-${stage.name}-${job.name}-${index}`,
+        routeId: `${pipelineId}-${stage.name}-${job.name}-${index}`,
         name: job.name,
         stage: stage.name,
         status: job.status,
         statusLabel: job.status,
         runner: 'runner-secure-02',
         duration: job.status === 'pending' || job.status === 'created' ? '-' : '00:32',
+        runtimeText: job.status === 'pending' || job.status === 'created' ? '-' : '00:32',
+        elapsedText: job.status === 'pending' || job.status === 'created' ? '-' : '00:32',
         startedAt: pipeline.updatedAt,
         finishedAt: job.status === 'pending' || job.status === 'created' ? '-' : '방금',
         pipelineId,
@@ -75,6 +87,19 @@ export function getPipelineJobs(pipelineId) {
       })),
     ) ?? []
   )
+}
+
+export function getJobById(pipelineId, jobId) {
+  const decodedJobId = decodeURIComponent(String(jobId ?? ''))
+  return (
+    getPipelineJobs(pipelineId).find((job) =>
+      [job.id, job.routeId, job.name].some((value) => String(value) === decodedJobId),
+    ) ?? null
+  )
+}
+
+export function getJobsByStage(pipelineId, stageId) {
+  return getPipelineJobs(pipelineId).filter((job) => String(job.stage) === String(stageId))
 }
 
 export function getPipelineStages(pipelineId) {

@@ -1104,8 +1104,120 @@ body {
   border-top: 1px solid var(--gitddn-border-color);
 }
 
+.pipeline-stage-job-row {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 2px 4px;
+}
+
+.pipeline-stage-job-row:hover {
+  background: color-mix(in srgb, var(--gitddn-primary) 8%, transparent);
+}
+
 .gitddn-code-preview-log.ant-typography code {
   width: 100%;
+}
+
+.job-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(280px, 3fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.job-detail-main,
+.job-side-panel {
+  min-width: 0;
+}
+
+.job-side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.job-log-toolbar {
+  margin-bottom: 12px;
+}
+
+.job-log-meta {
+  margin-bottom: 12px;
+}
+
+.job-log-content {
+  max-height: min(62vh, 680px);
+  overflow: auto;
+  border: 1px solid var(--gitddn-border-color);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--gitddn-content-bg) 16%, #111827);
+  color: #e5e7eb;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 10px 0;
+}
+
+.job-log-line {
+  display: grid;
+  grid-template-columns: 52px 78px minmax(0, 1fr);
+  gap: 12px;
+  padding: 2px 14px;
+}
+
+.job-log-line .ant-typography {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.job-log-line-error {
+  background: color-mix(in srgb, var(--ant-color-error) 20%, transparent);
+  color: #fecaca;
+}
+
+.job-log-line-active {
+  outline: 1px solid var(--ant-color-warning);
+  outline-offset: -1px;
+}
+
+.job-log-number,
+.job-log-time {
+  color: color-mix(in srgb, currentColor 64%, transparent) !important;
+}
+
+.job-log-message {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.job-log-highlight {
+  border-radius: 3px;
+  background: var(--ant-color-warning);
+  color: var(--gitddn-text-primary);
+  padding: 0 2px;
+}
+
+.job-side-divider {
+  border-top: 1px solid var(--gitddn-border-color);
+}
+
+.job-branch-tag {
+  cursor: pointer;
+}
+
+.job-related-item {
+  cursor: pointer;
+}
+
+.job-related-item-selected {
+  border-color: var(--gitddn-primary);
+  background: color-mix(in srgb, var(--gitddn-primary) 8%, transparent);
+}
+
+@media (max-width: 960px) {
+  .job-detail-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
 .security-risk-row > td {

@@ -26,6 +26,7 @@ import MergeRequestCreate from '../pages/MergeRequestCreate'
 import MergeRequestDetail from '../pages/MergeRequestDetail'
 import PipelineList from '../pages/PipelineList'
 import PipelineDetail from '../pages/PipelineDetail'
+import JobDetail from '../pages/JobDetail'
 import SecurityList from '../pages/SecurityList'
 import SecurityDetail from '../pages/SecurityDetail'
 import AuditLog from '../pages/AuditLog'
@@ -85,6 +86,7 @@ export const routes = [
           { path: 'merge-requests/:mrId', element: <MergeRequestDetail /> },
           { path: 'pipelines', element: <RepositoryPipelines /> },
           { path: 'pipelines/:pipelineId', element: <PipelineDetail /> },
+          { path: 'pipelines/:pipelineId/jobs/:jobId', element: <JobDetail /> },
           { path: 'deployment-transfer', element: <RepositoryDeploymentTransfers /> },
           { path: 'deployment-transfer/new', element: <DeploymentTransferCreate /> },
           { path: 'deployment-transfer/:transferId', element: <DeploymentTransferDetail /> },
@@ -103,6 +105,7 @@ export const routes = [
       { path: 'merge-requests/:mrId', element: <MergeRequestDetail /> },
       { path: 'pipelines', element: <PipelineList /> },
       { path: 'pipelines/:pipelineId', element: <PipelineDetail /> },
+      { path: 'pipelines/:pipelineId/jobs/:jobId', element: <JobDetail /> },
       { path: 'deployment-transfer', element: <DeploymentTransferList /> },
       { path: 'deployment-transfer/new', element: <DeploymentTransferCreate /> },
       { path: 'deployment-transfer/:transferId', element: <DeploymentTransferDetail /> },

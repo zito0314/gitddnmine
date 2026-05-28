@@ -109,6 +109,14 @@ function buildStageJobs(stages, jobs) {
   }))
 }
 
+function getJobDetailPath(repositoryId, pipeline, job) {
+  const pipelinePath = repositoryId || pipeline?.repo
+    ? `/repositories/${repositoryId ?? pipeline.repo}/pipelines/${pipeline.id}`
+    : `/pipelines/${pipeline.id}`
+
+  return `${pipelinePath}/jobs/${encodeURIComponent(job.routeId ?? job.id ?? job.name)}`
+}
+
 function PipelineDetail() {
   const { repositoryId, pipelineId } = useParams()
   const navigate = useNavigate()
@@ -165,11 +173,15 @@ function PipelineDetail() {
     })
   }
 
+  const openJobDetail = (job) => {
+    navigate(getJobDetailPath(repositoryId, pipeline, job))
+  }
+
   const handleJobAction = (job) => {
     const status = normalizeStatus(job.status)
     if (status === 'manual') message.success('수동 Pipeline을 실행했어요.')
     else if (status === 'running') message.success('Pipeline 실행을 취소했어요.')
-    else if (status === 'passed') setSelectedJob(job)
+    else if (status === 'passed') openJobDetail(job)
     else message.success('Pipeline을 다시 실행했어요.')
   }
 
@@ -181,7 +193,7 @@ function PipelineDetail() {
         <Space orientation="vertical" size={16} style={{ width: '100%' }}>
           <Segmented options={['Stage', 'Job Dependencies']} value={activePipelineView} onChange={setActivePipelineView} />
           {activePipelineView === 'Stage' ? (
-            <StageMap stages={stageCards} onStageClick={setSelectedStage} />
+            <StageMap stages={stageCards} onJobClick={openJobDetail} onStageClick={setSelectedStage} />
           ) : (
             <Card>
               <Empty description="Job 의존성 그래프는 추후 연결될 예정입니다." />
@@ -194,7 +206,7 @@ function PipelineDetail() {
       key: 'jobs',
       label: 'Jobs',
       children: (
-        <JobsTable jobs={jobs} onLog={setSelectedJob} onAction={handleJobAction} />
+        <JobsTable jobs={jobs} onLog={openJobDetail} onAction={handleJobAction} />
       ),
     },
   ]
@@ -280,7 +292,7 @@ function PipelineDetail() {
         </Space>
       </Row>
 
-      <StageDetailDrawer stage={selectedStage} onClose={() => setSelectedStage(null)} onLog={setSelectedJob} />
+      <StageDetailDrawer stage={selectedStage} onClose={() => setSelectedStage(null)} onLog={openJobDetail} />
       <JobLogDrawer job={selectedJob} onClose={() => setSelectedJob(null)} />
     </Space>
   )
@@ -302,7 +314,7 @@ function PipelineStatusAlert({ status }) {
   return null
 }
 
-function StageMap({ stages, onStageClick }) {
+function StageMap({ stages, onJobClick, onStageClick }) {
   if (!stages.length) return <Empty description="표시할 Stage가 없어요." />
 
   return (
@@ -310,7 +322,7 @@ function StageMap({ stages, onStageClick }) {
       <Flex gap={12} wrap="wrap" align="stretch">
         {stages.map((stage, index) => (
           <Flex key={stage.name} align="center" gap={12}>
-            <StageCard stage={stage} onClick={() => onStageClick(stage)} />
+            <StageCard stage={stage} onClick={() => onStageClick(stage)} onJobClick={onJobClick} />
             {index < stages.length - 1 ? <div className="pipeline-stage-connector" /> : null}
           </Flex>
         ))}
@@ -319,7 +331,7 @@ function StageMap({ stages, onStageClick }) {
   )
 }
 
-function StageCard({ stage, onClick }) {
+function StageCard({ stage, onClick, onJobClick }) {
   const meta = getStatusMeta(stage.status)
   const failed = normalizeStatus(stage.status) === 'failed'
 
@@ -350,7 +362,15 @@ function StageCard({ stage, onClick }) {
                   </Space>
                 )}
               >
-                <Flex align="center" gap={6}>
+                <Flex
+                  align="center"
+                  gap={6}
+                  className="pipeline-stage-job-row"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    onJobClick(job)
+                  }}
+                >
                   {jobMeta.icon}
                   <Text>{job.name}</Text>
                 </Flex>
