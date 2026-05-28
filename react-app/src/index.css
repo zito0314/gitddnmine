@@ -1571,32 +1571,8 @@ body {
   width: 100%;
 }
 
-.repository-catalog-tabs .ant-tabs-nav {
-  margin-bottom: 0;
-}
-
-.repository-catalog-tabs .ant-tabs-tab {
-  padding: 0 0 14px;
-}
-
-.repository-catalog-tabs .ant-tabs-tab + .ant-tabs-tab {
-  margin-left: 32px;
-}
-
-.repository-catalog-filter-card .ant-card-body {
-  padding: 12px;
-}
-
 .repository-catalog-filter {
   width: 100%;
-}
-
-.repository-catalog-filter-button.ant-btn {
-  width: 140px;
-}
-
-.repository-catalog-language-button.ant-btn {
-  width: 104px;
 }
 
 .repository-catalog-list {
@@ -1653,11 +1629,6 @@ body {
 
 .repository-catalog-actions {
   min-width: 96px;
-}
-
-.repository-status-tag.ant-tag {
-  margin-inline-end: 0;
-  font-weight: 600;
 }
 
 .repository-list-favorite.ant-btn {
