@@ -304,6 +304,41 @@ const mockData = {
     }
   ],
   "repositories": {
+    "requests": [
+      {
+        "id": "req-001",
+        "path": "Digital Banking/Web/Gitddn-Frontend",
+        "description": "관리자 정책 설정 화면과 운영 도구를 제공하는 Console UI",
+        "language": "Vue",
+        "status": "pending",
+        "requestedAtText": "Requested 20 minutes ago"
+      },
+      {
+        "id": "req-002",
+        "path": "Digital Banking/Web/Gitddn-Frontend",
+        "description": "관리자 정책 설정 화면과 운영 도구를 제공하는 Console UI",
+        "language": "Vue",
+        "status": "pending",
+        "requestedAtText": "Requested 20 minutes ago"
+      },
+      {
+        "id": "req-003",
+        "path": "Digital Banking/Web/Gitddn-Frontend",
+        "description": "설명 문장 길이가 다르게 써봄",
+        "language": "Python",
+        "status": "rejected",
+        "requestedAtText": "Rejected 20 minutes ago",
+        "rejectReason": "요청 정보가 부족하거나 생성 정책 조건을 충족하지 않습니다."
+      },
+      {
+        "id": "req-004",
+        "path": "Digital Banking/Web/Gitddn-Frontend",
+        "description": "히든의 디자인은 이러함",
+        "language": "React",
+        "status": "canceled",
+        "requestedAtText": "Canceled 20 minutes ago"
+      }
+    ],
     "list": [
       {
         "id": "mobile-banking-api",
