@@ -15,6 +15,7 @@ import {
   Drawer,
   Row,
   Space,
+  Tabs,
   Timeline,
   Typography,
 } from 'antd'
@@ -29,6 +30,7 @@ import {
 import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
 import { CodePreview } from '../components/custom'
 import { UI_TEXT } from '../constants'
+import AuditEvidenceExport from './AuditEvidenceExport'
 
 const { Paragraph, Text } = Typography
 
@@ -176,21 +178,8 @@ function AuditLog() {
     },
   ]
 
-  return (
+  const auditLogContent = (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader
-        title={UI_TEXT.pages.audit.title}
-        description={UI_TEXT.pages.audit.description}
-        actions={[
-          <Button key="export" icon={<DownloadOutlined />}>
-            {UI_TEXT.actions.exportCsv}
-          </Button>,
-          <Button key="refresh" icon={<ReloadOutlined />}>
-            {UI_TEXT.actions.refresh}
-          </Button>,
-        ]}
-      />
-
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}>
           <SummaryCard title="오늘 이벤트" value={summary.todayEvents} icon={<FileSearchOutlined />} />
@@ -303,6 +292,39 @@ function AuditLog() {
       </Card>
 
       <AuditDrawer log={selectedLog} onClose={() => setSelectedLog(null)} />
+    </Space>
+  )
+
+  return (
+    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+      <PageHeader
+        title={UI_TEXT.pages.audit.title}
+        description={UI_TEXT.pages.audit.description}
+        actions={[
+          <Button key="export" icon={<DownloadOutlined />}>
+            {UI_TEXT.actions.exportCsv}
+          </Button>,
+          <Button key="refresh" icon={<ReloadOutlined />}>
+            {UI_TEXT.actions.refresh}
+          </Button>,
+        ]}
+      />
+
+      <Tabs
+        defaultActiveKey="logs"
+        items={[
+          {
+            key: 'logs',
+            label: '감사 로그',
+            children: auditLogContent,
+          },
+          {
+            key: 'export',
+            label: '증적 Export',
+            children: <AuditEvidenceExport />,
+          },
+        ]}
+      />
     </Space>
   )
 }
