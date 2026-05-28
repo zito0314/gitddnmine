@@ -11,6 +11,10 @@ export function getRepositoryRequests() {
   return getMockSlice((data) => data.repositories.requests, [])
 }
 
+export function getRepositoryProjectTemplates() {
+  return getMockSlice((data) => data.repositories.projectTemplates, [])
+}
+
 export function getRepositoryById(repositoryId) {
   const repositories = getRepositories()
   const repository = findById(repositories, repositoryId)

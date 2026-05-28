@@ -339,6 +339,98 @@ const mockData = {
         "requestedAtText": "Canceled 20 minutes ago"
       }
     ],
+    "projectTemplates": [
+      {
+        "id": "spring-boot-api",
+        "name": "Spring Boot API",
+        "language": "Java",
+        "framework": "Spring Boot",
+        "type": "Backend API",
+        "branchStrategy": "Git Flow",
+        "defaultPolicies": ["Protected Branch", "CI/CD", "CODEOWNERS"]
+      },
+      {
+        "id": "react-web",
+        "name": "React Web",
+        "language": "TypeScript",
+        "framework": "React",
+        "type": "Frontend Web",
+        "branchStrategy": "Github Flow",
+        "defaultPolicies": ["Preview Deploy", "PR Review Rule"]
+      },
+      {
+        "id": "vue-admin",
+        "name": "Vue Admin",
+        "language": "TypeScript",
+        "framework": "Vue",
+        "type": "Admin Dashboard",
+        "branchStrategy": "Develop/Main",
+        "defaultPolicies": ["Staging Deploy", "권한 정책 포함"]
+      },
+      {
+        "id": "node-api",
+        "name": "Node API",
+        "language": "TypeScript",
+        "framework": "Node.js · Express",
+        "type": "REST API",
+        "branchStrategy": "Github Flow",
+        "defaultPolicies": ["Docker", "Swagger", "CI Pipeline"]
+      },
+      {
+        "id": "python-batch",
+        "name": "Python Batch",
+        "language": "Python",
+        "framework": "Celery · Scheduler",
+        "type": "Batch Worker",
+        "branchStrategy": "Release Branch",
+        "defaultPolicies": ["Logging", "Monitoring", "Scheduler 설정"]
+      },
+      {
+        "id": "android-app",
+        "name": "Android App",
+        "language": "Kotlin",
+        "framework": "Android Native",
+        "type": "Mobile App",
+        "branchStrategy": "Git Flow",
+        "defaultPolicies": ["QA Branch", "Firebase Deploy"]
+      },
+      {
+        "id": "ios-app",
+        "name": "iOS App",
+        "language": "Swift",
+        "framework": "iOS Native",
+        "type": "Mobile App",
+        "branchStrategy": "Protected Main",
+        "defaultPolicies": ["Fastlane", "TestFlight Deploy"]
+      },
+      {
+        "id": "nextjs-web",
+        "name": "Next.js Web",
+        "language": "TypeScript",
+        "framework": "Next.js",
+        "type": "SSR Web Service",
+        "branchStrategy": "Github Flow",
+        "defaultPolicies": ["Vercel Deploy", "Preview Environment"]
+      },
+      {
+        "id": "nestjs-api",
+        "name": "NestJS API",
+        "language": "TypeScript",
+        "framework": "NestJS",
+        "type": "Backend API",
+        "branchStrategy": "Git Flow",
+        "defaultPolicies": ["Swagger", "Docker", "CI/CD"]
+      },
+      {
+        "id": "data-pipeline",
+        "name": "Data Pipeline",
+        "language": "Python",
+        "framework": "Airflow",
+        "type": "Data Engineering",
+        "branchStrategy": "Release Branch",
+        "defaultPolicies": ["DAG Template", "Monitoring", "Logging"]
+      }
+    ],
     "list": [
       {
         "id": "mobile-banking-api",
