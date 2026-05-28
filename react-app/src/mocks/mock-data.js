@@ -2895,7 +2895,7 @@ const mockData = {
         "approved": 1,
         "required": 3,
         "comments": 12,
-        "status": "blocked",
+        "status": "draft",
         "gates": [
           {
             "type": "approval",
@@ -5051,7 +5051,7 @@ const mockData = {
         "approved": 1,
         "required": 2,
         "comments": 13,
-        "status": "blocked",
+        "status": "draft",
         "gates": [
           {
             "type": "approval",
