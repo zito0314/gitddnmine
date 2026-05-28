@@ -343,92 +343,132 @@ const mockData = {
       {
         "id": "spring-boot-api",
         "name": "Spring Boot API",
+        "description": "Spring Boot 기반 Backend API 저장소 템플릿",
         "language": "Java",
         "framework": "Spring Boot",
         "type": "Backend API",
         "branchStrategy": "Git Flow",
-        "defaultPolicies": ["Protected Branch", "CI/CD", "CODEOWNERS"]
+        "defaultPolicies": ["Protected Branch", "CI/CD", "CODEOWNERS"],
+        "enabled": true,
+        "order": 1,
+        "updatedAtText": "Updated 20 minutes ago"
       },
       {
         "id": "react-web",
         "name": "React Web",
+        "description": "React 기반 Frontend Web 저장소 템플릿",
         "language": "TypeScript",
         "framework": "React",
         "type": "Frontend Web",
         "branchStrategy": "Github Flow",
-        "defaultPolicies": ["Preview Deploy", "PR Review Rule"]
+        "defaultPolicies": ["Preview Deploy", "PR Review Rule"],
+        "enabled": true,
+        "order": 2,
+        "updatedAtText": "Updated 20 minutes ago"
       },
       {
         "id": "vue-admin",
         "name": "Vue Admin",
+        "description": "Vue 기반 Admin Dashboard 저장소 템플릿",
         "language": "TypeScript",
         "framework": "Vue",
         "type": "Admin Dashboard",
         "branchStrategy": "Develop/Main",
-        "defaultPolicies": ["Staging Deploy", "권한 정책 포함"]
+        "defaultPolicies": ["Staging Deploy", "권한 정책 포함"],
+        "enabled": true,
+        "order": 3,
+        "updatedAtText": "Updated 20 minutes ago"
       },
       {
         "id": "node-api",
         "name": "Node API",
+        "description": "Node.js Express 기반 REST API 저장소 템플릿",
         "language": "TypeScript",
         "framework": "Node.js · Express",
         "type": "REST API",
         "branchStrategy": "Github Flow",
-        "defaultPolicies": ["Docker", "Swagger", "CI Pipeline"]
+        "defaultPolicies": ["Docker", "Swagger", "CI Pipeline"],
+        "enabled": true,
+        "order": 4,
+        "updatedAtText": "Updated 20 minutes ago"
       },
       {
         "id": "python-batch",
         "name": "Python Batch",
+        "description": "Python Batch Worker 저장소 템플릿",
         "language": "Python",
         "framework": "Celery · Scheduler",
         "type": "Batch Worker",
         "branchStrategy": "Release Branch",
-        "defaultPolicies": ["Logging", "Monitoring", "Scheduler 설정"]
+        "defaultPolicies": ["Logging", "Monitoring", "Scheduler 설정"],
+        "enabled": true,
+        "order": 5,
+        "updatedAtText": "Updated 20 minutes ago"
       },
       {
         "id": "android-app",
         "name": "Android App",
+        "description": "Android Native Mobile App 저장소 템플릿",
         "language": "Kotlin",
         "framework": "Android Native",
         "type": "Mobile App",
         "branchStrategy": "Git Flow",
-        "defaultPolicies": ["QA Branch", "Firebase Deploy"]
+        "defaultPolicies": ["QA Branch", "Firebase Deploy"],
+        "enabled": true,
+        "order": 6,
+        "updatedAtText": "Updated 20 minutes ago"
       },
       {
         "id": "ios-app",
         "name": "iOS App",
+        "description": "iOS Native Mobile App 저장소 템플릿",
         "language": "Swift",
         "framework": "iOS Native",
         "type": "Mobile App",
         "branchStrategy": "Protected Main",
-        "defaultPolicies": ["Fastlane", "TestFlight Deploy"]
+        "defaultPolicies": ["Fastlane", "TestFlight Deploy"],
+        "enabled": true,
+        "order": 7,
+        "updatedAtText": "Updated 20 minutes ago"
       },
       {
         "id": "nextjs-web",
         "name": "Next.js Web",
+        "description": "Next.js 기반 SSR Web Service 저장소 템플릿",
         "language": "TypeScript",
         "framework": "Next.js",
         "type": "SSR Web Service",
         "branchStrategy": "Github Flow",
-        "defaultPolicies": ["Vercel Deploy", "Preview Environment"]
+        "defaultPolicies": ["Vercel Deploy", "Preview Environment"],
+        "enabled": true,
+        "order": 8,
+        "updatedAtText": "Updated 20 minutes ago"
       },
       {
         "id": "nestjs-api",
         "name": "NestJS API",
+        "description": "NestJS 기반 Backend API 저장소 템플릿",
         "language": "TypeScript",
         "framework": "NestJS",
         "type": "Backend API",
         "branchStrategy": "Git Flow",
-        "defaultPolicies": ["Swagger", "Docker", "CI/CD"]
+        "defaultPolicies": ["Swagger", "Docker", "CI/CD"],
+        "enabled": true,
+        "order": 9,
+        "updatedAtText": "Updated 20 minutes ago"
       },
       {
         "id": "data-pipeline",
         "name": "Data Pipeline",
+        "description": "Airflow 기반 Data Engineering 저장소 템플릿",
         "language": "Python",
         "framework": "Airflow",
         "type": "Data Engineering",
         "branchStrategy": "Release Branch",
-        "defaultPolicies": ["DAG Template", "Monitoring", "Logging"]
+        "defaultPolicies": ["DAG Template", "Monitoring", "Logging"],
+        "enabled": true,
+        "order": 10,
+        "updatedAtText": "Updated 20 minutes ago"
       }
     ],
     "list": [

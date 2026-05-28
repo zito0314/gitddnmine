@@ -379,6 +379,7 @@ export const UI_TEXT = {
   adminNavigation: {
     organizationRoles: '조직 및 역할',
     repositoryPolicy: 'Repository 정책',
+    projectTemplates: '프로젝트 템플릿 관리',
     mrApprovalPolicy: 'MR 승인 정책',
     securityPolicy: '보안 정책',
     deploymentPolicy: '운영이관 정책',

@@ -36,6 +36,7 @@ import RepositoryDeploymentTransfers from '../pages/RepositoryDeploymentTransfer
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import OrganizationRoleAdmin from '../pages/admin/OrganizationRoleAdmin'
 import RepositoryPolicyAdmin from '../pages/admin/RepositoryPolicyAdmin'
+import ProjectTemplateAdmin from '../pages/admin/ProjectTemplateAdmin'
 import MrApprovalPolicyAdmin from '../pages/admin/MrApprovalPolicyAdmin'
 import SecurityPolicyAdmin from '../pages/admin/SecurityPolicyAdmin'
 import DeploymentPolicyAdmin from '../pages/admin/DeploymentPolicyAdmin'
@@ -124,6 +125,7 @@ export const routes = [
       { index: true, element: <AdminDashboard /> },
       { path: 'organization', element: <OrganizationRoleAdmin /> },
       { path: 'repository-policy', element: <RepositoryPolicyAdmin /> },
+      { path: 'project-templates', element: <ProjectTemplateAdmin /> },
       { path: 'repository-policy/branch-protection-templates', element: <BranchProtectionTemplateList /> },
       { path: 'repository-policy/branch-protection-templates/new', element: <BranchProtectionTemplateForm /> },
       { path: 'repository-policy/branch-protection-templates/:templateId', element: <BranchProtectionTemplateDetail /> },

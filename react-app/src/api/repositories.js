@@ -12,7 +12,13 @@ export function getRepositoryRequests() {
 }
 
 export function getRepositoryProjectTemplates() {
-  return getMockSlice((data) => data.repositories.projectTemplates, [])
+  return [...getMockSlice((data) => data.repositories.projectTemplates, [])].sort(
+    (a, b) => (a.order ?? 999) - (b.order ?? 999),
+  )
+}
+
+export function getEnabledRepositoryProjectTemplates() {
+  return getRepositoryProjectTemplates().filter((template) => template.enabled !== false)
 }
 
 export function getRepositoryById(repositoryId) {

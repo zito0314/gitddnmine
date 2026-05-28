@@ -1,7 +1,7 @@
 import { App as AntdApp, Alert, Button, Card, Divider, Empty, Form, Input, Result, Select, Space, Tag, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getRepositoryProjectTemplates } from '../api/repositories'
+import { getEnabledRepositoryProjectTemplates } from '../api/repositories'
 import { useAuth } from '../auth/AuthContext'
 import { PageHeader } from '../components/common'
 
@@ -24,7 +24,7 @@ export default function RepositoryCreate() {
   const auth = useAuth()
   const { message, modal } = AntdApp.useApp()
   const [form] = Form.useForm()
-  const templates = useMemo(() => getRepositoryProjectTemplates(), [])
+  const templates = useMemo(() => getEnabledRepositoryProjectTemplates(), [])
   const [selectedTemplateId, setSelectedTemplateId] = useState(null)
   const [memberEmail, setMemberEmail] = useState('')
   const [members, setMembers] = useState([])
@@ -89,7 +89,7 @@ export default function RepositoryCreate() {
       <Alert
         type="info"
         showIcon
-        message="저장소 생성 요청 안내"
+        title="저장소 생성 요청 안내"
         description={(
           <Space direction="vertical" size={12}>
             <div>

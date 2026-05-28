@@ -12,6 +12,7 @@ const adminItems = [
   { key: '/admin', icon: <DashboardOutlined />, label: UI_TEXT.adminPages.admin.title },
   { key: '/admin/organization', icon: <TeamOutlined />, label: UI_TEXT.adminNavigation.organizationRoles },
   { key: '/admin/repository-policy', icon: <LockOutlined />, label: UI_TEXT.adminNavigation.repositoryPolicy },
+  { key: '/admin/project-templates', icon: <SettingOutlined />, label: UI_TEXT.adminNavigation.projectTemplates },
   { key: '/admin/repository-policy/branch-protection-templates', icon: <LockOutlined />, label: 'Branch Protection Templates' },
   { key: '/admin/repository-policy/branch-protection-requests', icon: <LockOutlined />, label: 'Exception Requests' },
   { key: '/admin/repository-policy/branch-protection-history', icon: <AuditOutlined />, label: 'Policy History' },
@@ -27,6 +28,7 @@ const adminItems = [
 const adminBreadcrumbLabels = {
   organization: UI_TEXT.adminNavigation.organizationRoles,
   'repository-policy': UI_TEXT.adminNavigation.repositoryPolicy,
+  'project-templates': UI_TEXT.adminNavigation.projectTemplates,
   'mr-approval-policy': UI_TEXT.adminNavigation.mrApprovalPolicy,
   'security-policy': UI_TEXT.adminNavigation.securityPolicy,
   'deployment-policy': UI_TEXT.adminNavigation.deploymentPolicy,
