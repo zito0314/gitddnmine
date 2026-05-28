@@ -1346,6 +1346,117 @@ body {
   font-size: 13px;
 }
 
+.commit-diff-toolbar {
+  margin-bottom: 16px;
+}
+
+.commit-diff-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.commit-diff-layout-collapsed {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.commit-files-panel,
+.commit-diff-viewer {
+  min-width: 0;
+}
+
+.commit-file-search {
+  margin-bottom: 12px;
+}
+
+.commit-diff-table,
+.commit-inline-diff {
+  overflow: auto;
+  border: 1px solid var(--gitddn-border-color);
+  border-radius: 8px;
+}
+
+.commit-diff-hunk {
+  padding: 8px 12px;
+  background: var(--gitddn-content-bg);
+  color: var(--gitddn-text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+}
+
+.commit-diff-row,
+.commit-inline-row {
+  display: grid;
+  width: 100%;
+  border: 0;
+  border-top: 1px solid var(--gitddn-border-color);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.commit-diff-row {
+  grid-template-columns: 56px minmax(240px, 1fr) 56px minmax(240px, 1fr);
+}
+
+.commit-inline-row {
+  grid-template-columns: 56px 32px minmax(0, 1fr);
+}
+
+.commit-diff-row:hover,
+.commit-inline-row:hover {
+  background: color-mix(in srgb, var(--gitddn-primary) 6%, transparent);
+}
+
+.commit-diff-row-added,
+.commit-inline-row.commit-diff-row-added {
+  background: color-mix(in srgb, var(--ant-color-success) 12%, transparent);
+}
+
+.commit-diff-row-removed,
+.commit-inline-row.commit-diff-row-removed {
+  background: color-mix(in srgb, var(--ant-color-error) 12%, transparent);
+}
+
+.commit-line-number,
+.commit-line-sign,
+.commit-code-text {
+  padding: 6px 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.commit-line-number,
+.commit-line-sign {
+  color: var(--gitddn-text-secondary);
+  user-select: none;
+}
+
+.commit-code-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.commit-comment-editor,
+.commit-line-comments {
+  margin: 8px 12px;
+}
+
+.commit-line-comments {
+  padding: 8px 12px;
+  border-left: 2px solid var(--gitddn-primary);
+  background: color-mix(in srgb, var(--gitddn-primary) 6%, transparent);
+}
+
+@media (max-width: 960px) {
+  .commit-diff-layout,
+  .commit-diff-layout-collapsed {
+    grid-template-columns: 1fr;
+  }
+}
+
 .security-risk-row > td {
   background: #fff7ed !important;
 }

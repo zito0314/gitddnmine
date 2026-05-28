@@ -10760,6 +10760,86 @@ const mockData = {
       ]
     }
   ],
+  "commitDetails": [
+    {
+      "repositoryId": "mobile-banking-api",
+      "sha": "7e14d754",
+      "message": "인증 정책 응답값 개선 Pipeline",
+      "author": {
+        "name": "Jito",
+        "avatarUrl": ""
+      },
+      "createdAtText": "20분 전 생성",
+      "parentCommitSha": "91a42df0",
+      "branches": ["feature/login-policy", "main"],
+      "tags": ["v1.4.2"],
+      "mergeRequests": [
+        {
+          "id": "mr-128",
+          "number": "!128",
+          "title": "인증 정책 응답값 개선"
+        }
+      ],
+      "pipeline": {
+        "id": "2847502395",
+        "number": "#2847502395",
+        "status": "failed",
+        "statusLabel": "Pipeline 실패",
+        "finishedAtText": "3분 전"
+      },
+      "summary": {
+        "fileCount": 3,
+        "additions": 14,
+        "deletions": 1
+      },
+      "files": [
+        {
+          "id": "file-001",
+          "path": "src/ReactVersion.js",
+          "name": "ReactVersion.js",
+          "additions": 14,
+          "deletions": 1,
+          "treePath": ["folder1", "folder1", "folder3", "ReactVersion.js"],
+          "diff": [
+            { "id": "hunk-001", "type": "hunk", "content": "@@ -281,8 +281,8 @@" },
+            { "id": "line-346", "type": "context", "oldLine": 346, "newLine": 346, "oldContent": "const ReactVersion = '19.2.5';", "newContent": "const ReactVersion = '19.2.5';" },
+            { "id": "line-347", "type": "removed", "oldLine": 347, "newLine": null, "oldContent": "export const channel = 'stable';", "newContent": "" },
+            { "id": "line-348", "type": "added", "oldLine": null, "newLine": 347, "oldContent": "", "newContent": "export const channel = 'production';" },
+            { "id": "line-349", "type": "context", "oldLine": 348, "newLine": 348, "oldContent": "export default ReactVersion;", "newContent": "export default ReactVersion;" }
+          ]
+        },
+        {
+          "id": "file-002",
+          "path": "src/api/authPolicy.ts",
+          "name": "authPolicy.ts",
+          "additions": 8,
+          "deletions": 0,
+          "treePath": ["src", "api", "authPolicy.ts"],
+          "diff": [
+            { "id": "hunk-002", "type": "hunk", "content": "@@ -42,6 +42,8 @@" },
+            { "id": "line-042", "type": "context", "oldLine": 42, "newLine": 42, "oldContent": "export function normalizePolicyResponse(response) {", "newContent": "export function normalizePolicyResponse(response) {" },
+            { "id": "line-043", "type": "added", "oldLine": null, "newLine": 43, "oldContent": "", "newContent": "  if (response.status === 500) return { status: 'blocked' };" },
+            { "id": "line-044", "type": "added", "oldLine": null, "newLine": 44, "oldContent": "", "newContent": "  if (!response.policy) return { status: 'review' };" },
+            { "id": "line-045", "type": "context", "oldLine": 43, "newLine": 45, "oldContent": "  return response;", "newContent": "  return response;" }
+          ]
+        },
+        {
+          "id": "file-003",
+          "path": "README.md",
+          "name": "README.md",
+          "additions": 2,
+          "deletions": 0,
+          "treePath": ["README.md"],
+          "diff": [
+            { "id": "hunk-003", "type": "hunk", "content": "@@ -12,6 +12,8 @@" },
+            { "id": "line-012", "type": "context", "oldLine": 12, "newLine": 12, "oldContent": "## 인증 정책", "newContent": "## 인증 정책" },
+            { "id": "line-013", "type": "added", "oldLine": null, "newLine": 13, "oldContent": "", "newContent": "운영 반영 전 Commit 상세에서 변경 Diff를 확인합니다." },
+            { "id": "line-014", "type": "added", "oldLine": null, "newLine": 14, "oldContent": "", "newContent": "Pipeline 실패 시 Job 상세 화면에서 원인을 확인합니다." }
+          ]
+        }
+      ]
+    }
+  ],
   "security": {
     "validations": [
       {

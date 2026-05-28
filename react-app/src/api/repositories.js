@@ -215,6 +215,77 @@ export function getCommitAuthors(repositoryId) {
   return [...new Set(getRepositoryCommits(repositoryId).map((commit) => commit.author).filter(Boolean))]
 }
 
+export function getCommitDetail(repositoryId, sha) {
+  const commit = getCommitBySha(repositoryId, sha)
+  if (!commit) return null
+
+  const detail = getMockSlice((data) => data.commitDetails, []).find(
+    (item) => item.repositoryId === repositoryId && item.sha === sha,
+  )
+  if (detail) return { ...commit, ...detail }
+
+  return createCommitDetailFallback(repositoryId, commit)
+}
+
+function createCommitDetailFallback(repositoryId, commit) {
+  const pipelineNumber = commit.pipelineId ? `#${commit.pipelineId}` : '-'
+  return {
+    ...commit,
+    message: commit.message ?? commit.title,
+    author: {
+      name: commit.author,
+      avatarUrl: commit.avatarUrl ?? '',
+    },
+    parentCommitSha: commit.parentCommitSha ?? '91a42df0',
+    branches: [commit.branch].filter(Boolean),
+    tags: commit.tag ? [commit.tag] : [],
+    mergeRequests: commit.mrId ? [{ id: `mr-${commit.mrId}`, number: `!${commit.mrId}`, title: commit.title }] : [],
+    pipeline: {
+      id: commit.pipelineId,
+      number: pipelineNumber,
+      status: commit.pipelineStatus ?? 'none',
+      statusLabel: commit.pipelineStatus === 'passed' ? 'Pipeline 성공' : commit.pipelineStatus === 'failed' ? 'Pipeline 실패' : 'Pipeline 없음',
+      finishedAtText: commit.pipelineId ? '3분 전' : '-',
+    },
+    summary: {
+      fileCount: Math.max(commit.changedFilesCount ?? 1, 1),
+      additions: commit.added ?? 0,
+      deletions: commit.removed ?? 0,
+    },
+    files: [
+      {
+        id: `${commit.sha}-file-001`,
+        path: 'src/ReactVersion.js',
+        name: 'ReactVersion.js',
+        additions: Math.max(commit.added ?? 1, 1),
+        deletions: Math.max(commit.removed ?? 1, 1),
+        treePath: ['src', 'ReactVersion.js'],
+        diff: [
+          { id: 'hunk-001', type: 'hunk', content: '@@ -281,8 +281,8 @@' },
+          { id: 'line-346', type: 'context', oldLine: 346, newLine: 346, oldContent: 'export const version = ReactVersion;', newContent: 'export const version = ReactVersion;' },
+          { id: 'line-347', type: 'removed', oldLine: 347, newLine: null, oldContent: 'export const channel = "stable";', newContent: '' },
+          { id: 'line-348', type: 'added', oldLine: null, newLine: 347, oldContent: '', newContent: 'export const channel = "production";' },
+          { id: 'line-349', type: 'context', oldLine: 348, newLine: 348, oldContent: 'export default ReactVersion;', newContent: 'export default ReactVersion;' },
+        ],
+      },
+      {
+        id: `${commit.sha}-file-002`,
+        path: 'README.md',
+        name: 'README.md',
+        additions: 2,
+        deletions: 0,
+        treePath: ['README.md'],
+        diff: [
+          { id: 'hunk-readme-001', type: 'hunk', content: '@@ -12,6 +12,8 @@' },
+          { id: 'line-readme-12', type: 'context', oldLine: 12, newLine: 12, oldContent: '## Deployment', newContent: '## Deployment' },
+          { id: 'line-readme-13', type: 'added', oldLine: null, newLine: 13, oldContent: '', newContent: 'Production 배포 전 Commit 상세에서 Diff를 확인합니다.' },
+          { id: 'line-readme-14', type: 'added', oldLine: null, newLine: 14, oldContent: '', newContent: 'Pipeline과 Merge request 연결 상태를 함께 검토합니다.' },
+        ],
+      },
+    ],
+  }
+}
+
 export function getRepositoryCommitSummary(repositoryId) {
   const commits = getRepositoryCommits(repositoryId)
 
