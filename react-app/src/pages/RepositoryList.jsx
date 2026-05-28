@@ -3,7 +3,7 @@ import {
   StarFilled,
   StarOutlined,
 } from '../components/icons'
-import { App as AntdApp, Button, Empty, Flex, Input, Select, Space, Tabs, Tag, Tooltip, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Empty, Flex, Input, Select, Space, Tabs, Tag, Tooltip, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories, getRepositoryRequests } from '../api/repositories'
@@ -17,13 +17,13 @@ const { Search } = Input
 const { Text } = Typography
 
 const REQUEST_STATUS_META = {
-  pending: { label: '승인대기', tone: 'pending' },
-  rejected: { label: '승인반려', tone: 'rejected' },
-  canceled: { label: '요청취소', tone: 'canceled' },
+  pending: { label: '승인대기', color: 'warning' },
+  rejected: { label: '승인반려', color: 'error' },
+  canceled: { label: '요청취소', color: 'default' },
 }
 
 const REPOSITORY_STATUS_META = {
-  approved: { label: '승인완료', tone: 'approved' },
+  approved: { label: '승인완료', color: 'success' },
 }
 
 const FILTER_TABS = [
@@ -258,7 +258,7 @@ export default function RepositoryList() {
         <Space orientation="vertical" size={4} className="repository-catalog-content">
           <Flex align="center" gap={8} wrap="wrap">
             <Text strong className="repository-catalog-title">{row.path}</Text>
-            <Tag className={`repository-status-tag repository-status-tag-${meta.tone}`}>{meta.label}</Tag>
+            <Tag color={meta.color} className="repository-status-tag">{meta.label}</Tag>
           </Flex>
           <Text type="secondary" className="repository-catalog-description">
             {row.description} <span className="repository-catalog-dot">·</span> {row.language} <span className="repository-catalog-dot">·</span> {row.timeText}
@@ -290,12 +290,16 @@ export default function RepositoryList() {
           onChange={setActiveStatus}
           className="repository-catalog-tabs"
         />
-        {renderFilterBar()}
-        <div className="repository-catalog-list">
-          {visibleCatalogRows.length > 0 ? visibleCatalogRows.map(renderCatalogRow) : (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="저장소가 없습니다." />
-          )}
-        </div>
+        <Card size="small" variant="outlined" className="repository-catalog-filter-card">
+          {renderFilterBar()}
+        </Card>
+        <Card variant="outlined" className="repository-catalog-list-card" styles={{ body: { padding: 0 } }}>
+          <div className="repository-catalog-list">
+            {visibleCatalogRows.length > 0 ? visibleCatalogRows.map(renderCatalogRow) : (
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="저장소가 없습니다." />
+            )}
+          </div>
+        </Card>
       </Space>
     </Space>
   )

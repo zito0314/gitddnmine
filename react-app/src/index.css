@@ -1598,22 +1598,20 @@ body {
 }
 
 .repository-catalog-tabs .ant-tabs-tab {
-  padding: 0 0 18px;
-  font-size: 16px;
-  font-weight: 700;
+  padding: 0 0 14px;
+  font-weight: 600;
 }
 
 .repository-catalog-tabs .ant-tabs-tab + .ant-tabs-tab {
-  margin-left: 44px;
+  margin-left: 32px;
 }
 
-.repository-catalog-tabs .ant-tabs-ink-bar {
-  height: 3px;
-  border-radius: 999px;
+.repository-catalog-filter-card .ant-card-body {
+  padding: 12px;
 }
 
 .repository-catalog-filter {
-  padding: 0 0 8px;
+  width: 100%;
 }
 
 .repository-catalog-search {
@@ -1625,7 +1623,7 @@ body {
 .repository-catalog-search .ant-input-group-addon,
 .repository-catalog-search .ant-btn,
 .repository-catalog-select .ant-select-selector {
-  min-height: 48px;
+  min-height: 40px;
   border-radius: 8px;
 }
 
@@ -1639,14 +1637,12 @@ body {
 
 .repository-catalog-list {
   overflow: hidden;
-  border: 1px solid var(--gitddn-border-color);
-  border-radius: 16px 16px 0 0;
   background: var(--gitddn-card-bg);
 }
 
 .repository-catalog-row {
-  min-height: 108px;
-  padding: 24px 30px;
+  min-height: 88px;
+  padding: 18px 24px;
   border-bottom: 1px solid var(--gitddn-border-color);
   transition: background 0.15s ease, color 0.15s ease;
 }
@@ -1656,13 +1652,7 @@ body {
 }
 
 .repository-catalog-row-approved {
-  min-height: 96px;
-  border-bottom-color: #050505;
-  background: #050505;
-}
-
-.repository-catalog-row-approved + .repository-catalog-row:not(.repository-catalog-row-approved) {
-  border-top: 1px solid var(--gitddn-border-color);
+  background: var(--gitddn-card-bg);
 }
 
 .repository-catalog-row-clickable {
@@ -1670,7 +1660,7 @@ body {
 }
 
 .repository-catalog-row-clickable:hover {
-  background: #111827;
+  background: color-mix(in srgb, var(--gitddn-primary) 6%, transparent);
 }
 
 .repository-catalog-row-clickable:focus-visible {
@@ -1685,21 +1675,12 @@ body {
 
 .repository-catalog-title {
   color: var(--gitddn-text);
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.35;
-}
-
-.repository-catalog-row-approved .repository-catalog-title {
-  color: #f8fafc;
 }
 
 .repository-catalog-description {
   color: var(--gitddn-text-secondary);
-  font-size: 16px;
-}
-
-.repository-catalog-row-approved .repository-catalog-description {
-  color: #6b7280;
 }
 
 .repository-catalog-dot {
@@ -1712,35 +1693,7 @@ body {
 
 .repository-status-tag.ant-tag {
   margin-inline-end: 0;
-  border-radius: 8px;
-  padding: 2px 10px;
-  font-weight: 700;
-}
-
-.repository-status-tag-approved.ant-tag {
-  color: #16a34a;
-  background: #f0fdf4;
-  border-color: #dcfce7;
-}
-
-.repository-status-tag-pending.ant-tag {
-  color: #f59e0b;
-  background: #fffbe6;
-  border-color: #fff7c2;
-}
-
-.repository-status-tag-rejected.ant-tag {
-  color: #ef4444;
-  background: #fff1f0;
-  border-color: #ffe4e6;
-}
-
-.repository-status-tag-canceled.ant-tag {
-  color: var(--gitddn-text);
-  background: transparent;
-  border-color: transparent;
-  padding-inline: 0;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .repository-list-favorite.ant-btn {
