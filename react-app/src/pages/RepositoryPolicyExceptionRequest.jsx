@@ -25,7 +25,7 @@ export default function RepositoryPolicyExceptionRequest() {
 
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader eyebrow={repository.name} title="Request Policy Exception" description="특정 브랜치, 기간, 사유에 대한 정책 예외를 요청합니다." />
+      <PageHeader title="Request Policy Exception" description="특정 브랜치, 기간, 사유에 대한 정책 예외를 요청합니다." />
       <Card title="Current Policy Summary">
         <Title level={4}>{currentTemplate.name}</Title>
         <Space direction="vertical">{currentTemplate.summary.map((item) => <Text key={item}>- {item}</Text>)}</Space>

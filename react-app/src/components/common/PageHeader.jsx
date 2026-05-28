@@ -1,17 +1,19 @@
-import { Flex, Space, Typography } from 'antd'
+import { ConfigProvider, Flex, Space, Typography } from 'antd'
 
 const { Paragraph, Title } = Typography
 
-function PageHeader({ title, description, eyebrow, actions, children }) {
+function PageHeader({ title, description, actions }) {
   return (
     <Flex className="page-header" align="flex-start" justify="space-between" gap={16} wrap="wrap">
       <div>
-        {eyebrow ? <Paragraph className="page-header-eyebrow">{eyebrow}</Paragraph> : null}
         <Title level={2}>{title}</Title>
         {description ? <Paragraph type="secondary">{description}</Paragraph> : null}
-        {children}
       </div>
-      {actions ? <Space wrap>{actions}</Space> : null}
+      {actions ? (
+        <ConfigProvider componentSize="large">
+          <Space wrap>{actions}</Space>
+        </ConfigProvider>
+      ) : null}
     </Flex>
   )
 }

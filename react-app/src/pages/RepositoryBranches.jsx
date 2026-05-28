@@ -253,7 +253,6 @@ export default function RepositoryBranches() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }} className="branch-list-page">
       <PageHeader
-        eyebrow={repository.name}
         title={UI_TEXT.pages.repositoryBranches.title}
         description={UI_TEXT.pages.repositoryBranches.description}
       />

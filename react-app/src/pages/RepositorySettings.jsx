@@ -25,7 +25,6 @@ export default function RepositorySettings() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        eyebrow={repository.name}
         title={UI_TEXT.pages.repositorySettings.title}
         description={UI_TEXT.pages.repositorySettings.description}
         actions={[<Button key="save" type="primary" icon={<SaveOutlined />} disabled>Save</Button>]}

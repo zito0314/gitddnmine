@@ -290,7 +290,6 @@ export default function PipelineList() {
   return (
     <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        eyebrow={currentRepository?.name}
         title="Pipeline"
         description="현재 Repository의 Pipeline 실행 상태, 실패 Job, 실행 이력을 확인하는 화면입니다."
         actions={

@@ -22,7 +22,7 @@ export default function RepositoryDeploymentTransfers() {
 
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader eyebrow={repository.name} title={UI_TEXT.pages.repositoryDeploymentTransfer.title} description={UI_TEXT.pages.repositoryDeploymentTransfer.description} />
+      <PageHeader title={UI_TEXT.pages.repositoryDeploymentTransfer.title} description={UI_TEXT.pages.repositoryDeploymentTransfer.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={4}><SummaryCard title={UI_TEXT.summary.totalRequests} value={summary.total} /></Col>
         <Col xs={24} sm={12} xl={5}><SummaryCard title={UI_TEXT.summary.pendingApproval} value={summary.pendingApproval} tone="warning" /></Col>

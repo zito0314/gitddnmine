@@ -27,7 +27,7 @@ export default function RepositoryPolicyChangeRequest() {
 
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader eyebrow={repository.name} title="Request Policy Change" description="Repository에 적용된 브랜치 보호 정책 변경을 요청합니다." />
+      <PageHeader title="Request Policy Change" description="Repository에 적용된 브랜치 보호 정책 변경을 요청합니다." />
       <Card title="Current Policy Summary">
         <Title level={4}>{currentTemplate.name}</Title>
         <Space direction="vertical">{currentTemplate.summary.map((item) => <Text key={item}>- {item}</Text>)}</Space>

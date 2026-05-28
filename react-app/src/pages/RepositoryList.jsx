@@ -242,15 +242,13 @@ export default function RepositoryList() {
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         title={UI_TEXT.pages.repositories.title}
-        description={`${currentUserName}님이 속한 저장소의 모든 목록이에요.`}
+        description={`${currentUserName}님이 속한 저장소의 모든 목록이에요. 저장소를 즐겨찾기하여, 언제든 쉽고 빠르게 이동해 보세요.`}
         actions={canUseManagedView ? [
           <Button key="create" type="primary" icon={<PlusOutlined />} onClick={() => navigate('/repositories/new')}>
             저장소 생성
           </Button>,
         ] : null}
-      >
-        <Text type="secondary">저장소를 즐겨찾기하여, 언제든 쉽고 빠르게 이동해 보세요.</Text>
-      </PageHeader>
+      />
 
       {renderFilterBar()}
 

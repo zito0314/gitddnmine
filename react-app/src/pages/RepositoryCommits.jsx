@@ -152,7 +152,6 @@ export default function RepositoryCommits() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }} className="commit-list-page">
       <PageHeader
-        eyebrow={repository.name}
         title="Commits"
         description="현재 Repository의 커밋 이력과 변경 내역을 확인합니다."
       />

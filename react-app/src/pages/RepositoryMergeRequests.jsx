@@ -9,7 +9,6 @@ import { Button, Card, Col, Flex, Progress, Row, Space, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
-  getRepositoryDetail,
   getRepositoryMergeRequestSummary,
   getRepositoryMergeRequests,
 } from '../api/repositories'
@@ -34,7 +33,6 @@ function uniqueOptions(values) {
 export default function RepositoryMergeRequests() {
   const { repositoryId } = useParams()
   const navigate = useNavigate()
-  const repository = getRepositoryDetail(repositoryId)
   const allMergeRequests = useMemo(() => getRepositoryMergeRequests(repositoryId), [repositoryId])
   const summary = useMemo(() => getRepositoryMergeRequestSummary(repositoryId), [repositoryId])
 
@@ -189,7 +187,6 @@ export default function RepositoryMergeRequests() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        eyebrow={repository?.name}
         title={UI_TEXT.pages.repositoryMergeRequests.title}
         description={UI_TEXT.pages.repositoryMergeRequests.description}
       />

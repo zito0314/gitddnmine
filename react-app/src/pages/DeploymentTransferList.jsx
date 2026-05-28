@@ -176,7 +176,6 @@ export default function DeploymentTransferList() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }} className="deployment-dashboard-page">
       <PageHeader
-        eyebrow="Deployment Transfer Dashboard"
         title={(
           <>
             운영 반영 가능 여부를

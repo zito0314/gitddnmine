@@ -135,7 +135,6 @@ export default function DeploymentTransferCreate() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        eyebrow={repository?.name}
         title={UI_TEXT.deploymentTransferCreate.title}
         description={UI_TEXT.deploymentTransferCreate.description}
       />

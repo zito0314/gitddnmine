@@ -317,7 +317,6 @@ export default function RepositoryTags() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }} className="tag-list-page">
       <PageHeader
-        eyebrow={repository.name}
         title={UI_TEXT.pages.repositoryTags.title}
         description={UI_TEXT.pages.repositoryTags.description}
         actions={headerActions}

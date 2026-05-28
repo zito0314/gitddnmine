@@ -23,7 +23,6 @@ export default function BranchProtectionTemplateDetail() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
-        eyebrow="Branch Protection Template"
         title={template.name}
         description={template.description}
         actions={[

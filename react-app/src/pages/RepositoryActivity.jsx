@@ -37,7 +37,7 @@ export default function RepositoryActivity() {
 
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader eyebrow={repository.name} title={UI_TEXT.pages.repositoryActivity.title} description={UI_TEXT.pages.repositoryActivity.description} />
+      <PageHeader title={UI_TEXT.pages.repositoryActivity.title} description={UI_TEXT.pages.repositoryActivity.description} />
       <Row gutter={[12, 12]} className="summary-cards-row">
         <Col xs={24} sm={12} xl={6}><SummaryCard title="Today Activities" value={summary.today} icon={<AuditOutlined />} /></Col>
         <Col xs={24} sm={12} xl={6}><SummaryCard title="MR Events" value={summary.mrEvents} /></Col>

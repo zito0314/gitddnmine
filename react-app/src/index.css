@@ -387,14 +387,6 @@ body {
   margin: 0 0 6px;
 }
 
-.page-header-eyebrow.ant-typography {
-  margin: 0 0 6px;
-  color: var(--gitddn-primary);
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
 .summary-card .ant-card-body {
   min-height: 128px;
 }
