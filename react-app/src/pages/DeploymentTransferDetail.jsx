@@ -52,6 +52,7 @@ const TRANSFER_STATUS_META = {
 
 const CONDITION_META = {
   completed: { label: '완료', color: 'success', icon: <CheckCircleOutlined /> },
+  exception_approved: { label: '예외 승인 완료', color: 'success', icon: <CheckCircleOutlined /> },
   passed: { label: '완료', color: 'success', icon: <CheckCircleOutlined /> },
   review: { label: '확인 필요', color: 'warning', icon: <WarningOutlined /> },
   warning: { label: '확인 필요', color: 'warning', icon: <WarningOutlined /> },
@@ -89,6 +90,64 @@ function statusMeta(status) {
 
 function conditionMeta(status) {
   return CONDITION_META[status] ?? CONDITION_META.waiting
+}
+
+function getDeploymentMergeBlockers(transfer, status) {
+  if (Array.isArray(transfer.mergeBlockers) && transfer.mergeBlockers.length) return transfer.mergeBlockers
+
+  const blockers = []
+  const conditionLabels = {
+    plan: '이관 계획서 작성',
+    rollback: '롤백 계획 등록',
+    approval: '승인권자 승인',
+    pipeline: 'Pipeline 성공',
+    security: '보안 점검 완료',
+    rehearsal: '리허설 결과 검토',
+    impact: '운영 영향도 확인',
+  }
+  const conditionMap = new Map(transfer.conditions.map((condition) => [condition.id, condition]))
+
+  Object.entries(conditionLabels).forEach(([id, label]) => {
+    const condition = conditionMap.get(id)
+    const allowed = id === 'security'
+      ? ['completed', 'exception_approved'].includes(condition?.status)
+      : condition?.status === 'completed'
+
+    if (!allowed) {
+      if (condition?.status === 'review') blockers.push(`${label}가 필요합니다.`)
+      else if (condition?.status === 'waiting' || condition?.status === 'pending') blockers.push(`${label} 항목이 대기 상태입니다.`)
+      else blockers.push(`${label} 항목이 미완료 상태입니다.`)
+    }
+  })
+
+  if (status !== 'ready') {
+    const statusBlockers = {
+      blocked: '차단 항목을 먼저 해결해 주세요.',
+      review: '확인 필요 항목을 완료해 주세요.',
+      scheduled: '예정 시간이 되면 운영 반영 Merge를 진행할 수 있어요.',
+      stabilizing: '운영 반영 후 안정화 모니터링 중입니다.',
+      completed: '이미 운영 반영이 완료되었습니다.',
+    }
+    if (statusBlockers[status]) blockers.unshift(statusBlockers[status])
+  }
+
+  return [...new Set(blockers)]
+}
+
+function isDeploymentMergeable(transfer, status) {
+  if (typeof transfer.mergeable === 'boolean') return transfer.mergeable && status === 'ready'
+  return status === 'ready' && getDeploymentMergeBlockers(transfer, status).length === 0
+}
+
+function getMergeTooltip(status, mergeBlockers, canRequestDeploy) {
+  if (!canRequestDeploy) return '운영 반영 Merge 권한이 없어요.'
+  if (!mergeBlockers.length) return null
+  if (status === 'blocked') return '차단 항목을 먼저 해결해 주세요.'
+  if (status === 'review') return '확인 필요 항목을 완료해 주세요.'
+  if (status === 'scheduled') return '예정 시간이 되면 운영 반영 Merge를 진행할 수 있어요.'
+  if (status === 'stabilizing') return '운영 반영 후 안정화 모니터링 중입니다.'
+  if (status === 'completed') return '이미 운영 반영이 완료되었습니다.'
+  return mergeBlockers[0]
 }
 
 function fallbackDetail(transfer, mr, pipelineOverview) {
@@ -174,6 +233,13 @@ function fallbackDetail(transfer, mr, pipelineOverview) {
       summary: [transfer.deploymentPlan?.changeReason ?? '운영 반영 변경사항을 확인합니다.'],
       filesChanged: [],
     },
+    mergeable: transfer.mergeable,
+    mergeBlockers: transfer.mergeBlockers,
+    mergeTarget: transfer.mergeTarget ?? {
+      sourceBranch: transfer.sourceBranch ?? mr?.source ?? mr?.sourceBranch ?? 'feature/auth-policy',
+      targetBranch: transfer.targetBranch ?? mr?.target ?? mr?.targetBranch ?? 'main',
+      environment: transfer.environment ?? transfer.targetEnvironment ?? 'Production',
+    },
     activities: transfer.activities?.map((activity, index) => ({
       id: `${transfer.id}-activity-${index}`,
       type: activity.type,
@@ -213,12 +279,44 @@ function getNextStep(status) {
   }
 }
 
+function applyMergeState(transfer, mergeCompleted) {
+  if (!mergeCompleted) return transfer
+
+  return {
+    ...transfer,
+    status: 'stabilizing',
+    summary: {
+      ...transfer.summary,
+      availability: '안정화 중',
+      currentStep: '안정화 모니터링',
+      blockers: 0,
+    },
+    mergeable: false,
+    mergeBlockers: ['운영 반영 후 안정화 모니터링 중입니다.'],
+    steps: transfer.steps.map((step) => {
+      if (step.title === '운영 반영') return { ...step, status: 'completed', description: 'Production 반영 완료' }
+      if (step.title === '안정화') return { ...step, status: 'review', description: '운영 반영 후 안정화 모니터링 중' }
+      return step
+    }),
+    activities: [
+      {
+        id: `merge-completed-${transfer.id}`,
+        type: 'deployment',
+        title: '운영 반영 Merge가 완료되었어요.',
+        timeText: '방금',
+      },
+      ...transfer.activities,
+    ],
+  }
+}
+
 export default function DeploymentTransferDetail() {
   const { transferId, repositoryId } = useParams()
   const navigate = useNavigate()
   const auth = useAuth()
   const rawTransfer = getDeploymentTransferDetail(transferId)
   const [activityFilter, setActivityFilter] = useState('all')
+  const [mergeCompleted, setMergeCompleted] = useState(false)
 
   if (!rawTransfer) {
     return (
@@ -234,12 +332,16 @@ export default function DeploymentTransferDetail() {
   const repository = getRepositoryDetail(rawTransfer.repositoryId)
   const mr = getMergeRequestDetail(rawTransfer.mrId)
   const pipelineOverview = getPipelineOverview(rawTransfer.pipelineId)
-  const transfer = fallbackDetail(rawTransfer, mr, pipelineOverview)
+  const transfer = applyMergeState(fallbackDetail(rawTransfer, mr, pipelineOverview), mergeCompleted)
   const status = normalizeTransferStatus(transfer.status)
   const meta = statusMeta(status)
   const base = repositoryId ? `/repositories/${repositoryId}` : `/repositories/${transfer.repositoryId}`
   const canRequestDeploy = auth.hasPermission('deployment:create-request')
   const deployDisabled = status === 'blocked' || !canRequestDeploy
+  const mergeBlockers = getDeploymentMergeBlockers(transfer, status)
+  const mergeable = isDeploymentMergeable(transfer, status)
+  const mergeDisabled = !canRequestDeploy || !mergeable
+  const mergeTooltip = getMergeTooltip(status, mergeBlockers, canRequestDeploy)
   const blockers = transfer.summary?.blockers ?? transfer.conditions.filter((item) => item.status === 'blocked').length
   const filteredActivities = transfer.activities.filter((activity) => activityFilter === 'all' || activity.type === activityFilter)
 
@@ -257,8 +359,40 @@ export default function DeploymentTransferDetail() {
     })
   }
 
+  const runDeploymentMerge = () => {
+    if (mergeDisabled) {
+      message.warning(mergeBlockers[0] ?? '운영 반영 Merge를 진행할 수 없어요.')
+      return
+    }
+
+    Modal.confirm({
+      title: '운영 반영 Merge를 진행할까요?',
+      content: (
+        <Space direction="vertical" size={12} style={{ width: '100%' }}>
+          <Text>이 MR의 변경사항이 Production 반영 대상 Branch로 Merge됩니다. Merge 이후에는 안정화 모니터링 단계로 전환됩니다.</Text>
+          <Descriptions column={1} size="small" bordered>
+            <Descriptions.Item label="Repository">{repository?.name ?? transfer.repositoryName ?? transfer.repositoryId}</Descriptions.Item>
+            <Descriptions.Item label="MR 번호">{transfer.mrNumber}</Descriptions.Item>
+            <Descriptions.Item label="Branch">{transfer.sourceBranch} → {transfer.targetBranch}</Descriptions.Item>
+            <Descriptions.Item label="운영 환경">{transfer.environment}</Descriptions.Item>
+            <Descriptions.Item label="예정 반영 시간">{transfer.scheduledTime}</Descriptions.Item>
+            <Descriptions.Item label="롤백 예상 시간">{transfer.summary?.expectedRollbackTime ?? transfer.rollbackPlan?.expectedTime ?? '-'}</Descriptions.Item>
+          </Descriptions>
+        </Space>
+      ),
+      okText: '운영 반영 Merge',
+      cancelText: '취소',
+      onOk: () => {
+        setMergeCompleted(true)
+        setActivityFilter('all')
+        message.success('운영 반영 Merge가 완료되었어요.')
+      },
+    })
+  }
+
   const runAction = (label) => {
     if (label === '운영 반영 요청') requestDeployment()
+    else if (label === '운영 반영 Merge') runDeploymentMerge()
     else if (label.includes('승인')) message.success('승인 요청을 보냈어요.')
     else if (label.includes('감사')) navigate('/audit')
     else message.info(`${label} 화면으로 이동합니다.`)
@@ -268,7 +402,16 @@ export default function DeploymentTransferDetail() {
     <Row gutter={[24, 24]} align="top">
       <Col xs={24} xl={17}>
         <Space direction="vertical" size={16} style={{ width: '100%' }}>
-          <JudgementSummary transfer={transfer} meta={meta} blockers={blockers} />
+          <JudgementSummary
+            blockers={blockers}
+            mergeBlockers={mergeBlockers}
+            mergeDisabled={mergeDisabled}
+            mergeTooltip={mergeTooltip}
+            onMerge={runDeploymentMerge}
+            status={status}
+            transfer={transfer}
+            meta={meta}
+          />
           <ConditionsCard conditions={transfer.conditions.slice(0, 4)} compact onAction={runAction} />
           <StepsCard steps={transfer.steps} />
           <RiskCard transfer={transfer} />
@@ -325,6 +468,13 @@ export default function DeploymentTransferDetail() {
           </div>
         </Space>
         <Space wrap>
+          {status !== 'completed' ? (
+            <Tooltip title={mergeTooltip}>
+              <span>
+                <Button type="primary" disabled={mergeDisabled} onClick={runDeploymentMerge}>운영 반영 Merge</Button>
+              </span>
+            </Tooltip>
+          ) : null}
           <Tooltip title={deployDisabled ? '차단 항목을 먼저 해결해야 운영 반영을 요청할 수 있어요.' : null}>
             <Button type="primary" disabled={deployDisabled} onClick={requestDeployment}>운영 반영 요청</Button>
           </Tooltip>
@@ -347,8 +497,16 @@ function ownerNames(transfer) {
   return [transfer.owners?.developer, transfer.owners?.security, transfer.owners?.operator].filter(Boolean)
 }
 
-function JudgementSummary({ transfer, meta, blockers }) {
+function JudgementSummary({ blockers, mergeBlockers, mergeDisabled, mergeTooltip, onMerge, status, transfer, meta }) {
   const availability = transfer.summary?.availability ?? meta.label
+  const ctaMessage = {
+    ready: '모든 필수 조건이 충족되어 운영 반영 Merge를 진행할 수 있어요.',
+    blocked: '차단 항목을 먼저 해결해야 운영 반영 Merge를 진행할 수 있어요.',
+    review: '확인 필요 항목을 완료한 뒤 운영 반영 Merge를 진행할 수 있어요.',
+    stabilizing: '운영 반영이 완료되어 안정화 모니터링 중이에요.',
+    completed: '이미 운영 반영이 완료된 요청입니다.',
+  }[status] ?? '운영 반영 Merge 조건을 확인해 주세요.'
+
   return (
     <Card title="운영 반영 판단 요약">
       <Alert type={meta.alert} showIcon message={meta.message} className="deployment-transfer-alert" />
@@ -358,6 +516,26 @@ function JudgementSummary({ transfer, meta, blockers }) {
         <Descriptions.Item label="예정 반영 시간">{transfer.scheduledTime ?? '-'}</Descriptions.Item>
         <Descriptions.Item label="차단 항목">{blockers}건</Descriptions.Item>
       </Descriptions>
+      <Card size="small" className="deployment-merge-cta">
+        <Flex justify="space-between" align="flex-start" gap={12} wrap="wrap">
+          <Space direction="vertical" size={4}>
+            <Text strong>{mergeDisabled ? '운영 반영 Merge 불가' : '운영 반영 Merge 가능'}</Text>
+            <Text type="secondary">{ctaMessage}</Text>
+            {mergeBlockers.length ? (
+              <Space direction="vertical" size={2}>
+                {mergeBlockers.map((blocker) => <Text key={blocker} type="secondary">- {blocker}</Text>)}
+              </Space>
+            ) : null}
+          </Space>
+          {status !== 'completed' ? (
+            <Tooltip title={mergeTooltip}>
+              <span>
+                <Button type="primary" disabled={mergeDisabled} onClick={onMerge}>운영 반영 Merge</Button>
+              </span>
+            </Tooltip>
+          ) : null}
+        </Flex>
+      </Card>
     </Card>
   )
 }
