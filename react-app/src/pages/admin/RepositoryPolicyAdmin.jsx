@@ -10,7 +10,7 @@ export default function RepositoryPolicyAdmin() {
   const policies = getRepositoryPolicies()
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <PageHeader title={UI_TEXT.adminNavigation.repositoryPolicy} description="Repository 생성, 네이밍, 기본 브랜치, 보호 브랜치, Visibility, Template 정책을 관리합니다." />
+      <PageHeader title={UI_TEXT.adminNavigation.repositoryPolicy} description="Repository 생성, 네이밍, 기본 Branch, Branch 보호, Visibility, Template 정책을 관리해요." />
       <Card title="Branch Protection Governance">
         <Space wrap>
           <Button type="primary" onClick={() => navigate('/admin/repository-policy/branch-protection-templates')}>Branch Protection Templates</Button>

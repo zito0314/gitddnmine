@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined } from '../../components/icons'
-import { App as AntdApp, Button, Card, Col, Form, Input, List, Modal, Popconfirm, Row, Space, Switch, Table, Tag, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Col, Form, Input, Modal, Popconfirm, Row, Space, Switch, Table, Tag, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { getOrganizations, getUsers } from '../../api/admin'
 import { resetManagedOrganizations, saveManagedOrganizations } from '../../api/organizations'
@@ -159,7 +159,7 @@ export default function OrganizationRoleAdmin() {
     <Space direction="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         title={UI_TEXT.adminNavigation.organizationRoles}
-        description="조직, 사용자, 팀, Role mapping, GitLab role mapping, 화면 권한 mapping을 관리합니다."
+        description="조직, 사용자, 팀, Role mapping, GitLab role mapping, 화면 접근 권한을 관리해요."
       />
       <Row gutter={[16, 16]}>
         <Col xs={24}>
@@ -222,31 +222,29 @@ export default function OrganizationRoleAdmin() {
         </Col>
         <Col xs={24} xl={8}>
           <Card title="GNB organization selector">
-            <List
+            <Table
+              rowKey="key"
+              size="small"
               dataSource={activeOrganizations}
-              renderItem={(item) => (
-                <List.Item>
-                  <Space direction="vertical" size={0}>
-                    <Text>{item.label}</Text>
-                    <Text type="secondary">{item.key}</Text>
-                  </Space>
-                </List.Item>
-              )}
+              pagination={false}
+              columns={[
+                { title: '조직명', dataIndex: 'label', render: (value) => <Text strong>{value}</Text> },
+                { title: '조직 키', dataIndex: 'key' },
+              ]}
             />
           </Card>
         </Col>
         <Col xs={24} xl={8}>
           <Card title="Users / Teams">
-            <List
+            <Table
+              rowKey="id"
+              size="small"
               dataSource={getUsers().slice(0, 8)}
-              renderItem={(user) => (
-                <List.Item>
-                  <Space>
-                    <Text>{user.name}</Text>
-                    <Tag>{user.role}</Tag>
-                  </Space>
-                </List.Item>
-              )}
+              pagination={false}
+              columns={[
+                { title: '이름', dataIndex: 'name', render: (value) => <Text>{value}</Text> },
+                { title: '역할', dataIndex: 'role', render: (value) => <Tag>{value}</Tag> },
+              ]}
             />
           </Card>
         </Col>
