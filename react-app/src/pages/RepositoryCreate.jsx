@@ -22,7 +22,7 @@ function SectionIntro({ title, description }) {
 export default function RepositoryCreate() {
   const navigate = useNavigate()
   const auth = useAuth()
-  const { message, modal } = AntdApp.useApp()
+  const { message } = AntdApp.useApp()
   const [form] = Form.useForm()
   const templates = useMemo(() => getEnabledRepositoryProjectTemplates(), [])
   const [selectedTemplateId, setSelectedTemplateId] = useState(null)
@@ -56,17 +56,8 @@ export default function RepositoryCreate() {
     form.setFieldValue('members', nextMembers)
   }
 
-  const submit = (values) => {
-    modal.confirm({
-      title: '저장소 생성 요청을 제출할까요?',
-      content: `${values.repositoryName} 생성 요청이 승인대기 상태로 등록됩니다.`,
-      okText: '요청 제출',
-      cancelText: '취소',
-      onOk: () => {
-        message.success('저장소 생성 요청이 제출되었어요. 관리자가 검토한 후 승인 여부가 반영됩니다.')
-        setSubmitted(true)
-      },
-    })
+  const submit = () => {
+    setSubmitted(true)
   }
 
   if (!canCreateRepositoryRequest) {
