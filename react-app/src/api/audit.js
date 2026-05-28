@@ -86,3 +86,31 @@ export function getAuditRelatedIds(log) {
     securityId: security?.id ?? null,
   }
 }
+
+export function getAuditEvidenceCategories() {
+  return getMockSlice((data) => data.audit.evidenceCategories, [])
+}
+
+export function getAuditEvidenceItems() {
+  return getMockSlice((data) => data.audit.evidenceItems, [])
+}
+
+export function getAuditExportHistories() {
+  return getMockSlice((data) => data.audit.exportHistories, [])
+}
+
+export function getAuditEvidenceSummary() {
+  const items = getAuditEvidenceItems()
+  const histories = getAuditExportHistories()
+  const readyCount = items.filter((item) => item.status === 'ready').length
+  const needReviewCount = items.filter((item) => item.status !== 'ready').length
+  const thisMonthExports = histories.length
+  const coveragePercent = items.length > 0 ? Math.round((readyCount / items.length) * 100) : 0
+
+  return {
+    readyCount,
+    needReviewCount,
+    thisMonthExports,
+    coveragePercent,
+  }
+}

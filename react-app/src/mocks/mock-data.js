@@ -13314,6 +13314,167 @@ const mockData = {
         "ip": "10.42.19.132",
         "time": "2026-05-18 13:26:10"
       }
+    ],
+    "evidenceCategories": [
+      { "key": "governance", "label": "공통 및 거버넌스", "count": 4 },
+      { "key": "change-control", "label": "시스템 변경/개발 통제", "count": 5 },
+      { "key": "security-infra", "label": "정보보호/인프라 보안", "count": 5 },
+      { "key": "legal-duty", "label": "법정 의무 수행", "count": 3 },
+      { "key": "export-history", "label": "내보내기 이력", "count": 12 }
+    ],
+    "evidenceItems": [
+      {
+        "id": "audit-evidence-001",
+        "category": "change-control",
+        "title": "형상관리 접근 권한 리스트",
+        "description": "개발자와 운영 배포 담당자 권한 분리 증명",
+        "mappedEvidence": "Repository 권한 변경 로그 · Role 매핑 이력",
+        "mappedDescription": "Admin/Internal/External 권한, 보호 Branch 접근 이력 포함",
+        "status": "ready",
+        "formats": ["CSV", "PDF", "ZIP"],
+        "owner": "관리자",
+        "relatedResources": ["Repository", "Role", "Branch"]
+      },
+      {
+        "id": "audit-evidence-002",
+        "category": "change-control",
+        "title": "개발/변경 요청서 SR 샘플",
+        "description": "요청자, 개발자, 검증자, 승인자 이력",
+        "mappedEvidence": "MR 생성/승인/리뷰 Activity",
+        "mappedDescription": "MR #391, 승인자 2명, 리뷰 코멘트, Merge 조건 포함",
+        "status": "ready",
+        "formats": ["PDF", "ZIP"],
+        "owner": "김신한",
+        "relatedResources": ["MR", "Activity"]
+      },
+      {
+        "id": "audit-evidence-003",
+        "category": "change-control",
+        "title": "테스트 결과서",
+        "description": "SAST/DAST 조치 완료 및 Pipeline 결과",
+        "mappedEvidence": "Pipeline · Security Validation 결과",
+        "mappedDescription": "성공/실패 Job, 취약점 조치 상태, 재실행 이력 포함",
+        "status": "need-review",
+        "formats": ["PDF", "CSV"],
+        "owner": "보안 담당자",
+        "relatedResources": ["Pipeline", "Security Validation"]
+      },
+      {
+        "id": "audit-evidence-004",
+        "category": "change-control",
+        "title": "정기 프로그램 감사 보고서",
+        "description": "임의 배포가 없었음을 확인하는 감사 결과",
+        "mappedEvidence": "운영이관 승인/반려/취소 로그",
+        "mappedDescription": "운영 반영 가능 여부, 승인권자, 차단 사유 포함",
+        "status": "ready",
+        "formats": ["PDF", "ZIP"],
+        "owner": "Choi",
+        "relatedResources": ["운영이관", "Pipeline"]
+      },
+      {
+        "id": "audit-evidence-005",
+        "category": "security-infra",
+        "title": "망분리 예외 승인 문서",
+        "description": "예외 단말 및 승인 결재 문서",
+        "mappedEvidence": "외부 파일 첨부 필요",
+        "mappedDescription": "gitddn Activity만으로는 증적 생성이 어려운 항목",
+        "status": "need-file",
+        "formats": ["PDF", "첨부"],
+        "owner": "보안 담당자",
+        "relatedResources": []
+      },
+      {
+        "id": "audit-evidence-006",
+        "category": "governance",
+        "title": "접근 권한 관리 대장",
+        "description": "주요 Repository와 시스템별 권한 부여 및 변경 이력",
+        "mappedEvidence": "사용자 Role 변경 · Repository 접근 로그",
+        "mappedDescription": "반기별 권한 정비 결과와 연결 가능",
+        "status": "ready",
+        "formats": ["CSV", "PDF"],
+        "owner": "관리자",
+        "relatedResources": ["Repository", "Role"]
+      },
+      {
+        "id": "audit-evidence-007",
+        "category": "security-infra",
+        "title": "패치 적용 현황",
+        "description": "운영 환경 구성 요소의 보안 패치 적용 이력",
+        "mappedEvidence": "Pipeline 배포 이력 · 운영이관 체크리스트",
+        "mappedDescription": "미적용 사유가 있는 항목은 보완 필요",
+        "status": "need-fix",
+        "formats": ["PDF", "첨부"],
+        "owner": "박운영",
+        "relatedResources": ["Pipeline", "운영이관"]
+      },
+      {
+        "id": "audit-evidence-008",
+        "category": "security-infra",
+        "title": "취약점 분석·평가 조치 보고서",
+        "description": "취약점 지적 사항에 대한 개선 완료 증적",
+        "mappedEvidence": "Security Validation · MR 조치 이력",
+        "mappedDescription": "취약점 등급, 조치 Commit, 승인 이력 포함",
+        "status": "ready",
+        "formats": ["PDF", "ZIP"],
+        "owner": "보안 담당자",
+        "relatedResources": ["Security Validation", "MR", "Commit"]
+      },
+      {
+        "id": "audit-evidence-009",
+        "category": "governance",
+        "title": "개인정보처리방침 변경 이력",
+        "description": "정책 변경 및 승인 이력",
+        "mappedEvidence": "정책 변경 Activity · 승인 로그",
+        "mappedDescription": "변경 전/후 내용, 승인권자, 적용 일자 포함",
+        "status": "ready",
+        "formats": ["PDF"],
+        "owner": "관리자",
+        "relatedResources": ["Policy", "Activity"]
+      },
+      {
+        "id": "audit-evidence-010",
+        "category": "legal-duty",
+        "title": "개인정보 처리 위탁 계약서",
+        "description": "위탁 업체별 계약서 및 점검 결과",
+        "mappedEvidence": "외부 파일 첨부 필요",
+        "mappedDescription": "계약서 원본은 gitddn 외부에서 관리",
+        "status": "need-file",
+        "formats": ["PDF", "첨부"],
+        "owner": "법무 담당자",
+        "relatedResources": []
+      }
+    ],
+    "exportHistories": [
+      {
+        "id": "export-001",
+        "packageName": "2026년 5월 운영이관 감사 패키지",
+        "createdAt": "2026-05-28",
+        "createdAtText": "20분 전",
+        "createdBy": "김신한",
+        "itemCount": 8,
+        "formats": ["ZIP"],
+        "status": "completed"
+      },
+      {
+        "id": "export-002",
+        "packageName": "Repository 권한 변경 증적",
+        "createdAt": "2026-05-27",
+        "createdAtText": "어제",
+        "createdBy": "박운영",
+        "itemCount": 3,
+        "formats": ["CSV", "PDF"],
+        "status": "completed"
+      },
+      {
+        "id": "export-003",
+        "packageName": "5월 정기 감사 전체 패키지",
+        "createdAt": "2026-05-25",
+        "createdAtText": "3일 전",
+        "createdBy": "관리자",
+        "itemCount": 12,
+        "formats": ["ZIP"],
+        "status": "completed"
+      }
     ]
   },
   "dashboard": {
