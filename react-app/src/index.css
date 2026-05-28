@@ -1350,6 +1350,56 @@ body {
   margin-bottom: 16px;
 }
 
+.commit-file-header {
+  width: 100%;
+}
+
+.commit-file-path {
+  min-width: 0;
+}
+
+.commit-file-path .ant-typography {
+  white-space: normal;
+  word-break: break-all;
+}
+
+.commit-change-summary {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+}
+
+.commit-change-summary-added {
+  color: var(--ant-color-success);
+}
+
+.commit-change-summary-removed {
+  color: var(--ant-color-error);
+}
+
+.commit-change-distribution {
+  align-items: center;
+}
+
+.commit-change-dot {
+  display: inline-block;
+  width: 6px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--gitddn-line);
+}
+
+.commit-change-dot-added {
+  background: var(--ant-color-success);
+}
+
+.commit-change-dot-removed {
+  background: var(--ant-color-error);
+}
+
+.commit-change-dot-neutral {
+  background: var(--gitddn-line);
+}
+
 .commit-diff-layout {
   display: grid;
   grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
@@ -1381,6 +1431,20 @@ body {
   padding: 8px 12px;
   background: var(--gitddn-content-bg);
   color: var(--gitddn-text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+}
+
+.commit-diff-collapsed {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-top: 1px solid var(--gitddn-border-color);
+  background: color-mix(in srgb, var(--gitddn-primary) 5%, transparent);
+  color: var(--gitddn-text-secondary);
+  padding: 8px 12px;
+  text-align: left;
+  cursor: pointer;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 12px;
 }
@@ -1439,9 +1503,35 @@ body {
   word-break: break-word;
 }
 
+.commit-code-highlight {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: var(--ant-color-warning-bg);
+  color: inherit;
+}
+
+.commit-diff-compact .commit-diff-hunk,
+.commit-diff-compact .commit-diff-collapsed,
+.commit-diff-compact .commit-line-number,
+.commit-diff-compact .commit-line-sign,
+.commit-diff-compact .commit-code-text {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  line-height: 1.35;
+}
+
 .commit-comment-editor,
 .commit-line-comments {
   margin: 8px 12px;
+}
+
+.commit-comment-minimized {
+  display: inline-block;
+  margin: 6px 12px;
+  padding: 4px 8px;
+  border-left: 2px solid var(--gitddn-primary);
+  background: color-mix(in srgb, var(--gitddn-primary) 6%, transparent);
+  font-size: 12px;
 }
 
 .commit-line-comments {

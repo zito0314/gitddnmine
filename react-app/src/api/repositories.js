@@ -255,16 +255,19 @@ function createCommitDetailFallback(repositoryId, commit) {
     files: [
       {
         id: `${commit.sha}-file-001`,
-        path: 'src/ReactVersion.js',
+        path: 'react-app/src/ReactVersion.js',
         name: 'ReactVersion.js',
+        extension: '.js',
         additions: Math.max(commit.added ?? 1, 1),
         deletions: Math.max(commit.removed ?? 1, 1),
+        changeDistribution: ['added', 'added', 'neutral'],
         treePath: ['src', 'ReactVersion.js'],
         diff: [
           { id: 'hunk-001', type: 'hunk', content: '@@ -281,8 +281,8 @@' },
           { id: 'line-346', type: 'context', oldLine: 346, newLine: 346, oldContent: 'export const version = ReactVersion;', newContent: 'export const version = ReactVersion;' },
           { id: 'line-347', type: 'removed', oldLine: 347, newLine: null, oldContent: 'export const channel = "stable";', newContent: '' },
           { id: 'line-348', type: 'added', oldLine: null, newLine: 347, oldContent: '', newContent: 'export const channel = "production";' },
+          { id: 'collapsed-001', type: 'collapsed', hiddenLinesCount: 12 },
           { id: 'line-349', type: 'context', oldLine: 348, newLine: 348, oldContent: 'export default ReactVersion;', newContent: 'export default ReactVersion;' },
         ],
       },
@@ -272,8 +275,10 @@ function createCommitDetailFallback(repositoryId, commit) {
         id: `${commit.sha}-file-002`,
         path: 'README.md',
         name: 'README.md',
+        extension: '.md',
         additions: 2,
         deletions: 0,
+        changeDistribution: ['added', 'neutral'],
         treePath: ['README.md'],
         diff: [
           { id: 'hunk-readme-001', type: 'hunk', content: '@@ -12,6 +12,8 @@' },
