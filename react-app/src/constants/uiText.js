@@ -5,7 +5,7 @@ const NAVIGATION_LABELS = {
   pipelines: 'Pipelines',
   security: '보안',
   deploymentTransfer: '운영이관',
-  audit: 'Audit Log',
+  audit: '감사',
   admin: '관리자 콘솔',
 }
 
@@ -16,6 +16,7 @@ const REPOSITORY_NAVIGATION_LABELS = {
   pipelines: NAVIGATION_LABELS.pipelines,
   commits: 'Commits',
   branches: 'Branches',
+  gitGraph: 'Git Graph',
   tags: 'Tags',
   security: NAVIGATION_LABELS.security,
   deploymentTransfer: NAVIGATION_LABELS.deploymentTransfer,
@@ -178,6 +179,10 @@ export const UI_TEXT = {
     repositoryBranches: {
       title: REPOSITORY_NAVIGATION_LABELS.branches,
       description: '브랜치 상태, 보호 정책, 최신 커밋을 확인하는 화면',
+    },
+    repositoryGitGraph: {
+      title: REPOSITORY_NAVIGATION_LABELS.gitGraph,
+      description: '현재 Repository의 브랜치 흐름과 커밋 그래프를 확인하는 화면',
     },
     repositoryTags: {
       title: REPOSITORY_NAVIGATION_LABELS.tags,

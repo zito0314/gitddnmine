@@ -1,4 +1,5 @@
 import {
+  BranchesOutlined,
   DeploymentUnitOutlined,
   FileTextOutlined,
   GitGraphOutlined,
@@ -23,7 +24,8 @@ const navItems = [
   { key: 'merge-requests', label: UI_TEXT.repositoryNavigation.mergeRequests, icon: <PullRequestOutlined /> },
   { key: 'pipelines', label: UI_TEXT.repositoryNavigation.pipelines, icon: <PipelinesOutlined /> },
   { key: 'commits', label: UI_TEXT.repositoryNavigation.commits, icon: <NodeIndexOutlined /> },
-  { key: 'branches', label: UI_TEXT.repositoryNavigation.branches, icon: <GitGraphOutlined /> },
+  { key: 'branches', label: UI_TEXT.repositoryNavigation.branches, icon: <BranchesOutlined /> },
+  { key: 'git-graph', label: UI_TEXT.repositoryNavigation.gitGraph, icon: <GitGraphOutlined /> },
   { key: 'tags', label: UI_TEXT.repositoryNavigation.tags, icon: <TagsOutlined /> },
   { key: 'security', label: UI_TEXT.repositoryNavigation.security, icon: <SafetyCertificateOutlined /> },
   { key: 'deployment-transfer', label: UI_TEXT.repositoryNavigation.deploymentTransfer, icon: <DeploymentUnitOutlined /> },

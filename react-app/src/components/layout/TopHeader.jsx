@@ -61,6 +61,7 @@ const repositorySectionLabels = {
   pipelines: UI_TEXT.repositoryNavigation.pipelines,
   commits: UI_TEXT.repositoryNavigation.commits,
   branches: UI_TEXT.repositoryNavigation.branches,
+  'git-graph': UI_TEXT.repositoryNavigation.gitGraph,
   tags: UI_TEXT.repositoryNavigation.tags,
   security: UI_TEXT.repositoryNavigation.security,
   'deployment-transfer': UI_TEXT.repositoryNavigation.deploymentTransfer,

@@ -14,6 +14,7 @@ import RepositoryMergeRequests from '../pages/RepositoryMergeRequests'
 import RepositoryPipelines from '../pages/RepositoryPipelines'
 import RepositoryCommits from '../pages/RepositoryCommits'
 import RepositoryBranches from '../pages/RepositoryBranches'
+import RepositoryGitGraph from '../pages/RepositoryGitGraph'
 import RepositoryTags from '../pages/RepositoryTags'
 import RepositorySecurity from '../pages/RepositorySecurity'
 import RepositoryActivity from '../pages/RepositoryActivity'
@@ -88,6 +89,7 @@ export const routes = [
           { path: 'deployment-transfer/:transferId', element: <DeploymentTransferDetail /> },
           { path: 'commits', element: <RepositoryCommits /> },
           { path: 'branches', element: <RepositoryBranches /> },
+          { path: 'git-graph', element: <RepositoryGitGraph /> },
           { path: 'tags', element: <RepositoryTags /> },
           { path: 'security', element: <RepositorySecurity /> },
           { path: 'activity', element: <RepositoryActivity /> },
