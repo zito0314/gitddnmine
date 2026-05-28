@@ -1276,6 +1276,55 @@ body {
   border-top: 1px solid var(--gitddn-border-color);
 }
 
+.deployment-transfer-detail-page h2.ant-typography {
+  margin: 8px 0;
+}
+
+.deployment-transfer-detail-meta {
+  margin-top: 10px;
+}
+
+.deployment-transfer-alert {
+  margin-bottom: 14px;
+}
+
+.deployment-condition-item,
+.deployment-transfer-step-card {
+  border-color: var(--gitddn-border-color);
+}
+
+.deployment-condition-item-blocked,
+.deployment-transfer-step-card-blocked,
+.deployment-transfer-step-card-failed {
+  border-color: var(--ant-color-error);
+}
+
+.deployment-condition-item-review,
+.deployment-transfer-step-card-review,
+.deployment-condition-item-warning {
+  border-color: var(--ant-color-warning);
+}
+
+.deployment-condition-item-completed,
+.deployment-transfer-step-card-completed,
+.deployment-condition-item-passed {
+  border-color: var(--ant-color-success);
+}
+
+.deployment-transfer-step-card {
+  height: 100%;
+}
+
+.deployment-transfer-actions,
+.deployment-transfer-collapse,
+.deployment-transfer-change-summary {
+  margin-top: 16px;
+}
+
+.deployment-transfer-side-panel .ant-card {
+  height: auto;
+}
+
 .security-risk-row > td {
   background: #fff7ed !important;
 }

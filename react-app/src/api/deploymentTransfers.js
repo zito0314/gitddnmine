@@ -21,7 +21,9 @@ export function getDeploymentTransferSummary(items = getDeploymentTransfers()) {
 }
 
 export function getDeploymentTransferById(transferId) {
-  return findById(getDeploymentTransfers(), transferId) ?? null
+  return findById(getDeploymentTransfers(), transferId)
+    ?? getDeploymentTransferDashboardRequestById(transferId)
+    ?? null
 }
 
 export function getDeploymentTransferDashboard() {
@@ -57,7 +59,13 @@ export function getDeploymentTransferDashboardRequestById(requestId) {
 }
 
 export function getDeploymentTransferDetail(transferId) {
-  return getDeploymentTransferById(transferId)
+  const transfer = getDeploymentTransferById(transferId)
+  if (!transfer) return null
+
+  const dashboard = getDeploymentTransferDashboard()
+  const dashboardDetail = dashboard.requestDetails?.[transfer.id]
+
+  return dashboardDetail ? { ...transfer, ...dashboardDetail } : transfer
 }
 
 export function getDeploymentTransfersByRepositoryId(repositoryId) {

@@ -14326,6 +14326,23 @@ const mockData = {
         "metrics": { "recentErrors": "0건", "integrationStatus": "정상", "expectedRollbackTime": "12분" }
       },
       "transfer-002": {
+        "summary": {
+          "availability": "운영 반영 불가",
+          "currentStep": "보안 점검",
+          "blockers": 1,
+          "riskLevel": "high",
+          "expectedDuration": "18분",
+          "expectedRollbackTime": "18분"
+        },
+        "conditions": [
+          { "id": "plan", "title": "이관 계획서 작성", "status": "completed", "description": "일정, 담당자, 작업 범위가 등록되었습니다.", "owner": "박운영", "completedAt": "6시간 전", "action": "계획서 보기" },
+          { "id": "rollback", "title": "롤백 계획 등록", "status": "completed", "description": "장애 발생 시 롤백 절차가 등록되었습니다.", "owner": "박운영", "completedAt": "6시간 전", "action": "롤백 계획 보기" },
+          { "id": "approval", "title": "승인권자 승인", "status": "completed", "description": "필수 승인권자 승인이 완료되었습니다.", "owner": "김승인", "completedAt": "2시간 전", "action": "승인 내역 보기" },
+          { "id": "pipeline", "title": "Pipeline 성공", "status": "completed", "description": "연결된 Pipeline이 성공했습니다.", "owner": "이프론트", "completedAt": "5시간 전", "action": "Pipeline 보기" },
+          { "id": "security", "title": "보안 점검 완료", "status": "blocked", "description": "High 취약점 1건이 조치 대기 상태입니다.", "owner": "최보안", "completedAt": "-", "action": "보안 결과 보기" },
+          { "id": "rehearsal", "title": "리허설 결과 검토", "status": "review", "description": "예상 시간보다 7분 초과되어 확인이 필요합니다.", "owner": "박운영", "completedAt": "3시간 전", "action": "리허설 결과 보기" },
+          { "id": "impact", "title": "운영 영향도 확인", "status": "review", "description": "로그인 정책 예외 응답값 변경 영향도를 재검토해야 합니다.", "owner": "이프론트", "completedAt": "-", "action": "영향도 보기" }
+        ],
         "checklist": [
           { "title": "이관 계획서 작성", "status": "completed" },
           { "title": "롤백 계획 등록", "status": "completed" },
@@ -14340,7 +14357,63 @@ const mockData = {
           { "step": "STEP 04", "title": "리허설 검토", "description": "소요 시간 초과 확인 중", "status": "review" },
           { "step": "STEP 05", "title": "안정화", "description": "최종 이관 이후 모니터링 예정", "status": "scheduled" }
         ],
-        "metrics": { "recentErrors": "0건", "integrationStatus": "정상", "expectedRollbackTime": "18분" }
+        "metrics": { "recentErrors": "0건", "integrationStatus": "정상", "expectedRollbackTime": "18분" },
+        "owners": {
+          "developer": "이프론트",
+          "operator": "박운영",
+          "security": "최보안",
+          "approvers": ["김승인", "박승인"]
+        },
+        "sourceBranch": "feature/auth-policy",
+        "targetBranch": "main",
+        "deployWindow": "오늘 23:00 - 01:00",
+        "rehearsal": {
+          "status": "review",
+          "expectedDuration": "18분",
+          "actualDuration": "25분",
+          "exceededBy": "+7분",
+          "errors": "0건",
+          "warnings": "1건",
+          "rollbackTime": "18분"
+        },
+        "rollbackPlan": {
+          "owner": "박운영",
+          "expectedTime": "18분",
+          "condition": "배포 후 오류율 5% 이상 또는 핵심 API 장애 발생",
+          "summary": "이전 이미지로 재배포 후 DB migration rollback script를 실행합니다.",
+          "backupStatus": "완료",
+          "finalReviewer": "김승인",
+          "steps": ["이전 이미지로 customer-portal 서비스를 재배포합니다.", "DB migration rollback script를 실행합니다.", "인증 서버와 결제 승인 API 연계를 재확인합니다."]
+        },
+        "impact": {
+          "services": ["customer-portal"],
+          "apis": ["/api/v1/account/limits"],
+          "hasDatabaseChange": true,
+          "integrations": ["인증 서버", "결제 승인 API"],
+          "userImpact": "로그인 정책 예외 응답값 변경",
+          "needsInspection": true
+        },
+        "changes": {
+          "files": 12,
+          "added": 280,
+          "removed": 96,
+          "summary": ["인증 정책 예외 응답값 정규화", "계정 한도 API 오류 처리 보강", "운영 로그 필드 추가"],
+          "filesChanged": [
+            { "path": "src/features/auth/authPolicy.ts", "changeType": "수정", "impact": "로그인 정책 응답값" },
+            { "path": "src/api/accountLimits.ts", "changeType": "수정", "impact": "계정 한도 API" },
+            { "path": "db/migrations/20260528_auth_policy.sql", "changeType": "추가", "impact": "DB migration" }
+          ]
+        },
+        "activities": [
+          { "id": "activity-001", "type": "request", "title": "박운영님이 운영이관 요청을 생성했어요.", "timeText": "6시간 전" },
+          { "id": "activity-002", "type": "pipeline", "title": "Pipeline #8522가 성공했어요.", "timeText": "5시간 전" },
+          { "id": "activity-003", "type": "security", "title": "보안 점검에서 High 취약점 1건이 발견되었어요.", "timeText": "4시간 전" },
+          { "id": "activity-004", "type": "security", "title": "최보안님이 예외 승인 검토를 요청했어요.", "timeText": "4시간 전" },
+          { "id": "activity-005", "type": "rehearsal", "title": "DB 마이그레이션 리허설이 완료되었어요.", "timeText": "3시간 전" },
+          { "id": "activity-006", "type": "rehearsal", "title": "예상 소요 시간보다 7분 초과되었어요.", "timeText": "3시간 전" },
+          { "id": "activity-007", "type": "approval", "title": "승인권자 1명이 승인했어요.", "timeText": "2시간 전" },
+          { "id": "activity-008", "type": "deployment", "title": "운영 반영 요청이 대기 상태로 변경되었어요.", "timeText": "1시간 전" }
+        ]
       },
       "transfer-003": {
         "checklist": [

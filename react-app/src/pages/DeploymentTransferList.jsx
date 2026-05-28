@@ -122,7 +122,12 @@ export default function DeploymentTransferList() {
       dataIndex: 'title',
       render: (value, record) => (
         <Space direction="vertical" size={2}>
-          <Text strong>{value}</Text>
+          <Link
+            to={`/deployment-transfer/${record.id}`}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Text strong>{value}</Text>
+          </Link>
           <Text type="secondary">운영 환경: {record.environment}</Text>
         </Space>
       ),
