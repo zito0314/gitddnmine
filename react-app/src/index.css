@@ -1632,3 +1632,27 @@ body {
 .repository-list-meta {
   width: 100%;
 }
+
+/* Tag List Page */
+.tag-list-page {}
+
+.tag-filter-tabs .ant-tabs-nav { margin-bottom: 0; }
+
+.tag-filter-bar {}
+
+.tag-row {
+  padding: 14px 0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.tag-row:hover {
+  background: var(--ant-color-bg-text-hover, rgba(0, 0, 0, 0.04));
+}
+
+.tag-main-info { min-width: 0; }
+
+.tag-commit-meta { min-width: 0; }
+
+.tag-actions { flex-shrink: 0; }

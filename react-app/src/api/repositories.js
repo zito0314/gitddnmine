@@ -389,17 +389,42 @@ export function getRepositoryBranchSummary(repositoryId) {
   }
 }
 
+function normalizeTag(tag) {
+  const sha = tag.latestCommit?.sha ?? tag.commit ?? ''
+  return {
+    ...tag,
+    commit: sha,
+    message: tag.latestCommit?.message ?? tag.message ?? tag.description ?? '',
+    author: tag.latestCommit?.author ?? tag.author ?? '-',
+    createdAt: tag.createdAtText ?? tag.createdAt ?? '-',
+    updatedAt: tag.latestCommit?.updatedAt ?? tag.updatedAt ?? tag.createdAt ?? '',
+    releaseType: tag.type ?? tag.releaseType ?? 'tag',
+    latestCommit: tag.latestCommit ?? { sha, message: tag.message ?? '', author: tag.author ?? '-', updatedAtText: tag.createdAt ?? '-' },
+  }
+}
+
+const FALLBACK_TAGS = [
+  { name: 'v1.4.2', type: 'production', protected: true, release: true, commit: '7e14d754', message: '인증 정책 응답값 개선 정식 배포', author: 'Choi', createdAt: '2일 전', updatedAt: '2026-05-26' },
+  { name: 'v1.4.1-hotfix', type: 'hotfix', protected: false, release: false, commit: '5c91a022', message: 'Pipeline retry hotfix', author: 'Yoon', createdAt: '5일 전', updatedAt: '2026-05-23' },
+  { name: 'release-2026.05.20', type: 'release', protected: true, release: true, commit: '91a42df0', message: '5월 정기 릴리즈 후보', author: 'Choi', createdAt: '어제', updatedAt: '2026-05-27' },
+  { name: 'prod-2026.05.20', type: 'production', protected: true, release: true, commit: '91a42df0', message: '운영 배포 승인 태그', author: 'Choi', createdAt: '어제', updatedAt: '2026-05-27' },
+  { name: 'v1.5.0-rc.1', type: 'pre-release', protected: false, release: false, commit: 'c2b8e129', message: '다음 버전 릴리즈 후보', author: 'Min', createdAt: '3시간 전', updatedAt: '2026-05-28' },
+]
+
+export function getAllTags() {
+  const mockTags = getMockSlice((data) => data.admin?.tags, [])
+  if (mockTags.length > 0) return mockTags.map(normalizeTag)
+  return FALLBACK_TAGS.map(normalizeTag)
+}
+
 export function getRepositoryTags(repositoryId) {
   const repository = getRepositoryDetail(repositoryId)
   if (!repository) return []
 
-  return [
-    { name: 'v1.4.2', releaseType: 'production', commit: '7e14d754', message: '인증 정책 응답값 개선 정식 배포', author: 'Choi', createdAt: '2일 전' },
-    { name: 'v1.4.1-hotfix', releaseType: 'hotfix', commit: '5c91a022', message: 'Pipeline retry hotfix', author: 'Yoon', createdAt: '5일 전' },
-    { name: 'release-2026.05.20', releaseType: 'release', commit: '91a42df0', message: '5월 정기 릴리즈 후보', author: 'Choi', createdAt: '어제' },
-    { name: 'prod-2026.05.20', releaseType: 'production', commit: '91a42df0', message: '운영 배포 승인 태그', author: 'Choi', createdAt: '어제' },
-    { name: 'v1.5.0-rc.1', releaseType: 'pre-release', commit: 'c2b8e129', message: '다음 버전 릴리즈 후보', author: 'Min', createdAt: '3시간 전' },
-  ]
+  const mockTags = getMockSlice((data) => data.admin?.tags, []).filter((tag) => tag.repositoryId === repositoryId)
+  if (mockTags.length > 0) return mockTags.map(normalizeTag)
+
+  return FALLBACK_TAGS.map((tag) => normalizeTag({ ...tag, repositoryId, repositoryName: repository.name ?? repositoryId }))
 }
 
 export function getRepositoryTagSummary(repositoryId) {
