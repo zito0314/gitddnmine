@@ -1563,6 +1563,76 @@ const mockData = {
       "openMrCount": 5,
       "pipelineStatus": "failed",
       "securityStatus": "blocked",
+      "mergeConditions": [
+        "Pipeline 성공",
+        "리뷰어 승인 1건 이상",
+        "보안 점검 통과",
+        "Target Branch 최신 상태"
+      ],
+      "branches": [
+        {
+          "name": "feature/payment-exception",
+          "latestCommit": {
+            "message": "로그인 정책 예외 케이스 응답값 개선",
+            "author": "김동현",
+            "timeText": "2시간 전",
+            "sha": "7e14d754"
+          }
+        },
+        {
+          "name": "feature/login-policy",
+          "latestCommit": {
+            "message": "인증 정책 응답값 개선",
+            "author": "Jito",
+            "timeText": "20분 전",
+            "sha": "7e14d754"
+          }
+        },
+        {
+          "name": "develop",
+          "latestCommit": {
+            "message": "develop 브랜치 빌드 안정화",
+            "author": "김동현",
+            "timeText": "2시간 전",
+            "sha": "5c91a022"
+          }
+        },
+        {
+          "name": "main",
+          "latestCommit": {
+            "message": "Branch policy validation flow 정리",
+            "author": "Min",
+            "timeText": "2시간 전",
+            "sha": "91a42df0"
+          }
+        }
+      ],
+      "branchComparisons": [
+        {
+          "source": "feature/payment-exception",
+          "target": "develop",
+          "hasDiff": true,
+          "diffCount": 246
+        },
+        {
+          "source": "feature/login-policy",
+          "target": "develop",
+          "hasDiff": true,
+          "diffCount": 167
+        },
+        {
+          "source": "develop",
+          "target": "main",
+          "hasDiff": true,
+          "diffCount": 12
+        },
+        {
+          "source": "main",
+          "target": "develop",
+          "hasDiff": false,
+          "diffCount": 0
+        }
+      ],
       "metrics": [
         {
           "label": "Commits",

@@ -188,11 +188,12 @@ export function getRepositoryFileTree(repositoryId) {
 }
 
 export function getRepositoryBranches(repositoryId) {
-  const repository = getRepositoryById(repositoryId)
+  const repository = getRepositoryDetail(repositoryId)
   const commits = getRepositoryCommits(repositoryId)
   const pipelines = getRepositoryPipelines(repositoryId)
   const branchNames = new Set([
     repository?.defaultBranch,
+    ...(repository?.branches?.map((branch) => branch.name) ?? []),
     ...commits.map((commit) => commit.branch),
     ...pipelines.map((pipeline) => pipeline.branch),
   ].filter(Boolean))
@@ -202,10 +203,34 @@ export function getRepositoryBranches(repositoryId) {
     protected: name === repository?.defaultBranch || name === 'develop',
     default: name === repository?.defaultBranch,
     status: name === repository?.defaultBranch ? 'active' : name.includes('feature') ? 'active' : 'stale',
-    lastCommit: commits.find((commit) => commit.branch === name)?.sha ?? '91a42df0',
-    lastAuthor: commits.find((commit) => commit.branch === name)?.author ?? 'System',
-    updatedAt: commits.find((commit) => commit.branch === name)?.createdAt ?? repository?.updatedAt ?? '-',
+    lastCommit: repository?.branches?.find((branch) => branch.name === name)?.latestCommit?.sha ?? commits.find((commit) => commit.branch === name)?.sha ?? '91a42df0',
+    lastAuthor: repository?.branches?.find((branch) => branch.name === name)?.latestCommit?.author ?? commits.find((commit) => commit.branch === name)?.author ?? 'System',
+    updatedAt: repository?.branches?.find((branch) => branch.name === name)?.latestCommit?.timeText ?? commits.find((commit) => commit.branch === name)?.createdAt ?? repository?.updatedAt ?? '-',
+    latestCommit: repository?.branches?.find((branch) => branch.name === name)?.latestCommit ?? normalizeBranchCommit(commits.find((commit) => commit.branch === name)),
   }))
+}
+
+function normalizeBranchCommit(commit) {
+  if (!commit) return null
+
+  return {
+    message: commit.title ?? commit.message ?? commit.description,
+    author: commit.author,
+    timeText: commit.createdAt,
+    sha: commit.sha,
+  }
+}
+
+export function getRepositoryMergeConditions(repositoryId) {
+  return getRepositoryDetail(repositoryId)?.mergeConditions ?? []
+}
+
+export function getRepositoryBranchComparison(repositoryId, sourceBranch, targetBranch) {
+  if (!repositoryId || !sourceBranch || !targetBranch) return null
+
+  return getRepositoryDetail(repositoryId)?.branchComparisons?.find(
+    (comparison) => comparison.source === sourceBranch && comparison.target === targetBranch,
+  ) ?? null
 }
 
 export function getRepositoryBranchSummary(repositoryId) {
