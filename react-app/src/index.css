@@ -1220,6 +1220,62 @@ body {
   }
 }
 
+.deployment-dashboard-page .page-header h2.ant-typography {
+  margin-bottom: 8px;
+}
+
+.deployment-summary-card {
+  height: 100%;
+}
+
+.deployment-summary-card h2.ant-typography {
+  margin: 0;
+}
+
+.deployment-dashboard-card {
+  height: 100%;
+}
+
+.deployment-risk-card,
+.deployment-check-item,
+.deployment-step-card {
+  border-color: var(--gitddn-border-color);
+}
+
+.deployment-status-filter {
+  margin-bottom: 16px;
+}
+
+.deployment-transfer-row-selected > td {
+  background: color-mix(in srgb, var(--gitddn-primary) 8%, transparent) !important;
+}
+
+.deployment-risk-card {
+  cursor: pointer;
+}
+
+.deployment-step-card {
+  height: 100%;
+}
+
+.deployment-step-card-blocked {
+  border-color: var(--ant-color-error);
+}
+
+.deployment-step-card-review {
+  border-color: var(--ant-color-warning);
+}
+
+.deployment-step-card-completed {
+  border-color: var(--ant-color-success);
+}
+
+.deployment-progress-metrics {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--gitddn-border-color);
+}
+
 .security-risk-row > td {
   background: #fff7ed !important;
 }

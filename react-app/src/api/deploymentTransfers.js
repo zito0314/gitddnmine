@@ -1,7 +1,12 @@
 import { findById, getMockSlice } from './mockClient'
+import { filterItemsByRepositoryAccess, getStoredAuthUser } from '../auth/permissions'
 
 export function getDeploymentTransfers() {
-  return getMockSlice((data) => data.deploymentTransfers, [])
+  return filterItemsByRepositoryAccess(
+    getMockSlice((data) => data.deploymentTransfers, []),
+    getStoredAuthUser(),
+    'repositoryId',
+  )
 }
 
 export function getDeploymentTransferSummary(items = getDeploymentTransfers()) {
@@ -17,6 +22,38 @@ export function getDeploymentTransferSummary(items = getDeploymentTransfers()) {
 
 export function getDeploymentTransferById(transferId) {
   return findById(getDeploymentTransfers(), transferId) ?? null
+}
+
+export function getDeploymentTransferDashboard() {
+  const dashboard = getMockSlice((data) => data.deploymentTransferDashboard, {})
+  const requests = filterItemsByRepositoryAccess(dashboard.requests ?? [], getStoredAuthUser(), 'repositoryId')
+  const requestIds = new Set(requests.map((request) => request.id))
+  const selectedRequestId = requestIds.has(dashboard.defaultSelectedRequestId)
+    ? dashboard.defaultSelectedRequestId
+    : requests[0]?.id
+
+  return {
+    summary: getDeploymentTransferDashboardSummary(requests),
+    timeline: dashboard.timeline ?? [],
+    risks: dashboard.risks ?? [],
+    requests,
+    requestDetails: dashboard.requestDetails ?? {},
+    defaultSelectedRequestId: selectedRequestId,
+  }
+}
+
+export function getDeploymentTransferDashboardSummary(requests = getDeploymentTransferDashboard().requests) {
+  return {
+    scheduledToday: requests.filter((request) => request.scheduledTime?.startsWith('오늘')).length,
+    ready: requests.filter((request) => request.status === 'ready').length,
+    needsReview: requests.filter((request) => request.status === 'review').length,
+    blocked: requests.filter((request) => request.status === 'blocked').length,
+  }
+}
+
+export function getDeploymentTransferDashboardRequestById(requestId) {
+  const dashboard = getDeploymentTransferDashboard()
+  return dashboard.requests.find((request) => request.id === requestId) ?? null
 }
 
 export function getDeploymentTransferDetail(transferId) {

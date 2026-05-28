@@ -14136,6 +14136,231 @@ const mockData = {
       ]
     }
   ],
+  "deploymentTransferDashboard": {
+    "summary": {
+      "scheduledToday": 4,
+      "ready": 3,
+      "needsReview": 2,
+      "blocked": 1
+    },
+    "timeline": [
+      {
+        "time": "21:00",
+        "title": "사전 점검 시작",
+        "description": "Pipeline, 보안 점검, 승인 상태 확인 · 운영 담당자 박운영",
+        "status": "completed"
+      },
+      {
+        "time": "22:00",
+        "title": "리허설 결과 검토",
+        "description": "DB 마이그레이션 예상 소요 18분 · 오류 1건 확인 필요",
+        "status": "warning"
+      },
+      {
+        "time": "23:00",
+        "title": "최종 운영이관 실행",
+        "description": "payment-api, customer-portal, admin-console 순차 반영",
+        "status": "waiting"
+      },
+      {
+        "time": "00:30",
+        "title": "안정화 모니터링",
+        "description": "서비스 정상 작동, 데이터 정합성, 연계 시스템 통신 확인",
+        "status": "scheduled"
+      }
+    ],
+    "risks": [
+      {
+        "id": "risk-001",
+        "requestId": "transfer-002",
+        "title": "보안 점검 미완료",
+        "status": "blocked",
+        "description": "customer-portal MR의 High 취약점 1건이 조치 대기 상태입니다. 보안 담당자 확인 후 예외 승인 또는 조치가 필요합니다."
+      },
+      {
+        "id": "risk-002",
+        "requestId": "transfer-003",
+        "title": "리허설 결과 확인 필요",
+        "status": "review",
+        "description": "DB 마이그레이션 리허설에서 예상 시간보다 7분 초과되었습니다. 운영 영향도를 재검토해 주세요."
+      },
+      {
+        "id": "risk-003",
+        "requestId": "transfer-005",
+        "title": "승인권자 1명 미승인",
+        "status": "waiting",
+        "description": "최종 승인자 2명 중 1명의 승인이 남아 있습니다. 승인 완료 전 최종 이관을 실행할 수 없습니다."
+      }
+    ],
+    "requests": [
+      {
+        "id": "transfer-001",
+        "title": "결제 승인 API 개선 반영",
+        "environment": "Production",
+        "repositoryId": "mobile-banking-api",
+        "repositoryName": "payment-api",
+        "mrId": 128,
+        "mrNumber": "!248",
+        "pipelineId": "2847502395",
+        "pipelineNumber": "#8471",
+        "scheduledTime": "오늘 23:00",
+        "owners": ["김개발", "박운영"],
+        "currentStep": "승인 완료",
+        "riskLevel": "low",
+        "status": "ready"
+      },
+      {
+        "id": "transfer-002",
+        "title": "고객 포털 인증 정책 변경",
+        "environment": "Production",
+        "repositoryId": "customer-web-portal",
+        "repositoryName": "customer-portal",
+        "mrId": 129,
+        "mrNumber": "!391",
+        "pipelineId": "2847502411",
+        "pipelineNumber": "#8522",
+        "scheduledTime": "오늘 23:20",
+        "owners": ["이프론트", "최보안"],
+        "currentStep": "보안 점검",
+        "riskLevel": "high",
+        "status": "blocked"
+      },
+      {
+        "id": "transfer-003",
+        "title": "관리자 콘솔 권한 메뉴 배포",
+        "environment": "Production",
+        "repositoryId": "auth-policy-engine",
+        "repositoryName": "admin-console",
+        "mrId": 128,
+        "mrNumber": "!112",
+        "pipelineId": "2847502382",
+        "pipelineNumber": "#8390",
+        "scheduledTime": "오늘 23:40",
+        "owners": ["정관리", "박운영"],
+        "currentStep": "리허설 검토",
+        "riskLevel": "medium",
+        "status": "review"
+      },
+      {
+        "id": "transfer-004",
+        "title": "계좌 한도 정책 운영 반영",
+        "environment": "Production",
+        "repositoryId": "mobile-banking-api",
+        "repositoryName": "account-limit-service",
+        "mrId": 127,
+        "mrNumber": "!255",
+        "pipelineId": "2847502388",
+        "pipelineNumber": "#8488",
+        "scheduledTime": "오늘 23:55",
+        "owners": ["한계좌", "박운영"],
+        "currentStep": "승인 완료",
+        "riskLevel": "low",
+        "status": "ready"
+      },
+      {
+        "id": "transfer-005",
+        "title": "알림 템플릿 변수 표준화",
+        "environment": "Production",
+        "repositoryId": "notification-gateway",
+        "repositoryName": "notification-gateway",
+        "mrId": 125,
+        "mrNumber": "!318",
+        "pipelineId": "2847502369",
+        "pipelineNumber": "#8369",
+        "scheduledTime": "내일 00:10",
+        "owners": ["윤메시지", "박운영"],
+        "currentStep": "최종 승인",
+        "riskLevel": "medium",
+        "status": "review"
+      },
+      {
+        "id": "transfer-006",
+        "title": "정산 배치 처리량 개선",
+        "environment": "Production",
+        "repositoryId": "settlement-batch",
+        "repositoryName": "settlement-batch",
+        "mrId": 121,
+        "mrNumber": "!204",
+        "pipelineId": "2847502322",
+        "pipelineNumber": "#8322",
+        "scheduledTime": "내일 00:30",
+        "owners": ["배정산", "김운영"],
+        "currentStep": "안정화 모니터링",
+        "riskLevel": "low",
+        "status": "stabilizing"
+      },
+      {
+        "id": "transfer-007",
+        "title": "감사 로그 내보내기 포맷 반영",
+        "environment": "Production",
+        "repositoryId": "compliance-exporter",
+        "repositoryName": "compliance-exporter",
+        "mrId": 119,
+        "mrNumber": "!179",
+        "pipelineId": "2847502310",
+        "pipelineNumber": "#8310",
+        "scheduledTime": "내일 00:45",
+        "owners": ["백감사", "김운영"],
+        "currentStep": "승인 완료",
+        "riskLevel": "low",
+        "status": "ready"
+      }
+    ],
+    "defaultSelectedRequestId": "transfer-002",
+    "requestDetails": {
+      "transfer-001": {
+        "checklist": [
+          { "title": "이관 계획서 작성", "status": "completed" },
+          { "title": "롤백 계획 등록", "status": "completed" },
+          { "title": "리허설 결과 검토", "status": "completed" },
+          { "title": "보안 점검 완료", "status": "completed" },
+          { "title": "승인권자 승인", "status": "completed" }
+        ],
+        "steps": [
+          { "step": "STEP 01", "title": "계획 수립", "description": "일정, 담당자, 롤백 계획 등록 완료", "status": "completed" },
+          { "step": "STEP 02", "title": "UAT 완료", "description": "현업 인수 테스트 완료", "status": "completed" },
+          { "step": "STEP 03", "title": "보안 점검", "description": "취약점 조치 완료", "status": "completed" },
+          { "step": "STEP 04", "title": "리허설 검토", "description": "예정 시간 내 완료", "status": "completed" },
+          { "step": "STEP 05", "title": "안정화", "description": "최종 이관 이후 모니터링 예정", "status": "scheduled" }
+        ],
+        "metrics": { "recentErrors": "0건", "integrationStatus": "정상", "expectedRollbackTime": "12분" }
+      },
+      "transfer-002": {
+        "checklist": [
+          { "title": "이관 계획서 작성", "status": "completed" },
+          { "title": "롤백 계획 등록", "status": "completed" },
+          { "title": "리허설 결과 검토", "status": "review" },
+          { "title": "보안 점검 완료", "status": "blocked" },
+          { "title": "승인권자 승인", "status": "completed" }
+        ],
+        "steps": [
+          { "step": "STEP 01", "title": "계획 수립", "description": "일정, 담당자, 롤백 계획 등록 완료", "status": "completed" },
+          { "step": "STEP 02", "title": "UAT 완료", "description": "현업 인수 테스트 완료", "status": "completed" },
+          { "step": "STEP 03", "title": "보안 점검", "description": "High 취약점 조치 필요", "status": "blocked" },
+          { "step": "STEP 04", "title": "리허설 검토", "description": "소요 시간 초과 확인 중", "status": "review" },
+          { "step": "STEP 05", "title": "안정화", "description": "최종 이관 이후 모니터링 예정", "status": "scheduled" }
+        ],
+        "metrics": { "recentErrors": "0건", "integrationStatus": "정상", "expectedRollbackTime": "18분" }
+      },
+      "transfer-003": {
+        "checklist": [
+          { "title": "이관 계획서 작성", "status": "completed" },
+          { "title": "롤백 계획 등록", "status": "completed" },
+          { "title": "리허설 결과 검토", "status": "review" },
+          { "title": "보안 점검 완료", "status": "completed" },
+          { "title": "승인권자 승인", "status": "completed" }
+        ],
+        "steps": [
+          { "step": "STEP 01", "title": "계획 수립", "description": "일정, 담당자, 롤백 계획 등록 완료", "status": "completed" },
+          { "step": "STEP 02", "title": "UAT 완료", "description": "현업 인수 테스트 완료", "status": "completed" },
+          { "step": "STEP 03", "title": "보안 점검", "description": "보안 점검 통과", "status": "completed" },
+          { "step": "STEP 04", "title": "리허설 검토", "description": "소요 시간 초과 확인 중", "status": "review" },
+          { "step": "STEP 05", "title": "안정화", "description": "최종 이관 이후 모니터링 예정", "status": "scheduled" }
+        ],
+        "metrics": { "recentErrors": "1건", "integrationStatus": "주의", "expectedRollbackTime": "18분" }
+      }
+    }
+  },
   "mrMergePolicies": [
     {
       "id": "mcp-finance-standard",
