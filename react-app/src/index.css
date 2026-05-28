@@ -314,23 +314,6 @@ body {
   justify-content: center;
 }
 
-.header-breadcrumb {
-  min-width: 0;
-  color: var(--gitddn-text-secondary);
-  font-size: 14px;
-}
-
-.header-breadcrumb .ant-breadcrumb-link,
-.header-breadcrumb .ant-breadcrumb-link a,
-.header-breadcrumb .ant-breadcrumb-separator {
-  color: var(--gitddn-text-secondary);
-}
-
-.header-breadcrumb-current {
-  color: var(--gitddn-text-primary);
-  font-weight: 700;
-}
-
 .header-ask-button.ant-btn {
   border-radius: 999px;
   padding-inline: 13px;
@@ -698,11 +681,6 @@ body {
 
   .header-left {
     min-width: 0;
-  }
-
-  .header-breadcrumb {
-    overflow: hidden;
-    white-space: nowrap;
   }
 
   .header-actions .ant-segmented,

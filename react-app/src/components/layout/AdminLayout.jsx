@@ -38,7 +38,7 @@ const adminBreadcrumbLabels = {
 
 function makeAdminBreadcrumb(pathname) {
   if (pathname === '/admin') {
-    return [{ title: <span className="header-breadcrumb-current">{UI_TEXT.navigation.admin}</span> }]
+    return [{ title: UI_TEXT.navigation.admin }]
   }
 
   const [, , section] = pathname.split('/')
@@ -46,7 +46,7 @@ function makeAdminBreadcrumb(pathname) {
 
   return [
     { title: <Link to="/admin">{UI_TEXT.navigation.admin}</Link> },
-    { title: <span className="header-breadcrumb-current">{currentLabel}</span> },
+    { title: currentLabel },
   ]
 }
 
@@ -76,7 +76,7 @@ export default function AdminLayout() {
           <Flex align="center" justify="space-between" style={{ width: '100%' }}>
             <Space size={12}>
               <Avatar shape="square" size={30} icon={<SettingOutlined />} className="header-page-icon" />
-              <Breadcrumb className="header-breadcrumb" separator="›" items={breadcrumbItems} />
+              <Breadcrumb separator="›" items={breadcrumbItems} />
             </Space>
             <Space>
               <Button type="primary" onClick={() => navigate('/')}>{UI_TEXT.topHeader.backToUserPlatform}</Button>

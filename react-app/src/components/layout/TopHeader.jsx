@@ -111,12 +111,10 @@ function getRepositoryIdFromPath(pathname) {
 
 function makeBreadcrumbItem(label, path, current = false) {
   return {
-    title: current ? (
-      <span className="header-breadcrumb-current">{label}</span>
-    ) : path ? (
+    title: !current && path ? (
       <Link to={path}>{label}</Link>
     ) : (
-      <span>{label}</span>
+      label
     ),
   }
 }
@@ -350,7 +348,6 @@ function TopHeader({ collapsed, onToggleSidebar }) {
           onClick={onToggleSidebar}
         />
         <Breadcrumb
-          className="header-breadcrumb"
           separator="›"
           items={headerLocation.items}
         />
