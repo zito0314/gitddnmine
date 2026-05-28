@@ -14,6 +14,7 @@ import { PageHeader, StatusTag } from '../components/common'
 import { DashboardAiChat } from '../components/custom'
 import RepositoryAvatar from '../components/repository/RepositoryAvatar'
 import { UI_TEXT } from '../constants'
+import useRepositoryFavorites from '../hooks/useRepositoryFavorites'
 
 const { Text } = Typography
 
@@ -53,6 +54,7 @@ function Dashboard() {
   const navigate = useNavigate()
   const auth = useAuth()
   const nextUp = getDashboardNextUpItems()
+  useRepositoryFavorites()
   const repositories = getDashboardRepositoriesData()
   const activities = getDashboardRepositoryActivities()
   const prompts = getDashboardAiPrompts()
