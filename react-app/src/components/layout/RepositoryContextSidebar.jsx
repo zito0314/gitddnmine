@@ -10,12 +10,12 @@ import {
   SettingOutlined,
   TagsOutlined,
 } from '../icons'
-import { Card, Menu, Typography } from 'antd'
+import { Avatar, Card, Menu, Typography } from 'antd'
 import { useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRepositoryDetail } from '../../api/repositories'
 import { UI_TEXT } from '../../constants'
-import RepositoryAvatar from '../repository/RepositoryAvatar'
+import { getRepositoryThumbnail } from '../../utils/repositoryThumbnail'
 
 const { Text } = Typography
 
@@ -68,6 +68,7 @@ function RepositoryContextSidebar({ repositoryId }) {
 
     return match?.key ?? basePath
   }, [basePath, items, location.pathname])
+  const thumbnail = getRepositoryThumbnail(repository)
 
   return (
     <div className="repository-context-sidebar">
@@ -75,7 +76,14 @@ function RepositoryContextSidebar({ repositoryId }) {
       <Card size="small" className="sidebar-repository-summary">
         <Card.Meta
           avatar={(
-            <RepositoryAvatar repository={repository} size={32} className="sidebar-repository-avatar" />
+            <Avatar
+              size="small"
+              shape="square"
+              className="sidebar-repository-avatar"
+              style={{ backgroundColor: thumbnail.background, color: thumbnail.color }}
+            >
+              {thumbnail.initials}
+            </Avatar>
           )}
           title={(
             <Text strong ellipsis className="sidebar-repository-name">
@@ -83,7 +91,7 @@ function RepositoryContextSidebar({ repositoryId }) {
             </Text>
           )}
           description={(
-            <Text type="secondary" ellipsis className="sidebar-repository-group">
+            <Text strong type="secondary" ellipsis className="sidebar-repository-group">
               {repository.group}
             </Text>
           )}

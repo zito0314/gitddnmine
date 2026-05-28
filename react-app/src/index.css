@@ -564,10 +564,33 @@ body {
 
 .sidebar-repository-summary .ant-card-meta {
   align-items: center;
+  gap: 2px;
 }
 
-.sidebar-repository-summary .ant-card-meta-detail {
+.sidebar-repository-summary .ant-card-meta-avatar {
+  padding: 4px;
+  line-height: 0;
+}
+
+.sidebar-repository-summary .ant-card-meta-detail,
+.sidebar-repository-summary .ant-card-meta-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   min-width: 0;
+}
+
+.sidebar-repository-summary .ant-card-meta-detail > div:not(:last-child),
+.sidebar-repository-summary .ant-card-meta-section > div:not(:last-child) {
+  margin-bottom: 0;
+}
+
+.sidebar-repository-name.ant-typography {
+  font-size: 14px;
+}
+
+.sidebar-repository-group.ant-typography {
+  font-size: 12px;
 }
 
 .repository-avatar.ant-avatar {
@@ -575,8 +598,8 @@ body {
   font-weight: 800;
 }
 
-.sidebar-repository-avatar {
-  font-size: 12px;
+.sidebar-repository-avatar.ant-avatar {
+  flex: 0 0 auto;
 }
 
 .sidebar-repository-copy {
