@@ -1,10 +1,10 @@
 const NAVIGATION_LABELS = {
   dashboard: '홈',
-  repositories: 'Git 저장소',
-  mergeRequests: 'Merge Requests',
+  repositories: '저장소',
+  mergeRequests: 'MR 대시보드',
   pipelines: 'Pipelines',
   security: '보안',
-  deploymentTransfer: '운영이관',
+  deploymentTransfer: '운영 대시보드',
   audit: '감사',
   admin: '관리자 콘솔',
 }
@@ -12,14 +12,14 @@ const NAVIGATION_LABELS = {
 const REPOSITORY_NAVIGATION_LABELS = {
   overview: '개요',
   files: '파일',
-  mergeRequests: NAVIGATION_LABELS.mergeRequests,
+  mergeRequests: 'Merge Requests',
   pipelines: NAVIGATION_LABELS.pipelines,
   commits: 'Commits',
   branches: 'Branches',
   gitGraph: 'Git Graph',
   tags: 'Tags',
   security: NAVIGATION_LABELS.security,
-  deploymentTransfer: NAVIGATION_LABELS.deploymentTransfer,
+  deploymentTransfer: '운영이관',
   activity: 'Activity',
   settings: '설정',
 }
