@@ -113,9 +113,8 @@ export function getRepositoryActivitySummary(repositoryId) {
 
 export function getRepositoryCommits(repositoryId) {
   const commits = getMockSlice((data) => data.commits, []).filter((commit) => commit.repositoryId === repositoryId)
-  if (commits.length > 2) return commits
-
-  return [
+  const repository = getRepositoryDetail(repositoryId)
+  const baseCommits = commits.length > 2 ? commits : [
     ...commits,
     {
       id: '91a42df0',
@@ -143,7 +142,77 @@ export function getRepositoryCommits(repositoryId) {
       branch: 'develop',
       changedFiles: 5,
     },
+    {
+      id: '8f6d2ab1',
+      sha: '8f6d2ab1',
+      repositoryId,
+      title: '운영 반영 전 영향도 점검 추가',
+      description: 'Production 반영 전 API 영향 범위를 Commit 이력에서 확인할 수 있게 정리했습니다.',
+      author: repository?.owner ?? 'Kim',
+      createdAt: '2일 전',
+      added: 38,
+      removed: 9,
+      branch: 'release/1.2.0',
+      changedFiles: 4,
+    },
+    {
+      id: '4ac81e02',
+      sha: '4ac81e02',
+      repositoryId,
+      title: '인증 정책 테스트 케이스 보강',
+      description: 'feature Branch의 인증 정책 예외 응답 테스트를 추가했습니다.',
+      author: 'Jito',
+      createdAt: '3일 전',
+      added: 76,
+      removed: 14,
+      branch: 'feature/auth-policy',
+      changedFiles: 6,
+    },
   ]
+
+  const pipelines = getRepositoryPipelines(repositoryId)
+  const tags = getRepositoryTags(repositoryId)
+  const seen = new Set()
+
+  return baseCommits
+    .filter((commit) => {
+      if (seen.has(commit.sha)) return false
+      seen.add(commit.sha)
+      return true
+    })
+    .map((commit, index) => {
+      const pipeline = pipelines.find((item) => item.commit === commit.sha || item.branch === commit.branch)
+      const tag = tags.find((item) => item.commit === commit.sha)
+      return {
+        ...commit,
+        message: commit.message ?? commit.title,
+        authorName: typeof commit.author === 'string' ? commit.author : commit.author?.name,
+        author: typeof commit.author === 'string' ? commit.author : commit.author?.name,
+        avatarUrl: commit.author?.avatarUrl ?? '',
+        createdAtText: commit.createdAtText ?? `${commit.createdAt ?? '-'} 생성`,
+        date: commit.date ?? inferCommitDate(commit.createdAt, index),
+        tag: commit.tag ?? tag?.name ?? '',
+        pipelineStatus: commit.pipelineStatus ?? pipeline?.status ?? pipeline?.result ?? 'none',
+        pipelineId: commit.pipelineId ?? pipeline?.id ?? null,
+        changedFilesCount: commit.changedFilesCount ?? commit.changedFiles ?? 0,
+        sortIndex: index,
+      }
+    })
+}
+
+function inferCommitDate(createdAt, index = 0) {
+  if (createdAt?.includes('분') || createdAt?.includes('시간')) return '2026.05.28'
+  if (createdAt?.includes('어제')) return '2026.05.27'
+  if (createdAt?.includes('2일')) return '2026.05.26'
+  return index < 2 ? '2026.05.28' : index < 4 ? '2026.05.27' : '2026.05.26'
+}
+
+export function getCommitBySha(repositoryId, sha) {
+  return getRepositoryCommits(repositoryId).find((commit) => commit.sha === sha || commit.id === sha) ?? null
+}
+
+export function getCommitAuthors(repositoryId) {
+  return [...new Set(getRepositoryCommits(repositoryId).map((commit) => commit.author).filter(Boolean))]
 }
 
 export function getRepositoryCommitSummary(repositoryId) {

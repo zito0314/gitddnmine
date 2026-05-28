@@ -1325,6 +1325,27 @@ body {
   height: auto;
 }
 
+.commit-filter-bar {
+  position: relative;
+}
+
+.commit-date-group {
+  display: block;
+}
+
+.commit-row-card {
+  border-color: var(--gitddn-border-color);
+}
+
+.commit-row-card .ant-card-body {
+  padding: 14px 16px;
+}
+
+.commit-meta,
+.commit-actions {
+  font-size: 13px;
+}
+
 .security-risk-row > td {
   background: #fff7ed !important;
 }
