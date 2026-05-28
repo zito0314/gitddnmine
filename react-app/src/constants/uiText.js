@@ -186,7 +186,7 @@ export const UI_TEXT = {
     },
     repositoryTags: {
       title: REPOSITORY_NAVIGATION_LABELS.tags,
-      description: '배포 기준 태그와 릴리즈 이력을 확인하는 화면',
+      description: '배포 기준 태그와 릴리즈 이력을 확인합니다.',
     },
     repositorySecurity: {
       title: REPOSITORY_NAVIGATION_LABELS.security,
