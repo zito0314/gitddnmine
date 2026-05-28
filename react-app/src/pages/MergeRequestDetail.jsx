@@ -2,562 +2,543 @@ import {
   CheckCircleOutlined,
   CodeOutlined,
   CommentOutlined,
+  EditOutlined,
   FileTextOutlined,
-  GitlabOutlined,
+  GoBackOutlined,
+  LinkOutlined,
   SafetyCertificateOutlined,
-  UserOutlined,
+  UploadOutlined,
 } from '../components/icons'
 import {
-  Alert,
   App as AntdApp,
   Avatar,
   Button,
   Card,
   Col,
   Collapse,
-  Descriptions,
   Empty,
   Flex,
   Input,
-  List,
   Progress,
   Row,
+  Select,
   Space,
   Table,
   Tabs,
   Tag,
   Timeline,
+  Tooltip,
   Typography,
 } from 'antd'
-import { useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import {
-  getMergeRequestActivities,
-  getMergeRequestApprovals,
   getMergeRequestChangedFiles,
-  getMergeRequestChanges,
-  getMergeRequestComments,
   getMergeRequestCommits,
   getMergeRequestDetail,
-  getMergeRequestMergeChecklist,
-  getMergeRequestMergePolicy,
   getMergeRequestPipeline,
-  getMergeRequestSecurity,
 } from '../api/mergeRequests'
-import { getPipelineJobs, getPipelineStages } from '../api/pipelines'
-import { getRepositoryById } from '../api/repositories'
-import { StatusTag, SummaryCard } from '../components/common'
-import { CodePreview } from '../components/custom'
 
 const { Paragraph, Text, Title } = Typography
 
-function getContextRepositoryId(repositoryId, mergeRequest) {
-  return repositoryId ?? mergeRequest?.repo
+const STATUS_COLORS = {
+  open: 'success',
+  merged: 'processing',
+  closed: 'default',
+  draft: 'default',
+  failed: 'error',
+  passed: 'success',
+  required: 'warning',
 }
 
-function getPipelinePath(repositoryId, mergeRequest, pipeline) {
-  if (!pipeline) return null
-  const contextRepositoryId = getContextRepositoryId(repositoryId, mergeRequest)
-  return repositoryId ? `/repositories/${contextRepositoryId}/pipelines/${pipeline.id}` : `/pipelines/${pipeline.id}`
+const ACTIVITY_FILTERS = [
+  { value: 'all', label: '모든 활동' },
+  { value: 'comment', label: '코멘트' },
+  { value: 'pipeline', label: 'Pipeline' },
+  { value: 'approval', label: '승인' },
+  { value: 'security', label: '보안 점검' },
+  { value: 'commit', label: 'Commit' },
+  { value: 'system', label: '시스템 활동' },
+]
+
+const PEOPLE_OPTIONS = ['김동현', '박승인', 'Min', 'Han', 'Park'].map((value) => ({ value, label: value }))
+const PROJECT_OPTIONS = ['결제 승인 개선', 'Digital Banking Core', '운영 정책 개선'].map((value) => ({ value, label: value }))
+
+function statusTag(status, label) {
+  return <Tag color={STATUS_COLORS[status] ?? 'default'}>{label ?? status}</Tag>
 }
 
-function getMergeState(checklist) {
-  const failed = checklist.filter((item) => item.status === 'failed')
-  const pending = checklist.filter((item) => item.status === 'pending' || item.status === 'warning')
-  if (failed.length > 0) return { status: 'blocked', label: 'Blocked', blockers: failed }
-  if (pending.length > 0) return { status: 'warning', label: 'Need Review', blockers: pending }
-  return { status: 'passed', label: 'Mergeable', blockers: [] }
+function getCompletedPercent(conditions, fallback) {
+  if (typeof fallback === 'number') return fallback
+  if (!conditions?.length) return 0
+  return Math.round((conditions.filter((item) => item.completed).length / conditions.length) * 100)
 }
 
-function getFailedJobsCount(jobs) {
-  return jobs.filter((job) => ['failed', 'blocked'].includes(job.status)).length
+function isMergeable(mergeRequest, conditions) {
+  if (typeof mergeRequest.mergeable === 'boolean') return mergeRequest.mergeable
+  return conditions.length > 0 && conditions.every((item) => item.completed)
 }
 
-function getPipelineDuration(pipeline) {
-  return pipeline?.summary?.find((item) => item.label === '실제 실행 시간')?.value ?? pipeline?.duration ?? '-'
+function getConditionTitle(condition) {
+  if (condition.id === 'approval') return `${condition.title} (${condition.current}/${condition.required})`
+  return condition.title
 }
 
-function getCommentStatus(comment) {
-  if (comment.context?.includes('Resolved')) return 'passed'
-  if (comment.context?.includes('반려')) return 'failed'
-  return 'reviewing'
+function getActivityFilterType(type) {
+  if (type?.includes('comment')) return 'comment'
+  if (type?.includes('pipeline')) return 'pipeline'
+  if (type?.includes('approval')) return 'approval'
+  if (type?.includes('security')) return 'security'
+  if (type?.includes('commit')) return 'commit'
+  return 'system'
 }
 
-function MergeRequestDetail() {
-  const { repositoryId, mrId, mergeRequestId } = useParams()
-  const { message } = AntdApp.useApp()
+function renderActivityText(activity, onLinkedValueClick) {
+  if (activity.pipelineLabel) {
+    return (
+      <Text>
+        Pipeline <Typography.Link onClick={() => onLinkedValueClick(activity.pipelineLabel)}>{activity.pipelineLabel}</Typography.Link>이 성공했어요.
+      </Text>
+    )
+  }
+  if (activity.commitSHA) {
+    return (
+      <Text>
+        {activity.actor}님이 commit 코멘트 <Typography.Link onClick={() => onLinkedValueClick(activity.commitSHA)}>{activity.commitSHA}</Typography.Link>를 작성했어요.
+      </Text>
+    )
+  }
+  if (activity.repositoryName) {
+    return (
+      <Text>
+        {activity.actor}님이 Git 저장소 <Typography.Link onClick={() => onLinkedValueClick(activity.repositoryName)}>{activity.repositoryName}</Typography.Link>를 생성했습니다.
+      </Text>
+    )
+  }
+  return <Text>{activity.text}</Text>
+}
+
+export default function MergeRequestDetail() {
+  const { mrId, mergeRequestId } = useParams()
+  const { message, modal } = AntdApp.useApp()
   const currentMrId = mrId ?? mergeRequestId
   const mergeRequest = getMergeRequestDetail(currentMrId)
-  const repository = getRepositoryById(getContextRepositoryId(repositoryId, mergeRequest))
-  const pipeline = getMergeRequestPipeline(currentMrId)
-  const security = getMergeRequestSecurity(currentMrId)
-  const approvals = getMergeRequestApprovals(currentMrId)
-  const activities = getMergeRequestActivities(currentMrId)
-  const initialComments = getMergeRequestComments(currentMrId)
   const commits = getMergeRequestCommits(currentMrId)
   const changedFiles = getMergeRequestChangedFiles(currentMrId)
-  const changes = getMergeRequestChanges(currentMrId)
-  const checklist = getMergeRequestMergeChecklist(currentMrId)
-  const mergePolicy = getMergeRequestMergePolicy()
-  const pipelineStages = pipeline ? getPipelineStages(pipeline.id) : []
-  const pipelineJobs = pipeline ? getPipelineJobs(pipeline.id) : []
-  const pipelinePath = getPipelinePath(repositoryId, mergeRequest, pipeline)
-  const mergeState = getMergeState(checklist)
-  const [comments, setComments] = useState(initialComments)
+  const pipeline = getMergeRequestPipeline(currentMrId)
+  const [activityFilter, setActivityFilter] = useState('all')
   const [commentText, setCommentText] = useState('')
+  const [localActivities, setLocalActivities] = useState([])
 
-  const approvalPercent = mergeRequest?.required
-    ? Math.round((mergeRequest.approved / mergeRequest.required) * 100)
-    : 0
-  const isMergeable = mergeState.status === 'passed' && mergeRequest?.status === 'open'
+  const conditions = mergeRequest?.mergeConditions ?? []
+  const progress = getCompletedPercent(conditions, mergeRequest?.mergeProgress)
+  const mergeable = mergeRequest ? isMergeable(mergeRequest, conditions) : false
+  const activities = [...localActivities, ...(mergeRequest?.activities ?? [])]
+  const filteredActivities = activities.filter((activity) => activityFilter === 'all' || getActivityFilterType(activity.type) === activityFilter)
 
-  const action = (text, type = 'success') => {
-    message[type](text)
+  const tabs = mergeRequest?.tabs ?? {
+    commitsCount: commits.length,
+    pipelinesCount: pipeline ? 1 : 0,
+    changesAdded: 0,
+    changesRemoved: 0,
+  }
+
+  if (!mergeRequest) {
+    return <Empty description={`MR #${currentMrId} 데이터를 찾을 수 없습니다.`} />
+  }
+
+  const runAction = (actionId) => {
+    if (actionId === 'pipeline-log') message.info('Pipeline #8014 로그를 확인합니다.')
+    else if (actionId === 'request-approval') message.success('승인 요청을 보냈어요.')
+    else message.info('요청한 작업을 준비 중입니다.')
+  }
+
+  const handleMerge = () => {
+    modal.confirm({
+      title: '이 Merge Request를 병합할까요?',
+      content: `병합 대상: ${mergeRequest.targetBranch ?? mergeRequest.target}`,
+      okText: 'Merge',
+      cancelText: '취소',
+      onOk: () => message.success('Merge가 완료되었어요.'),
+    })
+  }
+
+  const openAssignModal = (kind) => {
+    const labels = {
+      approver: ['승인자 설정', '승인자가 설정되었어요.'],
+      reviewer: ['리뷰어 설정', '리뷰어가 설정되었어요.'],
+      project: ['프로젝트 설정', '프로젝트가 연결되었어요.'],
+    }
+    const [title, successText] = labels[kind]
+
+    modal.confirm({
+      title,
+      content: (
+        <Select
+          style={{ width: '100%', marginTop: 12 }}
+          placeholder={title}
+          options={kind === 'project' ? PROJECT_OPTIONS : PEOPLE_OPTIONS}
+        />
+      ),
+      okText: '저장',
+      cancelText: '취소',
+      onOk: () => message.success(successText),
+    })
   }
 
   const addComment = () => {
     const value = commentText.trim()
-    if (!value) return
-    setComments((items) => [
+    if (!value) {
+      message.warning('코멘트를 입력해 주세요.')
+      return
+    }
+    setLocalActivities((items) => [
       {
-        id: `optimistic-${Date.now()}`,
-        author: 'You',
-        avatar: 'Y',
-        context: 'Comment',
-        body: value,
-        createdAt: '방금',
+        id: `local-comment-${Date.now()}`,
+        type: 'comment',
+        actor: '나',
+        text: value,
+        timeText: '방금',
       },
       ...items,
     ])
     setCommentText('')
-    message.success('Comment added')
+    message.success('코멘트가 작성되었어요.')
   }
 
-  const overviewItems = useMemo(
-    () => [
-      {
-        key: 'merge-state',
-        children: (
-          <MergeReadinessCard
-            mergeState={mergeState}
-            checklist={checklist}
-            mergePolicy={mergePolicy}
+  const closeWithComment = () => {
+    modal.confirm({
+      title: '코멘트를 작성하고 MR을 닫을까요?',
+      okText: '닫기',
+      cancelText: '취소',
+      okButtonProps: { danger: true },
+      onOk: () => message.success('코멘트가 작성되고 MR이 닫혔어요.'),
+    })
+  }
+
+  const overview = (
+    <Row gutter={[24, 24]} align="top">
+      <Col xs={24} xl={17}>
+        <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+          <MergeStatusCard
+            mergeable={mergeable}
+            mergeRequest={mergeRequest}
+            progress={progress}
+            conditions={conditions}
+            onAction={runAction}
           />
-        ),
-      },
-    ],
-    [checklist, mergePolicy, mergeState],
+          <DescriptionCard description={mergeRequest.description} />
+          <ActivityCard
+            activities={filteredActivities}
+            activityFilter={activityFilter}
+            setActivityFilter={setActivityFilter}
+            onLinkedValueClick={(value) => message.info(`${value} 상세 이동은 준비 중입니다.`)}
+          />
+          <CommentEditor
+            commentText={commentText}
+            setCommentText={setCommentText}
+            addComment={addComment}
+            closeWithComment={closeWithComment}
+          />
+        </Space>
+      </Col>
+      <Col xs={24} xl={7}>
+        <SidePanel
+          mergeRequest={mergeRequest}
+          onAction={runAction}
+          onAssign={openAssignModal}
+        />
+      </Col>
+    </Row>
   )
 
-  if (!mergeRequest) {
-    return (
-      <Alert
-        type="warning"
-        showIcon
-        message="Merge Request를 찾을 수 없습니다."
-        description={`MR #${currentMrId} 데이터가 없습니다.`}
-      />
-    )
-  }
-
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <Card className="mr-detail-hero">
-        <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
-          <div>
-            <Space wrap>
-              <Tag color="blue">MR #{mergeRequest.id}</Tag>
-              <StatusTag status={mergeState.status} label={mergeState.label} />
-            </Space>
-            <Title level={2}>{mergeRequest.title}</Title>
-            <Paragraph type="secondary">{mergeRequest.summary}</Paragraph>
-          </div>
+    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+      <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
+        <div>
+          <Title level={2}>{mergeRequest.title}</Title>
           <Space wrap>
-            <Button onClick={() => action('Approval recorded')}>Approve</Button>
-            <Button onClick={() => action('Change request submitted', 'warning')}>Request changes</Button>
-            <Button icon={<CodeOutlined />} onClick={() => action('Pipeline re-run requested')}>Re-run pipeline</Button>
-            <Button type="primary" disabled={!isMergeable} onClick={() => action('Merge completed')}>Merge</Button>
-            <Button danger onClick={() => action('Merge request closed', 'warning')}>Close MR</Button>
+            {statusTag(mergeRequest.status, mergeRequest.status === 'open' ? 'Open' : mergeRequest.status)}
+            <Text strong>{mergeRequest.author?.name ?? mergeRequest.author}</Text>
+            <Text type="secondary">·</Text>
+            <Text>{mergeRequest.createdAtText ?? '2일 전 생성'}</Text>
+            <Text type="secondary">·</Text>
+            <Tag>{mergeRequest.sourceBranch ?? mergeRequest.source}</Tag>
+            <Text>→</Text>
+            <Tag>{mergeRequest.targetBranch ?? mergeRequest.target}</Tag>
+            <Text type="secondary">·</Text>
+            <Text>{mergeRequest.updatedAtText ?? mergeRequest.updatedAt}</Text>
           </Space>
-        </Flex>
-
-        <Descriptions className="mr-detail-meta" size="small" column={{ xs: 1, md: 2, xl: 4 }}>
-          <Descriptions.Item label="Repository">
-            {repositoryId ? repository?.name : <Link to={`/repositories/${mergeRequest.repo}`}>{repository?.name ?? mergeRequest.repo}</Link>}
-          </Descriptions.Item>
-          <Descriptions.Item label="Branches">
-            <Text code>{mergeRequest.source}</Text> → <Text code>{mergeRequest.target}</Text>
-          </Descriptions.Item>
-          <Descriptions.Item label="Author">{mergeRequest.author}</Descriptions.Item>
-          <Descriptions.Item label="Created at">{mergeRequest.createdAt ?? mergeRequest.updatedAt}</Descriptions.Item>
-          <Descriptions.Item label="Updated at">{mergeRequest.updatedAt}</Descriptions.Item>
-          <Descriptions.Item label="MR status"><StatusTag status={mergeRequest.status} /></Descriptions.Item>
-          <Descriptions.Item label="Review status"><StatusTag status={mergeRequest.review} label={mergeRequest.reviewLabel} /></Descriptions.Item>
-          <Descriptions.Item label="Pipeline / Security">
-            <Space>
-              <StatusTag status={mergeRequest.pipeline} />
-              <StatusTag status={mergeRequest.security} label={mergeRequest.securityLabel} />
-            </Space>
-          </Descriptions.Item>
-        </Descriptions>
-      </Card>
+        </div>
+        <Space>
+          <Button>수정</Button>
+          <Tooltip title={!mergeable ? '필수 조건을 완료해야 Merge할 수 있어요.' : ''}>
+            <Button type="primary" disabled={!mergeable} onClick={handleMerge}>Merge</Button>
+          </Tooltip>
+        </Space>
+      </Flex>
 
       <Tabs
-        className="mr-detail-tabs"
         items={[
-          {
-            key: 'overview',
-            label: 'Overview',
-            children: (
-              <Space direction="vertical" size={16} style={{ width: '100%' }}>
-                {overviewItems.map((item) => <div key={item.key}>{item.children}</div>)}
-                <OverviewTab
-                  mergeRequest={mergeRequest}
-                  approvals={approvals}
-                  approvalPercent={approvalPercent}
-                  activities={activities}
-                  pipeline={pipeline}
-                  pipelineJobs={pipelineJobs}
-                  pipelinePath={pipelinePath}
-                  security={security}
-                  changes={changes}
-                  comments={comments}
-                  commentText={commentText}
-                  setCommentText={setCommentText}
-                  addComment={addComment}
-                />
-              </Space>
-            ),
-          },
-          {
-            key: 'commits',
-            label: 'Commits',
-            children: <CommitsTab commits={commits} />,
-          },
-          {
-            key: 'pipeline',
-            label: 'Pipeline',
-            children: (
-              <PipelineTab
-                pipeline={pipeline}
-                pipelinePath={pipelinePath}
-                stages={pipelineStages}
-                jobs={pipelineJobs}
-              />
-            ),
-          },
-          {
-            key: 'changes',
-            label: 'Changes',
-            children: <ChangesTab changes={changes} files={changedFiles} />,
-          },
+          { key: 'overview', label: 'Overview', children: overview },
+          { key: 'commits', label: `Commits ${tabs.commitsCount}`, children: <PlaceholderTable title="Commits" data={commits} /> },
+          { key: 'pipelines', label: `Pipelines ${tabs.pipelinesCount}`, children: <Empty description="Pipeline 상세 탭은 준비 중입니다." /> },
+          { key: 'changes', label: `Changes +${tabs.changesAdded} -${tabs.changesRemoved}`, children: <PlaceholderTable title="Changes" data={changedFiles} /> },
         ]}
       />
     </Space>
   )
 }
 
-function MergeReadinessCard({ mergeState, checklist, mergePolicy }) {
-  const alertType = mergeState.status === 'passed' ? 'success' : mergeState.status === 'blocked' ? 'error' : 'warning'
-
+function MergeStatusCard({ mergeable, mergeRequest, progress, conditions, onAction }) {
   return (
-    <Row gutter={[16, 16]}>
-      <Col xs={24} xl={14}>
-        <Card title="Merge readiness">
-          <Alert
-            type={alertType}
-            showIcon
-            message={mergeState.label}
-            description={
-              mergeState.blockers.length
-                ? mergeState.blockers.map((item) => item.label).join(' · ')
-                : 'All required merge conditions are satisfied.'
-            }
-          />
-          <List
-            style={{ marginTop: 12 }}
-            dataSource={checklist}
-            renderItem={(item) => (
-              <List.Item>
-                <Flex align="center" justify="space-between" style={{ width: '100%' }}>
-                  <Text>{item.label}</Text>
-                  <StatusTag status={item.status} />
-                </Flex>
-              </List.Item>
-            )}
-          />
-        </Card>
-      </Col>
-      <Col xs={24} xl={10}>
-        <Card title="Applied merge policy">
-          <Descriptions column={1} size="small">
-            <Descriptions.Item label="Policy">{mergePolicy.name}</Descriptions.Item>
-            <Descriptions.Item label="Minimum approvals">{mergePolicy.minimumApprovals}</Descriptions.Item>
-            <Descriptions.Item label="Pipeline success">{mergePolicy.requirePipelineSuccess ? 'Required' : 'Optional'}</Descriptions.Item>
-            <Descriptions.Item label="Security validation">{mergePolicy.requireSecurityValidation ? 'Required' : 'Optional'}</Descriptions.Item>
-            <Descriptions.Item label="Resolved discussions">{mergePolicy.requireResolvedDiscussions ? 'Required' : 'Optional'}</Descriptions.Item>
-            <Descriptions.Item label="No conflicts">{mergePolicy.requireNoConflicts ? 'Required' : 'Optional'}</Descriptions.Item>
-            <Descriptions.Item label="Deployment approval">{mergePolicy.requireDeploymentApproval ? 'Required' : 'Optional'}</Descriptions.Item>
-            <Descriptions.Item label="Allowed roles">{mergePolicy.allowedMergeRoles.join(', ')}</Descriptions.Item>
-          </Descriptions>
-        </Card>
-      </Col>
-    </Row>
-  )
-}
-
-function OverviewTab({
-  mergeRequest,
-  approvals,
-  approvalPercent,
-  activities,
-  pipeline,
-  pipelineJobs,
-  pipelinePath,
-  security,
-  changes,
-  comments,
-  commentText,
-  setCommentText,
-  addComment,
-}) {
-  return (
-    <>
-      <Row gutter={[12, 12]} className="summary-cards-row">
-        <Col xs={24} sm={12} xl={4}><SummaryCard title="Approval" value={`${mergeRequest.approved}/${mergeRequest.required}`} icon={<UserOutlined />} /></Col>
-        <Col xs={24} sm={12} xl={4}><SummaryCard title="Pipeline" value={pipeline?.status ?? mergeRequest.pipeline} icon={<CodeOutlined />} tone={mergeRequest.pipeline === 'failed' ? 'danger' : 'success'} /></Col>
-        <Col xs={24} sm={12} xl={4}><SummaryCard title="Security" value={security?.vlabel ?? mergeRequest.securityLabel} icon={<SafetyCertificateOutlined />} tone={mergeRequest.security === 'failed' ? 'danger' : 'success'} /></Col>
-        <Col xs={24} sm={12} xl={4}><SummaryCard title="Changed files" value={changes.summary.changedFiles} icon={<FileTextOutlined />} /></Col>
-        <Col xs={24} sm={12} xl={4}><SummaryCard title="Commits" value={changes.summary.commitsCount} icon={<GitlabOutlined />} /></Col>
-        <Col xs={24} sm={12} xl={4}><SummaryCard title="Comments" value={comments.length} icon={<CommentOutlined />} /></Col>
-      </Row>
-
-      <Row gutter={[16, 16]}>
-        <Col xs={24} xl={10}>
-          <Card title="Approvers / Reviewers">
-            <Space direction="vertical" size={12} style={{ width: '100%' }}>
-              <Progress percent={approvalPercent} />
-              {approvals.map((approval) => (
-                <Flex key={approval.name} align="center" justify="space-between" gap={12}>
-                  <Flex align="center" gap={10}>
-                    <Avatar>{approval.name.slice(0, 1)}</Avatar>
-                    <div>
-                      <Text strong>{approval.name}</Text>
-                      <br />
-                      <Text type="secondary">{approval.role}</Text>
-                    </div>
-                  </Flex>
-                  <Space>
-                    {approval.required ? <Tag color="gold">Required</Tag> : null}
-                    <StatusTag status={approval.status} label={approval.label} />
-                  </Space>
-                </Flex>
-              ))}
-              {approvals.length === 0 ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : null}
-            </Space>
-          </Card>
-        </Col>
-        <Col xs={24} xl={14}>
-          <Card title="Activity">
-            <Timeline
-              items={activities.map((activity) => ({
-                dot: activity.type?.includes('pipeline') ? <CodeOutlined /> : <CheckCircleOutlined />,
-                children: (
-                  <Space direction="vertical" size={2}>
-                    <Space wrap>
-                      <Text strong>{activity.actor}</Text>
-                      <StatusTag status={activity.type?.includes('security') ? 'warning' : 'info'} label={activity.type ?? 'activity'} />
-                    </Space>
-                    <Text>{activity.message}</Text>
-                    <Text type="secondary">{activity.createdAt}</Text>
-                  </Space>
-                ),
-              }))}
-            />
-            {activities.length === 0 ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : null}
-          </Card>
-        </Col>
-      </Row>
-
-      <Row gutter={[16, 16]}>
-        <Col xs={24} xl={8}>
-          <Card title="Pipeline Summary" extra={pipelinePath ? <Link to={pipelinePath}>View pipeline</Link> : null}>
-            {pipeline ? (
-              <Descriptions column={1} size="small">
-                <Descriptions.Item label="Pipeline ID">#{pipeline.id}</Descriptions.Item>
-                <Descriptions.Item label="Status"><StatusTag status={pipeline.status} /></Descriptions.Item>
-                <Descriptions.Item label="Branch">{pipeline.branch}</Descriptions.Item>
-                <Descriptions.Item label="Commit SHA">{pipeline.commit ?? '-'}</Descriptions.Item>
-                <Descriptions.Item label="Failed jobs">{getFailedJobsCount(pipelineJobs)}</Descriptions.Item>
-                <Descriptions.Item label="Duration">{getPipelineDuration(pipeline)}</Descriptions.Item>
-                <Descriptions.Item label="Updated at">{pipeline.updatedAt}</Descriptions.Item>
-              </Descriptions>
-            ) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="연결된 Pipeline이 없습니다." />}
-          </Card>
-        </Col>
-        <Col xs={24} xl={8}>
-          <Card title="Security Summary">
-            {security ? (
-              <Descriptions column={1} size="small">
-                <Descriptions.Item label="Security ID"><Link to={`/security/${security.id}`}>{security.id}</Link></Descriptions.Item>
-                <Descriptions.Item label="Validation status"><StatusTag status={security.vstatus} label={security.vlabel} /></Descriptions.Item>
-                <Descriptions.Item label="Policy decision"><StatusTag status={security.policy} label={security.policyLabel} /></Descriptions.Item>
-                <Descriptions.Item label="Critical / High / Medium / Low">{security.severity?.critical ?? 0} / {security.severity?.high ?? 0} / {security.severity?.medium ?? 0} / {security.severity?.low ?? 0}</Descriptions.Item>
-                <Descriptions.Item label="Last checked">{security.lastCheckedAt}</Descriptions.Item>
-              </Descriptions>
-            ) : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="연결된 Security 결과가 없습니다." />}
-          </Card>
-        </Col>
-        <Col xs={24} xl={8}>
-          <Card title="Changes Summary">
-            <Descriptions column={1} size="small">
-              <Descriptions.Item label="Changed files">{changes.summary.changedFiles}</Descriptions.Item>
-              <Descriptions.Item label="Additions">{changes.summary.additions}</Descriptions.Item>
-              <Descriptions.Item label="Deletions">{changes.summary.deletions}</Descriptions.Item>
-              <Descriptions.Item label="Commits count">{changes.summary.commitsCount}</Descriptions.Item>
-              <Descriptions.Item label="Main paths">
-                <Space direction="vertical">{changes.summary.mainPaths.map((path) => <Text code key={path}>{path}</Text>)}</Space>
-              </Descriptions.Item>
-            </Descriptions>
-          </Card>
-        </Col>
-      </Row>
-
-      <Card title="Comments">
-        <Space direction="vertical" size={12} style={{ width: '100%' }}>
-          {comments.map((comment) => (
-            <Card size="small" key={comment.id}>
-              <Flex align="flex-start" gap={10}>
-                <Avatar>{comment.avatar ?? comment.author?.slice(0, 1)}</Avatar>
-                <div style={{ flex: 1 }}>
-                  <Flex align="center" gap={8} wrap="wrap">
-                    <Text strong>{comment.author}</Text>
-                    <StatusTag status={getCommentStatus(comment)} label={comment.context} />
-                    <Text type="secondary">{comment.createdAt}</Text>
-                  </Flex>
-                  <Paragraph className="mr-comment-body">{comment.body}</Paragraph>
-                </div>
-              </Flex>
-            </Card>
-          ))}
-          {comments.length === 0 ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="아직 표시할 댓글이 없습니다." /> : null}
-          <Input.TextArea rows={3} value={commentText} onChange={(event) => setCommentText(event.target.value)} placeholder="Add a comment..." />
-          <Button type="primary" onClick={addComment}>Add Comment</Button>
-        </Space>
-      </Card>
-    </>
-  )
-}
-
-function CommitsTab({ commits }) {
-  if (commits.length === 0) return <Empty description="표시할 Commit이 없습니다." />
-
-  return (
-    <Card>
-      <List
-        dataSource={commits}
-        renderItem={(commit) => (
-          <List.Item>
-            <List.Item.Meta
-              title={
-                <Space wrap>
-                  <Text code>{String(commit.sha).slice(0, 8)}</Text>
-                  <Text strong>{commit.message ?? commit.title}</Text>
-                </Space>
-              }
-              description={`${commit.author} · ${commit.branch} · ${commit.createdAt}`}
-            />
-            <Space>
-              <Tag>{commit.changedFiles ?? 0} files</Tag>
-              <Text type="success">+{commit.added ?? 0}</Text>
-              <Text type="danger">-{commit.removed ?? 0}</Text>
-            </Space>
-          </List.Item>
-        )}
+    <Card title={mergeable ? 'Merge 가능' : 'Merge 불가'}>
+      <Paragraph>
+        {mergeable
+          ? `모든 필수 조건이 완료되었어요. ${mergeRequest.targetBranch ?? mergeRequest.target} Branch로 Merge할 수 있어요.`
+          : `Pipeline 성공과 리뷰어 승인 1건이 필요해요. 필수 조건을 완료하면 ${mergeRequest.targetBranch ?? mergeRequest.target} Branch로 Merge할 수 있어요.`}
+      </Paragraph>
+      <Flex align="center" gap={12}>
+        <Text>Merge 진행도</Text>
+        <Progress percent={progress} style={{ flex: 1 }} />
+      </Flex>
+      <Collapse
+        style={{ marginTop: 16 }}
+        items={conditions.map((condition) => ({
+          key: condition.id,
+          label: (
+            <Flex align="center" justify="space-between" gap={12}>
+              <Space wrap>
+                <Text strong>{getConditionTitle(condition)}</Text>
+                {condition.statusLabel ? statusTag(condition.status, condition.statusLabel) : null}
+              </Space>
+              <Tag color={condition.completed ? 'success' : 'warning'}>{condition.completed ? '완료' : '미완료'}</Tag>
+            </Flex>
+          ),
+          children: <ConditionDetail condition={condition} onAction={onAction} />,
+        }))}
       />
     </Card>
   )
 }
 
-function PipelineTab({ pipeline, pipelinePath, stages, jobs }) {
-  if (!pipeline) return <Empty description="연결된 Pipeline이 없습니다." />
-
+function ConditionDetail({ condition, onAction }) {
+  if (condition.id === 'pipeline') {
+    return (
+      <Space orientation="vertical">
+        <Text>{condition.summary}</Text>
+        <Text>마지막 Pipeline: {condition.pipelineId}</Text>
+        <Button onClick={() => onAction('pipeline-log')}>로그 보기</Button>
+      </Space>
+    )
+  }
+  if (condition.id === 'approval') {
+    return (
+      <Space orientation="vertical">
+        <Text>리뷰어 {condition.required}명의 승인이 필요해요.</Text>
+        <Text>승인자에게 승인 요청을 보낼 수 있어요.</Text>
+        <Button onClick={() => onAction('request-approval')}>승인 요청 보내기</Button>
+      </Space>
+    )
+  }
+  if (condition.id === 'security') {
+    const vulnerabilities = condition.vulnerabilities ?? {}
+    return (
+      <Space orientation="vertical">
+        <Text>보안 점검 Pipeline이 취약점을 감지했어요.</Text>
+        <Space wrap>
+          <Tag color="error">치명적 {vulnerabilities.critical ?? 0}</Tag>
+          <Tag color="error">매우 위험 {vulnerabilities.high ?? 0}</Tag>
+          <Tag color="warning">위험 {vulnerabilities.danger ?? 0}</Tag>
+          <Tag color="gold">중간 {vulnerabilities.medium ?? 0}</Tag>
+          <Tag>낮음 {vulnerabilities.low ?? 0}</Tag>
+          <Tag>매우 낮음 {vulnerabilities.veryLow ?? 0}</Tag>
+        </Space>
+        <Button onClick={() => onAction('security-report')}>보안 리포트 보기</Button>
+      </Space>
+    )
+  }
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <Card title="Pipeline summary" extra={pipelinePath ? <Button><Link to={pipelinePath}>Pipeline 상세 보기</Link></Button> : null}>
-        <Descriptions column={{ xs: 1, md: 2, xl: 4 }} bordered>
-          <Descriptions.Item label="Pipeline ID">#{pipeline.id}</Descriptions.Item>
-          <Descriptions.Item label="Status"><StatusTag status={pipeline.status} /></Descriptions.Item>
-          <Descriptions.Item label="Trigger">{pipeline.trigger ?? '-'}</Descriptions.Item>
-          <Descriptions.Item label="Branch">{pipeline.branch}</Descriptions.Item>
-          <Descriptions.Item label="Commit SHA">{pipeline.commit ?? '-'}</Descriptions.Item>
-          <Descriptions.Item label="Duration">{getPipelineDuration(pipeline)}</Descriptions.Item>
-          <Descriptions.Item label="Created at">{pipeline.createdAt ?? pipeline.updatedAt}</Descriptions.Item>
-          <Descriptions.Item label="Updated at">{pipeline.updatedAt}</Descriptions.Item>
-        </Descriptions>
-      </Card>
-      <Card title="Stage flow">
-        <Flex gap={8} wrap="wrap">
-          {stages.map((stage) => (
-            <Tag key={stage.name} className="mr-stage-tag">
-              {stage.name} · <StatusTag status={stage.status} />
-            </Tag>
-          ))}
-        </Flex>
-      </Card>
-      <Card title="Jobs">
-        <Table
-          rowKey="id"
-          dataSource={jobs}
-          pagination={false}
-          columns={[
-            { title: 'Job name', dataIndex: 'name' },
-            { title: 'Stage', dataIndex: 'stage' },
-            { title: 'Status', dataIndex: 'status', render: (value) => <StatusTag status={value} /> },
-            { title: 'Runner', dataIndex: 'runner' },
-            { title: 'Duration', dataIndex: 'duration' },
-            { title: 'Started at', dataIndex: 'startedAt' },
-            { title: 'Finished at', dataIndex: 'finishedAt' },
-          ]}
-        />
-      </Card>
+    <Space orientation="vertical">
+      <Text>
+        {condition.rebaseRequired
+          ? 'Target Branch의 최신 변경사항이 반영되지 않았어요. Merge 전 Rebase가 필요해요.'
+          : 'Target Branch 기준 최신 상태예요. Rebase가 필요하지 않습니다.'}
+      </Text>
+      {condition.rebaseRequired ? <Button onClick={() => onAction('rebase-guide')}>Rebase 안내 보기</Button> : null}
     </Space>
   )
 }
 
-function ChangesTab({ changes, files }) {
-  if (files.length === 0) return <Empty description="표시할 변경 파일이 없습니다." />
-
+function DescriptionCard({ description }) {
+  const lines = Array.isArray(description) ? description : []
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <Row gutter={[12, 12]}>
-        <Col xs={24} md={8}><SummaryCard title="Changed files" value={changes.summary.changedFiles} /></Col>
-        <Col xs={24} md={8}><SummaryCard title="Additions" value={changes.summary.additions} tone="success" /></Col>
-        <Col xs={24} md={8}><SummaryCard title="Deletions" value={changes.summary.deletions} tone="danger" /></Col>
-      </Row>
-      <Card title="File changes">
-        <Collapse
-          items={files.map((file) => ({
-            key: file.id,
-            label: (
-              <Flex align="center" justify="space-between" gap={12}>
+    <Card title="Description">
+      {lines.length > 0
+        ? lines.map((line, index) => <Paragraph key={`${index}-${line}`}>{line}</Paragraph>)
+        : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="작성된 Description이 없습니다." />}
+    </Card>
+  )
+}
+
+function ActivityCard({ activities, activityFilter, setActivityFilter, onLinkedValueClick }) {
+  return (
+    <Card
+      title="Activity"
+      extra={(
+        <Select
+          options={ACTIVITY_FILTERS}
+          value={activityFilter}
+          onChange={setActivityFilter}
+          style={{ width: 160 }}
+        />
+      )}
+    >
+      {activities.length > 0 ? (
+        <Timeline
+          items={activities.map((activity) => ({
+            icon: activity.type === 'security' ? <SafetyCertificateOutlined /> : activity.type === 'pipeline' ? <CheckCircleOutlined /> : <Avatar size={24}>{(activity.actor ?? 'S').slice(0, 1)}</Avatar>,
+            content: (
+              <Space orientation="vertical" size={8} style={{ width: '100%' }}>
                 <Space wrap>
-                  <Text code>{file.path}</Text>
-                  <StatusTag status={file.changeType === 'deleted' ? 'failed' : file.changeType === 'added' ? 'passed' : 'info'} label={file.changeType} />
+                  {renderActivityText(activity, onLinkedValueClick)}
+                  <Text type="secondary">{activity.timeText}</Text>
                 </Space>
-                <Text type="secondary">+{file.additions} / -{file.deletions}</Text>
-              </Flex>
-            ),
-            children: (
-              <CodePreview variant="diff" className="mr-diff-preview">
-                {file.diff.map((line) => `${line}\n`)}
-              </CodePreview>
+                <ActivityPayload activity={activity} />
+              </Space>
             ),
           }))}
         />
+      ) : (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="표시할 Activity가 없습니다." />
+      )}
+    </Card>
+  )
+}
+
+function ActivityPayload({ activity }) {
+  if (activity.type === 'security') {
+    const vulnerabilities = activity.vulnerabilities ?? {}
+    return (
+      <Card size="small">
+        <Space wrap>
+          <Tag>{activity.branchName}</Tag>
+          <Tag color="error">치명적 {vulnerabilities.critical ?? 0}</Tag>
+          <Tag color="error">매우 위험 {vulnerabilities.high ?? 0}</Tag>
+          <Tag color="warning">위험 {vulnerabilities.danger ?? 0}</Tag>
+          <Tag color="gold">중간 {vulnerabilities.medium ?? 0}</Tag>
+          <Tag>낮음 {vulnerabilities.low ?? 0}</Tag>
+          <Tag>매우 낮음 {vulnerabilities.veryLow ?? 0}</Tag>
+        </Space>
+      </Card>
+    )
+  }
+  if (activity.type === 'commit') {
+    return (
+      <Card size="small">
+        <Flex align="center" justify="space-between" gap={12} wrap="wrap">
+          <Space>
+            <Typography.Link>{activity.commentsCount}개의 코멘트</Typography.Link>
+            <Avatar.Group max={{ count: 2 }}>
+              <Avatar>김</Avatar>
+              <Avatar>박</Avatar>
+              <Avatar>+{activity.participantsCount}</Avatar>
+            </Avatar.Group>
+          </Space>
+          <Space>
+            <Button size="small" icon={<CommentOutlined />} />
+            <Button size="small" icon={<EditOutlined />} />
+          </Space>
+        </Flex>
+      </Card>
+    )
+  }
+  return null
+}
+
+function CommentEditor({ commentText, setCommentText, addComment, closeWithComment }) {
+  return (
+    <Card>
+      <Flex align="flex-start" gap={12}>
+        <Avatar>김</Avatar>
+        <div style={{ flex: 1 }}>
+          <Flex align="center" gap={8} wrap="wrap" style={{ marginBottom: 8 }}>
+            <Select value="paragraph" options={[{ value: 'paragraph', label: 'Paragraph' }]} style={{ width: 140 }} />
+            <Button>B</Button>
+            <Button><em>I</em></Button>
+            <Button icon={<LinkOutlined />} />
+            <Button icon={<FileTextOutlined />} />
+            <Button>1.</Button>
+            <Button>“”</Button>
+            <Button icon={<CodeOutlined />} />
+            <Button icon={<UploadOutlined />} />
+            <Button icon={<GoBackOutlined />} />
+          </Flex>
+          <Input.TextArea rows={4} value={commentText} onChange={(event) => setCommentText(event.target.value)} placeholder="코멘트를 작성해 주세요." />
+          <Flex justify="flex-end" gap={8} style={{ marginTop: 12 }}>
+            <Button danger onClick={closeWithComment}>Close 코멘트 작성</Button>
+            <Button type="primary" onClick={addComment}>코멘트 작성</Button>
+          </Flex>
+        </div>
+      </Flex>
+    </Card>
+  )
+}
+
+function SidePanel({ mergeRequest, onAction, onAssign }) {
+  return (
+    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+      <Card title="Next Step">
+        <Space orientation="vertical" size={12}>
+          {mergeRequest.nextSteps?.map((step) => (
+            <Flex key={step.id} justify="space-between" gap={12} align="center">
+              <div>
+                <Text strong>{step.text}</Text>
+                <br />
+                <Text type="secondary">{step.description}</Text>
+              </div>
+              <Button onClick={() => onAction(step.id)}>{step.actionLabel}</Button>
+            </Flex>
+          ))}
+        </Space>
+      </Card>
+      <AssignmentCard title="승인자" emptyText="승인자 없음" actionLabel="승인자 설정" onClick={() => onAssign('approver')} />
+      <AssignmentCard title="리뷰어" emptyText="리뷰어 없음" actionLabel="리뷰어 설정" onClick={() => onAssign('reviewer')} />
+      <AssignmentCard title="프로젝트" emptyText="프로젝트 없음" actionLabel="프로젝트 설정" onClick={() => onAssign('project')} />
+      <Card title="내부 연계 옵션">
+        <Space orientation="vertical">
+          <Text type="secondary">연결된 내부 시스템 정보가 없습니다.</Text>
+          {['ITBPI 요청번호', 'eCAMS 검증', '운영이관 요청', 'Mattermost 알림'].map((item) => <Tag key={item}>{item}</Tag>)}
+        </Space>
       </Card>
     </Space>
   )
 }
 
-export default MergeRequestDetail
+function AssignmentCard({ title, emptyText, actionLabel, onClick }) {
+  return (
+    <Card title={title}>
+      <Flex justify="space-between" align="center" gap={12}>
+        <Text type="secondary">{emptyText}</Text>
+        <Button onClick={onClick}>{actionLabel}</Button>
+      </Flex>
+    </Card>
+  )
+}
+
+function PlaceholderTable({ title, data }) {
+  if (!data?.length) return <Empty description={`${title} 데이터가 없습니다.`} />
+
+  return (
+    <Table
+      rowKey={(record) => record.id ?? record.sha ?? record.path}
+      dataSource={data}
+      pagination={false}
+      columns={[
+        { title: 'Name', dataIndex: 'title', render: (value, record) => value ?? record.path ?? record.sha },
+        { title: 'Branch', dataIndex: 'branch', render: (value) => value ?? '-' },
+        { title: 'Updated', dataIndex: 'createdAt', render: (value, record) => value ?? record.updatedAt ?? '-' },
+      ]}
+    />
+  )
+}

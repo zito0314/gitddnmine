@@ -5357,24 +5357,150 @@ const mockData = {
     ],
     "detail": {
       "id": 128,
-      "title": "인증 정책 응답값 개선",
-      "summary": "로그인 정책 예외 케이스 응답값 정리 및 인증 API 응답 필드 표준화",
+      "title": "feat: Update file style.css",
+      "summary": "결제 승인 API 예외 케이스 실패 응답 처리 로직 보완",
       "repo": "mobile-banking-api",
       "repoGroup": "Digital Banking / Mobile",
-      "source": "feature/login-policy",
+      "source": "feature/payment-exception",
       "target": "develop",
       "owner": "jito",
-      "author": "Jito",
-      "updatedAt": "20분 전",
-      "pipeline": "passed",
-      "security": "failed",
-      "securityLabel": "확인 필요",
+      "author": "김동현",
+      "createdAtText": "2일 전 생성",
+      "updatedAt": "23시간 전 마지막 업데이트",
+      "updatedAtText": "23시간 전 마지막 업데이트",
+      "sourceBranch": "feature/payment-exception",
+      "targetBranch": "develop",
+      "pipeline": "failed",
+      "security": "passed",
+      "securityLabel": "Passed",
       "review": "need-review",
       "reviewLabel": "리뷰 필요",
-      "approved": 1,
-      "required": 2,
+      "approved": 0,
+      "required": 1,
       "comments": 8,
       "status": "open",
+      "mergeable": false,
+      "mergeProgress": 50,
+      "tabs": {
+        "commitsCount": 3,
+        "pipelinesCount": 4,
+        "changesAdded": 123,
+        "changesRemoved": 123
+      },
+      "description": [
+        "결제 승인 API에서 특정 예외 케이스가 누락되어, 실패 응답 처리 로직을 보완합니다.",
+        "결제 승인 API에서 특정 예외 케이스가 누락되어, 실패 응답 처리 로직을 보완합니다.",
+        "결제 승인 API에서 특정 예외 케이스가 누락되어, 실패 응답 처리 로직을 보완합니다."
+      ],
+      "mergeConditions": [
+        {
+          "id": "pipeline",
+          "title": "Pipeline",
+          "statusLabel": "Failed",
+          "status": "failed",
+          "completed": false,
+          "summary": "build-test Job에서 오류가 발생했어요.",
+          "pipelineId": "#8014"
+        },
+        {
+          "id": "approval",
+          "title": "승인",
+          "current": 0,
+          "required": 1,
+          "statusLabel": "승인 1건 필요",
+          "status": "required",
+          "completed": false
+        },
+        {
+          "id": "security",
+          "title": "보안 점검",
+          "statusLabel": "Passed",
+          "status": "passed",
+          "completed": false,
+          "vulnerabilities": {
+            "critical": 9,
+            "high": 4,
+            "danger": 6,
+            "medium": 8,
+            "low": 0,
+            "veryLow": 0
+          }
+        },
+        {
+          "id": "target-branch",
+          "title": "Target Branch 최신 상태",
+          "status": "passed",
+          "completed": true,
+          "rebaseRequired": false
+        }
+      ],
+      "nextSteps": [
+        {
+          "id": "pipeline-log",
+          "text": "실패한 Pipeline #8014를 확인해 주세요.",
+          "description": "build-test Job에서 오류가 발생했어요.",
+          "actionLabel": "로그 보기"
+        },
+        {
+          "id": "request-approval",
+          "text": "리뷰어 1명의 승인이 필요해요.",
+          "description": "박승인님에게 승인을 요청할 수 있어요. 승인되면 Merge 조건 1개가 완료돼요.",
+          "actionLabel": "승인 요청 보내기"
+        }
+      ],
+      "approvers": [],
+      "reviewers": [],
+      "project": null,
+      "integrations": [],
+      "activities": [
+        {
+          "id": "act-001",
+          "type": "merge_request_created",
+          "actor": "김동현",
+          "text": "김동현님이 Merge Request를 생성했어요.",
+          "timeText": "6시간 전"
+        },
+        {
+          "id": "act-002",
+          "type": "security",
+          "text": "보안 점검 Pipeline이 취약점을 감지했어요.",
+          "timeText": "6시간 전",
+          "branchName": "branch-name",
+          "vulnerabilities": {
+            "critical": 9,
+            "high": 4,
+            "danger": 6,
+            "medium": 8,
+            "low": 0,
+            "veryLow": 0
+          }
+        },
+        {
+          "id": "act-003",
+          "type": "pipeline",
+          "text": "Pipeline {pipelineLabel}이 성공했어요.",
+          "pipelineLabel": "pipelineLabel",
+          "timeText": "6시간 전"
+        },
+        {
+          "id": "act-004",
+          "type": "commit",
+          "actor": "김동현",
+          "text": "김동현님이 commit 코멘트 {commitSHA}를 작성했어요.",
+          "commitSHA": "commitSHA",
+          "commentsCount": 13,
+          "participantsCount": 8,
+          "timeText": "6시간 전"
+        },
+        {
+          "id": "act-005",
+          "type": "repository",
+          "actor": "김동현",
+          "text": "김동현님이 Git 저장소 root-sub-repo를 생성했습니다.",
+          "repositoryName": "root-sub-repo",
+          "timeText": "6시간 전"
+        }
+      ],
       "gates": [
         {
           "type": "approval",
