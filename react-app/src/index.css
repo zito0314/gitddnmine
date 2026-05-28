@@ -362,16 +362,94 @@ body {
   overflow: auto;
 }
 
-.global-search-result,
-.notification-item {
+.global-search-result {
   cursor: pointer;
   border-radius: 8px;
   padding-inline: 8px !important;
 }
 
-.global-search-result:hover,
-.notification-item:hover {
+.global-search-result:hover {
   background: var(--gitddn-primary-soft);
+}
+
+.gitddn-record-stack {
+  width: 100%;
+}
+
+.gitddn-record-stack-bordered {
+  border: 1px solid var(--gitddn-border-color);
+  border-radius: 8px;
+  background: var(--gitddn-card-bg);
+}
+
+.gitddn-record-row {
+  width: 100%;
+  min-width: 0;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.gitddn-record-stack-bordered .gitddn-record-row {
+  border-radius: 0;
+}
+
+.gitddn-record-stack-bordered .gitddn-record-row:first-child {
+  border-start-start-radius: 8px;
+  border-start-end-radius: 8px;
+}
+
+.gitddn-record-stack-bordered .gitddn-record-row:last-child {
+  border-end-start-radius: 8px;
+  border-end-end-radius: 8px;
+}
+
+.gitddn-record-row-default {
+  padding: 16px;
+}
+
+.gitddn-record-row-spacious {
+  min-height: 78px;
+  padding: 16px 0;
+}
+
+.gitddn-record-row-comfortable {
+  padding: 12px 0;
+}
+
+.gitddn-record-row-compact {
+  padding: 8px;
+}
+
+.gitddn-record-row-clickable {
+  cursor: pointer;
+}
+
+.gitddn-record-row-clickable:hover {
+  background: color-mix(in srgb, var(--gitddn-primary) 6%, transparent);
+}
+
+.gitddn-record-row-clickable:focus-visible {
+  outline: 2px solid var(--gitddn-primary);
+  outline-offset: 2px;
+}
+
+.gitddn-record-row-main,
+.gitddn-record-row-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.gitddn-record-row-leading {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.gitddn-record-row-title {
+  min-width: 0;
+}
+
+.gitddn-record-row-actions {
+  flex: 0 0 auto;
 }
 
 .page-content {
@@ -830,18 +908,6 @@ body {
   padding: 8px 0;
 }
 
-.dashboard-next-item {
-  min-height: 78px;
-  padding: 16px 0;
-  cursor: pointer;
-}
-
-.dashboard-next-item:hover,
-.dashboard-quick-item:hover,
-.dashboard-activity-item:hover {
-  background: color-mix(in srgb, var(--gitddn-primary) 5%, transparent);
-}
-
 .dashboard-quick-card .ant-tabs-nav-list {
   width: 100%;
 }
@@ -857,12 +923,7 @@ body {
   text-align: center;
 }
 
-.dashboard-quick-item {
-  padding: 9px 0;
-  cursor: pointer;
-}
-
-.dashboard-quick-item a {
+.dashboard-quick-card .gitddn-record-row-title a {
   color: var(--gitddn-text-primary);
   font-weight: 700;
 }
@@ -888,11 +949,6 @@ body {
   width: 1px;
   background: var(--gitddn-border-color);
   content: '';
-}
-
-.dashboard-activity-item {
-  padding: 12px 0;
-  cursor: pointer;
 }
 
 .dashboard-activity-dot {
@@ -980,11 +1036,6 @@ body {
   top: 88px;
 }
 
-.repository-transfer-list {
-  align-items: flex-start;
-  padding-block: 14px;
-}
-
 .repository-transfer-list .ant-btn-link {
   height: auto;
   padding: 0;
@@ -1009,10 +1060,6 @@ body {
 
 .repository-code-dropdown .ant-divider {
   margin: 0 0 18px;
-}
-
-.repository-code-dropdown .ant-list-item {
-  padding-inline: 0;
 }
 
 .mr-detail-hero h2.ant-typography {
@@ -1558,33 +1605,6 @@ body {
   background: color-mix(in srgb, var(--gitddn-primary) 8%, transparent);
 }
 
-.repository-list {
-  border: 1px solid var(--gitddn-border-color);
-  border-radius: 8px;
-  background: var(--gitddn-card-bg);
-}
-
-.repository-list-item {
-  cursor: pointer;
-  align-items: flex-start !important;
-  gap: 12px;
-  padding: 16px !important;
-  transition: background 0.15s ease;
-}
-
-.repository-list-item:hover {
-  background: color-mix(in srgb, var(--gitddn-primary) 8%, transparent);
-}
-
-.repository-list-item-disabled {
-  cursor: not-allowed;
-  background: color-mix(in srgb, var(--gitddn-card-bg) 86%, var(--gitddn-line));
-}
-
-.repository-list-item-disabled:hover {
-  background: color-mix(in srgb, var(--gitddn-card-bg) 86%, var(--gitddn-line));
-}
-
 .repository-list-favorite.ant-btn {
   width: 28px;
   height: 28px;
@@ -1595,21 +1615,6 @@ body {
 
 .repository-list-favorite.ant-btn.active {
   color: #faad14;
-}
-
-.repository-list-thumbnail.ant-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  line-height: 40px;
-}
-
-.repository-list-disabled-name {
-  color: var(--gitddn-text-secondary);
-}
-
-.repository-list-meta {
-  width: 100%;
 }
 
 /* Branch Page */

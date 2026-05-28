@@ -42,7 +42,7 @@ import {
 import { ORGANIZATION_CHANGED_EVENT } from '../../api/organizations'
 import { useAuth } from '../../auth/AuthContext'
 import { getRepositories } from '../../api/repositories'
-import { StatusTag } from '../common'
+import { RecordRow, RecordStack, StatusTag } from '../common'
 import { UI_TEXT } from '../../constants'
 import { DesignTokenModal } from '../theme/DesignTokenModal'
 import { useThemeTokens } from '../../hooks/useThemeTokens'
@@ -450,33 +450,31 @@ function TopHeader({ collapsed, onToggleSidebar }) {
         size="default"
         extra={<Button size="small" onClick={markAllNotificationsRead}>{UI_TEXT.notifications.markAllRead}</Button>}
       >
-        {notifications.length ? (
-          <Space orientation="vertical" size={8} style={{ width: '100%' }}>
-            {notifications.map((notification) => {
+        <RecordStack emptyText={UI_TEXT.notifications.empty} bordered={false} gap={8}>
+          {notifications.map((notification) => {
             const read = readNotificationIds.includes(notification.id)
             return (
-              <Space
+              <RecordRow
                 key={notification.id}
-                direction="vertical"
-                size={4}
+                density="compact"
                 onClick={() => openNotification(notification)}
-                className="notification-item"
-                style={{ width: '100%' }}
-              >
-                <Flex align="center" gap={8} wrap="wrap">
-                  <Text strong={!read}>{notification.title}</Text>
-                  <StatusTag status={notification.severity} />
-                  {!read ? <Badge status="processing" /> : null}
-                </Flex>
-                <Text type="secondary">{notification.message}</Text>
-                <Text type="secondary">{notification.createdAt}</Text>
-              </Space>
+                title={<Text strong={!read}>{notification.title}</Text>}
+                titleExtra={(
+                  <>
+                    <StatusTag status={notification.severity} />
+                    {!read ? <Badge status="processing" /> : null}
+                  </>
+                )}
+                description={(
+                  <Space orientation="vertical" size={4}>
+                    <Text type="secondary">{notification.message}</Text>
+                    <Text type="secondary">{notification.createdAt}</Text>
+                  </Space>
+                )}
+              />
             )
-            })}
-          </Space>
-        ) : (
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.notifications.empty} />
-        )}
+          })}
+        </RecordStack>
       </Drawer>
 
       <Modal

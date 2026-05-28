@@ -1,5 +1,5 @@
 import { StarFilled } from '../components/icons'
-import { Button, Card, Col, ConfigProvider, Empty, Flex, Row, Space, Tabs, Typography } from 'antd'
+import { Button, Card, Col, ConfigProvider, Flex, Row, Space, Tabs, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -10,7 +10,7 @@ import {
   getDashboardRepositoryActivities,
 } from '../api/dashboard'
 import { useAuth } from '../auth/AuthContext'
-import { PageHeader, StatusTag } from '../components/common'
+import { PageHeader, RecordRow, RecordStack, StatusTag } from '../components/common'
 import { DashboardAiChat } from '../components/custom'
 import RepositoryAvatar from '../components/repository/RepositoryAvatar'
 import { UI_TEXT } from '../constants'
@@ -115,25 +115,16 @@ function Dashboard() {
                   onChange={setNextUpTab}
                   items={nextUpTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
                 />
-                {filteredNextUp.length ? (
-                  <Space orientation="vertical" size={0} style={{ width: '100%' }}>
-                    {filteredNextUp.slice(0, 3).map((item) => (
-                      <Flex
-                        key={item.key}
-                        className="dashboard-next-item"
-                        align="center"
-                        justify="space-between"
-                        gap={12}
-                        wrap="wrap"
-                        onClick={() => navigate(item.href)}
-                      >
-                        <Space orientation="vertical" size={4}>
-                          <Flex align="center" gap={8} wrap="wrap">
-                            <Text strong>{item.title}</Text>
-                            <StatusTag status={item.status} />
-                          </Flex>
-                          <Text type="secondary">{item.target} · {item.updatedAt}</Text>
-                        </Space>
+                <RecordStack emptyText={UI_TEXT.messages.empty.table} bordered={false}>
+                  {filteredNextUp.slice(0, 3).map((item) => (
+                    <RecordRow
+                      key={item.key}
+                      density="spacious"
+                      align="center"
+                      title={<Text strong>{item.title}</Text>}
+                      titleExtra={<StatusTag status={item.status} />}
+                      description={<Text type="secondary">{item.target} · {item.updatedAt}</Text>}
+                      actions={(
                         <Button
                           type={item.type === 'Merge Request' ? 'primary' : 'default'}
                           size="small"
@@ -144,12 +135,11 @@ function Dashboard() {
                         >
                           {getActionLabel(item)}
                         </Button>
-                      </Flex>
-                    ))}
-                  </Space>
-                ) : (
-                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.messages.empty.table} />
-                )}
+                      )}
+                      onClick={() => navigate(item.href)}
+                    />
+                  ))}
+                </RecordStack>
               </Card>
 
               <Card
@@ -162,27 +152,19 @@ function Dashboard() {
                   onChange={setActivityTab}
                   items={activityTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
                 />
-                {filteredActivities.length ? (
-                  <Space orientation="vertical" size={0} className="dashboard-activity-list">
-                    {filteredActivities.slice(0, 4).map((activity) => (
-                      <Flex
-                        key={activity.id}
-                        className="dashboard-activity-item"
-                        align="flex-start"
-                        gap={12}
-                        onClick={() => navigate(activity.href)}
-                      >
-                        <BadgeDot />
-                        <Space orientation="vertical" size={2}>
-                          <Text>{activity.actor}님이 <Link to={activity.href}>{activity.message}</Link></Text>
-                          <Text type="secondary">{activity.repositoryName} · {activity.createdAt}</Text>
-                        </Space>
-                      </Flex>
-                    ))}
-                  </Space>
-                ) : (
-                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.messages.empty.table} />
-                )}
+                <RecordStack emptyText={UI_TEXT.messages.empty.table} bordered={false} className="dashboard-activity-list">
+                  {filteredActivities.slice(0, 4).map((activity) => (
+                    <RecordRow
+                      key={activity.id}
+                      density="comfortable"
+                      leading={<BadgeDot />}
+                      title={<Text>{activity.actor}님이 <Link to={activity.href}>{activity.message}</Link></Text>}
+                      description={<Text type="secondary">{activity.repositoryName} · {activity.createdAt}</Text>}
+                      contentGap={2}
+                      onClick={() => navigate(activity.href)}
+                    />
+                  ))}
+                </RecordStack>
               </Card>
             </Space>
           </Col>
@@ -199,28 +181,20 @@ function Dashboard() {
                   { key: 'starred', label: 'Starred Repository' },
                 ]}
               />
-              {quickAccessRepositories.length ? (
-                <Space orientation="vertical" size={0} style={{ width: '100%' }}>
-                  {quickAccessRepositories.slice(0, 7).map((repository) => (
-                    <Flex
-                      key={repository.id}
-                      className="dashboard-quick-item"
-                      align="center"
-                      justify="space-between"
-                      gap={8}
-                      onClick={() => navigate(`/repositories/${repository.id}`)}
-                    >
-                      <Space size={8}>
-                        <RepositoryAvatar repository={repository} size={24} className="dashboard-repo-avatar" />
-                        <Link to={`/repositories/${repository.id}`}>{repository.name}</Link>
-                      </Space>
-                      <StarFilled className="dashboard-quick-star" />
-                    </Flex>
-                  ))}
-                </Space>
-              ) : (
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.messages.empty.table} />
-              )}
+              <RecordStack emptyText={UI_TEXT.messages.empty.table} bordered={false}>
+                {quickAccessRepositories.slice(0, 7).map((repository) => (
+                  <RecordRow
+                    key={repository.id}
+                    density="compact"
+                    align="center"
+                    mainGap={8}
+                    leading={<RepositoryAvatar repository={repository} size={24} className="dashboard-repo-avatar" />}
+                    title={<Link to={`/repositories/${repository.id}`}>{repository.name}</Link>}
+                    actions={<StarFilled className="dashboard-quick-star" />}
+                    onClick={() => navigate(`/repositories/${repository.id}`)}
+                  />
+                ))}
+              </RecordStack>
             </Card>
           </Col>
         </Row>

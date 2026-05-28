@@ -25,7 +25,6 @@ import {
   Col,
   Divider,
   Dropdown,
-  Empty,
   Flex,
   Input,
   Row,
@@ -49,7 +48,7 @@ import {
   getRepositoryTags,
 } from '../api/repositories'
 import { getDeploymentTransfersByRepositoryId } from '../api/deploymentTransfers'
-import { StatusTag } from '../components/common'
+import { RecordRow, RecordStack, StatusTag } from '../components/common'
 import RepositoryAvatar from '../components/repository/RepositoryAvatar'
 import { UI_TEXT } from '../constants'
 
@@ -150,18 +149,21 @@ export default function RepositoryFiles() {
       />
       <Divider />
       <Title level={5}>Open with</Title>
-      <Space orientation="vertical" size={8} style={{ width: '100%' }}>
+      <RecordStack bordered={false} gap={8}>
         {[
           { title: 'Web IDE', actions: [<Button key="open" size="small">.</Button>] },
           { title: 'Visual Studio Code', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
           { title: 'IntelliJ IDEA', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
         ].map((item) => (
-          <Flex key={item.title} align="center" justify="space-between" gap={12}>
-            <Text>{item.title}</Text>
-            <Space>{item.actions}</Space>
-          </Flex>
+          <RecordRow
+            key={item.title}
+            density="compact"
+            align="center"
+            title={<Text>{item.title}</Text>}
+            actions={item.actions}
+          />
         ))}
-      </Space>
+      </RecordStack>
       <Divider />
       <Title level={5}>Download source code</Title>
       <Segmented block options={downloadOptions} />
@@ -176,7 +178,7 @@ export default function RepositoryFiles() {
   ]
 
   return (
-    <Space className="repository-files-page" direction="vertical" size={20}>
+    <Space className="repository-files-page" orientation="vertical" size={20}>
       <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
         <Space align="start" size={12} className="repository-files-title">
           <RepositoryAvatar repository={repository} className="repository-files-avatar" />
@@ -273,16 +275,17 @@ export default function RepositoryFiles() {
 
         <Col xs={24} xl={7}>
           <Card className="repository-info-panel" title="저장소 정보">
-            <Space orientation="vertical" size={10} style={{ width: '100%' }}>
+            <RecordStack bordered={false} gap={10}>
               {repositoryInfoItems.map((item) => (
-                <Flex key={item.key} align="center">
-                  <Space>
-                    {item.icon}
-                    <Text strong>{item.label}</Text>
-                  </Space>
-                </Flex>
+                <RecordRow
+                  key={item.key}
+                  density="compact"
+                  align="center"
+                  leading={item.icon}
+                  title={<Text strong>{item.label}</Text>}
+                />
               ))}
-            </Space>
+            </RecordStack>
             <Divider />
             <Space orientation="vertical" size={6}>
               <Text strong>생성일</Text>
@@ -290,19 +293,21 @@ export default function RepositoryFiles() {
             </Space>
             <Divider />
             <Title level={5}>최근 운영 이관</Title>
-            {deploymentTransfers.length ? (
-              <Space orientation="vertical" size={14} className="repository-transfer-list">
-                {deploymentTransfers.slice(0, 3).map((item) => (
-                  <Space key={item.id} direction="vertical" size={4}>
-                    <Text strong>({getTransferStatusLabel(item)}) {item.deploymentPlan?.changeReason ?? item.id}</Text>
-                    <Text type="secondary">{item.deploymentPlan?.checklistNote ?? '운영 반영 검토가 진행 중입니다.'}</Text>
-                    <Button type="link" size="small">진행 현황 보기 →</Button>
-                  </Space>
-                ))}
-              </Space>
-            ) : (
-              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="진행 중인 운영이관이 없습니다." />
-            )}
+            <RecordStack emptyText="진행 중인 운영이관이 없습니다." bordered={false} gap={14} className="repository-transfer-list">
+              {deploymentTransfers.slice(0, 3).map((item) => (
+                <RecordRow
+                  key={item.id}
+                  density="compact"
+                  title={<Text strong>({getTransferStatusLabel(item)}) {item.deploymentPlan?.changeReason ?? item.id}</Text>}
+                  description={(
+                    <Space orientation="vertical" size={4}>
+                      <Text type="secondary">{item.deploymentPlan?.checklistNote ?? '운영 반영 검토가 진행 중입니다.'}</Text>
+                      <Button type="link" size="small">진행 현황 보기 →</Button>
+                    </Space>
+                  )}
+                />
+              ))}
+            </RecordStack>
           </Card>
         </Col>
       </Row>
