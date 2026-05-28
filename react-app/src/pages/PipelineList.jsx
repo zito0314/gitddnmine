@@ -32,7 +32,7 @@ import {
   message,
 } from 'antd'
 import { useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   getPipelineJobs,
   getPipelineStages,
@@ -105,6 +105,7 @@ function getActionLabel(status) {
 
 export default function PipelineList() {
   const { repositoryId } = useParams()
+  const navigate = useNavigate()
   const currentRepository = repositoryId ? getRepositoryDetail(repositoryId) : null
   const repositories = useMemo(
     () => (repositoryId && currentRepository ? [currentRepository] : getRepositories()),
@@ -344,7 +345,7 @@ export default function PipelineList() {
             columns={columns}
             dataSource={filteredPipelines}
             scroll={{ x: 1100 }}
-            onRow={(pipeline) => ({ onClick: () => setSelectedPipeline(pipeline) })}
+            onRow={(pipeline) => ({ onClick: () => navigate(`/repositories/${pipeline.repo}/pipelines/${pipeline.id}`) })}
             pagination={{
               current: page,
               pageSize: 10,

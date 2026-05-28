@@ -1087,6 +1087,23 @@ body {
   margin-top: 16px;
 }
 
+.pipeline-stage-map {
+  overflow-x: auto;
+}
+
+.pipeline-stage-card {
+  height: 100%;
+}
+
+.pipeline-stage-card-failed {
+  border-color: var(--ant-color-error);
+}
+
+.pipeline-stage-connector {
+  width: 28px;
+  border-top: 1px solid var(--gitddn-border-color);
+}
+
 .gitddn-code-preview-log.ant-typography code {
   width: 100%;
 }
