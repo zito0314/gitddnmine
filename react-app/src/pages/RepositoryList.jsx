@@ -42,6 +42,14 @@ function getRepositoryPath(repository) {
   return `${repository.group?.replace(/\s*\/\s*/g, '/') ?? '-'}${repository.name ? `/${repository.name}` : ''}`
 }
 
+function getPathParts(path) {
+  const parts = String(path ?? '').split('/').filter(Boolean)
+  return {
+    groupPath: parts.slice(0, -1).join('/'),
+    name: parts.at(-1) ?? path ?? '-',
+  }
+}
+
 function getSearchText(item) {
   return [
     item.path,
@@ -128,15 +136,22 @@ export default function RepositoryList() {
       ...repository,
       rowType: 'repository',
       status: 'approved',
+      groupPath: repository.group?.replace(/\s*\/\s*/g, '/'),
       language: repository.type,
+      titleText: repository.name,
       timeText: repository.updatedAt,
     }))
     const requestRows = canUseManagedView
-      ? filteredRequests.map((request) => ({
-        ...request,
-        rowType: 'request',
-        timeText: request.requestedAtText,
-      }))
+      ? filteredRequests.map((request) => {
+        const pathParts = getPathParts(request.path)
+        return {
+          ...request,
+          ...pathParts,
+          rowType: 'request',
+          titleText: pathParts.name,
+          timeText: request.requestedAtText,
+        }
+      })
       : []
 
     return [...approvedRows, ...requestRows]
@@ -232,6 +247,12 @@ export default function RepositoryList() {
   const renderCatalogRow = (row) => {
     const meta = getStatusMeta(row.status)
     const isRepository = row.rowType === 'repository'
+    const descriptionItems = [
+      row.groupPath,
+      row.description,
+      row.language,
+      row.timeText,
+    ].filter(Boolean)
     const rowClassName = [
       'repository-catalog-row',
       `repository-catalog-row-${row.status}`,
@@ -257,11 +278,16 @@ export default function RepositoryList() {
       >
         <Space orientation="vertical" size={4} className="repository-catalog-content">
           <Flex align="center" gap={8} wrap="wrap">
-            <Text strong className="repository-catalog-title">{row.path}</Text>
+            <Text strong className="repository-catalog-title">{row.titleText}</Text>
             <Tag color={meta.color} className="repository-status-tag">{meta.label}</Tag>
           </Flex>
           <Text type="secondary" className="repository-catalog-description">
-            {row.description} <span className="repository-catalog-dot">·</span> {row.language} <span className="repository-catalog-dot">·</span> {row.timeText}
+            {descriptionItems.map((item, index) => (
+              <span key={`${row.id}-${item}`}>
+                {index > 0 ? <span className="repository-catalog-dot">·</span> : null}
+                {item}
+              </span>
+            ))}
           </Text>
         </Space>
         <Flex align="center" justify="flex-end" className="repository-catalog-actions">
