@@ -1,9 +1,10 @@
 import {
+  DownOutlined,
   PlusOutlined,
   StarFilled,
   StarOutlined,
 } from '../components/icons'
-import { App as AntdApp, Button, Card, Empty, Flex, Input, Select, Space, Tabs, Tag, Tooltip, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Dropdown, Empty, Flex, Input, Space, Tabs, Tag, Tooltip, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories, getRepositoryRequests } from '../api/repositories'
@@ -120,6 +121,14 @@ export default function RepositoryList() {
         .map((language) => ({ value: language, label: language })),
     [repositories, repositoryRequests],
   )
+  const groupFilterItems = [
+    { key: 'all', label: '모든 그룹' },
+    ...groupOptions.map((option) => ({ key: option.value, label: option.label })),
+  ]
+  const languageFilterItems = [
+    { key: 'all', label: '언어' },
+    ...languageOptions.map((option) => ({ key: option.value, label: option.label })),
+  ]
 
   const matchesFilters = (item) => {
     const q = search.trim().toLowerCase()
@@ -196,24 +205,36 @@ export default function RepositoryList() {
         placeholder="저장소명, 프로젝트명, 담당 조직 선택"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
-        className="repository-catalog-search"
+        style={{ flex: '1 1 320px', minWidth: 260 }}
       />
-      <Select
-        allowClear
-        options={groupOptions}
-        placeholder="모든 그룹"
-        value={filterGroup}
-        onChange={setFilterGroup}
-        className="repository-catalog-select"
-      />
-      <Select
-        allowClear
-        options={languageOptions}
-        placeholder="언어"
-        value={filterLanguage}
-        onChange={setFilterLanguage}
-        className="repository-catalog-select repository-catalog-language"
-      />
+      <Dropdown
+        menu={{
+          selectedKeys: [filterGroup ?? 'all'],
+          items: groupFilterItems,
+          onClick: ({ key }) => setFilterGroup(key === 'all' ? null : key),
+        }}
+      >
+        <Button className="repository-catalog-filter-button">
+          <Space>
+            {filterGroup ?? '모든 그룹'}
+            <DownOutlined />
+          </Space>
+        </Button>
+      </Dropdown>
+      <Dropdown
+        menu={{
+          selectedKeys: [filterLanguage ?? 'all'],
+          items: languageFilterItems,
+          onClick: ({ key }) => setFilterLanguage(key === 'all' ? null : key),
+        }}
+      >
+        <Button className="repository-catalog-filter-button repository-catalog-language-button">
+          <Space>
+            {filterLanguage ?? '언어'}
+            <DownOutlined />
+          </Space>
+        </Button>
+      </Dropdown>
     </Flex>
   )
 

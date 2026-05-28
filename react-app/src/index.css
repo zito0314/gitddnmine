@@ -1613,24 +1613,11 @@ body {
   width: 100%;
 }
 
-.repository-catalog-search {
-  flex: 1 1 320px;
-  min-width: 260px;
-}
-
-.repository-catalog-search .ant-input,
-.repository-catalog-search .ant-input-group-addon,
-.repository-catalog-search .ant-btn,
-.repository-catalog-select .ant-select-selector {
-  min-height: 40px;
-  border-radius: 8px;
-}
-
-.repository-catalog-select {
+.repository-catalog-filter-button.ant-btn {
   width: 140px;
 }
 
-.repository-catalog-language {
+.repository-catalog-language-button.ant-btn {
   width: 104px;
 }
 
