@@ -1,10 +1,9 @@
 import {
-  DownOutlined,
   PlusOutlined,
   StarFilled,
   StarOutlined,
 } from '../components/icons'
-import { App as AntdApp, Avatar, Button, Card, Empty, Flex, Input, List, Select, Space, Tag, Tooltip, Typography } from 'antd'
+import { App as AntdApp, Button, Empty, Flex, Input, Select, Space, Tabs, Tag, Tooltip, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories, getRepositoryRequests } from '../api/repositories'
@@ -18,21 +17,29 @@ const { Search } = Input
 const { Text } = Typography
 
 const REQUEST_STATUS_META = {
-  pending: { label: '승인대기', color: 'warning', timePrefix: 'Requested' },
-  rejected: { label: '승인반려', color: 'error', timePrefix: 'Rejected' },
-  canceled: { label: '요청취소', color: 'default', timePrefix: 'Canceled' },
+  pending: { label: '승인대기', tone: 'pending' },
+  rejected: { label: '승인반려', tone: 'rejected' },
+  canceled: { label: '요청취소', tone: 'canceled' },
 }
 
 const REPOSITORY_STATUS_META = {
-  approved: { label: '승인완료', color: 'success' },
+  approved: { label: '승인완료', tone: 'approved' },
+}
+
+const FILTER_TABS = [
+  { key: 'all', label: '전체' },
+  { key: 'pending', label: '승인대기' },
+  { key: 'approved', label: '승인완료' },
+  { key: 'rejected', label: '승인반려' },
+  { key: 'canceled', label: '요청취소' },
+]
+
+function getStatusMeta(status) {
+  return REPOSITORY_STATUS_META[status] ?? REQUEST_STATUS_META[status] ?? REQUEST_STATUS_META.canceled
 }
 
 function getRepositoryPath(repository) {
   return `${repository.group?.replace(/\s*\/\s*/g, '/') ?? '-'}${repository.name ? `/${repository.name}` : ''}`
-}
-
-function getInitial(value) {
-  return String(value ?? 'R').trim().charAt(0).toUpperCase() || 'R'
 }
 
 function getSearchText(item) {
@@ -61,7 +68,7 @@ export default function RepositoryList() {
   const [search, setSearch] = useState('')
   const [filterGroup, setFilterGroup] = useState(null)
   const [filterLanguage, setFilterLanguage] = useState(null)
-  const [requestCollapsed, setRequestCollapsed] = useState(false)
+  const [activeStatus, setActiveStatus] = useState('all')
   const [requestStatusOverrides, setRequestStatusOverrides] = useState({})
 
   const repositories = useMemo(
@@ -116,8 +123,30 @@ export default function RepositoryList() {
 
   const filteredRepositories = repositories.filter(matchesFilters)
   const filteredRequests = repositoryRequests.filter(matchesFilters)
-  const visibleManagedRepositories = canUseManagedView ? filteredRepositories.slice(0, 3) : filteredRepositories
-  const hiddenRepositoryCount = canUseManagedView ? Math.max(filteredRepositories.length - visibleManagedRepositories.length, 0) : 0
+  const catalogRows = useMemo(() => {
+    const approvedRows = filteredRepositories.map((repository) => ({
+      ...repository,
+      rowType: 'repository',
+      status: 'approved',
+      language: repository.type,
+      timeText: repository.updatedAt,
+    }))
+    const requestRows = canUseManagedView
+      ? filteredRequests.map((request) => ({
+        ...request,
+        rowType: 'request',
+        timeText: request.requestedAtText,
+      }))
+      : []
+
+    return [...approvedRows, ...requestRows]
+  }, [canUseManagedView, filteredRepositories, filteredRequests])
+
+  const visibleCatalogRows = catalogRows.filter((row) => activeStatus === 'all' || row.status === activeStatus)
+  const tabItems = FILTER_TABS.map((tab) => ({
+    ...tab,
+    label: tab.label,
+  }))
 
   const handleCancelRequest = (request) => {
     modal.confirm({
@@ -146,100 +175,104 @@ export default function RepositoryList() {
   }
 
   const renderFilterBar = () => (
-    <Card size="small" variant="outlined">
-      <Flex align="center" gap={12} wrap="wrap">
-        <Select
-          allowClear
-          options={groupOptions}
-          placeholder="전체 그룹"
-          value={filterGroup}
-          onChange={setFilterGroup}
-          style={{ width: 140 }}
-        />
-        <Search
-          allowClear
-          placeholder="저장소명, 프로젝트명, 담당 조직 선택"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          style={{ flex: '1 1 360px', minWidth: 260 }}
-        />
-        <Select
-          allowClear
-          options={languageOptions}
-          placeholder="언어"
-          value={filterLanguage}
-          onChange={setFilterLanguage}
-          style={{ width: 120 }}
-        />
-      </Flex>
-    </Card>
+    <Flex align="center" gap={12} wrap="wrap" className="repository-catalog-filter">
+      <Search
+        allowClear
+        placeholder="저장소명, 프로젝트명, 담당 조직 선택"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        className="repository-catalog-search"
+      />
+      <Select
+        allowClear
+        options={groupOptions}
+        placeholder="모든 그룹"
+        value={filterGroup}
+        onChange={setFilterGroup}
+        className="repository-catalog-select"
+      />
+      <Select
+        allowClear
+        options={languageOptions}
+        placeholder="언어"
+        value={filterLanguage}
+        onChange={setFilterLanguage}
+        className="repository-catalog-select repository-catalog-language"
+      />
+    </Flex>
   )
 
-  const renderRequestItem = (request) => {
-    const meta = REQUEST_STATUS_META[request.status] ?? REQUEST_STATUS_META.canceled
-
-    return (
-      <List.Item
-        actions={[
-          <Text key="time" type="secondary">{request.requestedAtText}</Text>,
-          request.status === 'pending' ? (
-            <Button key="cancel" onClick={() => handleCancelRequest(request)}>요청취소</Button>
-          ) : null,
-          request.status === 'rejected' ? (
-            <Button key="reason" danger onClick={() => handleShowRejectReason(request)}>반려사유</Button>
-          ) : null,
-        ].filter(Boolean)}
-      >
-        <List.Item.Meta
-          title={(
-            <Flex align="center" gap={8} wrap="wrap">
-              <Text strong>{request.path}</Text>
-              <Tag color={meta.color}>{meta.label}</Tag>
-            </Flex>
-          )}
-          description={<Text type="secondary">{request.description} · {request.language}</Text>}
-        />
-      </List.Item>
-    )
-  }
-
-  const renderRepositoryItem = (repository, showStatus = false) => (
-    <List.Item
-      className="repository-list-item"
-      onClick={() => navigate(`/repositories/${repository.id}`)}
-      actions={[
-        <Text key="updated" type="secondary">{repository.updatedAt}</Text>,
-        <Tooltip key="favorite" title={repository.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}>
+  const renderRowActions = (row) => {
+    if (row.rowType === 'repository') {
+      return (
+        <Tooltip title={row.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}>
           <Button
             type="text"
             shape="circle"
-            className={`repository-list-favorite ${repository.favorite ? 'active' : ''}`}
-            icon={repository.favorite ? <StarFilled /> : <StarOutlined />}
-            onClick={(event) => handleFavoriteClick(event, repository)}
-            aria-label={repository.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+            className={`repository-list-favorite ${row.favorite ? 'active' : ''}`}
+            icon={row.favorite ? <StarFilled /> : <StarOutlined />}
+            onClick={(event) => handleFavoriteClick(event, row)}
+            aria-label={row.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
           />
-        </Tooltip>,
-      ]}
-    >
-      <List.Item.Meta
-        avatar={<Avatar shape="square" size={44}>{getInitial(repository.name)}</Avatar>}
-        title={(
+        </Tooltip>
+      )
+    }
+
+    if (row.status === 'pending') {
+      return <Button danger onClick={() => handleCancelRequest(row)}>요청취소</Button>
+    }
+
+    if (row.status === 'rejected') {
+      return <Button onClick={() => handleShowRejectReason(row)}>반려사유</Button>
+    }
+
+    return null
+  }
+
+  const renderCatalogRow = (row) => {
+    const meta = getStatusMeta(row.status)
+    const isRepository = row.rowType === 'repository'
+    const rowClassName = [
+      'repository-catalog-row',
+      `repository-catalog-row-${row.status}`,
+      isRepository ? 'repository-catalog-row-clickable' : null,
+    ].filter(Boolean).join(' ')
+
+    return (
+      <Flex
+        key={`${row.rowType}-${row.id}`}
+        align="center"
+        justify="space-between"
+        gap={16}
+        className={rowClassName}
+        onClick={isRepository ? () => navigate(`/repositories/${row.id}`) : undefined}
+        role={isRepository ? 'button' : undefined}
+        tabIndex={isRepository ? 0 : undefined}
+        onKeyDown={isRepository ? (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            navigate(`/repositories/${row.id}`)
+          }
+        } : undefined}
+      >
+        <Space orientation="vertical" size={4} className="repository-catalog-content">
           <Flex align="center" gap={8} wrap="wrap">
-            <Text strong>{repository.path}</Text>
-            {showStatus && repository.status ? (
-              <Tag color={REPOSITORY_STATUS_META[repository.status]?.color}>
-                {REPOSITORY_STATUS_META[repository.status]?.label ?? repository.status}
-              </Tag>
-            ) : null}
+            <Text strong className="repository-catalog-title">{row.path}</Text>
+            <Tag className={`repository-status-tag repository-status-tag-${meta.tone}`}>{meta.label}</Tag>
           </Flex>
-        )}
-        description={<Text type="secondary">{repository.description} · {repository.type}</Text>}
-      />
-    </List.Item>
-  )
+          <Text type="secondary" className="repository-catalog-description">
+            {row.description} <span className="repository-catalog-dot">·</span> {row.language} <span className="repository-catalog-dot">·</span> {row.timeText}
+          </Text>
+        </Space>
+        <Flex align="center" justify="flex-end" className="repository-catalog-actions">
+          {renderRowActions(row)}
+        </Flex>
+      </Flex>
+    )
+  }
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
       <PageHeader
         title={UI_TEXT.pages.repositories.title}
         description={`${currentUserName}님이 속한 저장소의 모든 목록이에요. 저장소를 즐겨찾기하여, 언제든 쉽고 빠르게 이동해 보세요.`}
@@ -250,55 +283,20 @@ export default function RepositoryList() {
         ] : null}
       />
 
-      {renderFilterBar()}
-
-      {canUseManagedView ? (
-        <>
-          <Card
-            title={`요청한 저장소 ${filteredRequests.length}`}
-            extra={(
-              <Button
-                type="text"
-                icon={<DownOutlined style={{ transform: requestCollapsed ? undefined : 'rotate(180deg)' }} />}
-                onClick={() => setRequestCollapsed((current) => !current)}
-                aria-label={requestCollapsed ? '요청한 저장소 펼치기' : '요청한 저장소 접기'}
-              />
-            )}
-            styles={{ body: { display: requestCollapsed ? 'none' : undefined } }}
-          >
-            <List
-              dataSource={filteredRequests}
-              locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="요청한 저장소가 없습니다." /> }}
-              renderItem={renderRequestItem}
-            />
-          </Card>
-
-          <Card
-            title={(
-              <Space size={8}>
-                <span>{`나의 저장소 ${visibleManagedRepositories.length}`}</span>
-                {hiddenRepositoryCount > 0 ? <Tag color="success">+{hiddenRepositoryCount}</Tag> : null}
-              </Space>
-            )}
-          >
-            <List
-              className="repository-list"
-              dataSource={visibleManagedRepositories}
-              locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="저장소가 없습니다." /> }}
-              renderItem={(repository) => renderRepositoryItem(repository, true)}
-            />
-          </Card>
-        </>
-      ) : (
-        <Card>
-          <List
-            className="repository-list"
-            dataSource={filteredRepositories}
-            locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="저장소가 없습니다." /> }}
-            renderItem={(repository) => renderRepositoryItem(repository)}
-          />
-        </Card>
-      )}
+      <Space orientation="vertical" size={16} className="repository-catalog">
+        <Tabs
+          activeKey={activeStatus}
+          items={tabItems}
+          onChange={setActiveStatus}
+          className="repository-catalog-tabs"
+        />
+        {renderFilterBar()}
+        <div className="repository-catalog-list">
+          {visibleCatalogRows.length > 0 ? visibleCatalogRows.map(renderCatalogRow) : (
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="저장소가 없습니다." />
+          )}
+        </div>
+      </Space>
     </Space>
   )
 }
