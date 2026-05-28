@@ -1,4 +1,4 @@
-import { AuditOutlined, BellOutlined, BgColorsOutlined, DashboardOutlined, DeploymentUnitOutlined, LinkOutlined, LockOutlined, SafetyCertificateOutlined, SettingOutlined, TeamOutlined } from '../icons'
+import { AuditOutlined, BellOutlined, BgColorsOutlined, DashboardOutlined, DeploymentUnitOutlined, LockOutlined, SafetyCertificateOutlined, SettingOutlined, TeamOutlined } from '../icons'
 import { App as AntdApp, Avatar, Breadcrumb, Button, Flex, Layout, Menu, Space, Typography } from 'antd'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthContext'
@@ -10,18 +10,16 @@ const { Text } = Typography
 
 const adminItems = [
   { key: '/admin', icon: <DashboardOutlined />, label: UI_TEXT.adminPages.admin.title },
+  { type: 'group', label: '조직 및 정책' },
   { key: '/admin/organization', icon: <TeamOutlined />, label: UI_TEXT.adminNavigation.organizationRoles },
   { key: '/admin/repository-policy', icon: <LockOutlined />, label: UI_TEXT.adminNavigation.repositoryPolicy },
   { key: '/admin/project-templates', icon: <SettingOutlined />, label: UI_TEXT.adminNavigation.projectTemplates },
-  { key: '/admin/repository-policy/branch-protection-templates', icon: <LockOutlined />, label: 'Branch Protection Templates' },
-  { key: '/admin/repository-policy/branch-protection-requests', icon: <LockOutlined />, label: 'Exception Requests' },
-  { key: '/admin/repository-policy/branch-protection-history', icon: <AuditOutlined />, label: 'Policy History' },
   { key: '/admin/mr-approval-policy', icon: <LockOutlined />, label: UI_TEXT.adminNavigation.mrApprovalPolicy },
   { key: '/admin/security-policy', icon: <SafetyCertificateOutlined />, label: UI_TEXT.adminNavigation.securityPolicy },
   { key: '/admin/deployment-policy', icon: <DeploymentUnitOutlined />, label: UI_TEXT.adminNavigation.deploymentPolicy },
   { key: '/admin/audit-policy', icon: <AuditOutlined />, label: UI_TEXT.adminNavigation.auditPolicy },
+  { type: 'group', label: '연동 및 설정' },
   { key: '/admin/notification-policy', icon: <BellOutlined />, label: UI_TEXT.adminNavigation.notificationPolicy },
-  { key: '/admin/integration', icon: <LinkOutlined />, label: UI_TEXT.adminNavigation.integration },
   { key: '/admin/theme', icon: <BgColorsOutlined />, label: UI_TEXT.adminNavigation.themeBranding },
 ]
 
@@ -34,7 +32,7 @@ const adminBreadcrumbLabels = {
   'deployment-policy': UI_TEXT.adminNavigation.deploymentPolicy,
   'audit-policy': UI_TEXT.adminNavigation.auditPolicy,
   'notification-policy': UI_TEXT.adminNavigation.notificationPolicy,
-  integration: UI_TEXT.adminNavigation.integration,
+  integration: UI_TEXT.adminNavigation.notificationPolicy,
   theme: UI_TEXT.adminNavigation.themeBranding,
 }
 

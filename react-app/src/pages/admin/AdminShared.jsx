@@ -1,4 +1,4 @@
-import { Card, Descriptions, Drawer, Form, Input, List, Switch, Table, Typography } from 'antd'
+import { Card, Descriptions, Drawer, Form, Input, Switch, Table, Typography } from 'antd'
 import { useState } from 'react'
 import { StatusTag } from '../../components/common'
 
@@ -61,5 +61,27 @@ export function RoleMappingTable({ mappings }) {
 }
 
 export function AuditList({ logs }) {
-  return <List dataSource={logs} renderItem={(log) => <List.Item><List.Item.Meta title={<><Text strong>{log.action}</Text> <StatusTag status={log.result} /></>} description={`${log.actor} · ${log.target} · ${log.createdAt}`} /></List.Item>} />
+  return (
+    <Table
+      rowKey="id"
+      dataSource={logs}
+      size="small"
+      pagination={false}
+      columns={[
+        {
+          title: '작업',
+          dataIndex: 'action',
+          render: (value, record) => (
+            <>
+              <Text strong>{value}</Text>{' '}
+              <StatusTag status={record.result} />
+            </>
+          ),
+        },
+        { title: '담당자', dataIndex: 'actor' },
+        { title: '대상', dataIndex: 'target' },
+        { title: '시각', dataIndex: 'createdAt' },
+      ]}
+    />
+  )
 }
