@@ -14,7 +14,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getRepositoryBranches, getRepositoryDetail } from '../api/repositories'
 import { useAuth } from '../auth/AuthContext'
-import { PageHeader } from '../components/common'
+import { FilterBar, PageHeader } from '../components/common'
 import { UI_TEXT } from '../constants'
 
 const { Title, Text } = Typography
@@ -177,7 +177,7 @@ function BranchRow({ branch, repositoryId, canManage }) {
 function BranchSection({ title, hint, branches, repositoryId, canManage }) {
   if (branches.length === 0) return null
   return (
-    <div className="branch-section">
+    <Card className="branch-section-card">
       <Flex align="baseline" gap={8} className="branch-section-head">
         <Title level={5} className="branch-section-title">{title}</Title>
         <Text type="secondary" className="branch-commit-sub">{hint ?? `${branches.length}개`}</Text>
@@ -190,7 +190,7 @@ function BranchSection({ title, hint, branches, repositoryId, canManage }) {
           </div>
         ))}
       </Space>
-    </div>
+    </Card>
   )
 }
 
@@ -256,22 +256,24 @@ export default function RepositoryBranches() {
         actions={headerActions}
       />
 
-      <Card>
-        <Flex className="branch-filter-bar filter-bar-spaced" gap={12} wrap="wrap" align="center" justify="space-between">
-          <Segmented options={FILTER_OPTIONS} value={filterKey} onChange={setFilterKey} />
-          <Input.Search
-            placeholder="Branch, Commit, 작성자를 검색해 주세요."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onSearch={setSearch}
-            allowClear
-            className="filter-search-limited"
-          />
-        </Flex>
+      <FilterBar className="branch-filter-bar" justify="space-between">
+        <Segmented options={FILTER_OPTIONS} value={filterKey} onChange={setFilterKey} />
+        <Input.Search
+          placeholder="Branch, Commit, 작성자를 검색해 주세요."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onSearch={setSearch}
+          allowClear
+          className="filter-search-limited"
+        />
+      </FilterBar>
 
-        {allBranches.length === 0 ? (
+      {allBranches.length === 0 ? (
+        <Card>
           <Empty description="표시할 Branch가 없어요." />
-        ) : !hasResults ? (
+        </Card>
+      ) : !hasResults ? (
+        <Card>
           <Empty
             description={
               <Space orientation="vertical" size={4}>
@@ -280,30 +282,30 @@ export default function RepositoryBranches() {
               </Space>
             }
           />
-        ) : (
-          <Space orientation="vertical" size={20} className="branch-section-stack">
-            <BranchSection
-              title="기본 Branch"
-              hint="Repository의 기준이 되는 Branch"
-              branches={defaultBranches}
-              repositoryId={repositoryId}
-              canManage={canManage}
-            />
-            <BranchSection
-              title="내가 생성한 Branch"
-              branches={myBranches}
-              repositoryId={repositoryId}
-              canManage={canManage}
-            />
-            <BranchSection
-              title="전체 Branch"
-              branches={otherBranches}
-              repositoryId={repositoryId}
-              canManage={canManage}
-            />
-          </Space>
-        )}
-      </Card>
+        </Card>
+      ) : (
+        <Space orientation="vertical" size={16} className="branch-section-stack">
+          <BranchSection
+            title="기본 Branch"
+            hint="Repository의 기준이 되는 Branch"
+            branches={defaultBranches}
+            repositoryId={repositoryId}
+            canManage={canManage}
+          />
+          <BranchSection
+            title="내가 생성한 Branch"
+            branches={myBranches}
+            repositoryId={repositoryId}
+            canManage={canManage}
+          />
+          <BranchSection
+            title="전체 Branch"
+            branches={otherBranches}
+            repositoryId={repositoryId}
+            canManage={canManage}
+          />
+        </Space>
+      )}
     </Space>
   )
 }
