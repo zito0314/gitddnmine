@@ -2104,9 +2104,24 @@ body {
 
 .branch-filter-bar {}
 
+.branch-section-stack {
+  width: 100%;
+}
+
+.branch-section-head {
+  margin-bottom: 4px;
+}
+
+.branch-section-title.ant-typography {
+  margin: 0;
+}
+
+.branch-section-list {
+  width: 100%;
+}
+
 .branch-row {
-  padding: 14px 0;
-  cursor: pointer;
+  padding: 12px 4px;
   border-radius: 4px;
   transition: background 0.15s;
 }
@@ -2115,20 +2130,52 @@ body {
   background: var(--ant-color-bg-text-hover, rgba(0, 0, 0, 0.04));
 }
 
-.branch-name-text {
-  word-break: break-all;
+.branch-row-divider.ant-divider {
+  margin: 0;
 }
 
-.branch-commit-meta {
+.branch-main-info {
+  flex: 1 1 320px;
   min-width: 0;
 }
 
+.branch-name-text {
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.branch-copy-button {
+  padding-inline: 4px;
+}
+
+.branch-commit-meta {
+  margin-top: 4px;
+  min-width: 0;
+}
+
+.branch-commit-sha.ant-typography {
+  font-size: 12px;
+  font-family: var(--ant-font-family-code, monospace);
+  color: var(--ant-color-link);
+  cursor: pointer;
+}
+
+.branch-commit-text.ant-typography {
+  font-size: 12px;
+  max-width: 280px;
+}
+
+.branch-commit-sub.ant-typography {
+  font-size: 12px;
+}
+
 .branch-divergence {
+  flex: 0 0 auto;
   white-space: nowrap;
 }
 
-.branch-actions {
-  flex-shrink: 0;
+.branch-row-actions {
+  flex: 0 0 auto;
 }
 
 /* Tag List Page */

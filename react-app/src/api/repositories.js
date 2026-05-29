@@ -348,6 +348,7 @@ export function getRepositoryBranches(repositoryId) {
     const commit = commits.find((commit) => commit.branch === name)
     const isDefault = name === repository?.defaultBranch
     const isProtected = mockBranch?.isProtected ?? (isDefault || name === 'develop')
+    const isStale = !(isDefault || name.includes('feature') || name.includes('hotfix'))
 
     return {
       name,
@@ -355,6 +356,10 @@ export function getRepositoryBranches(repositoryId) {
       default: isDefault,
       isDefault,
       isProtected,
+      isMine: mockBranch?.isMine ?? false,
+      isStale,
+      mergeStatus: mockBranch?.status ?? 'open',
+      hasOpenMergeRequest: mockBranch?.hasOpenMergeRequest ?? false,
       status: isDefault ? 'active' : name.includes('feature') || name.includes('hotfix') ? 'active' : 'stale',
       lastCommit: mockBranch?.latestCommit?.sha ?? commit?.sha ?? '91a42df0',
       lastAuthor: mockBranch?.latestCommit?.author ?? commit?.author ?? 'System',
