@@ -12,9 +12,9 @@ import {
 import { App as AntdApp, Button, Card, Divider, Dropdown, Empty, Flex, Input, Result, Segmented, Space, Tag, Tooltip, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getRepositoryBranchSummary, getRepositoryBranches, getRepositoryDetail } from '../api/repositories'
+import { getRepositoryBranches, getRepositoryDetail } from '../api/repositories'
 import { useAuth } from '../auth/AuthContext'
-import { PageHeader, SummaryCard } from '../components/common'
+import { PageHeader } from '../components/common'
 import { UI_TEXT } from '../constants'
 
 const { Title, Text } = Typography
@@ -203,7 +203,6 @@ export default function RepositoryBranches() {
 
   const repository = getRepositoryDetail(repositoryId)
   const allBranches = useMemo(() => getRepositoryBranches(repositoryId), [repositoryId])
-  const summary = useMemo(() => getRepositoryBranchSummary(repositoryId), [repositoryId])
   const [search, setSearch] = useState('')
   const [filterKey, setFilterKey] = useState('all')
 
@@ -256,21 +255,6 @@ export default function RepositoryBranches() {
         description={UI_TEXT.pages.repositoryBranches.description}
         actions={headerActions}
       />
-
-      <Flex gap={12} wrap="wrap">
-        <div className="summary-card-tile">
-          <SummaryCard title="Total Branches" value={summary.total} icon={<BranchesOutlined />} />
-        </div>
-        <div className="summary-card-tile">
-          <SummaryCard title="Protected" value={summary.protected} icon={<LockOutlined />} />
-        </div>
-        <div className="summary-card-tile">
-          <SummaryCard title="Active" value={summary.active} tone="success" />
-        </div>
-        <div className="summary-card-tile">
-          <SummaryCard title="Stale" value={summary.stale} tone="warning" />
-        </div>
-      </Flex>
 
       <Card>
         <Flex className="branch-filter-bar filter-bar-spaced" gap={12} wrap="wrap" align="center" justify="space-between">
