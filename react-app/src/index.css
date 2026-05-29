@@ -111,7 +111,10 @@ body {
 
 /* ── 사이드바 로고 영역 ── */
 .sidebar-logo-area {
+  height: 64px;
   padding: 16px 16px 8px;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 /* 접힘 상태: 좌우 패딩 제거 후 flex 중앙 정렬 */
