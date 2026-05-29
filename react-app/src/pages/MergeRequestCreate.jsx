@@ -1,4 +1,4 @@
-import { Alert, Avatar, Button, Card, Checkbox, Col, Form, Input, message, Row, Select, Space, Tooltip, Typography } from 'antd'
+import { Alert, Avatar, Button, Card, Checkbox, Col, Divider, Flex, Form, Input, message, Row, Select, Tooltip, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -10,9 +10,9 @@ import {
   getRepositoryMergeRequests,
 } from '../api/repositories'
 import { CopyOutlined } from '../components/icons'
-import { PageHeader } from '../components/common'
+import { FormSection, PageHeader } from '../components/common'
 
-const { Paragraph, Text, Title } = Typography
+const { Text } = Typography
 
 function toRepositoryOption(repository) {
   return {
@@ -91,24 +91,23 @@ export default function MergeRequestCreate() {
   }
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Flex vertical gap={24} className="merge-request-create-page">
       <PageHeader
         title="MR 생성"
         description="Source Branch의 변경사항을 Target Branch로 병합 요청합니다. 연결된 Jira Ticket, 리뷰어, Pipeline/보안 점검 조건을 함께 확인한 후 MR을 생성해 주세요."
       />
-      <Card>
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={submit}
-          initialValues={{ squash: true, deleteSource: true, securityValidation: true, notifyReviewer: true, draft: false }}
-        >
-          <Space orientation="vertical" size={32} style={{ width: '100%' }}>
-            <section>
-              <Title level={4}>저장소 / Branch 선택</Title>
-              <Paragraph type="secondary">
-                MR을 생성할 저장소와 병합할 Branch를 선택해 주세요. 선택한 Branch 기준으로 비교 가능한 변경사항이 있을 때 MR을 생성할 수 있어요.
-              </Paragraph>
+      <Form
+        form={form}
+        layout="vertical"
+        className="merge-request-create-form"
+        onFinish={submit}
+        initialValues={{ squash: true, deleteSource: true, securityValidation: true, notifyReviewer: true, draft: false }}
+      >
+        <Flex vertical gap={24}>
+          <FormSection
+            title="저장소 / Branch 선택"
+            description="MR을 생성할 저장소와 병합할 Branch를 선택해 주세요. 선택한 Branch 기준으로 비교 가능한 변경사항이 있을 때 MR을 생성할 수 있어요."
+          >
               <Form.Item label="저장소" name="repositoryId" rules={[{ required: true, message: '저장소를 선택해 주세요.' }]}>
                 <Select placeholder="저장소 선택" options={repositoryOptions} onChange={handleRepositoryChange} />
               </Form.Item>
@@ -168,22 +167,28 @@ export default function MergeRequestCreate() {
                 hasDuplicateMr={hasDuplicateMr}
                 branchComparison={branchComparison}
               />
-            </section>
+          </FormSection>
 
-            <section>
-              <Title level={4}>MR 정보</Title>
-              <Paragraph type="secondary">리뷰어가 변경 목적과 범위를 이해할 수 있도록 작성해 주세요.</Paragraph>
+          <Divider />
+
+          <FormSection
+            title="MR 정보"
+            description="리뷰어가 변경 목적과 범위를 이해할 수 있도록 작성해 주세요."
+          >
               <Form.Item label="MR 제목" name="title" rules={[{ required: true, message: 'MR 제목을 입력해 주세요.' }]}>
                 <Input placeholder="MR 제목을 입력해 주세요." />
               </Form.Item>
               <Form.Item label="MR 설명" name="description">
                 <Input.TextArea rows={4} placeholder="변경 내용, 영향 범위, 리뷰 포인트를 입력해 주세요." />
               </Form.Item>
-            </section>
+          </FormSection>
 
-            <section>
-              <Title level={4}>Jira 연계</Title>
-              <Paragraph type="secondary">MR과 연결할 Jira 업무를 불러올 수 있어요.</Paragraph>
+          <Divider />
+
+          <FormSection
+            title="Jira 연계"
+            description="MR과 연결할 Jira 업무를 불러올 수 있어요."
+          >
               <Card size="small">
                 <Row align="middle" gutter={[16, 16]}>
                   <Col flex="auto">
@@ -196,11 +201,14 @@ export default function MergeRequestCreate() {
                   </Col>
                 </Row>
               </Card>
-            </section>
+          </FormSection>
 
-            <section>
-              <Title level={4}>승인자 / 리뷰어</Title>
-              <Paragraph type="secondary">MR 검토를 요청할 리뷰어와 역할을 지정할 수 있어요.</Paragraph>
+          <Divider />
+
+          <FormSection
+            title="승인자 / 리뷰어"
+            description="MR 검토를 요청할 리뷰어와 역할을 지정할 수 있어요."
+          >
               <Row gutter={8}>
                 <Col flex="auto">
                   <Form.Item name="reviewer">
@@ -218,27 +226,31 @@ export default function MergeRequestCreate() {
                 </Col>
               </Row>
               <Button>추가</Button>
-            </section>
+          </FormSection>
 
-            <section>
-              <Title level={4}>생성 옵션</Title>
-              <Paragraph type="secondary">MR 생성 후 처리 방식을 선택해 주세요.</Paragraph>
+          <Divider />
+
+          <FormSection
+            title="생성 옵션"
+            description="MR 생성 후 처리 방식을 선택해 주세요."
+          >
               <Row gutter={[12, 12]}>
                 <OptionCheckbox name="squash" title="MR 생성 후 Pipeline 자동 실행" description="Build, Test, Security Scan을 순차적으로 실행할 수 있어요." />
                 <OptionCheckbox name="deleteSource" title="Merge 후 Source Branch 삭제" description="병합 완료 후 작업 Branch를 자동 정리할 수 있어요." />
                 <OptionCheckbox name="notifyReviewer" title="리뷰어에게 알림 전송" description="Mattermost 또는 Email로 리뷰 요청 알림을 보낼 수 있어요." />
                 <OptionCheckbox name="draft" title="Draft로 생성" description="리뷰 요청 전 임시 MR로 생성할 수 있어요." />
               </Row>
-            </section>
+          </FormSection>
 
-            <Row justify="center" gutter={8}>
-              <Col><Button onClick={() => navigate(`/repositories/${selectedRepositoryId ?? repositoryId ?? ''}/merge-requests`)}>취소</Button></Col>
-              <Col><Button type="primary" htmlType="submit">MR 생성</Button></Col>
-            </Row>
-          </Space>
-        </Form>
-      </Card>
-    </Space>
+          <Divider />
+
+          <Flex justify="flex-end" gap={8} wrap>
+            <Button onClick={() => navigate(`/repositories/${selectedRepositoryId ?? repositoryId ?? ''}/merge-requests`)}>취소</Button>
+            <Button type="primary" htmlType="submit">MR 생성</Button>
+          </Flex>
+        </Flex>
+      </Form>
+    </Flex>
   )
 }
 
@@ -260,14 +272,14 @@ function BranchSelect({ disabled, onBlockedClick, ...selectProps }) {
 
 function MergeConditionCard({ repository, mergeConditions }) {
   return (
-    <Card size="small" style={{ marginBottom: 16 }}>
-      <Space orientation="vertical" size={4}>
+    <Card size="small" className="merge-condition-card">
+      <Flex vertical gap={4}>
         <Text strong>[Merge 조건]</Text>
         <Text>선택한 {repository.name} 저장소는 다음과 같은 Merge 조건이 필요해요.</Text>
         {mergeConditions.map((condition) => (
           <Text key={condition}>· {condition}</Text>
         ))}
-      </Space>
+      </Flex>
     </Card>
   )
 }

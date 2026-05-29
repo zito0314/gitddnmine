@@ -1226,6 +1226,18 @@ body {
   vertical-align: bottom;
 }
 
+.form-section-title.ant-typography {
+  margin: 0;
+}
+
+.form-section-description.ant-typography {
+  margin: 0;
+}
+
+.merge-condition-card.ant-card {
+  margin-bottom: 16px;
+}
+
 .mr-detail-hero h2.ant-typography {
   margin: 4px 0 8px;
 }
