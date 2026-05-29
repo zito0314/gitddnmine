@@ -1,20 +1,11 @@
-import {
-  CheckCircleOutlined,
-  DownloadOutlined,
-  ExclamationCircleOutlined,
-  ReloadOutlined,
-  SafetyCertificateOutlined,
-  ScanOutlined,
-  StopOutlined,
-  WarningOutlined,
-} from '../components/icons'
+import { DownloadOutlined, ReloadOutlined, ScanOutlined } from '../components/icons'
 import { Alert, App as AntdApp, Button, Card, Empty, Flex, Input, Select, Space, Table, Tabs, Tag, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getRepositories } from '../api/repositories'
-import { getSecurityValidations } from '../api/security'
+import { getSecuritySeveritySummary, getSecurityValidations } from '../api/security'
 import { useAuth } from '../auth/AuthContext'
-import { FilterBar, PageHeader, SummaryCard } from '../components/common'
+import { FilterBar, PageHeader, SecuritySeverityCards } from '../components/common'
 
 const { Search } = Input
 const { Text } = Typography
@@ -47,10 +38,12 @@ const STATUS_META = {
 }
 
 const POLICY_LABELS = {
-  allowed: '배포 가능',
-  pending: '보안 승인 필요',
+  deployable: '배포 가능',
+  approval_required: '보안 승인 필요',
   conditional: '조건부 배포 가능',
   blocked: '배포 차단',
+  allowed: '배포 가능',
+  pending: '보안 승인 필요',
 }
 
 const SEVERITY_LABELS = [
@@ -98,28 +91,6 @@ function getBranchParts(branch) {
   return { sourceBranch, targetBranch }
 }
 
-function getSummary(validations) {
-  return validations.reduce(
-    (summary, validation) => {
-      summary.total += 1
-      if (validation.status === 'failed') summary.failed += 1
-      if (validation.status === 'blocked' || validation.policyDecision === 'blocked') summary.blockedMrs += 1
-      if (validation.status === 'warning') summary.warning += 1
-      if (validation.status === 'passed') summary.passed += 1
-      summary.criticalIssues += validation.severityCounts?.critical ?? validation.severity?.critical ?? 0
-      return summary
-    },
-    {
-      total: 0,
-      failed: 0,
-      blockedMrs: 0,
-      criticalIssues: 0,
-      warning: 0,
-      passed: 0,
-    },
-  )
-}
-
 export default function RepositorySecurity() {
   const { repositoryId } = useParams()
   const navigate = useNavigate()
@@ -142,10 +113,7 @@ export default function RepositorySecurity() {
   )
   const canRunValidation = auth.isAdmin || auth.isInternalUser || auth.hasPermission('security:write')
 
-  const summary = useMemo(
-    () => getSummary(validations.filter((validation) => !selectedRepositoryId || validation.repo === selectedRepositoryId)),
-    [selectedRepositoryId, validations],
-  )
+  const severitySummary = useMemo(() => getSecuritySeveritySummary(selectedRepositoryId), [selectedRepositoryId])
 
   const filteredValidations = useMemo(() => {
     const query = search.trim().toLowerCase()
@@ -159,7 +127,7 @@ export default function RepositorySecurity() {
       if (activeTool !== 'all' && toolType !== activeTool) return false
       if (selectedTool && toolType !== selectedTool) return false
       if (selectedStatus && statusKey !== selectedStatus) return false
-      if (selectedOwner && validation.author !== selectedOwner) return false
+      if (selectedOwner && validation.ownerName !== selectedOwner) return false
       if (query && !getSearchText(validation, repository?.name).includes(query)) return false
 
       return true
@@ -370,14 +338,7 @@ export default function RepositorySecurity() {
         ].filter(Boolean)}
       />
 
-      <Flex gap={12} wrap="wrap" className="repository-security-summary">
-        <SummaryCard title="전체 검증" value={summary.total} icon={<SafetyCertificateOutlined />} />
-        <SummaryCard title="실패" value={summary.failed} tone="danger" icon={<ExclamationCircleOutlined />} />
-        <SummaryCard title="차단된 MR" value={summary.blockedMrs} tone="danger" icon={<StopOutlined />} />
-        <SummaryCard title="Critical 이슈" value={summary.criticalIssues} tone="danger" icon={<WarningOutlined />} />
-        <SummaryCard title="경고" value={summary.warning} tone="warning" icon={<WarningOutlined />} />
-        <SummaryCard title="통과" value={summary.passed} tone="success" icon={<CheckCircleOutlined />} />
-      </Flex>
+      <SecuritySeverityCards summary={severitySummary} />
 
       <Alert
         type="warning"

@@ -11628,6 +11628,42 @@ const mockData = {
     }
   },
   "security": {
+    "severitySummary": {
+      "all": {
+        "critical": 0,
+        "high": 930,
+        "medium": 2001,
+        "low": 203,
+        "info": 110,
+        "veryLow": 98
+      },
+      "repositories": {
+        "mobile-banking-api": {
+          "critical": 0,
+          "high": 930,
+          "medium": 2001,
+          "low": 203,
+          "info": 110,
+          "veryLow": 98
+        },
+        "customer-web-portal": {
+          "critical": 0,
+          "high": 930,
+          "medium": 2001,
+          "low": 203,
+          "info": 110,
+          "veryLow": 98
+        },
+        "auth-policy-engine": {
+          "critical": 0,
+          "high": 930,
+          "medium": 2001,
+          "low": 203,
+          "info": 110,
+          "veryLow": 98
+        }
+      }
+    },
     "validations": [
       {
         "id": "SEC-301",

@@ -2139,8 +2139,25 @@ body {
   max-width: 420px;
 }
 
-.repository-security-summary .summary-card {
-  flex: 1 1 160px;
+.security-severity-card.ant-card {
+  flex: 1 1 180px;
+  min-width: 180px;
+}
+
+.security-severity-card.ant-card .ant-card-body {
+  padding: 0;
+}
+
+.security-severity-card-head {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--gitddn-border-color);
+  background: color-mix(in srgb, var(--gitddn-bg) 72%, var(--gitddn-card-bg));
+}
+
+.security-severity-card-value.ant-typography {
+  margin: 20px 0 18px;
 }
 
 .repository-security-card.ant-card .ant-card-body {

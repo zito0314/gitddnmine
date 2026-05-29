@@ -1,20 +1,11 @@
-import {
-  CheckCircleOutlined,
-  DownloadOutlined,
-  ExclamationCircleOutlined,
-  ReloadOutlined,
-  SafetyCertificateOutlined,
-  ScanOutlined,
-  StopOutlined,
-  WarningOutlined,
-} from '../components/icons'
+import { DownloadOutlined, ReloadOutlined, ScanOutlined } from '../components/icons'
 import { Alert, App as AntdApp, Button, Card, Empty, Flex, Input, Select, Space, Table, Tabs, Tag, Typography } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getRepositories } from '../api/repositories'
-import { getSecurityValidations } from '../api/security'
+import { getSecuritySeveritySummary, getSecurityValidations } from '../api/security'
 import { useAuth } from '../auth/AuthContext'
-import { FilterBar, PageHeader, SummaryCard } from '../components/common'
+import { FilterBar, PageHeader, SecuritySeverityCards } from '../components/common'
 import { UI_TEXT } from '../constants'
 
 const { Search } = Input
@@ -82,28 +73,6 @@ function getSearchText(validation) {
     .toLowerCase()
 }
 
-function getSummary(validations) {
-  return validations.reduce(
-    (summary, validation) => {
-      summary.total += 1
-      if (validation.status === 'failed') summary.failed += 1
-      if (validation.status === 'blocked' || validation.policyDecision === 'blocked') summary.blockedMrs += 1
-      if (validation.status === 'warning') summary.warning += 1
-      if (validation.status === 'passed') summary.passed += 1
-      summary.criticalIssues += validation.severityCounts?.critical ?? 0
-      return summary
-    },
-    {
-      total: 0,
-      failed: 0,
-      blockedMrs: 0,
-      criticalIssues: 0,
-      warning: 0,
-      passed: 0,
-    },
-  )
-}
-
 export default function SecurityList() {
   const navigate = useNavigate()
   const auth = useAuth()
@@ -138,7 +107,7 @@ export default function SecurityList() {
     })
   }, [activeTool, search, selectedOwner, selectedRepositoryId, selectedStatus, selectedTool, validations])
 
-  const summary = useMemo(() => getSummary(filteredValidations), [filteredValidations])
+  const severitySummary = useMemo(() => getSecuritySeveritySummary(selectedRepositoryId), [selectedRepositoryId])
 
   const repositoryOptions = [
     { value: 'all', label: '전체 저장소' },
@@ -326,14 +295,7 @@ export default function SecurityList() {
         ].filter(Boolean)}
       />
 
-      <Flex gap={12} wrap="wrap" className="repository-security-summary">
-        <SummaryCard title="전체 검증" value={summary.total} icon={<SafetyCertificateOutlined />} />
-        <SummaryCard title="실패" value={summary.failed} tone="danger" icon={<ExclamationCircleOutlined />} />
-        <SummaryCard title="차단된 MR" value={summary.blockedMrs} tone="danger" icon={<StopOutlined />} />
-        <SummaryCard title="Critical 이슈" value={summary.criticalIssues} tone="danger" icon={<WarningOutlined />} />
-        <SummaryCard title="경고" value={summary.warning} tone="warning" icon={<WarningOutlined />} />
-        <SummaryCard title="통과" value={summary.passed} tone="success" icon={<CheckCircleOutlined />} />
-      </Flex>
+      <SecuritySeverityCards summary={severitySummary} />
 
       <Alert
         type="warning"

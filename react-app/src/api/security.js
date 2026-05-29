@@ -72,7 +72,7 @@ export function getVulnerabilities() {
 }
 
 export function getSecurityValidationsByRepository(repositoryId) {
-  return getSecurityValidations().filter((validation) => validation.repo === repositoryId)
+  return getSecurityValidations().filter((validation) => validation.repositoryId === repositoryId)
 }
 
 export function getSecurityValidationsByRepositoryId(repositoryId) {
@@ -91,11 +91,11 @@ export function getSecurityValidationSummary(repositoryId) {
   return validations.reduce(
     (summary, validation) => {
       summary.total += 1
-      if (validation.vstatus === 'failed') summary.failed += 1
-      if (validation.policy === 'blocked') summary.blockedMrs += 1
-      if (validation.vstatus === 'warning') summary.warning += 1
-      if (validation.vstatus === 'pass' || validation.vstatus === 'passed') summary.passed += 1
-      summary.criticalIssues += validation.severity?.critical ?? 0
+      if (validation.status === 'failed') summary.failed += 1
+      if (validation.status === 'blocked' || validation.policyDecision === 'blocked') summary.blockedMrs += 1
+      if (validation.status === 'warning') summary.warning += 1
+      if (validation.status === 'passed') summary.passed += 1
+      summary.criticalIssues += validation.severityCounts?.critical ?? 0
       return summary
     },
     {
@@ -105,6 +105,37 @@ export function getSecurityValidationSummary(repositoryId) {
       criticalIssues: 0,
       warning: 0,
       passed: 0,
+    },
+  )
+}
+
+export function getSecuritySeveritySummary(repositoryId) {
+  const configuredSummary = getMockSlice((data) => data.security.severitySummary, null)
+  const repositorySummary = repositoryId ? configuredSummary?.repositories?.[repositoryId] : null
+
+  if (repositorySummary) return repositorySummary
+  if (configuredSummary?.all) return configuredSummary.all
+
+  const validations = repositoryId
+    ? getSecurityValidationsByRepository(repositoryId)
+    : getSecurityValidations()
+
+  return validations.reduce(
+    (summary, validation) => {
+      summary.critical += validation.severityCounts?.critical ?? 0
+      summary.high += validation.severityCounts?.high ?? 0
+      summary.medium += validation.severityCounts?.medium ?? 0
+      summary.low += validation.severityCounts?.low ?? 0
+      summary.info += validation.severityCounts?.info ?? 0
+      return summary
+    },
+    {
+      critical: 0,
+      high: 0,
+      medium: 0,
+      low: 0,
+      info: 0,
+      veryLow: Math.max(98, validations.length * 6 - 10),
     },
   )
 }
