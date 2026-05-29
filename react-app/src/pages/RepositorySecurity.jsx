@@ -66,6 +66,7 @@ function uniqueOptions(values) {
 }
 
 function getStatusKey(validation) {
+  if (validation.status) return validation.status
   if (validation.policy === 'blocked') return 'blocked'
   if (validation.vstatus === 'pass') return 'passed'
   return validation.vstatus ?? 'pending'
@@ -75,12 +76,16 @@ function getSearchText(validation, repositoryName) {
   return [
     validation.id,
     validation.securityId,
+    validation.repositoryId,
     validation.repo,
+    validation.repositoryName,
     repositoryName,
-    validation.mrId,
-    validation.mrTitle,
+    validation.mergeRequestId,
+    validation.mergeRequestTitle,
     validation.branch,
-    validation.author,
+    validation.sourceBranch,
+    validation.targetBranch,
+    validation.ownerName,
     validation.toolType,
   ]
     .filter(Boolean)
@@ -97,11 +102,11 @@ function getSummary(validations) {
   return validations.reduce(
     (summary, validation) => {
       summary.total += 1
-      if (validation.vstatus === 'failed') summary.failed += 1
-      if (validation.policy === 'blocked') summary.blockedMrs += 1
-      if (validation.vstatus === 'warning') summary.warning += 1
-      if (validation.vstatus === 'pass' || validation.vstatus === 'passed') summary.passed += 1
-      summary.criticalIssues += validation.severity?.critical ?? 0
+      if (validation.status === 'failed') summary.failed += 1
+      if (validation.status === 'blocked' || validation.policyDecision === 'blocked') summary.blockedMrs += 1
+      if (validation.status === 'warning') summary.warning += 1
+      if (validation.status === 'passed') summary.passed += 1
+      summary.criticalIssues += validation.severityCounts?.critical ?? validation.severity?.critical ?? 0
       return summary
     },
     {
@@ -123,7 +128,7 @@ export default function RepositorySecurity() {
   const repositories = useMemo(() => getRepositories(), [])
   const validations = useMemo(() => {
     const accessibleRepositoryIds = new Set(repositories.map((repository) => repository.id))
-    return getSecurityValidations().filter((validation) => accessibleRepositoryIds.has(validation.repo))
+    return getSecurityValidations().filter((validation) => accessibleRepositoryIds.has(validation.repositoryId))
   }, [repositories])
   const [activeTool, setActiveTool] = useState('all')
   const [selectedRepositoryId, setSelectedRepositoryId] = useState(repositoryId)
@@ -150,7 +155,7 @@ export default function RepositorySecurity() {
       const statusKey = getStatusKey(validation)
       const toolType = validation.toolType ?? 'sast'
 
-      if (selectedRepositoryId && validation.repo !== selectedRepositoryId) return false
+      if (selectedRepositoryId && validation.repositoryId !== selectedRepositoryId) return false
       if (activeTool !== 'all' && toolType !== activeTool) return false
       if (selectedTool && toolType !== selectedTool) return false
       if (selectedStatus && statusKey !== selectedStatus) return false
@@ -177,7 +182,7 @@ export default function RepositorySecurity() {
 
   const ownerOptions = [
     { value: 'all', label: '전체 담당자' },
-    ...uniqueOptions(validations.map((validation) => validation.author)),
+    ...uniqueOptions(validations.map((validation) => validation.ownerName)),
   ]
 
   const toolOptions = [
@@ -206,22 +211,18 @@ export default function RepositorySecurity() {
       render: (id) => <Link to={`/security/${id}`}>{id}</Link>,
     },
     {
-      title: '저장소',
-      dataIndex: 'repo',
-      width: 180,
-      render: (repo) => <Link to={`/repositories/${repo}`}>{repositoryMap.get(repo)?.name ?? repo}</Link>,
-    },
-    {
       title: 'Merge Request',
-      dataIndex: 'mrId',
+      dataIndex: 'mergeRequestId',
       minWidth: 280,
       render: (mrId, record) => {
-        const { sourceBranch, targetBranch } = getBranchParts(record.branch)
+        const { sourceBranch, targetBranch } = record.sourceBranch || record.targetBranch
+          ? record
+          : getBranchParts(record.branch)
 
         return (
           <Flex vertical gap={4}>
-            <Link to={`/repositories/${record.repo}/merge-requests/${mrId}`}>
-              #{mrId} · {record.mrTitle}
+            <Link to={`/repositories/${record.repositoryId}/merge-requests/${mrId}`}>
+              #{record.mergeRequestNumber ?? mrId} · {record.mergeRequestTitle}
             </Link>
             <Space size={4} wrap>
               {sourceBranch ? <Tag>{sourceBranch}</Tag> : null}
@@ -244,7 +245,7 @@ export default function RepositorySecurity() {
     },
     {
       title: '정책 판정',
-      dataIndex: 'policy',
+      dataIndex: 'policyDecision',
       width: 150,
       render: (policy) => POLICY_LABELS[policy] ?? '조건부 배포 가능',
     },
@@ -256,7 +257,7 @@ export default function RepositorySecurity() {
         <Space size={[4, 4]} wrap>
           {SEVERITY_LABELS.map(({ key, label, color }) => (
             <Tag key={key} color={color}>
-              {label} {record.severity?.[key] ?? 0}
+              {label} {record.severityCounts?.[key] ?? record.severity?.[key] ?? 0}
             </Tag>
           ))}
           <Tag>매우 낮음 0</Tag>
@@ -265,12 +266,12 @@ export default function RepositorySecurity() {
     },
     {
       title: '담당자',
-      dataIndex: 'author',
+      dataIndex: 'ownerName',
       width: 120,
     },
     {
       title: '최근 점검',
-      dataIndex: 'lastCheckedAt',
+      dataIndex: 'checkedAt',
       width: 120,
     },
   ]
