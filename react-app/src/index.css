@@ -362,6 +362,11 @@ body {
   background: var(--gitddn-content-bg);
 }
 
+.page-content--form {
+  padding-left: 310px;
+  padding-right: 310px;
+}
+
 .page-header {
   margin-bottom: 18px;
 }
@@ -704,6 +709,27 @@ body {
 
   .page-content {
     padding: 24px;
+  }
+}
+
+@media (max-width: 1439px) {
+  .page-content--form {
+    padding-left: 160px;
+    padding-right: 160px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .page-content--form {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+}
+
+@media (max-width: 767px) {
+  .page-content--form {
+    padding-left: 24px;
+    padding-right: 24px;
   }
 }
 /* === RepositoryList 추가 스타일 === */
