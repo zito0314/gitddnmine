@@ -127,6 +127,7 @@ body {
 
 /* 펼침 상태: 로고 + 접기 버튼 행 */
 .sidebar-logo-expanded {
+  flex: 1;
   gap: 8px;
 }
 
