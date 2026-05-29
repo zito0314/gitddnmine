@@ -10,6 +10,7 @@ import {
   FileOutlined,
   FolderOutlined,
   GitCommitOutlined,
+  InfoCircleOutlined,
   LinkOutlined,
   PlusOutlined,
   ReloadOutlined,
@@ -48,6 +49,7 @@ import {
   getRepositoryTags,
 } from '../api/repositories'
 import { getDeploymentTransfersByRepositoryId } from '../api/deploymentTransfers'
+import { useAuth } from '../auth/AuthContext'
 import { StatusTag } from '../components/common'
 import RepositoryAvatar from '../components/repository/RepositoryAvatar'
 import { UI_TEXT } from '../constants'
@@ -72,6 +74,7 @@ function getTransferStatusMeta(transfer) {
 export default function RepositoryFiles() {
   const { repositoryId } = useParams()
   const navigate = useNavigate()
+  const auth = useAuth()
   const repository = getRepositoryDetail(repositoryId)
   const files = useMemo(() => getRepositoryFiles(repositoryId), [repositoryId])
   const branches = useMemo(() => getRepositoryBranches(repositoryId), [repositoryId])
@@ -114,6 +117,25 @@ export default function RepositoryFiles() {
     { title: 'Visual Studio Code', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
     { title: 'IntelliJ IDEA', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
   ]
+  const latestPushNotice = repository.latestPushNotice
+  const canCreateMrFromPush = auth.hasPermission('mr:create') && latestPushNotice?.hasOpenMergeRequest === false
+
+  const openMergeRequestCreate = () => {
+    const sourceBranch = latestPushNotice.sourceBranch ?? latestPushNotice.branchName ?? branch
+    const targetBranch = latestPushNotice.targetBranch ?? repository.defaultBranch ?? 'develop'
+    const params = new URLSearchParams({
+      sourceBranch,
+      targetBranch,
+    })
+
+    navigate(`/repositories/${repositoryId}/merge-requests/new?${params.toString()}`, {
+      state: {
+        repositoryId,
+        sourceBranch,
+        targetBranch,
+      },
+    })
+  }
 
   const columns = [
     {
@@ -231,6 +253,25 @@ export default function RepositoryFiles() {
                 </Dropdown>
               </Space>
             </Flex>
+
+            {latestPushNotice ? (
+              <Flex className="repository-push-notice" align="center" justify="space-between" gap={12} wrap="wrap">
+                <Flex align="center" gap={8} className="repository-push-notice-content">
+                  <InfoCircleOutlined className="repository-push-notice-icon" />
+                  <Text className="repository-push-notice-text">
+                    <Text strong ellipsis className="repository-push-notice-branch">
+                      {latestPushNotice.branchName}
+                    </Text>
+                    {' '}Branch에서 {latestPushNotice.pushedAt} 새로운 Push가 있었습니다.
+                  </Text>
+                </Flex>
+                {canCreateMrFromPush ? (
+                  <Button type="primary" onClick={openMergeRequestCreate}>
+                    MR 생성하기
+                  </Button>
+                ) : null}
+              </Flex>
+            ) : null}
 
             <Card className="repository-latest-commit">
               <Flex align="center" justify="space-between" gap={16} wrap="wrap">

@@ -50,6 +50,7 @@ import goBackOutlinedSvg from './svg/GoBackOutlined.svg?raw'
 import goForwardOutlinedSvg from './svg/GoForwardOutlined.svg?raw'
 import historyOutlinedSvg from './svg/HistoryOutlined.svg?raw'
 import homeOutlinedSvg from './svg/HomeOutlined.svg?raw'
+import infoCircleOutlinedSvg from './svg/InfoCircleOutlined.svg?raw'
 import issueOutlinedSvg from './svg/IssueOutlined.svg?raw'
 import layoutOutlinedSvg from './svg/LayoutOutlined.svg?raw'
 import linkOutlinedSvg from './svg/LinkOutlined.svg?raw'
@@ -156,6 +157,7 @@ export const GoBackOutlined = createIcon(goBackOutlinedSvg)
 export const GoForwardOutlined = createIcon(goForwardOutlinedSvg)
 export const HistoryOutlined = createIcon(historyOutlinedSvg)
 export const HomeOutlined = createIcon(homeOutlinedSvg)
+export const InfoCircleOutlined = createIcon(infoCircleOutlinedSvg)
 export const IssueOutlined = createIcon(issueOutlinedSvg)
 export const LayoutOutlined = createIcon(layoutOutlinedSvg)
 export const LinkOutlined = createIcon(linkOutlinedSvg)

@@ -1560,6 +1560,13 @@ const mockData = {
       "role": "Maintainer",
       "visibility": "Private",
       "defaultBranch": "main",
+      "latestPushNotice": {
+        "branchName": "feature/role-based-repository-list",
+        "pushedAt": "17분 전",
+        "hasOpenMergeRequest": false,
+        "sourceBranch": "feature/role-based-repository-list",
+        "targetBranch": "develop"
+      },
       "openMrCount": 5,
       "pipelineStatus": "failed",
       "securityStatus": "blocked",

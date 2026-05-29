@@ -1198,6 +1198,34 @@ body {
   border-radius: 6px;
 }
 
+.repository-push-notice {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--gitddn-border-color);
+  border-radius: 8px;
+  background: var(--gitddn-bg-elevated);
+}
+
+.repository-push-notice-content {
+  min-width: 0;
+  flex: 1 1 280px;
+}
+
+.repository-push-notice-icon {
+  flex: 0 0 auto;
+  color: var(--gitddn-primary);
+}
+
+.repository-push-notice-text {
+  min-width: 0;
+}
+
+.repository-push-notice-branch {
+  display: inline-block;
+  max-width: 360px;
+  vertical-align: bottom;
+}
+
 .mr-detail-hero h2.ant-typography {
   margin: 4px 0 8px;
 }
