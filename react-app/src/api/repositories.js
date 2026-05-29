@@ -334,19 +334,103 @@ export function getRepositoryFiles(repositoryId) {
   ]
 }
 
-export function getRepositoryFileTree(repositoryId) {
-  const files = getRepositoryFiles(repositoryId)
+const FALLBACK_CODE_LINES = [
+  'export default function module() {',
+  "  return 'gitddn'",
+  '}',
+]
 
-  return [
-    {
-      title: 'src',
-      key: 'src',
-      children: files
-        .filter((file) => file.path.startsWith('src/') && file.path !== 'src/api')
-        .map((file) => ({ title: file.name, key: file.path })),
-    },
-    ...files.filter((file) => !file.path.startsWith('src')).map((file) => ({ title: file.name, key: file.path })),
-  ]
+function getRepositoryFileSystem(repositoryId) {
+  const fileSystem = getMockSlice((data) => data.fileSystem, {})
+  const entry = fileSystem?.[repositoryId]
+  if (entry?.files?.length) return entry
+
+  const fallbackFiles = getRepositoryFiles(repositoryId)
+    .filter((file) => file.type === 'File')
+    .map((file) => ({
+      path: file.path,
+      name: file.name,
+      type: 'file',
+      commitMessage: `Update: ${file.name}`,
+      author: 'System',
+      updatedAt: file.updatedAt ?? '-',
+      status: 'passed',
+      version: '1.0',
+      commitSha: file.lastCommit ?? '91a42df0',
+      codeLines: FALLBACK_CODE_LINES,
+    }))
+
+  return { branches: null, defaultBranch: null, files: fallbackFiles }
+}
+
+export function getRepositoryFileBranches(repositoryId) {
+  const entry = getMockSlice((data) => data.fileSystem, {})?.[repositoryId]
+  if (entry?.branches?.length) return entry.branches
+  return getRepositoryBranches(repositoryId).map((branch) => branch.name)
+}
+
+function buildPathTree(files) {
+  const root = []
+  const nodeMap = new Map()
+
+  files.forEach((file) => {
+    const parts = file.path.split('/')
+    let prefix = ''
+    let siblings = root
+    parts.forEach((part, index) => {
+      prefix = prefix ? `${prefix}/${part}` : part
+      const isLeaf = index === parts.length - 1
+      if (!nodeMap.has(prefix)) {
+        const node = {
+          title: part,
+          key: prefix,
+          path: prefix,
+          isLeaf,
+          type: isLeaf ? 'file' : 'folder',
+          children: isLeaf ? undefined : [],
+        }
+        nodeMap.set(prefix, node)
+        siblings.push(node)
+      }
+      const node = nodeMap.get(prefix)
+      if (!isLeaf) siblings = node.children
+    })
+  })
+
+  return root
+}
+
+export function getRepositoryFileTree(repositoryId, branch) {
+  const entry = getRepositoryFileSystem(repositoryId)
+  const branches = getRepositoryFileBranches(repositoryId)
+  const activeBranch = branch && branches.includes(branch) ? branch : entry.defaultBranch ?? branches[0] ?? 'main'
+  return buildPathTree(entry.files).map((node) => ({ ...node, branch: activeBranch }))
+}
+
+export function getRepositoryFileDetail(repositoryId, filePath, branch) {
+  if (!filePath) return null
+  const entry = getRepositoryFileSystem(repositoryId)
+  const file = entry.files.find((item) => item.path === filePath)
+  if (!file) return null
+
+  const branches = getRepositoryFileBranches(repositoryId)
+  const activeBranch = branch && branches.includes(branch) ? branch : entry.defaultBranch ?? branches[0] ?? 'main'
+
+  return {
+    ...file,
+    repositoryId,
+    branch: activeBranch,
+    filePath: file.path,
+    fileName: file.name,
+    pathSegments: file.path.split('/'),
+  }
+}
+
+export function searchRepositoryFiles(repositoryId, branch, keyword) {
+  const entry = getRepositoryFileSystem(repositoryId)
+  const query = (keyword ?? '').trim().toLowerCase()
+  if (!query) return entry.files
+  return entry.files.filter((file) => `${file.path} ${file.name}`.toLowerCase().includes(query))
 }
 
 export function getRepositoryBranches(repositoryId) {

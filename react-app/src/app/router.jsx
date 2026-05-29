@@ -10,6 +10,7 @@ import AccessDenied from '../pages/AccessDenied'
 import RepositoryList from '../pages/RepositoryList'
 import RepositoryCreate from '../pages/RepositoryCreate'
 import RepositoryFiles from '../pages/RepositoryFiles'
+import RepositoryFileDetail from '../pages/RepositoryFileDetail'
 import RepositoryMergeRequests from '../pages/RepositoryMergeRequests'
 import RepositoryPipelines from '../pages/RepositoryPipelines'
 import RepositoryCommits from '../pages/RepositoryCommits'
@@ -82,6 +83,7 @@ export const routes = [
         children: [
           { index: true, element: <Navigate to="files" replace /> },
           { path: 'files', element: <RepositoryFiles /> },
+          { path: 'files/:filePath', element: <RepositoryFileDetail /> },
           { path: 'merge-requests', element: <RepositoryMergeRequests /> },
           { path: 'merge-requests/new', element: <MergeRequestCreate /> },
           { path: 'merge-requests/:mrId', element: <MergeRequestDetail /> },

@@ -302,6 +302,16 @@ export default function RepositoryFiles() {
               columns={columns}
               dataSource={files}
               pagination={false}
+              rowClassName={(record) => (record.type === 'File' ? 'repository-files-row-clickable' : '')}
+              onRow={(record) => ({
+                onClick: () => {
+                  if (record.type === 'File') {
+                    navigate(`/repositories/${repositoryId}/files/${encodeURIComponent(record.path)}`)
+                  } else {
+                    message.info('폴더 내 파일을 선택해 주세요.')
+                  }
+                },
+              })}
             />
 
             <Card className="repository-readme-card" title="README.md">

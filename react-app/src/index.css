@@ -2391,3 +2391,113 @@ body {
 .tag-commit-meta { min-width: 0; }
 
 .tag-actions { flex-shrink: 0; }
+
+/* Repository file detail */
+.repository-files-row-clickable {
+  cursor: pointer;
+}
+
+.file-detail-layout {
+  align-items: stretch;
+}
+
+.file-detail-sidebar {
+  flex: 0 0 300px;
+  width: 300px;
+  max-width: 100%;
+}
+
+.file-detail-sidebar-inner {
+  position: sticky;
+  top: 16px;
+  padding: 16px;
+  background: var(--gitddn-surface);
+  border: 1px solid var(--gitddn-line);
+  border-radius: var(--gitddn-radius);
+}
+
+.file-detail-branch-select {
+  width: 100%;
+}
+
+.file-detail-tree {
+  max-height: 540px;
+  overflow: auto;
+}
+
+.file-detail-content {
+  flex: 1 1 480px;
+  min-width: 0;
+}
+
+.file-detail-content-stack {
+  width: 100%;
+}
+
+.file-detail-crumb {
+  cursor: pointer;
+  color: var(--gitddn-primary);
+}
+
+.file-detail-crumb:hover {
+  text-decoration: underline;
+}
+
+.file-detail-meta-line {
+  row-gap: 2px;
+}
+
+.file-detail-code-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--gitddn-line);
+}
+
+.file-detail-code-body {
+  max-height: 620px;
+  overflow: auto;
+  padding: 8px 0;
+}
+
+.file-detail-code-line {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+}
+
+.file-detail-line-number,
+.file-detail-line-text {
+  padding: 2px 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.file-detail-line-number {
+  color: var(--gitddn-text-secondary);
+  text-align: right;
+  user-select: none;
+  border-right: 1px solid var(--gitddn-line);
+}
+
+.file-detail-line-text {
+  white-space: pre;
+  overflow-x: visible;
+}
+
+.file-detail-code-line:hover {
+  background: var(--ant-color-bg-text-hover, rgba(0, 0, 0, 0.04));
+}
+
+@media (max-width: 992px) {
+  .file-detail-sidebar {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .file-detail-sidebar-inner {
+    position: static;
+  }
+
+  .file-detail-tree {
+    max-height: 320px;
+  }
+}
