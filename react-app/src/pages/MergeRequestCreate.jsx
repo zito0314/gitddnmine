@@ -247,9 +247,10 @@ export default function MergeRequestCreate() {
               <Card size="small">
                 <Row align="middle" gutter={[16, 16]}>
                   <Col flex="auto">
-                    <Text strong>Jira 업무 불러오기</Text>
-                    <br />
-                    <Text type="secondary">연결 가능한 Ticket을 조회한 뒤 MR 설명과 검토 항목에 반영할게요.</Text>
+                    <Flex vertical gap={2}>
+                      <Text strong>Jira 업무 불러오기</Text>
+                      <Text type="secondary">연결 가능한 Ticket을 조회한 뒤 MR 설명과 검토 항목에 반영할게요.</Text>
+                    </Flex>
                   </Col>
                   <Col>
                     <Button>Jira 불러오기</Button>
@@ -345,9 +346,10 @@ function CommitCard({ commit, onCopy }) {
       <Row align="middle" gutter={12} wrap={false}>
         <Col><Avatar>{commit.author?.slice(0, 1) ?? 'C'}</Avatar></Col>
         <Col flex="auto">
-          <Text strong>{commit.message}</Text>
-          <br />
-          <Text type="secondary">작성자: {commit.author} · {commit.timeText}</Text>
+          <Flex vertical gap={2}>
+            <Text strong>{commit.message}</Text>
+            <Text type="secondary">작성자: {commit.author} · {commit.timeText}</Text>
+          </Flex>
         </Col>
         <Col>
           <Button icon={<CopyOutlined />} onClick={() => onCopy(commit.sha)}>
@@ -381,9 +383,10 @@ function OptionCheckbox({ name, title, description }) {
       <Card size="small">
         <Row align="middle" gutter={12} wrap={false}>
           <Col flex="auto">
-            <Text strong>{title}</Text>
-            <br />
-            <Text type="secondary">{description}</Text>
+            <Flex vertical gap={2}>
+              <Text strong>{title}</Text>
+              <Text type="secondary">{description}</Text>
+            </Flex>
           </Col>
           <Col>
             <Form.Item name={name} valuePropName="checked" noStyle>

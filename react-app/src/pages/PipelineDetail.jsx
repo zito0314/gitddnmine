@@ -217,11 +217,11 @@ function PipelineDetail() {
         <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
           <Space align="start">
             <Button icon={<GoBackOutlined />} onClick={() => navigate(-1)} />
-            <div>
+            <Flex vertical>
               <Text type="secondary">Pipeline #{pipeline.id}</Text>
               <Title level={2}>{pipeline.title}</Title>
               <Paragraph type="secondary">{pipeline.description}</Paragraph>
-            </div>
+            </Flex>
           </Space>
           <Button
             type={normalizedStatus === 'running' ? 'default' : 'primary'}
@@ -233,26 +233,26 @@ function PipelineDetail() {
           </Button>
         </Flex>
 
-        <Space wrap>
-          <Tag color={statusMeta.tagColor} icon={statusMeta.icon}>{statusMeta.label}</Tag>
-          <Text>{pipeline.author}</Text>
-          <Text type="secondary">·</Text>
-          <Text>{pipeline.createdAtText ?? `${pipeline.updatedAt} 생성`}</Text>
-          <Text type="secondary">·</Text>
-          <Text>{pipeline.updatedAtText ?? `${pipeline.updatedAt} 마지막 업데이트`}</Text>
-        </Space>
-        <br />
-        <Space wrap style={{ marginTop: 12 }}>
-          <Tag color="success">Latest</Tag>
-          <Tag>Branch</Tag>
-          <Tag>{pipeline.commit}</Tag>
-          <Tag>{pipeline.branch}</Tag>
-        </Space>
-        <br />
-        <Space wrap style={{ marginTop: 12 }}>
-          <Text>총 실행 시간 {totalDuration}</Text>
-          <Text type="secondary">·</Text>
-          <Text>실제 실행 시간 {actualDuration}</Text>
+        <Space orientation="vertical" size={12}>
+          <Space wrap>
+            <Tag color={statusMeta.tagColor} icon={statusMeta.icon}>{statusMeta.label}</Tag>
+            <Text>{pipeline.author}</Text>
+            <Text type="secondary">·</Text>
+            <Text>{pipeline.createdAtText ?? `${pipeline.updatedAt} 생성`}</Text>
+            <Text type="secondary">·</Text>
+            <Text>{pipeline.updatedAtText ?? `${pipeline.updatedAt} 마지막 업데이트`}</Text>
+          </Space>
+          <Space wrap>
+            <Tag color="success">Latest</Tag>
+            <Tag>Branch</Tag>
+            <Tag>{pipeline.commit}</Tag>
+            <Tag>{pipeline.branch}</Tag>
+          </Space>
+          <Space wrap>
+            <Text>총 실행 시간 {totalDuration}</Text>
+            <Text type="secondary">·</Text>
+            <Text>실제 실행 시간 {actualDuration}</Text>
+          </Space>
         </Space>
       </Card>
 

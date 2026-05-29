@@ -68,11 +68,10 @@ export default function RepositoryCreate() {
         status="success"
         title="저장소 생성 요청되었습니다."
         subTitle={(
-          <>
-            요청은 관리자 검토 후에 승인 상태로 변경됩니다.
-            <br />
-            승인 완료 시 저장소 목록에서 상세화면으로 진입할 수 있습니다.
-          </>
+          <Space orientation="vertical" size={2}>
+            <Typography.Text>요청은 관리자 검토 후에 승인 상태로 변경됩니다.</Typography.Text>
+            <Typography.Text>승인 완료 시 저장소 목록에서 상세화면으로 진입할 수 있습니다.</Typography.Text>
+          </Space>
         )}
         extra={(
           <Button type="primary" onClick={() => navigate('/repositories')}>
