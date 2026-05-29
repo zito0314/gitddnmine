@@ -1858,6 +1858,122 @@ body {
   color: #faad14;
 }
 
+.mr-dashboard-content {
+  width: 100%;
+}
+
+.mr-dashboard-content .ant-tabs-nav {
+  margin-bottom: 0;
+}
+
+.mr-dashboard-tab-count .ant-badge-count {
+  min-width: 26px;
+  height: 24px;
+  padding-inline: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gitddn-primary) 12%, var(--gitddn-card-bg));
+  color: var(--gitddn-text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 24px;
+  box-shadow: none;
+}
+
+.mr-dashboard-period-select {
+  width: 140px;
+}
+
+.mr-filter-bar {
+  margin-bottom: 0;
+}
+
+.mr-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 16px;
+}
+
+.mr-dashboard-card.ant-card {
+  min-width: 0;
+  border-radius: 8px;
+}
+
+.mr-dashboard-card .ant-card-body {
+  padding: 28px 32px 24px;
+}
+
+.mr-dashboard-card-content {
+  width: 100%;
+}
+
+.mr-dashboard-card-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.mr-dashboard-card-repository.ant-typography {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.mr-dashboard-card-title.ant-typography {
+  margin: 0;
+}
+
+.mr-dashboard-card-status.ant-tag {
+  margin-inline-end: 0;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.mr-dashboard-branch-line {
+  min-width: 0;
+}
+
+.mr-dashboard-branch-tag.ant-tag {
+  min-width: 0;
+  max-width: 45%;
+  margin-inline-end: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--gitddn-primary) 10%, var(--gitddn-card-bg));
+  color: var(--gitddn-primary);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mr-dashboard-branch-arrow.ant-typography {
+  flex: 0 0 auto;
+  color: var(--gitddn-text-primary);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.mr-dashboard-card-meta {
+  min-width: 0;
+}
+
+.mr-dashboard-card-meta .ant-tag {
+  margin-inline-end: 0;
+}
+
+@media (max-width: 767px) {
+  .mr-dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mr-dashboard-card .ant-card-body {
+    padding: 22px 20px;
+  }
+
+  .mr-dashboard-content .ant-tabs-extra-content {
+    margin-top: 12px;
+  }
+}
+
 /* Branch List Page */
 .branch-list-page {}
 
