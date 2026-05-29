@@ -26,7 +26,6 @@ import {
   Flex,
   Input,
   Layout,
-  List,
   Modal,
   Segmented,
   Space,
@@ -448,32 +447,30 @@ function TopHeader({ collapsed, onToggleSidebar }) {
         size="default"
         extra={<Button size="small" onClick={markAllNotificationsRead}>{UI_TEXT.notifications.markAllRead}</Button>}
       >
-        <List
-          dataSource={notifications}
-          locale={{ emptyText: UI_TEXT.notifications.empty }}
-          renderItem={(notification) => {
+        {notifications.length > 0
+          ? notifications.map((notification) => {
             const read = readNotificationIds.includes(notification.id)
             return (
-              <List.Item onClick={() => openNotification(notification)} className="notification-item">
-                <List.Item.Meta
-                  title={
-                    <Flex align="center" gap={8} wrap="wrap">
-                      <Text strong={!read}>{notification.title}</Text>
-                      <StatusTag status={notification.severity} />
-                      {!read ? <Badge status="processing" /> : null}
-                    </Flex>
-                  }
-                  description={
-                    <Space orientation="vertical" size={4}>
-                      <Text type="secondary">{notification.message}</Text>
-                      <Text type="secondary">{notification.createdAt}</Text>
-                    </Space>
-                  }
-                />
-              </List.Item>
+              <Flex
+                key={notification.id}
+                vertical
+                gap={4}
+                className="notification-item"
+                onClick={() => openNotification(notification)}
+              >
+                <Flex align="center" gap={8} wrap="wrap">
+                  <Text strong={!read}>{notification.title}</Text>
+                  <StatusTag status={notification.severity} />
+                  {!read ? <Badge status="processing" /> : null}
+                </Flex>
+                <Space orientation="vertical" size={4}>
+                  <Text type="secondary">{notification.message}</Text>
+                  <Text type="secondary">{notification.createdAt}</Text>
+                </Space>
+              </Flex>
             )
-          }}
-        />
+          })
+          : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.notifications.empty} />}
       </Drawer>
 
       <Modal

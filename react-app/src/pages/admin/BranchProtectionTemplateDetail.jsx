@@ -1,4 +1,4 @@
-import { Button, Card, Col, Descriptions, List, Row, Space, Tag, Typography } from 'antd'
+import { Button, Card, Col, Descriptions, Flex, Row, Space, Tag, Typography } from 'antd'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   getBranchProtectionPolicyHistories,
@@ -48,7 +48,14 @@ export default function BranchProtectionTemplateDetail() {
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={10}>
           <Card title="Policy Summary">
-            <List dataSource={template.summary} renderItem={(item) => <List.Item>{item}</List.Item>} />
+            <Space direction="vertical" size={4} style={{ width: '100%' }}>
+              {template.summary.map((item) => (
+                <Flex key={item} align="center" gap={8} className="policy-summary-item">
+                  <Text>•</Text>
+                  <Text>{item}</Text>
+                </Flex>
+              ))}
+            </Space>
           </Card>
         </Col>
         <Col xs={24} lg={14}>
@@ -71,12 +78,26 @@ export default function BranchProtectionTemplateDetail() {
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={12}>
           <Card title="Applied Repositories Preview">
-            <List dataSource={repositories} renderItem={(repository) => <List.Item><Link to={`/repositories/${repository.id}`}>{repository.name}</Link><Text type="secondary">{repository.group}</Text></List.Item>} />
+            <Space direction="vertical" size={0} style={{ width: '100%' }}>
+              {repositories.map((repository) => (
+                <Flex key={repository.id} align="center" justify="space-between" gap={8} className="template-repo-item">
+                  <Link to={`/repositories/${repository.id}`}>{repository.name}</Link>
+                  <Text type="secondary">{repository.group}</Text>
+                </Flex>
+              ))}
+            </Space>
           </Card>
         </Col>
         <Col xs={24} lg={12}>
           <Card title="Recent Policy History">
-            <List dataSource={histories} renderItem={(history) => <List.Item><List.Item.Meta title={history.message} description={`${history.actor} · ${history.createdAt}`} /></List.Item>} />
+            <Space direction="vertical" size={8} style={{ width: '100%' }}>
+              {histories.map((history, index) => (
+                <Space key={index} direction="vertical" size={2}>
+                  <Text strong>{history.message}</Text>
+                  <Text type="secondary">{history.actor} · {history.createdAt}</Text>
+                </Space>
+              ))}
+            </Space>
           </Card>
         </Col>
       </Row>

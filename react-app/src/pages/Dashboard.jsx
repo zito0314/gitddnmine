@@ -1,5 +1,5 @@
 import { StarFilled } from '../components/icons'
-import { Button, Col, Flex, List, Row, Tabs, Typography } from 'antd'
+import { Button, Col, Empty, Flex, Row, Space, Tabs, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -98,39 +98,36 @@ function Dashboard() {
                 onChange={setNextUpTab}
                 items={nextUpTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
               />
-              <List
-                dataSource={filteredNextUp.slice(0, 3)}
-                locale={{ emptyText: UI_TEXT.messages.empty.table }}
-                renderItem={(item) => (
-                  <List.Item
+              {filteredNextUp.slice(0, 3).length > 0
+                ? filteredNextUp.slice(0, 3).map((item) => (
+                  <Flex
+                    key={item.id ?? item.title}
+                    align="center"
+                    justify="space-between"
+                    gap={16}
                     className="dashboard-next-item"
                     onClick={() => navigate(item.href)}
-                    actions={[
-                      <Button
-                        key="action"
-                        type={item.type === 'Merge Request' ? 'primary' : 'default'}
-                        size="small"
-                        onClick={(event) => {
-                          event.stopPropagation()
-                          navigate(item.href)
-                        }}
-                      >
-                        {getActionLabel(item)}
-                      </Button>,
-                    ]}
                   >
-                    <List.Item.Meta
-                      title={
-                        <Flex align="center" gap={8} wrap="wrap">
-                          <Text strong>{item.title}</Text>
-                          <StatusTag status={item.status} />
-                        </Flex>
-                      }
-                      description={`${item.target} · ${item.updatedAt}`}
-                    />
-                  </List.Item>
-                )}
-              />
+                    <Space direction="vertical" size={2}>
+                      <Flex align="center" gap={8} wrap="wrap" className="dashboard-next-title">
+                        <Text strong>{item.title}</Text>
+                        <StatusTag status={item.status} />
+                      </Flex>
+                      <Text type="secondary">{item.target} · {item.updatedAt}</Text>
+                    </Space>
+                    <Button
+                      type={item.type === 'Merge Request' ? 'primary' : 'default'}
+                      size="small"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        navigate(item.href)
+                      }}
+                    >
+                      {getActionLabel(item)}
+                    </Button>
+                  </Flex>
+                ))
+                : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.messages.empty.table} />}
             </CardAdvance>
 
             <CardAdvance
@@ -143,20 +140,25 @@ function Dashboard() {
                 onChange={setActivityTab}
                 items={activityTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
               />
-              <List
-                className="dashboard-activity-list"
-                dataSource={filteredActivities.slice(0, 4)}
-                locale={{ emptyText: UI_TEXT.messages.empty.table }}
-                renderItem={(activity) => (
-                  <List.Item className="dashboard-activity-item" onClick={() => navigate(activity.href)}>
-                    <List.Item.Meta
-                      avatar={<BadgeDot />}
-                      title={<Text>{activity.actor}님이 <Link to={activity.href}>{activity.message}</Link></Text>}
-                      description={`${activity.repositoryName} · ${activity.createdAt}`}
-                    />
-                  </List.Item>
-                )}
-              />
+              <Space direction="vertical" size={0} className="dashboard-activity-list" style={{ width: '100%' }}>
+                {filteredActivities.slice(0, 4).length > 0
+                  ? filteredActivities.slice(0, 4).map((activity) => (
+                    <Flex
+                      key={activity.id ?? activity.message}
+                      align="flex-start"
+                      gap={12}
+                      className="dashboard-activity-item"
+                      onClick={() => navigate(activity.href)}
+                    >
+                      <BadgeDot />
+                      <Space direction="vertical" size={2}>
+                        <Text>{activity.actor}님이 <Link to={activity.href}>{activity.message}</Link></Text>
+                        <Text type="secondary">{activity.repositoryName} · {activity.createdAt}</Text>
+                      </Space>
+                    </Flex>
+                  ))
+                  : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.messages.empty.table} />}
+              </Space>
             </CardAdvance>
           </Flex>
         </Col>
@@ -173,22 +175,24 @@ function Dashboard() {
                 { key: 'starred', label: 'Starred Repository' },
               ]}
             />
-            <List
-              dataSource={quickAccessRepositories.slice(0, 7)}
-              locale={{ emptyText: UI_TEXT.messages.empty.table }}
-              renderItem={(repository) => (
-                <List.Item
+            {quickAccessRepositories.slice(0, 7).length > 0
+              ? quickAccessRepositories.slice(0, 7).map((repository) => (
+                <Flex
+                  key={repository.id}
+                  align="center"
+                  justify="space-between"
+                  gap={8}
                   className="dashboard-quick-item"
                   onClick={() => navigate(`/repositories/${repository.id}`)}
-                  actions={[<StarFilled key="star" className="dashboard-quick-star" />]}
                 >
-                  <List.Item.Meta
-                    avatar={<RepositoryAvatar repository={repository} size={24} className="dashboard-repo-avatar" />}
-                    title={<Link to={`/repositories/${repository.id}`}>{repository.name}</Link>}
-                  />
-                </List.Item>
-              )}
-            />
+                  <Flex align="center" gap={8}>
+                    <RepositoryAvatar repository={repository} size={24} className="dashboard-repo-avatar" />
+                    <Link to={`/repositories/${repository.id}`}>{repository.name}</Link>
+                  </Flex>
+                  <StarFilled className="dashboard-quick-star" />
+                </Flex>
+              ))
+              : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.messages.empty.table} />}
           </CardAdvance>
         </Col>
       </Row>

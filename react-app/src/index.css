@@ -349,7 +349,7 @@ body {
 .notification-item {
   cursor: pointer;
   border-radius: 8px;
-  padding-inline: 8px !important;
+  padding: 8px;
 }
 
 .global-search-result:hover,
@@ -970,19 +970,24 @@ body {
   padding: 8px 0;
 }
 
-.dashboard-next-item.ant-list-item {
+.dashboard-next-item {
   min-height: 78px;
-  padding: 16px 0 !important;
+  padding: 16px 0;
   cursor: pointer;
+  border-bottom: 1px solid var(--gitddn-border-color);
 }
 
-.dashboard-next-item.ant-list-item:hover,
-.dashboard-quick-item.ant-list-item:hover,
-.dashboard-activity-item.ant-list-item:hover {
+.dashboard-next-item:last-child {
+  border-bottom: none;
+}
+
+.dashboard-next-item:hover,
+.dashboard-quick-item:hover,
+.dashboard-activity-item:hover {
   background: color-mix(in srgb, var(--gitddn-primary) 5%, transparent);
 }
 
-.dashboard-next-item .ant-list-item-meta-title {
+.dashboard-next-title {
   margin-bottom: 4px;
 }
 
@@ -1001,20 +1006,12 @@ body {
   text-align: center;
 }
 
-.dashboard-quick-item.ant-list-item {
-  padding: 9px 0 !important;
+.dashboard-quick-item {
+  padding: 9px 0;
   cursor: pointer;
 }
 
-.dashboard-quick-item .ant-list-item-meta {
-  align-items: center;
-}
-
-.dashboard-quick-item .ant-list-item-meta-title {
-  margin: 0;
-}
-
-.dashboard-quick-item .ant-list-item-meta-title a {
+.dashboard-quick-item a {
   color: var(--gitddn-text-primary);
   font-weight: 700;
 }
@@ -1042,8 +1039,8 @@ body {
   content: '';
 }
 
-.dashboard-activity-item.ant-list-item {
-  padding: 12px 0 !important;
+.dashboard-activity-item {
+  padding: 12px 0;
   cursor: pointer;
 }
 
@@ -1075,6 +1072,37 @@ body {
 .repo-favorite-icon {
   color: #faad14;
   font-size: 18px;
+}
+
+.next-up-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gitddn-border-color);
+}
+
+.next-up-item:last-child {
+  border-bottom: none;
+}
+
+.gate-preview-item {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gitddn-border-color);
+}
+
+.gate-preview-item:last-child {
+  border-bottom: none;
+}
+
+.policy-summary-item {
+  padding: 4px 0;
+}
+
+.template-repo-item {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gitddn-border-color);
+}
+
+.template-repo-item:last-child {
+  border-bottom: none;
 }
 
 .next-up-icon {

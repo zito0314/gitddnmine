@@ -9,7 +9,6 @@ import {
   Flex,
   Form,
   Input,
-  List,
   message,
   Row,
   Select,
@@ -251,17 +250,12 @@ export default function DeploymentTransferCreate() {
         <Col xs={24} xl={9}>
           <Space direction="vertical" size={16} style={{ width: '100%' }}>
             <Card title={UI_TEXT.deploymentTransferCreate.gatePreview}>
-              <List
-                dataSource={preview.gates}
-                renderItem={(gate) => (
-                  <List.Item>
-                    <Flex align="center" justify="space-between" style={{ width: '100%' }} gap={12}>
-                      <Text>{gate.label}</Text>
-                      <StatusTag status={gate.status} />
-                    </Flex>
-                  </List.Item>
-                )}
-              />
+              {preview.gates.map((gate) => (
+                <Flex key={gate.label} align="center" justify="space-between" gap={12} className="gate-preview-item">
+                  <Text>{gate.label}</Text>
+                  <StatusTag status={gate.status} />
+                </Flex>
+              ))}
             </Card>
 
             <Card title={UI_TEXT.deploymentTransferCreate.summaryPreview}>
