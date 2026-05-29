@@ -2139,6 +2139,31 @@ body {
   max-width: 420px;
 }
 
+.repository-security-summary .summary-card {
+  flex: 1 1 160px;
+}
+
+.repository-security-card.ant-card .ant-card-body {
+  padding: 0;
+}
+
+.repository-security-card .ant-tabs-nav {
+  margin: 0;
+  padding: 0 16px;
+}
+
+.repository-security-card .ant-tabs-content-holder {
+  padding: 16px;
+}
+
+.repository-security-filter {
+  margin-bottom: 12px;
+}
+
+.repository-security-row {
+  cursor: pointer;
+}
+
 .mr-dashboard-content {
   width: 100%;
 }

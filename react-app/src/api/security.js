@@ -31,8 +31,10 @@ export function getVulnerabilitiesBySecurityId(securityId) {
   return getVulnerabilities().filter((vulnerability) => vulnerability.securityId === securityId)
 }
 
-export function getSecurityValidationSummary() {
-  const validations = getSecurityValidations()
+export function getSecurityValidationSummary(repositoryId) {
+  const validations = repositoryId
+    ? getSecurityValidationsByRepository(repositoryId)
+    : getSecurityValidations()
 
   return validations.reduce(
     (summary, validation) => {
