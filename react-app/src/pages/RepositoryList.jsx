@@ -214,7 +214,7 @@ export default function RepositoryList() {
           onClick: ({ key }) => setFilterGroup(key === 'all' ? null : key),
         }}
       >
-        <Button className="repository-catalog-filter-button">
+        <Button style={{ width: 140 }}>
           <Space>
             {filterGroup ?? '모든 그룹'}
             <DownOutlined />
@@ -228,7 +228,7 @@ export default function RepositoryList() {
           onClick: ({ key }) => setFilterLanguage(key === 'all' ? null : key),
         }}
       >
-        <Button className="repository-catalog-filter-button repository-catalog-language-button">
+        <Button style={{ width: 104 }}>
           <Space>
             {filterLanguage ?? '언어'}
             <DownOutlined />
@@ -300,7 +300,7 @@ export default function RepositoryList() {
         <Space orientation="vertical" size={4} className="repository-catalog-content">
           <Flex align="center" gap={8} wrap="wrap">
             <Text strong className="repository-catalog-title">{row.titleText}</Text>
-            <Tag color={meta.color} className="repository-status-tag">{meta.label}</Tag>
+            <Tag color={meta.color} style={{ marginInlineEnd: 0 }}>{meta.label}</Tag>
           </Flex>
           <Text type="secondary" className="repository-catalog-description">
             {descriptionItems.map((item, index) => (
@@ -335,12 +335,11 @@ export default function RepositoryList() {
           activeKey={activeStatus}
           items={tabItems}
           onChange={setActiveStatus}
-          className="repository-catalog-tabs"
         />
-        <Card size="small" variant="outlined" className="repository-catalog-filter-card">
+        <Card size="small" variant="outlined" styles={{ body: { padding: 12 } }}>
           {renderFilterBar()}
         </Card>
-        <Card variant="outlined" className="repository-catalog-list-card" styles={{ body: { padding: 0 } }}>
+        <Card variant="outlined" styles={{ body: { padding: 0 } }}>
           <div className="repository-catalog-list">
             {visibleCatalogRows.length > 0 ? visibleCatalogRows.map(renderCatalogRow) : (
               <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="저장소가 없습니다." />
