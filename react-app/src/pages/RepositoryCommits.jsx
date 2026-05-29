@@ -150,7 +150,7 @@ export default function RepositoryCommits() {
   }
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }} className="commit-list-page">
+    <Space direction="vertical" size={16} className="commit-list-page page-stack">
       <PageHeader
         title="Commits"
         description="현재 Repository의 커밋 이력과 변경 내역을 확인합니다."
@@ -161,7 +161,7 @@ export default function RepositoryCommits() {
           <Select
             value={branch}
             onChange={setBranch}
-            style={{ minWidth: 200 }}
+            className="filter-select filter-select--xl"
             options={branches.map((item) => ({ value: item.name, label: item.name }))}
           />
           <Button onClick={() => navigate(`/repositories/${repositoryId}/files`)}>파일 보기</Button>
@@ -170,18 +170,18 @@ export default function RepositoryCommits() {
             placeholder="Commit 메시지, SHA를 검색해 주세요."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            style={{ minWidth: 260, flex: '1 1 320px' }}
+            className="filter-search-fluid"
           />
           <Select
             value={author}
             onChange={setAuthor}
-            style={{ minWidth: 160 }}
+            className="filter-select filter-select--md"
             options={[{ value: 'all', label: '전체 작성자' }, ...authors.map((item) => ({ value: item, label: item }))]}
           />
           <Select
             value={period}
             onChange={setPeriod}
-            style={{ minWidth: 150 }}
+            className="filter-select filter-select--period"
             options={PERIOD_OPTIONS}
           />
         </Flex>

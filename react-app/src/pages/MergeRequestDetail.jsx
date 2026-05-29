@@ -461,9 +461,9 @@ function CommentEditor({ commentText, setCommentText, addComment, closeWithComme
     <Card>
       <Flex align="flex-start" gap={12}>
         <Avatar>김</Avatar>
-        <div style={{ flex: 1 }}>
-          <Flex align="center" gap={8} wrap="wrap" style={{ marginBottom: 8 }}>
-            <Select value="paragraph" options={[{ value: 'paragraph', label: 'Paragraph' }]} style={{ width: 140 }} />
+        <div className="comment-editor-body">
+          <Flex align="center" gap={8} wrap="wrap" className="comment-editor-toolbar">
+            <Select value="paragraph" options={[{ value: 'paragraph', label: 'Paragraph' }]} className="filter-select filter-select--compact" />
             <Button>B</Button>
             <Button><em>I</em></Button>
             <Button icon={<LinkOutlined />} />
@@ -475,7 +475,7 @@ function CommentEditor({ commentText, setCommentText, addComment, closeWithComme
             <Button icon={<GoBackOutlined />} />
           </Flex>
           <Input.TextArea rows={4} value={commentText} onChange={(event) => setCommentText(event.target.value)} placeholder="코멘트를 작성해 주세요." />
-          <Flex justify="flex-end" gap={8} style={{ marginTop: 12 }}>
+          <Flex justify="flex-end" gap={8} className="comment-editor-actions">
             <Button danger onClick={closeWithComment}>Close 코멘트 작성</Button>
             <Button type="primary" onClick={addComment}>코멘트 작성</Button>
           </Flex>

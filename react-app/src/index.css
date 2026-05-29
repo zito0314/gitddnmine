@@ -547,6 +547,93 @@ body {
   min-width: 280px;
 }
 
+.page-stack {
+  width: 100%;
+}
+
+.filter-search-fluid {
+  flex: 1 1 320px;
+  min-width: 280px;
+}
+
+.filter-search-limited {
+  flex: 1 1 240px;
+  max-width: 400px;
+}
+
+.filter-search-wide {
+  width: 360px;
+}
+
+.filter-input--xxl {
+  width: 280px;
+}
+
+.filter-select--xs {
+  width: 130px;
+}
+
+.filter-select--sm {
+  width: 120px;
+}
+
+.filter-select--compact {
+  width: 140px;
+}
+
+.filter-select--period {
+  min-width: 150px;
+}
+
+.filter-select--md {
+  min-width: 160px;
+}
+
+.filter-select--lg {
+  width: 180px;
+}
+
+.filter-select--xl {
+  width: 200px;
+}
+
+.filter-select--xxl {
+  min-width: 220px;
+}
+
+.filter-button--sm {
+  width: 104px;
+}
+
+.filter-button--compact {
+  width: 140px;
+}
+
+.filter-bar-spaced {
+  margin-bottom: 16px;
+}
+
+.summary-card-tile {
+  flex: 1 1 140px;
+  min-width: 120px;
+}
+
+.status-tag-compact.ant-tag {
+  margin-inline-end: 0;
+}
+
+.comment-editor-body {
+  flex: 1;
+}
+
+.comment-editor-toolbar {
+  margin-bottom: 8px;
+}
+
+.comment-editor-actions {
+  margin-top: 12px;
+}
+
 .repository-context-sidebar {
   padding-bottom: 14px;
 }
@@ -1718,6 +1805,16 @@ body {
 .tag-filter-tabs .ant-tabs-nav { margin-bottom: 0; }
 
 .tag-filter-bar {}
+
+.tag-filter-tabs,
+.tag-filter-bar,
+.tag-list-content {
+  padding-inline: 16px;
+}
+
+.tag-filter-bar {
+  padding-block: 12px;
+}
 
 .tag-row {
   padding: 14px 0;

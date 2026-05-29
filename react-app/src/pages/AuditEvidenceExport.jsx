@@ -538,11 +538,11 @@ export default function AuditEvidenceExport() {
             <Divider style={{ margin: '0 0 16px' }} />
 
             {/* 필터 바 */}
-            <Flex className="audit-filter-bar" gap={8} wrap="wrap" style={{ marginBottom: 16 }}>
+            <Flex className="audit-filter-bar filter-bar-spaced" gap={8} wrap="wrap">
               <Select
                 placeholder="전체 카테고리"
                 allowClear
-                style={{ width: 180 }}
+                className="filter-select filter-select--lg"
                 options={allCategories.map((c) => ({ value: c.key, label: c.label }))}
                 onChange={(v) => setSelectedCategory(v ?? 'all')}
                 value={selectedCategory === 'all' ? undefined : selectedCategory}
@@ -550,7 +550,7 @@ export default function AuditEvidenceExport() {
               <Select
                 placeholder="제출 상태"
                 allowClear
-                style={{ width: 140 }}
+                className="filter-select filter-select--compact"
                 value={statusFilter}
                 onChange={setStatusFilter}
                 options={[
@@ -563,7 +563,7 @@ export default function AuditEvidenceExport() {
               <Select
                 placeholder="파일 형식"
                 allowClear
-                style={{ width: 120 }}
+                className="filter-select filter-select--sm"
                 value={formatFilter}
                 onChange={setFormatFilter}
                 options={['PDF', 'CSV', 'ZIP', '첨부'].map((f) => ({ value: f, label: f }))}
@@ -574,7 +574,7 @@ export default function AuditEvidenceExport() {
                 onChange={(e) => setSearch(e.target.value)}
                 onSearch={(v) => setSearch(v)}
                 allowClear
-                style={{ flex: '1 1 280px', minWidth: 200 }}
+                className="filter-search-fluid"
               />
               <Button type="primary" icon={<DownloadOutlined />} onClick={handleBulkExport}>
                 일괄 Export

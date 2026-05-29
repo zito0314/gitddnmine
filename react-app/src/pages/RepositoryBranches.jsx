@@ -251,7 +251,7 @@ export default function RepositoryBranches() {
   }
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }} className="branch-list-page">
+    <Space direction="vertical" size={16} className="branch-list-page page-stack">
       <PageHeader
         title={UI_TEXT.pages.repositoryBranches.title}
         description={UI_TEXT.pages.repositoryBranches.description}
@@ -259,36 +259,36 @@ export default function RepositoryBranches() {
 
       {/* 요약 카드 */}
       <Flex gap={12} wrap="wrap">
-        <div style={{ flex: '1 1 140px', minWidth: 120 }}>
+        <div className="summary-card-tile">
           <SummaryCard title="Total Branches" value={summary.total} icon={<BranchesOutlined />} />
         </div>
-        <div style={{ flex: '1 1 140px', minWidth: 120 }}>
+        <div className="summary-card-tile">
           <SummaryCard title="Protected" value={summary.protected} icon={<LockOutlined />} />
         </div>
-        <div style={{ flex: '1 1 140px', minWidth: 120 }}>
+        <div className="summary-card-tile">
           <SummaryCard title="Active" value={summary.active} tone="success" />
         </div>
-        <div style={{ flex: '1 1 140px', minWidth: 120 }}>
+        <div className="summary-card-tile">
           <SummaryCard title="Stale" value={summary.stale} tone="warning" />
         </div>
       </Flex>
 
       {/* 검색 / 정렬 */}
       <Card>
-        <Flex className="branch-filter-bar" gap={12} wrap="wrap" style={{ marginBottom: 16 }}>
+        <Flex className="branch-filter-bar filter-bar-spaced" gap={12} wrap="wrap">
           <Input.Search
             placeholder="Branch명을 검색해 주세요."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onSearch={(value) => setSearch(value)}
             allowClear
-            style={{ flex: '1 1 240px', maxWidth: 400 }}
+            className="filter-search-limited"
           />
           <Select
             value={sortKey}
             onChange={setSortKey}
             options={SORT_OPTIONS}
-            style={{ width: 180 }}
+            className="filter-select filter-select--lg"
           />
         </Flex>
 

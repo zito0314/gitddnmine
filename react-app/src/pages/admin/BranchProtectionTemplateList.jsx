@@ -30,7 +30,7 @@ export default function BranchProtectionTemplateList() {
   }, [search, status, templates])
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} className="page-stack">
       <PageHeader
         title="Branch Protection Templates"
         description="저장소에 적용할 브랜치 보호 정책 템플릿을 생성하고 관리합니다."
@@ -47,9 +47,9 @@ export default function BranchProtectionTemplateList() {
         <Col xs={24} md={6}><SummaryCard title="Pending Exception Requests" value={summary.pendingRequests} tone="warning" /></Col>
       </Row>
       <Card>
-        <Space wrap style={{ marginBottom: 16 }}>
-          <Input.Search placeholder="template name, version, target branch, description" value={search} onChange={(event) => setSearch(event.target.value)} style={{ width: 360 }} />
-          <Select allowClear placeholder="status" value={status} onChange={setStatus} style={{ width: 160 }} options={['active', 'draft'].map((value) => ({ value, label: value }))} />
+        <Space wrap className="filter-bar-spaced">
+          <Input.Search placeholder="template name, version, target branch, description" value={search} onChange={(event) => setSearch(event.target.value)} className="filter-search-wide" />
+          <Select allowClear placeholder="status" value={status} onChange={setStatus} className="filter-select filter-select--md" options={['active', 'draft'].map((value) => ({ value, label: value }))} />
         </Space>
         <Table
           rowKey="id"

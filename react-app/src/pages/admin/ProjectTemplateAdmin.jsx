@@ -257,10 +257,10 @@ export default function ProjectTemplateAdmin() {
         <Space wrap>
           <Input
             allowClear
+            className="filter-input--xxl"
             placeholder="템플릿명, 언어, 프레임워크 검색"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            style={{ width: 280 }}
           />
           <Select
             allowClear
@@ -268,7 +268,7 @@ export default function ProjectTemplateAdmin() {
             options={LANGUAGE_OPTIONS.filter((option) => option.value !== '기타')}
             value={language}
             onChange={setLanguage}
-            style={{ width: 140 }}
+            className="filter-select filter-select--compact"
           />
           <Select
             allowClear
@@ -276,7 +276,7 @@ export default function ProjectTemplateAdmin() {
             options={TYPE_OPTIONS.filter((option) => option.value !== '기타')}
             value={type}
             onChange={setType}
-            style={{ width: 180 }}
+            className="filter-select filter-select--lg"
           />
           <Select
             allowClear
@@ -287,7 +287,7 @@ export default function ProjectTemplateAdmin() {
             ]}
             value={enabled}
             onChange={(value) => setEnabled(value ?? null)}
-            style={{ width: 130 }}
+            className="filter-select filter-select--xs"
           />
         </Space>
       </Card>

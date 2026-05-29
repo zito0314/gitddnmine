@@ -203,10 +203,10 @@ export default function RepositoryList() {
     <FilterBar className="repository-catalog-filter">
       <Search
         allowClear
+        className="filter-search-fluid"
         placeholder="저장소명, 프로젝트명, 담당 조직 선택"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
-        style={{ flex: '1 1 320px', minWidth: 280 }}
       />
       <Dropdown
         menu={{
@@ -215,7 +215,7 @@ export default function RepositoryList() {
           onClick: ({ key }) => setFilterGroup(key === 'all' ? null : key),
         }}
       >
-        <Button style={{ width: 140 }}>
+        <Button className="filter-button--compact">
           <Space>
             {filterGroup ?? '모든 그룹'}
             <DownOutlined />
@@ -229,7 +229,7 @@ export default function RepositoryList() {
           onClick: ({ key }) => setFilterLanguage(key === 'all' ? null : key),
         }}
       >
-        <Button style={{ width: 104 }}>
+        <Button className="filter-button--sm">
           <Space>
             {filterLanguage ?? '언어'}
             <DownOutlined />
@@ -301,7 +301,7 @@ export default function RepositoryList() {
         <Space orientation="vertical" size={4} className="repository-catalog-content">
           <Flex align="center" gap={8} wrap="wrap">
             <Text strong className="repository-catalog-title">{row.titleText}</Text>
-            {canUseManagedView ? <Tag color={meta.color} style={{ marginInlineEnd: 0 }}>{meta.label}</Tag> : null}
+            {canUseManagedView ? <Tag color={meta.color} className="status-tag-compact">{meta.label}</Tag> : null}
           </Flex>
           <Text type="secondary" className="repository-catalog-description">
             {descriptionItems.map((item, index) => (
@@ -320,7 +320,7 @@ export default function RepositoryList() {
   }
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space orientation="vertical" size={16} className="page-stack">
       <PageHeader
         title={UI_TEXT.pages.repositories.title}
         description={`${currentUserName}님이 속한 저장소의 모든 목록이에요. 저장소를 즐겨찾기하여, 언제든 쉽고 빠르게 이동해 보세요.`}

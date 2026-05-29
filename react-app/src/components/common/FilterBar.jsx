@@ -2,6 +2,20 @@ import { ReloadOutlined, SearchOutlined } from '../icons'
 import { Button, DatePicker, Flex, Input, Select } from 'antd'
 
 const { RangePicker } = DatePicker
+const FILTER_WIDTH_CLASS = {
+  120: 'filter-select--sm',
+  130: 'filter-select--xs',
+  140: 'filter-select--compact',
+  150: 'filter-select--period',
+  160: 'filter-select--md',
+  180: 'filter-select--lg',
+  200: 'filter-select--xl',
+  220: 'filter-select--xxl',
+}
+
+function getFilterSelectClass(filter) {
+  return ['filter-select', FILTER_WIDTH_CLASS[filter.width ?? 160], filter.className].filter(Boolean).join(' ')
+}
 
 function FilterBar({
   search,
@@ -27,13 +41,12 @@ function FilterBar({
             {search ? (
               <Input
                 allowClear
-                className="filter-search"
+                className={['filter-search', search.className].filter(Boolean).join(' ')}
                 prefix={<SearchOutlined />}
                 placeholder={search.placeholder ?? '검색'}
                 value={search.value}
                 onChange={(event) => search.onChange?.(event.target.value)}
                 onPressEnter={(event) => onSearch?.(event.currentTarget.value)}
-                style={search.style}
               />
             ) : null}
 
@@ -58,7 +71,7 @@ function FilterBar({
                   placeholder={filter.placeholder}
                   value={filter.value}
                   onChange={filter.onChange}
-                  style={{ minWidth: filter.width ?? 160, ...filter.style }}
+                  className={getFilterSelectClass(filter)}
                 />
               )
             })}

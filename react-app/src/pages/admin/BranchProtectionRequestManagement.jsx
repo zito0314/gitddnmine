@@ -35,15 +35,15 @@ export default function BranchProtectionRequestManagement() {
   }, [requests, search, status])
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} className="page-stack">
       <PageHeader title="Branch Protection Requests" description="Owner/PM이 요청한 정책 예외와 변경 요청을 검토합니다." />
       <Space wrap>
         {Object.entries(summary).map(([key, value]) => <SummaryCard key={key} title={key} value={value} />)}
       </Space>
       <Card>
-        <Space wrap style={{ marginBottom: 16 }}>
-          <Input.Search placeholder="request id, repository, requester, reason" value={search} onChange={(event) => setSearch(event.target.value)} style={{ width: 360 }} />
-          <Select allowClear placeholder="status" value={status} onChange={setStatus} style={{ width: 160 }} options={Object.keys(summary).map((value) => ({ value, label: value }))} />
+        <Space wrap className="filter-bar-spaced">
+          <Input.Search placeholder="request id, repository, requester, reason" value={search} onChange={(event) => setSearch(event.target.value)} className="filter-search-wide" />
+          <Select allowClear placeholder="status" value={status} onChange={setStatus} className="filter-select filter-select--md" options={Object.keys(summary).map((value) => ({ value, label: value }))} />
         </Space>
         <Table
           rowKey="id"

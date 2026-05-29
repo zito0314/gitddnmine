@@ -315,7 +315,7 @@ export default function RepositoryTags() {
   )
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }} className="tag-list-page">
+    <Space direction="vertical" size={16} className="tag-list-page page-stack">
       <PageHeader
         title={UI_TEXT.pages.repositoryTags.title}
         description={UI_TEXT.pages.repositoryTags.description}
@@ -324,23 +324,23 @@ export default function RepositoryTags() {
 
       {/* 요약 카드 */}
       <Flex gap={12} wrap="wrap">
-        <div style={{ flex: '1 1 140px', minWidth: 120 }}>
+        <div className="summary-card-tile">
           <SummaryCard title="Total Tags" value={summary.total} icon={<TagOutlined />} />
         </div>
-        <div style={{ flex: '1 1 140px', minWidth: 120 }}>
+        <div className="summary-card-tile">
           <SummaryCard title="Latest Release" value={summary.latestRelease} />
         </div>
-        <div style={{ flex: '1 1 140px', minWidth: 120 }}>
+        <div className="summary-card-tile">
           <SummaryCard title="Production" value={summary.production} tone="success" />
         </div>
-        <div style={{ flex: '1 1 140px', minWidth: 120 }}>
+        <div className="summary-card-tile">
           <SummaryCard title="Pre-release" value={summary.preRelease} tone="warning" />
         </div>
       </Flex>
 
       <Card className="tag-list-card" styles={{ body: { padding: 0 } }}>
         {/* 탭 필터 */}
-        <div className="tag-filter-tabs" style={{ padding: '0 16px' }}>
+        <div className="tag-filter-tabs">
           <Tabs
             activeKey={activeTab}
             onChange={setActiveTab}
@@ -352,12 +352,12 @@ export default function RepositoryTags() {
         <Divider style={{ margin: 0 }} />
 
         {/* 검색 / Repository 필터 / 정렬 */}
-        <Flex className="tag-filter-bar" gap={12} wrap="wrap" style={{ padding: '12px 16px' }}>
+        <Flex className="tag-filter-bar" gap={12} wrap="wrap">
           <Select
             value={repoFilter}
             onChange={setRepoFilter}
             options={repoOptions}
-            style={{ width: 200 }}
+            className="filter-select filter-select--xl"
             placeholder="전체 저장소"
           />
           <Input.Search
@@ -366,20 +366,20 @@ export default function RepositoryTags() {
             onChange={(e) => setSearch(e.target.value)}
             onSearch={(value) => setSearch(value)}
             allowClear
-            style={{ flex: '1 1 240px', maxWidth: 400 }}
+            className="filter-search-limited"
           />
           <Select
             value={sortKey}
             onChange={setSortKey}
             options={SORT_OPTIONS}
-            style={{ width: 180 }}
+            className="filter-select filter-select--lg"
           />
         </Flex>
 
         <Divider style={{ margin: 0 }} />
 
         {/* Tag 목록 */}
-        <div style={{ padding: '0 16px' }}>
+        <div className="tag-list-content">
           {allTags.length === 0 ? (
             <div style={{ padding: '32px 0' }}>
               <Empty description="표시할 Tag가 없어요." />
@@ -396,7 +396,7 @@ export default function RepositoryTags() {
               />
             </div>
           ) : (
-            <Space direction="vertical" size={0} style={{ width: '100%' }}>
+            <Space direction="vertical" size={0} className="page-stack">
               {filtered.map((tag, index) => (
                 <div key={tag.id ?? tag.name}>
                   <TagRow

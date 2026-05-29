@@ -25,12 +25,12 @@ export default function BranchProtectionHistory() {
   }, [action, histories, search])
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <Space direction="vertical" size={16} className="page-stack">
       <PageHeader title="Branch Protection Policy History" description="정책 생성, 수정, 적용, 예외 처리 이력을 확인합니다." />
       <Card>
-        <Space wrap style={{ marginBottom: 16 }}>
-          <Input.Search placeholder="actor, action, template, message" value={search} onChange={(event) => setSearch(event.target.value)} style={{ width: 360 }} />
-          <Select allowClear placeholder="action" value={action} onChange={setAction} style={{ width: 160 }} options={[...new Set(histories.map((item) => item.action))].map((value) => ({ value, label: value }))} />
+        <Space wrap className="filter-bar-spaced">
+          <Input.Search placeholder="actor, action, template, message" value={search} onChange={(event) => setSearch(event.target.value)} className="filter-search-wide" />
+          <Select allowClear placeholder="action" value={action} onChange={setAction} className="filter-select filter-select--md" options={[...new Set(histories.map((item) => item.action))].map((value) => ({ value, label: value }))} />
         </Space>
         <Timeline
           items={filtered.map((history) => ({
