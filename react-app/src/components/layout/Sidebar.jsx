@@ -6,9 +6,11 @@ import {
   GlobalOutlined,
   HomeOutlined,
   LockOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
   MergeRequestOutlined,
 } from '../icons'
-import { Button, Dropdown, Flex, Layout, Menu } from 'antd'
+import { Button, Dropdown, Flex, Layout, Menu, Tooltip } from 'antd'
 import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getHeaderOrganizations } from '../../api/common'
@@ -41,6 +43,28 @@ const navItems = [
     label: UI_TEXT.navigation.audit,
   },
 ]
+
+/* ── Collapsed 상태의 로고 영역: hover 시 열기 버튼으로 전환 ── */
+function SidebarLogoCollapsed({ onOpen }) {
+  const [hovered, setHovered] = useState(false)
+
+  return (
+    <Tooltip title="사이드바 열기" placement="right">
+      <Button
+        type="text"
+        aria-label="사이드바 열기"
+        className="sidebar-logo-collapsed-btn"
+        onClick={onOpen}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onFocus={() => setHovered(true)}
+        onBlur={() => setHovered(false)}
+      >
+        {hovered ? <MenuUnfoldOutlined className="sidebar-logo-open-icon" /> : <GitddnLogo compact />}
+      </Button>
+    </Tooltip>
+  )
+}
 
 function Sidebar({ collapsed, onCollapse }) {
   const location = useLocation()
@@ -78,16 +102,6 @@ function Sidebar({ collapsed, onCollapse }) {
 
     return [match?.key ?? '/']
   }, [location.pathname, visibleNavItems])
-  const logoMenuItems = useMemo(
-    () => [
-      {
-        key: 'logo',
-        className: 'sidebar-logo-menu-item',
-        label: <GitddnLogo compact={collapsed} />,
-      },
-    ],
-    [collapsed],
-  )
 
   const selectedOrganization =
     organizations.find((organization) => organization.key === organizationKey) ?? organizations[0]
@@ -134,13 +148,33 @@ function Sidebar({ collapsed, onCollapse }) {
       className="app-sidebar"
     >
       <Flex vertical className="sidebar-shell">
-        <Menu
-          className="sidebar-logo-menu"
-          mode="inline"
-          selectable={false}
-          items={logoMenuItems}
-          onClick={() => navigate('/')}
-        />
+        {/* ── 상단 로고 + 접기/열기 영역 ── */}
+        <div className="sidebar-logo-area">
+          {collapsed ? (
+            <SidebarLogoCollapsed onOpen={() => onCollapse(false)} />
+          ) : (
+            <Flex align="center" justify="space-between" className="sidebar-logo-expanded">
+              <button
+                type="button"
+                className="sidebar-logo-home-btn"
+                aria-label="홈으로 이동"
+                onClick={() => navigate('/')}
+              >
+                <GitddnLogo />
+              </button>
+              <Tooltip title="사이드바 접기" placement="right">
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<MenuFoldOutlined />}
+                  aria-label="사이드바 접기"
+                  className="sidebar-collapse-btn"
+                  onClick={() => onCollapse(true)}
+                />
+              </Tooltip>
+            </Flex>
+          )}
+        </div>
 
         <Dropdown
           menu={{

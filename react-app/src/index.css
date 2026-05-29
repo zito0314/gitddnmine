@@ -109,6 +109,58 @@ body {
   min-height: 100%;
 }
 
+/* ── 사이드바 로고 영역 ── */
+.sidebar-logo-area {
+  padding: 16px 16px 8px;
+}
+
+/* 펼침 상태: 로고 + 접기 버튼 행 */
+.sidebar-logo-expanded {
+  gap: 8px;
+}
+
+/* 로고 클릭 → 홈 이동 버튼 (raw button reset) */
+.sidebar-logo-home-btn {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* 접기 버튼 */
+.sidebar-collapse-btn.ant-btn {
+  flex: none;
+  color: var(--gitddn-subtle);
+}
+
+.sidebar-collapse-btn.ant-btn:hover {
+  color: var(--gitddn-text);
+  background: var(--gitddn-sidebar-hover-bg);
+}
+
+/* 접힘 상태: 로고 ↔ 열기 버튼 토글 영역 */
+.sidebar-logo-collapsed-btn.ant-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin: 0 auto;
+  color: var(--gitddn-text);
+}
+
+.sidebar-logo-collapsed-btn.ant-btn:hover {
+  background: var(--gitddn-sidebar-hover-bg);
+}
+
+.sidebar-logo-open-icon {
+  font-size: 18px;
+}
+
 .gitddn-logo {
   display: block;
   width: 103px;
