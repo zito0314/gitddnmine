@@ -1,317 +1,273 @@
 import {
   DownloadOutlined,
-  ExclamationCircleOutlined,
-  FileSearchOutlined,
   ReloadOutlined,
-  SafetyCertificateOutlined,
-  SendOutlined,
-  UserSwitchOutlined,
 } from '../components/icons'
 import {
+  App as AntdApp,
   Button,
   Card,
-  Col,
-  Descriptions,
-  Drawer,
-  Row,
+  DatePicker,
+  Empty,
+  Flex,
+  Input,
+  Segmented,
   Space,
+  Table,
   Tabs,
-  Timeline,
+  Tag,
   Typography,
 } from 'antd'
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import {
-  getAuditLogSummary,
-  getAuditLogs,
-  getAuditRelatedEvents,
-  getAuditRelatedIds,
-} from '../api/audit'
-import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
-import { CodePreview } from '../components/custom'
+import { getAuditLogs } from '../api/audit'
+import { PageHeader } from '../components/common'
 import { UI_TEXT } from '../constants'
 import AuditEvidenceExport from './AuditEvidenceExport'
 
-const { Paragraph, Text } = Typography
+const { Search } = Input
+const { Link, Text } = Typography
 
-function uniqueOptions(values) {
-  return [...new Set(values.filter(Boolean))].map((value) => ({ value, label: value }))
+const PERIOD_OPTIONS = [
+  { label: '1개월', value: 1 },
+  { label: '3개월', value: 3 },
+  { label: '6개월', value: 6 },
+  { label: '12개월', value: 12 },
+]
+
+const PIPELINE_STATUS = {
+  passed: { label: '통과', color: 'success' },
+  failed: { label: '실패', color: 'error' },
+  running: { label: '실행 중', color: 'processing' },
+  none: { label: '없음', color: 'default' },
 }
 
-function normalizeResult(log) {
-  if (log.resultClass === 'red') return 'blocked'
-  if (log.resultClass === 'orange') return 'warning'
-  return 'success'
+const DEPLOYMENT_STATUS = {
+  completed: { label: '완료', color: 'success' },
+  pending: { label: '대기', color: 'warning' },
+  rejected: { label: '반려', color: 'error' },
+  none: { label: '없음', color: 'default' },
 }
 
-function normalizeSeverity(severity) {
-  if (severity === 'danger' || severity === 'critical') return 'failed'
-  return severity
+const POLICY_STATUS = {
+  normal: { label: '정상 처리', color: 'success' },
+  review_required: { label: '검토 필요', color: 'warning' },
+  risk_required: { label: '위험 확인 필요', color: 'error' },
 }
 
-function getEventType(log) {
-  if (log.target === 'mergeRequest') return 'mergeRequest'
-  if (log.target === 'repository') return 'repository'
-  if (log.target === 'pipeline') return 'pipeline'
-  if (log.target === 'security') return 'security'
-  if (log.target === 'deployment') return 'deployment'
-  if (log.target === 'policy') return 'policy'
-  if (log.eventCode?.includes('auth')) return 'auth'
-  return log.target
+function getTimeValue(time) {
+  const timestamp = Date.parse(String(time).replace(' ', 'T'))
+  return Number.isNaN(timestamp) ? 0 : timestamp
 }
 
-function AuditLog() {
-  const logs = useMemo(() => getAuditLogs(), [])
-  const summary = useMemo(() => getAuditLogSummary(), [])
-  const [selectedLog, setSelectedLog] = useState(null)
+function getLatestTime(logs) {
+  return Math.max(...logs.map((log) => getTimeValue(log.time)), Date.now())
+}
+
+function isWithinPeriod(log, latestTime, monthCount) {
+  const logTime = getTimeValue(log.time)
+  const start = new Date(latestTime)
+  start.setMonth(start.getMonth() - monthCount)
+  return logTime >= start.getTime() && logTime <= latestTime
+}
+
+function isAfterPickerDate(log, date) {
+  if (!date) return true
+  return getTimeValue(log.time) >= date.startOf('day').valueOf()
+}
+
+function isBeforePickerDate(log, date) {
+  if (!date) return true
+  return getTimeValue(log.time) <= date.endOf('day').valueOf()
+}
+
+function getSearchText(log) {
+  return [
+    log.id,
+    log.time,
+    log.target,
+    log.repositoryName,
+    log.mergeRequestId,
+    log.mergeRequestTitle,
+    log.requester,
+    log.branch,
+    log.trigger,
+    log.pipelineStatus,
+    log.deploymentStatus,
+    log.policyStatus,
+    log.ip,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
+}
+
+function StatusTag({ meta }) {
+  return <Tag color={meta?.color ?? 'default'}>{meta?.label ?? '없음'}</Tag>
+}
+
+export default function AuditLog() {
+  const { message } = AntdApp.useApp()
+  const auditLogs = useMemo(() => getAuditLogs(), [])
+  const [activeTab, setActiveTab] = useState('logs')
   const [search, setSearch] = useState('')
-  const [severity, setSeverity] = useState(null)
-  const [eventType, setEventType] = useState(null)
-  const [result, setResult] = useState(null)
-  const [actor, setActor] = useState(null)
-  const [repositoryId, setRepositoryId] = useState(null)
-  const [dateRange, setDateRange] = useState(null)
+  const [period, setPeriod] = useState(1)
+  const [startDate, setStartDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
 
+  const latestTime = useMemo(() => getLatestTime(auditLogs), [auditLogs])
   const filteredLogs = useMemo(() => {
     const query = search.trim().toLowerCase()
 
-    return logs.filter((log) => {
-      const ids = getAuditRelatedIds(log)
-      const searchable = [
-        log.id,
-        log.eventCode,
-        log.actorName,
-        log.actor,
-        log.targetName,
-        log.targetDetail,
-        log.message,
-        log.ip,
-        ids.repositoryId,
-        ids.mrId ? `MR #${ids.mrId}` : null,
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-
-      if (query && !searchable.includes(query)) return false
-      if (severity && log.severity !== severity) return false
-      if (eventType && getEventType(log) !== eventType) return false
-      if (result && normalizeResult(log) !== result) return false
-      if (actor && log.actor !== actor) return false
-      if (repositoryId && ids.repositoryId !== repositoryId) return false
-      if (dateRange?.length === 2) {
-        const logTime = new Date(log.time)
-        if (logTime < dateRange[0].toDate() || logTime > dateRange[1].toDate()) return false
-      }
-
+    return auditLogs.filter((log) => {
+      if (!isWithinPeriod(log, latestTime, period)) return false
+      if (!isAfterPickerDate(log, startDate)) return false
+      if (!isBeforePickerDate(log, endDate)) return false
+      if (query && !getSearchText(log).includes(query)) return false
       return true
     })
-  }, [actor, dateRange, eventType, logs, repositoryId, result, search, severity])
-
-  const isFiltered = search || severity || eventType || result || actor || repositoryId || dateRange
-
-  const resetFilters = () => {
-    setSearch('')
-    setSeverity(null)
-    setEventType(null)
-    setResult(null)
-    setActor(null)
-    setRepositoryId(null)
-    setDateRange(null)
-  }
+  }, [auditLogs, endDate, latestTime, period, search, startDate])
 
   const columns = [
-    { title: 'Time', dataIndex: 'time', width: 170 },
     {
-      title: 'Severity',
-      dataIndex: 'severity',
+      title: '시간',
+      dataIndex: 'time',
+      width: 170,
+    },
+    {
+      title: '감사 ID',
+      dataIndex: 'id',
+      width: 140,
+      render: (id) => <Link>{id}</Link>,
+    },
+    {
+      title: '변경 대상',
+      dataIndex: 'target',
+      minWidth: 160,
+      render: (target) => <Text strong>{target}</Text>,
+    },
+    {
+      title: '저장소',
+      dataIndex: 'repositoryName',
+      minWidth: 260,
+      render: (repositoryName, record) => (
+        <Flex vertical gap={2}>
+          <Text>{repositoryName}</Text>
+          <Text type="secondary">#{record.mergeRequestId} · {record.mergeRequestTitle}</Text>
+        </Flex>
+      ),
+    },
+    {
+      title: '요청자',
+      dataIndex: 'requester',
+      width: 120,
+    },
+    {
+      title: 'Pipeline',
+      dataIndex: 'pipelineStatus',
       width: 110,
-      render: (value) => <StatusTag status={normalizeSeverity(value)} label={value} />,
+      render: (status) => <StatusTag meta={PIPELINE_STATUS[status]} />,
     },
     {
-      title: 'Event',
-      key: 'event',
-      minWidth: 240,
-      render: (_, record) => (
-        <Space direction="vertical" size={2}>
-          <Text strong>{record.title}</Text>
-          <Text type="secondary">{record.eventCode}</Text>
-        </Space>
-      ),
-    },
-    { title: 'Actor', dataIndex: 'actorName', width: 120 },
-    {
-      title: 'Target',
-      dataIndex: 'targetDetail',
-      minWidth: 220,
-      render: (value, record) => <Text>{value || record.targetName}</Text>,
+      title: '운영이관',
+      dataIndex: 'deploymentStatus',
+      width: 110,
+      render: (status) => <StatusTag meta={DEPLOYMENT_STATUS[status]} />,
     },
     {
-      title: 'Repository',
-      dataIndex: 'targetName',
-      width: 180,
-      render: (value) => <Link to={`/repositories/${value}`}>{value}</Link>,
+      title: '정책 상태',
+      dataIndex: 'policyStatus',
+      width: 140,
+      render: (status) => <StatusTag meta={POLICY_STATUS[status]} />,
     },
     {
-      title: 'Result',
-      key: 'result',
-      width: 130,
-      render: (_, record) => <StatusTag status={normalizeResult(record)} label={record.result} />,
-    },
-    { title: 'IP', dataIndex: 'ip', width: 140 },
-    {
-      title: 'Actions',
-      key: 'actions',
-      fixed: 'right',
-      width: 104,
-      render: (_, record) => (
-        <Button
-          size="small"
-          onClick={(event) => {
-            event.stopPropagation()
-            setSelectedLog(record)
-          }}
-        >
-          Detail
-        </Button>
-      ),
+      title: 'IP',
+      dataIndex: 'ip',
+      width: 140,
     },
   ]
 
   const auditLogContent = (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
-      <Row gutter={[12, 12]} className="summary-cards-row">
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="오늘 이벤트" value={summary.todayEvents} icon={<FileSearchOutlined />} />
-        </Col>
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="위험 이벤트" value={summary.riskEvents} tone="danger" icon={<ExclamationCircleOutlined />} />
-        </Col>
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="정책 변경" value={summary.policyChanges} icon={<UserSwitchOutlined />} />
-        </Col>
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="보안 차단" value={summary.securityBlocks} tone="danger" icon={<SafetyCertificateOutlined />} />
-        </Col>
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="승인 이벤트" value={summary.approvalEvents} tone="success" icon={<UserSwitchOutlined />} />
-        </Col>
-        <Col xs={24} sm={12} xl={4}>
-          <SummaryCard title="운영이관 이벤트" value={summary.deploymentEvents} icon={<SendOutlined />} />
-        </Col>
-      </Row>
-
-      <Card>
-        <FilterBar
-          search={{
-            placeholder: 'Audit ID, Event, Actor, Target, Message, IP 검색',
-            value: search,
-            onChange: setSearch,
-          }}
-          filters={[
-            {
-              key: 'severity',
-              placeholder: UI_TEXT.filters.severity,
-              value: severity,
-              onChange: setSeverity,
-              options: [
-                { value: 'info', label: 'Info' },
-                { value: 'warning', label: 'Warning' },
-                { value: 'danger', label: 'Danger' },
-                { value: 'critical', label: 'Critical' },
-              ],
-            },
-            {
-              key: 'eventType',
-              placeholder: 'Event type',
-              value: eventType,
-              onChange: setEventType,
-              options: [
-                { value: 'repository', label: 'Repository' },
-                { value: 'mergeRequest', label: 'Merge Request' },
-                { value: 'pipeline', label: 'Pipeline' },
-                { value: 'security', label: 'Security' },
-                { value: 'policy', label: 'Policy' },
-                { value: 'deployment', label: 'Deployment' },
-                { value: 'auth', label: 'Auth' },
-              ],
-            },
-            {
-              key: 'result',
-              placeholder: 'Result',
-              value: result,
-              onChange: setResult,
-              options: [
-                { value: 'success', label: 'Success' },
-                { value: 'failed', label: 'Failed' },
-                { value: 'blocked', label: 'Blocked' },
-                { value: 'warning', label: 'Warning' },
-              ],
-            },
-            {
-              key: 'actor',
-              placeholder: 'Actor',
-              value: actor,
-              onChange: setActor,
-              options: uniqueOptions(logs.map((log) => log.actor)),
-            },
-            {
-              key: 'repository',
-              placeholder: 'Repository',
-              value: repositoryId,
-              onChange: setRepositoryId,
-              options: uniqueOptions(logs.map((log) => log.targetName)),
-              width: 190,
-            },
-            {
-              key: 'dateRange',
-              type: 'dateRange',
-              value: dateRange,
-              onChange: setDateRange,
-              placeholder: ['Start date', 'End date'],
-            },
-          ]}
-          onReset={isFiltered ? resetFilters : undefined}
-        />
-
-        <DataTable
-          rowKey="id"
-          columns={columns}
-          dataSource={filteredLogs}
-          onRow={(record) => ({
-            onClick: () => setSelectedLog(record),
-            style: { cursor: 'pointer' },
-            className: ['danger', 'critical'].includes(record.severity) ? 'security-risk-row' : undefined,
-          })}
-          pagination={{
-            pageSize: 12,
-            showSizeChanger: false,
-            showTotal: (total, range) => `${range[0]}-${range[1]} / 총 ${total}개`,
-          }}
-        />
+    <Flex vertical gap={16}>
+      <Card className="audit-log-filter-card" variant="outlined">
+        <Flex vertical gap={16}>
+          <Search
+            allowClear
+            className="audit-log-search"
+            placeholder="Pipeline 제목, 저장소, 작성자, 브랜치, Trigger로 검색"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+          <Flex align="center" justify="space-between" gap={12} wrap="wrap">
+            <Segmented
+              value={period}
+              options={PERIOD_OPTIONS}
+              onChange={setPeriod}
+            />
+            <Flex align="center" gap={8} wrap="wrap">
+              <Space size={6}>
+                <Text strong>시작일:</Text>
+                <DatePicker
+                  placeholder="Select date"
+                  value={startDate}
+                  onChange={setStartDate}
+                />
+              </Space>
+              <Space size={6}>
+                <Text strong>종료일:</Text>
+                <DatePicker
+                  placeholder="Select date"
+                  value={endDate}
+                  onChange={setEndDate}
+                />
+              </Space>
+              <Button onClick={() => message.success('감사 패키지 다운로드를 준비했습니다.')}>
+                감사 패키지 다운로드
+              </Button>
+            </Flex>
+          </Flex>
+        </Flex>
       </Card>
 
-      <AuditDrawer log={selectedLog} onClose={() => setSelectedLog(null)} />
-    </Space>
+      <Table
+        rowKey="id"
+        columns={columns}
+        dataSource={filteredLogs}
+        scroll={{ x: 1260 }}
+        locale={{
+          emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="표시할 감사 로그가 없습니다." />,
+        }}
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: false,
+        }}
+      />
+    </Flex>
   )
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <Flex vertical gap={16} className="page-stack audit-log-page">
       <PageHeader
         title={UI_TEXT.pages.audit.title}
         description={UI_TEXT.pages.audit.description}
         actions={[
-          <Button key="export" icon={<DownloadOutlined />}>
-            {UI_TEXT.actions.exportCsv}
+          <Button
+            key="csv"
+            icon={<DownloadOutlined />}
+            onClick={() => message.success('CSV 내보내기를 준비했습니다.')}
+          >
+            CSV 내보내기
           </Button>,
-          <Button key="refresh" icon={<ReloadOutlined />}>
-            {UI_TEXT.actions.refresh}
-          </Button>,
+          <Button
+            key="refresh"
+            aria-label="새로고침"
+            icon={<ReloadOutlined />}
+            onClick={() => message.success('감사 로그를 새로고침했습니다.')}
+          />,
         ]}
       />
 
       <Tabs
-        defaultActiveKey="logs"
+        activeKey={activeTab}
+        onChange={setActiveTab}
         items={[
           {
             key: 'logs',
@@ -325,70 +281,6 @@ function AuditLog() {
           },
         ]}
       />
-    </Space>
+    </Flex>
   )
 }
-
-function AuditDrawer({ log, onClose }) {
-  const ids = log ? getAuditRelatedIds(log) : {}
-  const relatedEvents = log ? getAuditRelatedEvents(log.id) : []
-
-  return (
-    <Drawer open={Boolean(log)} onClose={onClose} title="Audit Detail" width={560}>
-      {log ? (
-        <Space direction="vertical" size={16} style={{ width: '100%' }}>
-          <Descriptions column={1} bordered size="small">
-            <Descriptions.Item label="Audit ID">{log.id}</Descriptions.Item>
-            <Descriptions.Item label="Event code">{log.eventCode}</Descriptions.Item>
-            <Descriptions.Item label="Severity"><StatusTag status={normalizeSeverity(log.severity)} label={log.severity} /></Descriptions.Item>
-            <Descriptions.Item label="Result"><StatusTag status={normalizeResult(log)} label={log.result} /></Descriptions.Item>
-            <Descriptions.Item label="Actor">{log.actorName}</Descriptions.Item>
-            <Descriptions.Item label="Actor role">{log.actorRole}</Descriptions.Item>
-            <Descriptions.Item label="Target type">{log.target}</Descriptions.Item>
-            <Descriptions.Item label="Target name">{log.targetName}</Descriptions.Item>
-            <Descriptions.Item label="Repository">
-              <Link to={`/repositories/${ids.repositoryId}`}>{ids.repositoryId}</Link>
-            </Descriptions.Item>
-            <Descriptions.Item label="Related MR">
-              {ids.mrId ? <Link to={`/repositories/${ids.repositoryId}/merge-requests/${ids.mrId}`}>!{ids.mrId}</Link> : '-'}
-            </Descriptions.Item>
-            <Descriptions.Item label="Related Pipeline">
-              {ids.pipelineId ? <Link to={`/repositories/${ids.repositoryId}/pipelines/${ids.pipelineId}`}>#{ids.pipelineId}</Link> : '-'}
-            </Descriptions.Item>
-            <Descriptions.Item label="Related Security Validation">
-              {ids.securityId ? <Link to={`/security/${ids.securityId}`}>{ids.securityId}</Link> : '-'}
-            </Descriptions.Item>
-            <Descriptions.Item label="IP address">{log.ip}</Descriptions.Item>
-            <Descriptions.Item label="User agent / Device">Chrome · macOS · Internal network</Descriptions.Item>
-            <Descriptions.Item label="Created at">{log.time}</Descriptions.Item>
-          </Descriptions>
-
-          <Card size="small" title="Message">
-            <Paragraph>{log.message}</Paragraph>
-          </Card>
-
-          <Card size="small" title="Raw metadata">
-            <CodePreview variant="json" className="audit-json-preview">
-              {JSON.stringify({ ...log, related: ids }, null, 2)}
-            </CodePreview>
-          </Card>
-
-          <Card size="small" title="Event Context">
-            <Timeline
-              items={relatedEvents.map((event) => ({
-                content: (
-                  <Space direction="vertical" size={2}>
-                    <Text>{event.title}</Text>
-                    <Text type="secondary">{event.time} · {event.message}</Text>
-                  </Space>
-                ),
-              }))}
-            />
-          </Card>
-        </Space>
-      ) : null}
-    </Drawer>
-  )
-}
-
-export default AuditLog

@@ -1,7 +1,7 @@
 import { getMockSlice } from './mockClient'
 
 export function getAuditLogs() {
-  return getMockSlice((data) => data.audit.logs, [])
+  return getMockSlice((data) => data.audit.auditLogs ?? data.audit.logs, [])
 }
 
 export function getAuditSummaryCards() {
