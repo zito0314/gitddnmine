@@ -138,7 +138,7 @@ function BranchRow({ branch, repositoryId, canManage }) {
                 {commitMessage}
               </Text>
             )}
-            <Divider type="vertical" />
+            <Divider orientation="vertical" />
             <Text type="secondary" className="branch-commit-sub">{author}</Text>
             <Text type="secondary" className="branch-commit-sub">·</Text>
             <Text type="secondary" className="branch-commit-sub">{timeText}</Text>
@@ -150,7 +150,7 @@ function BranchRow({ branch, repositoryId, canManage }) {
             <Tooltip title="기준 Branch보다 앞선 Commit 수">
               <Text type="secondary" className="branch-commit-sub">↑{formatAheadCount(aheadCount)}</Text>
             </Tooltip>
-            <Divider type="vertical" />
+            <Divider orientation="vertical" />
             <Tooltip title="기준 Branch보다 뒤처진 Commit 수">
               <Text type="secondary" className="branch-commit-sub">↓{behindCount}</Text>
             </Tooltip>
@@ -182,7 +182,7 @@ function BranchSection({ title, hint, branches, repositoryId, canManage }) {
         <Title level={5} className="branch-section-title">{title}</Title>
         <Text type="secondary" className="branch-commit-sub">{hint ?? `${branches.length}개`}</Text>
       </Flex>
-      <Space direction="vertical" size={0} className="branch-section-list">
+      <Space orientation="vertical" size={0} className="branch-section-list">
         {branches.map((branch, index) => (
           <div key={branch.name}>
             <BranchRow branch={branch} repositoryId={repositoryId} canManage={canManage} />
@@ -250,7 +250,7 @@ export default function RepositoryBranches() {
     : null
 
   return (
-    <Space direction="vertical" size={16} className="branch-list-page page-stack">
+    <Space orientation="vertical" size={16} className="branch-list-page page-stack">
       <PageHeader
         title={UI_TEXT.pages.repositoryBranches.title}
         description={UI_TEXT.pages.repositoryBranches.description}
@@ -290,14 +290,14 @@ export default function RepositoryBranches() {
         ) : !hasResults ? (
           <Empty
             description={
-              <Space direction="vertical" size={4}>
+              <Space orientation="vertical" size={4}>
                 <Text>조건에 맞는 Branch가 없어요.</Text>
                 <Text type="secondary">검색어나 필터를 변경해 주세요.</Text>
               </Space>
             }
           />
         ) : (
-          <Space direction="vertical" size={20} className="branch-section-stack">
+          <Space orientation="vertical" size={20} className="branch-section-stack">
             <BranchSection
               title="기본 Branch"
               hint="Repository의 기준이 되는 Branch"

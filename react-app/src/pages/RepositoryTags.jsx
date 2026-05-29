@@ -1,244 +1,47 @@
-import { CopyOutlined, EllipsisOutlined, LockOutlined, TagOutlined } from '../components/icons'
-import {
-  App as AntdApp,
-  Button,
-  Card,
-  Divider,
-  Dropdown,
-  Empty,
-  Flex,
-  Input,
-  Result,
-  Select,
-  Space,
-  Tabs,
-  Tag,
-  Tooltip,
-  Typography,
-} from 'antd'
+import { CopyOutlined, EllipsisOutlined } from '../components/icons'
+import { App as AntdApp, Button, Card, Dropdown, Empty, Flex, Input, Pagination, Result, Select, Segmented, Space, Tag, Tooltip, Typography } from 'antd'
 import { useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { getAllTags, getRepositories, getRepositoryDetail, getRepositoryTagSummary } from '../api/repositories'
-import { PageHeader, SummaryCard } from '../components/common'
-import { UI_TEXT } from '../constants'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { getFilteredRepositoryTags, getRepositories, getRepositoryDetail } from '../api/repositories'
+import { useAuth } from '../auth/AuthContext'
+import { FilterBar, PageHeader } from '../components/common'
 
+const { Search } = Input
 const { Text } = Typography
+
+const PAGE_SIZE = 10
+
+const STATUS_OPTIONS = [
+  { label: '전체', value: 'all' },
+  { label: 'Protected', value: 'protected' },
+  { label: 'Release', value: 'release' },
+]
 
 const SORT_OPTIONS = [
   { value: 'latestUpdated', label: '최신 업데이트순' },
   { value: 'oldestUpdated', label: '오래된 업데이트순' },
-  { value: 'name', label: 'Tag명' },
+  { value: 'name', label: '이름순' },
 ]
-
-const DOWNLOAD_FORMATS = ['zip', 'tar.gz', 'tar.bz2', 'tar']
-
-const TAB_ITEMS = [
-  { key: 'all', label: '전체' },
-  { key: 'protected', label: 'Protected' },
-  { key: 'release', label: 'Release' },
-]
-
-function sortTags(tags, sortKey) {
-  return [...tags].sort((a, b) => {
-    if (sortKey === 'name') return a.name.localeCompare(b.name)
-    const ua = a.updatedAt ?? a.createdAt ?? ''
-    const ub = b.updatedAt ?? b.createdAt ?? ''
-    if (sortKey === 'latestUpdated') return ub.localeCompare(ua)
-    return ua.localeCompare(ub)
-  })
-}
-
-function TagRow({ tag, repositoryId }) {
-  const navigate = useNavigate()
-  const { message } = AntdApp.useApp()
-
-  const copyToClipboard = async (text, successMsg, failMsg) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      message.success(successMsg)
-    } catch {
-      message.error(failMsg)
-    }
-  }
-
-  const handleRowClick = () => {
-    const sha = tag.latestCommit?.sha ?? tag.commit
-    if (sha) {
-      navigate(`/repositories/${repositoryId}/commits/${sha}`)
-    } else {
-      message.info('Tag 기준 Commit으로 이동합니다.')
-    }
-  }
-
-  const handleCopyTagName = (e) => {
-    e.stopPropagation()
-    copyToClipboard(tag.name, 'Tag명을 복사했어요.', 'Tag명을 복사하지 못했어요.')
-  }
-
-  const handleCommitClick = (e) => {
-    e.stopPropagation()
-    const sha = tag.latestCommit?.sha ?? tag.commit
-    if (sha) {
-      navigate(`/repositories/${repositoryId}/commits/${sha}`)
-    } else {
-      message.info('Commit 상세로 이동합니다.')
-    }
-  }
-
-  const handleCompare = () => {
-    message.info('Compare 화면으로 이동합니다.')
-    navigate(`/repositories/${repositoryId}/compare?tag=${encodeURIComponent(tag.name)}`)
-  }
-
-  const buildDownloadSubmenu = (format) => ({
-    key: `download-${format}`,
-    label: format,
-    onClick: ({ domEvent }) => {
-      domEvent.stopPropagation()
-      message.success(`${tag.name} Source code 다운로드를 시작합니다. (${format})`)
-    },
-  })
-
-  const moreMenuItems = [
-    {
-      key: 'view-commit',
-      label: 'Commit 보기',
-      onClick: ({ domEvent }) => {
-        domEvent.stopPropagation()
-        const sha = tag.latestCommit?.sha ?? tag.commit
-        if (sha) {
-          navigate(`/repositories/${repositoryId}/commits/${sha}`)
-        } else {
-          message.info('Commit 상세로 이동합니다.')
-        }
-      },
-    },
-    {
-      key: 'download',
-      label: 'Source code 다운로드',
-      children: DOWNLOAD_FORMATS.map(buildDownloadSubmenu),
-    },
-    {
-      key: 'copy-tag',
-      label: 'Tag명 복사',
-      onClick: ({ domEvent }) => {
-        domEvent.stopPropagation()
-        copyToClipboard(tag.name, 'Tag명을 복사했어요.', 'Tag명을 복사하지 못했어요.')
-      },
-    },
-    {
-      key: 'compare',
-      label: 'Compare',
-      onClick: ({ domEvent }) => {
-        domEvent.stopPropagation()
-        handleCompare()
-      },
-    },
-  ]
-
-  const sha = tag.latestCommit?.sha ?? tag.commit ?? ''
-  const commitMsg = tag.latestCommit?.message ?? tag.message ?? '-'
-  const author = tag.latestCommit?.author ?? tag.author ?? '-'
-  const timeText = tag.latestCommit?.updatedAtText ?? tag.createdAt ?? '-'
-
-  return (
-    <div
-      className="tag-row"
-      onClick={handleRowClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && handleRowClick()}
-    >
-      <Flex align="center" justify="space-between" gap={16} wrap="wrap">
-        {/* 좌측: Tag 주요 정보 */}
-        <div className="tag-main-info" style={{ flex: '1 1 300px', minWidth: 0 }}>
-          {/* 1행: Tag명 + 배지 + 복사 */}
-          <Flex align="center" gap={8} wrap="wrap">
-            <TagOutlined style={{ fontSize: 13 }} />
-            <Text strong style={{ fontSize: 14 }}>{tag.name}</Text>
-            <Tooltip title="Tag명 복사">
-              <Button
-                type="text"
-                size="small"
-                icon={<CopyOutlined />}
-                onClick={handleCopyTagName}
-                style={{ padding: '0 4px' }}
-              />
-            </Tooltip>
-            {tag.protected && (
-              <Tag icon={<LockOutlined style={{ fontSize: 10 }} />} style={{ margin: 0 }}>Protected</Tag>
-            )}
-            {tag.release && (
-              <Tag color="blue" style={{ margin: 0 }}>Release</Tag>
-            )}
-          </Flex>
-          {/* 2행: Commit 메타 */}
-          <div className="tag-commit-meta" style={{ marginTop: 4 }}>
-            <Flex align="center" gap={6} wrap="wrap">
-              {sha && (
-                <Tooltip title="Commit 상세 보기">
-                  <Text
-                    code
-                    style={{ cursor: 'pointer', fontSize: 12 }}
-                    onClick={handleCommitClick}
-                  >
-                    {sha.slice(0, 8)}
-                  </Text>
-                </Tooltip>
-              )}
-              {commitMsg !== '-' && (
-                <>
-                  <Text type="secondary" style={{ fontSize: 12 }}>·</Text>
-                  <Text
-                    type="secondary"
-                    style={{ fontSize: 12, maxWidth: 320 }}
-                    ellipsis={{ tooltip: commitMsg }}
-                  >
-                    {commitMsg}
-                  </Text>
-                </>
-              )}
-              <Text type="secondary" style={{ fontSize: 12 }}>·</Text>
-              <Text type="secondary" style={{ fontSize: 12 }}>{author}</Text>
-              <Text type="secondary" style={{ fontSize: 12 }}>·</Text>
-              <Text type="secondary" style={{ fontSize: 12 }}>{timeText}</Text>
-            </Flex>
-          </div>
-        </div>
-
-        {/* 우측: 더보기 메뉴 */}
-        <div className="tag-actions" onClick={(e) => e.stopPropagation()}>
-          <Dropdown
-            menu={{ items: moreMenuItems }}
-            trigger={['click']}
-            placement="bottomRight"
-          >
-            <Button
-              size="small"
-              icon={<EllipsisOutlined />}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </Dropdown>
-        </div>
-      </Flex>
-    </div>
-  )
-}
 
 export default function RepositoryTags() {
   const { repositoryId } = useParams()
   const navigate = useNavigate()
+  const auth = useAuth()
   const { message } = AntdApp.useApp()
-
   const repository = getRepositoryDetail(repositoryId)
-  const allTags = useMemo(() => getAllTags(), [])
   const repositories = useMemo(() => getRepositories(), [])
-  const summary = useMemo(() => getRepositoryTagSummary(repositoryId), [repositoryId])
-
-  const [activeTab, setActiveTab] = useState('all')
+  const [status, setStatus] = useState('all')
   const [repoFilter, setRepoFilter] = useState(repositoryId)
-  const [search, setSearch] = useState('')
-  const [sortKey, setSortKey] = useState('latestUpdated')
+  const [keyword, setKeyword] = useState('')
+  const [sort, setSort] = useState('latestUpdated')
+  const [page, setPage] = useState(1)
+  const canManageTags = auth.isAdmin || auth.isInternalUser
+
+  const tags = useMemo(
+    () => getFilteredRepositoryTags({ repositoryId: repoFilter, status, keyword, sort }),
+    [keyword, repoFilter, sort, status],
+  )
+  const pagedTags = tags.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   if (!repository) {
     return (
@@ -246,170 +49,167 @@ export default function RepositoryTags() {
         status="404"
         title="Repository를 찾을 수 없어요."
         subTitle="삭제되었거나 접근 권한이 없는 Repository일 수 있어요."
-        extra={
-          <Button type="primary" onClick={() => navigate('/repositories')}>
-            저장소 목록으로 이동
-          </Button>
-        }
+        extra={<Button type="primary" onClick={() => navigate('/repositories')}>저장소 목록으로 이동</Button>}
       />
     )
   }
 
-  const repoOptions = [
-    { value: '__all__', label: '전체 저장소' },
-    ...repositories.map((r) => ({ value: r.id, label: r.name ?? r.id })),
-  ]
+  const resetPage = (callback) => {
+    callback()
+    setPage(1)
+  }
 
-  const q = search.trim().toLowerCase()
+  const copyText = async (text) => {
+    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text)
+    message.success('복사되었습니다.')
+  }
 
-  const filtered = sortTags(
-    allTags.filter((tag) => {
-      // Repository 필터
-      const filterRepoId = repoFilter === '__all__' ? null : repoFilter
-      if (filterRepoId && tag.repositoryId !== filterRepoId) return false
-
-      // 탭 필터
-      if (activeTab === 'protected' && !tag.protected) return false
-      if (activeTab === 'release' && !tag.release) return false
-
-      // 검색 필터
-      if (q) {
-        const searchTargets = [
-          tag.name,
-          tag.repositoryName,
-          tag.projectName,
-          tag.organizationName,
-          tag.latestCommit?.sha ?? tag.commit,
-          tag.latestCommit?.message ?? tag.message,
-          tag.latestCommit?.author ?? tag.author,
-        ].filter(Boolean).join(' ').toLowerCase()
-        if (!searchTargets.includes(q)) return false
-      }
-
-      return true
-    }),
-    sortKey,
-  )
+  const headerMenuItems = [
+    canManageTags ? { key: 'release', label: 'Release 생성', onClick: () => message.info('Release 생성은 데모 기능입니다.') } : null,
+    canManageTags ? { key: 'policy', label: 'Tag 보호 정책 보기', onClick: () => message.info('Tag 보호 정책 보기는 데모 기능입니다.') } : null,
+    { key: 'export', label: 'Tag 목록 Export', onClick: () => message.info('Tag 목록 Export는 데모 기능입니다.') },
+  ].filter(Boolean)
 
   const headerActions = (
     <Space>
-      <Button
-        type="primary"
-        onClick={() => message.info('Tag 생성 화면으로 이동합니다.')}
-      >
-        Tag 생성
-      </Button>
-      <Dropdown
-        menu={{
-          items: [
-            { key: 'policy', label: 'Tag 정책 보기', onClick: () => message.info('Tag 정책 화면으로 이동합니다.') },
-            { key: 'feed', label: 'Tags 피드 보기', onClick: () => message.info('Tags 피드로 이동합니다.') },
-          ],
-        }}
-        trigger={['click']}
-        placement="bottomRight"
-      >
+      {canManageTags ? (
+        <Button type="primary" onClick={() => message.info('Tag 생성은 데모 기능입니다.')}>
+          Tag 생성
+        </Button>
+      ) : null}
+      <Dropdown menu={{ items: headerMenuItems }} trigger={['click']} placement="bottomRight">
         <Button icon={<EllipsisOutlined />} />
       </Dropdown>
     </Space>
   )
 
+  const repoOptions = [
+    { value: '__all__', label: '전체 저장소' },
+    ...repositories.map((item) => ({ value: item.id, label: item.name ?? item.id })),
+  ]
+
   return (
-    <Space direction="vertical" size={16} className="tag-list-page page-stack">
+    <Space orientation="vertical" size={16} className="page-stack repository-tags-page">
       <PageHeader
-        title={UI_TEXT.pages.repositoryTags.title}
-        description={UI_TEXT.pages.repositoryTags.description}
+        title="Tags"
+        description="배포 기준 태그와 릴리즈 이력을 확인합니다."
         actions={headerActions}
       />
 
-      {/* 요약 카드 */}
-      <Flex gap={12} wrap="wrap">
-        <div className="summary-card-tile">
-          <SummaryCard title="Total Tags" value={summary.total} icon={<TagOutlined />} />
-        </div>
-        <div className="summary-card-tile">
-          <SummaryCard title="Latest Release" value={summary.latestRelease} />
-        </div>
-        <div className="summary-card-tile">
-          <SummaryCard title="Production" value={summary.production} tone="success" />
-        </div>
-        <div className="summary-card-tile">
-          <SummaryCard title="Pre-release" value={summary.preRelease} tone="warning" />
-        </div>
-      </Flex>
+      <FilterBar className="repository-tags-filter">
+        <Segmented
+          options={STATUS_OPTIONS}
+          value={status}
+          onChange={(value) => resetPage(() => setStatus(value))}
+        />
+        <Select
+          value={repoFilter}
+          onChange={(value) => resetPage(() => setRepoFilter(value))}
+          options={repoOptions}
+          placeholder="전체 저장소"
+          className="filter-select filter-select--xl"
+        />
+        <Search
+          allowClear
+          placeholder="저장소명, 프로젝트명, 담당 조직 선택"
+          value={keyword}
+          onChange={(event) => resetPage(() => setKeyword(event.target.value))}
+          className="filter-search-fill"
+        />
+        <Select
+          value={sort}
+          onChange={(value) => resetPage(() => setSort(value))}
+          options={SORT_OPTIONS}
+          className="filter-select filter-select--lg"
+        />
+      </FilterBar>
 
-      <Card className="tag-list-card" styles={{ body: { padding: 0 } }}>
-        {/* 탭 필터 */}
-        <div className="tag-filter-tabs">
-          <Tabs
-            activeKey={activeTab}
-            onChange={setActiveTab}
-            items={TAB_ITEMS}
-            size="small"
-          />
-        </div>
-
-        <Divider style={{ margin: 0 }} />
-
-        {/* 검색 / Repository 필터 / 정렬 */}
-        <Flex className="tag-filter-bar" gap={12} wrap="wrap">
-          <Select
-            value={repoFilter}
-            onChange={setRepoFilter}
-            options={repoOptions}
-            className="filter-select filter-select--xl"
-            placeholder="전체 저장소"
-          />
-          <Input.Search
-            placeholder="저장소명, 프로젝트명, 담당 조직 선택"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onSearch={(value) => setSearch(value)}
-            allowClear
-            className="filter-search-limited"
-          />
-          <Select
-            value={sortKey}
-            onChange={setSortKey}
-            options={SORT_OPTIONS}
-            className="filter-select filter-select--lg"
-          />
+      <Card className="repository-tags-list-card">
+        <Flex align="center" justify="space-between" className="repository-tags-list-head">
+          <Text strong>{tags.length} Tags</Text>
         </Flex>
-
-        <Divider style={{ margin: 0 }} />
-
-        {/* Tag 목록 */}
-        <div className="tag-list-content">
-          {allTags.length === 0 ? (
-            <div style={{ padding: '32px 0' }}>
-              <Empty description="표시할 Tag가 없어요." />
-            </div>
-          ) : filtered.length === 0 ? (
-            <div style={{ padding: '32px 0' }}>
-              <Empty
-                description={
-                  <Space direction="vertical" size={4}>
-                    <Text>조건에 맞는 Tag가 없어요.</Text>
-                    <Text type="secondary">검색어를 변경해 주세요.</Text>
-                  </Space>
-                }
+        <div className="repository-tags-list">
+          {pagedTags.length > 0 ? (
+            pagedTags.map((tag) => (
+              <TagRow
+                key={tag.id ?? `${tag.repositoryId}-${tag.name}`}
+                tag={tag}
+                repositoryId={tag.repositoryId ?? repositoryId}
+                canManageTags={canManageTags}
+                onCopy={copyText}
               />
-            </div>
+            ))
           ) : (
-            <Space direction="vertical" size={0} className="page-stack">
-              {filtered.map((tag, index) => (
-                <div key={tag.id ?? tag.name}>
-                  <TagRow
-                    tag={tag}
-                    repositoryId={tag.repositoryId ?? repositoryId}
-                  />
-                  {index < filtered.length - 1 && <Divider style={{ margin: 0 }} />}
-                </div>
-              ))}
-            </Space>
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description={(
+                <Space orientation="vertical" size={4}>
+                  <Text>표시할 Tag가 없습니다.</Text>
+                  <Text type="secondary">검색 조건을 변경하거나 새 Tag를 생성해 주세요.</Text>
+                  {canManageTags ? <Button type="primary" onClick={() => message.info('Tag 생성은 데모 기능입니다.')}>Tag 생성</Button> : null}
+                </Space>
+              )}
+            />
           )}
         </div>
       </Card>
+
+      {tags.length > PAGE_SIZE ? (
+        <Flex justify="center">
+          <Pagination current={page} pageSize={PAGE_SIZE} total={tags.length} showSizeChanger={false} onChange={setPage} />
+        </Flex>
+      ) : null}
     </Space>
+  )
+}
+
+function TagRow({ tag, repositoryId, canManageTags, onCopy }) {
+  const navigate = useNavigate()
+  const { message } = AntdApp.useApp()
+  const sha = tag.commitSha ?? tag.commit
+  const shortSha = String(sha ?? '').slice(0, 8)
+  const commitPath = `/repositories/${repositoryId}/commits/${sha}`
+  const sourceFormats = tag.sourceDownloadFormats ?? ['zip', 'tar.gz', 'tar.bz2', 'tar']
+
+  const menuItems = [
+    { key: 'commit', label: 'Commit 보기', onClick: () => navigate(commitPath) },
+    tag.isRelease ? { key: 'release', label: 'Release 보기', onClick: () => message.info('Release 보기는 데모 기능입니다.') } : null,
+    { key: 'compare', label: 'Tag 비교', onClick: () => navigate(`/repositories/${repositoryId}/compare?tag=${encodeURIComponent(tag.name)}`) },
+    {
+      key: 'download',
+      label: 'Source 다운로드',
+      children: sourceFormats.map((format) => ({
+        key: `download-${format}`,
+        label: format,
+        onClick: () => message.info(`${format} 다운로드는 데모 기능입니다.`),
+      })),
+    },
+    canManageTags ? { type: 'divider' } : null,
+    canManageTags ? { key: 'delete', label: 'Tag 삭제', danger: true, onClick: () => message.info('Tag 삭제는 데모 기능입니다.') } : null,
+  ].filter(Boolean)
+
+  return (
+    <Flex align="center" justify="space-between" gap={16} className="repository-tags-row">
+      <Space orientation="vertical" size={6} className="repository-tags-row-main">
+        <Flex align="center" gap={8} wrap>
+          <Link className="repository-tags-name" to={commitPath}>{tag.name}</Link>
+          <Tooltip title="Tag name 복사">
+            <Button type="text" size="small" icon={<CopyOutlined />} onClick={() => onCopy(tag.name)} />
+          </Tooltip>
+          {tag.isProtected ? <Tag color="success">Protected</Tag> : null}
+          {tag.isRelease ? <Tag color="processing">Release</Tag> : null}
+        </Flex>
+        <Flex align="center" gap={8} wrap className="repository-tags-meta">
+          {shortSha ? <Link to={commitPath}>{shortSha}</Link> : null}
+          <Text type="secondary">{tag.commitMessage}</Text>
+          <Text type="secondary">· {tag.author}</Text>
+          <Text type="secondary">· {tag.updatedAtText}</Text>
+        </Flex>
+        {tag.releaseNote ? <Text type="secondary" className="repository-tags-release-note">{tag.releaseNote}</Text> : null}
+      </Space>
+      <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">
+        <Button icon={<EllipsisOutlined />} />
+      </Dropdown>
+    </Flex>
   )
 }

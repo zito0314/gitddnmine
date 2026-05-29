@@ -409,12 +409,19 @@ function normalizeTag(tag) {
   const sha = tag.latestCommit?.sha ?? tag.commit ?? ''
   return {
     ...tag,
+    isProtected: tag.isProtected ?? tag.protected ?? false,
+    isRelease: tag.isRelease ?? tag.release ?? false,
     commit: sha,
+    commitSha: sha,
     message: tag.latestCommit?.message ?? tag.message ?? tag.description ?? '',
+    commitMessage: tag.latestCommit?.message ?? tag.commitMessage ?? tag.message ?? tag.description ?? '',
     author: tag.latestCommit?.author ?? tag.author ?? '-',
     createdAt: tag.createdAtText ?? tag.createdAt ?? '-',
     updatedAt: tag.latestCommit?.updatedAt ?? tag.updatedAt ?? tag.createdAt ?? '',
+    updatedAtText: tag.latestCommit?.updatedAtText ?? tag.updatedAtText ?? tag.createdAtText ?? tag.createdAt ?? '-',
     releaseType: tag.type ?? tag.releaseType ?? 'tag',
+    releaseNote: tag.releaseNote ?? tag.description ?? '',
+    sourceDownloadFormats: tag.sourceDownloadFormats ?? ['zip', 'tar.gz', 'tar.bz2', 'tar'],
     latestCommit: tag.latestCommit ?? { sha, message: tag.message ?? '', author: tag.author ?? '-', updatedAtText: tag.createdAt ?? '-' },
   }
 }
@@ -441,6 +448,36 @@ export function getRepositoryTags(repositoryId) {
   if (mockTags.length > 0) return mockTags.map(normalizeTag)
 
   return FALLBACK_TAGS.map((tag) => normalizeTag({ ...tag, repositoryId, repositoryName: repository.name ?? repositoryId }))
+}
+
+export function getFilteredRepositoryTags({ repositoryId, status = 'all', keyword = '', sort = 'latestUpdated' } = {}) {
+  const source = repositoryId && repositoryId !== '__all__' ? getRepositoryTags(repositoryId) : getAllTags()
+  const query = keyword.trim().toLowerCase()
+  const filtered = source.filter((tag) => {
+    if (status === 'protected' && !tag.isProtected) return false
+    if (status === 'release' && !tag.isRelease) return false
+
+    if (query) {
+      const searchable = [
+        tag.name,
+        tag.commitSha,
+        tag.commitMessage,
+        tag.author,
+        tag.repositoryName,
+        tag.projectName,
+        tag.organizationName,
+      ].filter(Boolean).join(' ').toLowerCase()
+      if (!searchable.includes(query)) return false
+    }
+
+    return true
+  })
+
+  return [...filtered].sort((a, b) => {
+    if (sort === 'name') return a.name.localeCompare(b.name)
+    if (sort === 'oldestUpdated') return String(a.updatedAt).localeCompare(String(b.updatedAt))
+    return String(b.updatedAt).localeCompare(String(a.updatedAt))
+  })
 }
 
 export function getRepositoryTagSummary(repositoryId) {

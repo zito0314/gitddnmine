@@ -237,7 +237,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
     value: item.href,
     label: (
       <Flex align="flex-start" justify="space-between" gap={12} className="global-search-option">
-        <Space direction="vertical" size={2}>
+        <Space orientation="vertical" size={2}>
           <Flex align="center" gap={6} wrap="wrap">
             <Tag>{item.type}</Tag>
             <Text strong>{item.title}</Text>
@@ -314,7 +314,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
       key: 'profile',
       disabled: true,
       label: (
-        <Space direction="vertical" size={0}>
+        <Space orientation="vertical" size={0}>
           <Text strong>{currentUser?.name}</Text>
           <Text type="secondary">{currentUser?.role} · {selectedOrganization?.label}</Text>
           <Text type="secondary">{currentUser?.email}</Text>
@@ -410,7 +410,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
         <Badge count={unreadCount} size="small">
           <Button icon={<BellOutlined />} onClick={() => setNotificationOpen(true)} />
         </Badge>
-        <Divider type="vertical" className="header-avatar-divider" />
+        <Divider orientation="vertical" className="header-avatar-divider" />
         <Dropdown
           menu={{
             items: userItems,
@@ -464,7 +464,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
                     </Flex>
                   }
                   description={
-                    <Space direction="vertical" size={4}>
+                    <Space orientation="vertical" size={4}>
                       <Text type="secondary">{notification.message}</Text>
                       <Text type="secondary">{notification.createdAt}</Text>
                     </Space>
@@ -482,7 +482,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
         onCancel={() => setHelpOpen(false)}
         footer={<Button type="primary" onClick={() => setHelpOpen(false)}>OK</Button>}
       >
-        <Space direction="vertical" size={12}>
+        <Space orientation="vertical" size={12}>
           <Text>{UI_TEXT.help.demoGuideBody}</Text>
           <Divider />
           <Text type="secondary">{UI_TEXT.topHeader.helpMockNotice}</Text>

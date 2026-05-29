@@ -1315,6 +1315,125 @@ body {
   margin: 4px 0 8px;
 }
 
+.pipeline-history-tabs .ant-tabs-nav {
+  margin-bottom: 0;
+}
+
+.pipeline-history-filter {
+  margin-bottom: 0;
+}
+
+.pipeline-history-list-card.ant-card .ant-card-body {
+  padding: 0;
+}
+
+.pipeline-history-header,
+.pipeline-history-row {
+  display: grid;
+  grid-template-columns: minmax(132px, 0.9fr) minmax(260px, 2.4fr) minmax(150px, 1fr) minmax(118px, 0.8fr) minmax(120px, 0.9fr) minmax(260px, 2fr) minmax(108px, 0.8fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.pipeline-history-header {
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--gitddn-border-color);
+  background: color-mix(in srgb, var(--gitddn-bg) 72%, var(--gitddn-card-bg));
+}
+
+.pipeline-history-row {
+  min-height: 110px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--gitddn-border-color);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.pipeline-history-row:last-child {
+  border-bottom: 0;
+}
+
+.pipeline-history-row:hover {
+  background: color-mix(in srgb, var(--gitddn-primary) 5%, transparent);
+}
+
+.pipeline-history-row:focus-visible {
+  outline: 2px solid var(--gitddn-primary);
+  outline-offset: -3px;
+}
+
+.pipeline-history-status-cell,
+.pipeline-history-title-cell,
+.pipeline-history-author,
+.pipeline-stage-flow {
+  min-width: 0;
+}
+
+.pipeline-history-status-tag.ant-tag,
+.pipeline-history-branch-tag.ant-tag {
+  margin-inline-end: 0;
+}
+
+.pipeline-history-title-cell .ant-typography {
+  max-width: 100%;
+}
+
+.pipeline-history-title-cell a {
+  font-weight: 700;
+}
+
+.pipeline-stage-flow {
+  max-width: 100%;
+}
+
+.pipeline-stage-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--gitddn-border-color);
+  border-radius: 50%;
+  color: var(--gitddn-text-secondary);
+  background: var(--gitddn-card-bg);
+  font-size: 13px;
+}
+
+.pipeline-stage-dot-success {
+  color: var(--ant-color-success);
+  border-color: color-mix(in srgb, var(--ant-color-success) 32%, var(--gitddn-border-color));
+  background: color-mix(in srgb, var(--ant-color-success) 12%, var(--gitddn-card-bg));
+}
+
+.pipeline-stage-dot-error {
+  color: var(--ant-color-error);
+  border-color: color-mix(in srgb, var(--ant-color-error) 32%, var(--gitddn-border-color));
+  background: color-mix(in srgb, var(--ant-color-error) 12%, var(--gitddn-card-bg));
+}
+
+.pipeline-stage-dot-processing {
+  color: var(--gitddn-primary);
+  border-color: color-mix(in srgb, var(--gitddn-primary) 32%, var(--gitddn-border-color));
+  background: color-mix(in srgb, var(--gitddn-primary) 10%, var(--gitddn-card-bg));
+}
+
+.pipeline-stage-dot-warning {
+  color: var(--ant-color-warning);
+  border-color: color-mix(in srgb, var(--ant-color-warning) 36%, var(--gitddn-border-color));
+  background: color-mix(in srgb, var(--ant-color-warning) 12%, var(--gitddn-card-bg));
+}
+
+@media (max-width: 1199px) {
+  .pipeline-history-header {
+    display: none;
+  }
+
+  .pipeline-history-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+}
+
 .pipeline-detail-meta {
   margin-top: 16px;
 }
@@ -1881,6 +2000,51 @@ body {
 
 .repository-list-favorite.ant-btn.active {
   color: #faad14;
+}
+
+.repository-tags-filter {
+  margin-bottom: 0;
+}
+
+.repository-tags-list-card.ant-card .ant-card-body {
+  padding: 0;
+}
+
+.repository-tags-list-head {
+  min-height: 40px;
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--gitddn-border-color);
+  background: color-mix(in srgb, var(--gitddn-bg) 72%, var(--gitddn-card-bg));
+}
+
+.repository-tags-row {
+  min-height: 88px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--gitddn-border-color);
+}
+
+.repository-tags-row:last-child {
+  border-bottom: 0;
+}
+
+.repository-tags-row-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.repository-tags-name {
+  color: var(--gitddn-text-primary);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.repository-tags-meta,
+.repository-tags-release-note {
+  min-width: 0;
+}
+
+.repository-tags-meta .ant-typography {
+  max-width: 420px;
 }
 
 .mr-dashboard-content {
