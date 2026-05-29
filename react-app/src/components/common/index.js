@@ -1,3 +1,4 @@
+export { default as CardAdvance } from './CardAdvance'
 export { default as DataTable } from './DataTable'
 export { default as FilterBar } from './FilterBar'
 export { default as FormSection } from './FormSection'

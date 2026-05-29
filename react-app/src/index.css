@@ -508,6 +508,15 @@ body {
   margin-top: 12px;
 }
 
+.card-advance-title {
+  min-width: 0;
+}
+
+.card-advance-description {
+  font-size: 12px;
+  font-weight: 500;
+}
+
 .summary-card-icon.ant-avatar {
   color: var(--gitddn-primary);
   background: var(--gitddn-primary-soft);
@@ -863,6 +872,10 @@ body {
   margin-bottom: 8px;
 }
 
+.dashboard-work-stack {
+  width: 100%;
+}
+
 .dashboard-ai-panel.ant-card {
   overflow: hidden;
   border-radius: 36px;
@@ -944,10 +957,8 @@ body {
   background: color-mix(in srgb, var(--gitddn-primary) 10%, transparent);
 }
 
-.dashboard-card-hint {
+.dashboard-work-card .card-advance-description {
   color: var(--gitddn-primary);
-  font-size: 12px;
-  font-weight: 500;
 }
 
 .dashboard-work-card .ant-tabs-nav,

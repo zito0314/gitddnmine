@@ -1,5 +1,5 @@
 import { StarFilled } from '../components/icons'
-import { Button, Card, Col, Flex, List, Row, Space, Tabs, Typography } from 'antd'
+import { Button, Col, Flex, List, Row, Tabs, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -10,7 +10,7 @@ import {
   getDashboardRepositoryActivities,
 } from '../api/dashboard'
 import { useAuth } from '../auth/AuthContext'
-import { PageHeader, StatusTag } from '../components/common'
+import { CardAdvance, PageHeader, StatusTag } from '../components/common'
 import { DashboardAiChat } from '../components/custom'
 import RepositoryAvatar from '../components/repository/RepositoryAvatar'
 import { UI_TEXT } from '../constants'
@@ -74,7 +74,7 @@ function Dashboard() {
   const visiblePrompts = prompts.slice(0, 4)
 
   return (
-    <Space direction="vertical" size={32} className="dashboard-home">
+    <Flex vertical gap={32} className="dashboard-home">
       <PageHeader title={UI_TEXT.pages.dashboard.title} />
 
       <DashboardAiChat
@@ -86,15 +86,11 @@ function Dashboard() {
 
       <Row gutter={[16, 16]} align="top">
         <Col xs={24} xl={17}>
-          <Space direction="vertical" size={16} style={{ width: '100%' }}>
-            <Card
+          <Flex vertical gap={16} className="dashboard-work-stack">
+            <CardAdvance
               className="dashboard-work-card"
-              title={
-                <Flex align="center" gap={8} wrap="wrap">
-                  <Text strong>Next up</Text>
-                  <Text type="secondary" className="dashboard-card-hint">AI 어시스턴트가 업무 우선순위에 따라 요약해두었어요.</Text>
-                </Flex>
-              }
+              title="Next up"
+              description="AI 어시스턴트가 업무 우선순위에 따라 요약해두었어요."
               extra={<Button type="link" size="small" onClick={() => navigate('/merge-requests')}>전체보기</Button>}
             >
               <Tabs
@@ -135,11 +131,11 @@ function Dashboard() {
                   </List.Item>
                 )}
               />
-            </Card>
+            </CardAdvance>
 
-            <Card
+            <CardAdvance
               className="dashboard-work-card"
-              title={<Text strong>최근 활동</Text>}
+              title="최근 활동"
               extra={<Button type="link" size="small" onClick={() => navigate('/audit')}>전체보기</Button>}
             >
               <Tabs
@@ -161,12 +157,12 @@ function Dashboard() {
                   </List.Item>
                 )}
               />
-            </Card>
-          </Space>
+            </CardAdvance>
+          </Flex>
         </Col>
 
         <Col xs={24} xl={7}>
-          <Card className="dashboard-quick-card" title="Quick Access" styles={{ body: { paddingTop: 8 } }}>
+          <CardAdvance className="dashboard-quick-card" title="Quick Access" styles={{ body: { paddingTop: 8 } }}>
             <Tabs
               activeKey={quickAccessTab}
               onChange={setQuickAccessTab}
@@ -193,10 +189,10 @@ function Dashboard() {
                 </List.Item>
               )}
             />
-          </Card>
+          </CardAdvance>
         </Col>
       </Row>
-    </Space>
+    </Flex>
   )
 }
 
