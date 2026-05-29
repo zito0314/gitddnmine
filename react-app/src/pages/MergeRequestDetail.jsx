@@ -16,6 +16,7 @@ import {
   Card,
   Col,
   Collapse,
+  Divider,
   Empty,
   Flex,
   Input,
@@ -416,6 +417,7 @@ function ActivityCard({ activities, activityFilter, setActivityFilter, onLinkedV
     >
       {activities.length > 0 ? (
         <Timeline
+          className="mr-activity-timeline"
           items={activities.map((activity) => ({
             icon: activity.type === 'security' ? <SafetyCertificateOutlined /> : activity.type === 'pipeline' ? <CheckCircleOutlined /> : <Avatar size={24}>{(activity.actor ?? 'S').slice(0, 1)}</Avatar>,
             content: (
@@ -509,112 +511,131 @@ function SidePanel({ mergeRequest, onAction, onAssign, canManage }) {
   const { approvers = [], reviewers = [], project, integrations = [], nextSteps = [] } = mergeRequest
 
   return (
-    <Space orientation="vertical" size={16} className="mr-side-panel">
-      <Card title="Next Step">
-        {nextSteps.length > 0 ? (
-          <Space orientation="vertical" size={12} className="mr-detail-stack">
-            {nextSteps.map((step) => (
-              <Flex key={step.id} justify="space-between" gap={12} align="center">
-                <div>
-                  <Text strong>{step.text}</Text>
-                  <br />
-                  <Text type="secondary">{step.description}</Text>
-                </div>
-                {canManage ? <Button onClick={() => onAction(step.id)}>{step.actionLabel}</Button> : null}
-              </Flex>
-            ))}
-          </Space>
-        ) : (
-          <Text type="secondary">지금 처리해야 할 다음 단계가 없어요.</Text>
-        )}
-      </Card>
+    <Card className="mr-side-panel">
+      <Space orientation="vertical" size={20} className="mr-detail-stack" split={<Divider className="mr-side-divider" />}>
+        <SidePanelSection title="Next Step">
+          {nextSteps.length > 0 ? (
+            <Space orientation="vertical" size={12} className="mr-detail-stack">
+              {nextSteps.map((step) => (
+                <Flex key={step.id} justify="space-between" gap={12} align="center">
+                  <div>
+                    <Text strong>{step.text}</Text>
+                    <br />
+                    <Text type="secondary">{step.description}</Text>
+                  </div>
+                  {canManage ? <Button onClick={() => onAction(step.id)}>{step.actionLabel}</Button> : null}
+                </Flex>
+              ))}
+            </Space>
+          ) : (
+            <Text type="secondary">지금 처리해야 할 다음 단계가 없어요.</Text>
+          )}
+        </SidePanelSection>
 
-      <PeopleCard
-        title="승인자"
-        people={approvers}
-        emptyText="승인자 없음"
-        actionLabel="승인자 설정"
-        onClick={() => onAssign('approver')}
-        canManage={canManage}
-      />
-      <PeopleCard
-        title="리뷰어"
-        people={reviewers}
-        emptyText="리뷰어 없음"
-        actionLabel="리뷰어 설정"
-        onClick={() => onAssign('reviewer')}
-        canManage={canManage}
-      />
+        <SidePanelSection
+          title="승인자"
+          extra={canManage && approvers.length > 0 ? <Button size="small" onClick={() => onAssign('approver')}>변경</Button> : null}
+        >
+          <PeopleList
+            people={approvers}
+            emptyText="승인자 없음"
+            actionLabel="승인자 설정"
+            onClick={() => onAssign('approver')}
+            canManage={canManage}
+          />
+        </SidePanelSection>
 
-      <Card
-        title="프로젝트"
-        extra={canManage && project ? <Button size="small" onClick={() => onAssign('project')}>변경</Button> : null}
-      >
-        {project ? (
-          <Space orientation="vertical" size={4} className="mr-detail-stack">
-            <Text strong>{project.name}</Text>
-            {project.ticket ? <Text type="secondary">Ticket · {project.ticket}</Text> : null}
-            {project.milestone ? <Text type="secondary">Milestone · {project.milestone}</Text> : null}
-          </Space>
-        ) : (
-          <Flex justify="space-between" align="center" gap={12}>
-            <Text type="secondary">프로젝트 없음</Text>
-            {canManage ? <Button onClick={() => onAssign('project')}>프로젝트 설정</Button> : null}
-          </Flex>
-        )}
-      </Card>
+        <SidePanelSection
+          title="리뷰어"
+          extra={canManage && reviewers.length > 0 ? <Button size="small" onClick={() => onAssign('reviewer')}>변경</Button> : null}
+        >
+          <PeopleList
+            people={reviewers}
+            emptyText="리뷰어 없음"
+            actionLabel="리뷰어 설정"
+            onClick={() => onAssign('reviewer')}
+            canManage={canManage}
+          />
+        </SidePanelSection>
 
-      <Card title="내부 연계 옵션">
-        {integrations.length > 0 ? (
-          <Space orientation="vertical" size={12} className="mr-detail-stack">
-            {integrations.map((integration) => (
-              <Flex key={integration.id} justify="space-between" align="center" gap={12}>
-                <div>
-                  <Text>{integration.label}</Text>
-                  <br />
-                  <Text type="secondary">{integration.value}</Text>
-                </div>
-                {integration.statusLabel ? statusTag(integration.status, integration.statusLabel) : null}
-              </Flex>
-            ))}
-          </Space>
-        ) : (
-          <Text type="secondary">연결된 내부 시스템 정보가 없습니다.</Text>
-        )}
-      </Card>
-    </Space>
+        <SidePanelSection
+          title="프로젝트"
+          extra={canManage && project ? <Button size="small" onClick={() => onAssign('project')}>변경</Button> : null}
+        >
+          {project ? (
+            <Space orientation="vertical" size={4} className="mr-detail-stack">
+              <Text strong>{project.name}</Text>
+              {project.ticket ? <Text type="secondary">Ticket · {project.ticket}</Text> : null}
+              {project.milestone ? <Text type="secondary">Milestone · {project.milestone}</Text> : null}
+            </Space>
+          ) : (
+            <Flex justify="space-between" align="center" gap={12}>
+              <Text type="secondary">프로젝트 없음</Text>
+              {canManage ? <Button onClick={() => onAssign('project')}>프로젝트 설정</Button> : null}
+            </Flex>
+          )}
+        </SidePanelSection>
+
+        <SidePanelSection title="내부 연계 옵션">
+          {integrations.length > 0 ? (
+            <Space orientation="vertical" size={12} className="mr-detail-stack">
+              {integrations.map((integration) => (
+                <Flex key={integration.id} justify="space-between" align="center" gap={12}>
+                  <div>
+                    <Text>{integration.label}</Text>
+                    <br />
+                    <Text type="secondary">{integration.value}</Text>
+                  </div>
+                  {integration.statusLabel ? statusTag(integration.status, integration.statusLabel) : null}
+                </Flex>
+              ))}
+            </Space>
+          ) : (
+            <Text type="secondary">연결된 내부 시스템 정보가 없습니다.</Text>
+          )}
+        </SidePanelSection>
+      </Space>
+    </Card>
   )
 }
 
-function PeopleCard({ title, people, emptyText, actionLabel, onClick, canManage }) {
+function SidePanelSection({ title, extra, children }) {
   return (
-    <Card
-      title={title}
-      extra={canManage && people.length > 0 ? <Button size="small" onClick={onClick}>변경</Button> : null}
-    >
-      {people.length > 0 ? (
-        <Space orientation="vertical" size={12} className="mr-detail-stack">
-          {people.map((person) => (
-            <Flex key={person.id} justify="space-between" align="center" gap={12}>
-              <Space>
-                <Avatar>{person.avatar ?? person.name?.slice(0, 1)}</Avatar>
-                <div>
-                  <Text strong>{person.name}</Text>
-                  <br />
-                  <Text type="secondary">{person.role}</Text>
-                </div>
-              </Space>
-              {person.statusLabel ? statusTag(person.status, person.statusLabel) : null}
-            </Flex>
-          ))}
-        </Space>
-      ) : (
-        <Flex justify="space-between" align="center" gap={12}>
-          <Text type="secondary">{emptyText}</Text>
-          {canManage ? <Button onClick={onClick}>{actionLabel}</Button> : null}
+    <div className="mr-side-section">
+      <Flex align="center" justify="space-between" gap={8} className="mr-side-section-head">
+        <Text strong className="mr-side-section-title">{title}</Text>
+        {extra}
+      </Flex>
+      {children}
+    </div>
+  )
+}
+
+function PeopleList({ people, emptyText, actionLabel, onClick, canManage }) {
+  if (people.length === 0) {
+    return (
+      <Flex justify="space-between" align="center" gap={12}>
+        <Text type="secondary">{emptyText}</Text>
+        {canManage ? <Button onClick={onClick}>{actionLabel}</Button> : null}
+      </Flex>
+    )
+  }
+  return (
+    <Space orientation="vertical" size={12} className="mr-detail-stack">
+      {people.map((person) => (
+        <Flex key={person.id} justify="space-between" align="center" gap={12}>
+          <Space>
+            <Avatar>{person.avatar ?? person.name?.slice(0, 1)}</Avatar>
+            <div>
+              <Text strong>{person.name}</Text>
+              <br />
+              <Text type="secondary">{person.role}</Text>
+            </div>
+          </Space>
+          {person.statusLabel ? statusTag(person.status, person.statusLabel) : null}
         </Flex>
-      )}
-    </Card>
+      ))}
+    </Space>
   )
 }
 

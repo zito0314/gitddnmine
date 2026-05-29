@@ -1270,6 +1270,22 @@ body {
   width: 100%;
 }
 
+.mr-side-section {
+  width: 100%;
+}
+
+.mr-side-section-head {
+  margin-bottom: 12px;
+}
+
+.mr-side-section-title.ant-typography {
+  font-size: 15px;
+}
+
+.mr-side-divider.ant-divider {
+  margin: 0;
+}
+
 .mr-merge-progress {
   flex: 1;
 }
@@ -1280,6 +1296,27 @@ body {
 
 .mr-activity-filter {
   width: 160px;
+}
+
+.mr-activity-timeline .ant-steps-item-icon,
+.mr-activity-timeline .ant-timeline-item-icon {
+  width: 24px;
+  height: 24px;
+  inset-inline-start: 0;
+  margin-inline-start: 0;
+}
+
+.mr-activity-timeline .ant-steps-item-icon .anticon,
+.mr-activity-timeline .ant-timeline-item-icon .anticon {
+  font-size: 18px;
+}
+
+.mr-activity-timeline .ant-steps-item-icon .ant-avatar,
+.mr-activity-timeline .ant-timeline-item-icon .ant-avatar {
+  flex: none;
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
 }
 
 .mr-assign-select {
