@@ -1121,18 +1121,55 @@ body {
   top: 88px;
 }
 
-.repository-info-panel .ant-list-item {
-  padding-inline: 0;
+.repository-info-section,
+.repository-transfer-section {
+  display: block;
 }
 
-.repository-transfer-list .ant-list-item {
-  align-items: flex-start;
-  padding-block: 14px;
+.repository-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--gitddn-border-color);
+  background: transparent;
+  color: inherit;
+  text-align: left;
 }
 
-.repository-transfer-list .ant-btn-link {
-  height: auto;
-  padding: 0;
+.repository-info-row:last-child {
+  border-bottom: 0;
+}
+
+.repository-info-row-clickable {
+  cursor: pointer;
+}
+
+.repository-info-row-clickable:hover,
+.repository-transfer-row:hover,
+.repository-code-tool-row:hover {
+  background: color-mix(in srgb, var(--gitddn-primary) 6%, transparent);
+}
+
+.repository-info-row-label {
+  color: var(--gitddn-text-secondary);
+}
+
+.repository-transfer-row {
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--gitddn-border-color);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.repository-transfer-row:last-child {
+  border-bottom: 0;
 }
 
 .repository-code-dropdown {
@@ -1156,8 +1193,9 @@ body {
   margin: 0 0 18px;
 }
 
-.repository-code-dropdown .ant-list-item {
-  padding-inline: 0;
+.repository-code-tool-row {
+  padding: 6px 4px;
+  border-radius: 6px;
 }
 
 .mr-detail-hero h2.ant-typography {

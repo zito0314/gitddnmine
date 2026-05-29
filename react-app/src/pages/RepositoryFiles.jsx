@@ -27,7 +27,6 @@ import {
   Dropdown,
   Flex,
   Input,
-  List,
   Row,
   Segmented,
   Select,
@@ -39,7 +38,7 @@ import {
   message,
 } from 'antd'
 import { useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   getRepositoryBranches,
   getRepositoryCommitSummary,
@@ -61,16 +60,18 @@ function getMetricValue(repository, label, fallback) {
   return repository.metrics?.find((metric) => metric.label === label)?.value ?? fallback
 }
 
-function getTransferStatusLabel(transfer) {
-  if (transfer.approvalStatus === 'pending') return '승인 대기'
-  if (transfer.status === 'scheduled') return '반영 대기'
-  if (transfer.status === 'approved') return '이관 완료'
-  if (transfer.status === 'blocked') return '차단'
-  return transfer.status
+function getTransferStatusMeta(transfer) {
+  if (transfer.status === 'blocked' || transfer.securityStatus === 'blocked') return { label: '운영 반영 불가', color: 'error' }
+  if (transfer.status === 'approved' || transfer.status === 'completed') return { label: '완료', color: 'success' }
+  if (transfer.status === 'scheduled') return { label: '운영 반영 가능', color: 'success' }
+  if (transfer.status === 'stabilizing') return { label: '안정화 중', color: 'processing' }
+  if (transfer.approvalStatus === 'pending' || transfer.status === 'reviewing') return { label: '확인 필요', color: 'warning' }
+  return { label: transfer.status ?? '확인 필요', color: 'default' }
 }
 
 export default function RepositoryFiles() {
   const { repositoryId } = useParams()
+  const navigate = useNavigate()
   const repository = getRepositoryDetail(repositoryId)
   const files = useMemo(() => getRepositoryFiles(repositoryId), [repositoryId])
   const branches = useMemo(() => getRepositoryBranches(repositoryId), [repositoryId])
@@ -107,6 +108,11 @@ export default function RepositoryFiles() {
     { key: 'copy-link', icon: <LinkOutlined />, label: '고유링크 복사' },
     { type: 'divider' },
     { key: 'delete', icon: <DeleteOutlined />, label: '삭제', danger: true },
+  ]
+  const openTools = [
+    { title: 'Web IDE', actions: [<Button key="open" size="small">.</Button>] },
+    { title: 'Visual Studio Code', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
+    { title: 'IntelliJ IDEA', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
   ]
 
   const columns = [
@@ -150,30 +156,28 @@ export default function RepositoryFiles() {
       />
       <Divider />
       <Title level={5}>Open with</Title>
-      <List
-        size="small"
-        dataSource={[
-          { title: 'Web IDE', actions: [<Button key="open" size="small">.</Button>] },
-          { title: 'Visual Studio Code', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
-          { title: 'IntelliJ IDEA', actions: [<Segmented key="protocol" options={['SSH', 'HTTPS']} />] },
-        ]}
-        renderItem={(item) => (
-          <List.Item actions={item.actions}>
+      <Flex vertical gap={8}>
+        {openTools.map((item) => (
+          <Flex key={item.title} align="center" justify="space-between" gap={12} className="repository-code-tool-row">
             <Text>{item.title}</Text>
-          </List.Item>
-        )}
-      />
+            <Space>{item.actions}</Space>
+          </Flex>
+        ))}
+      </Flex>
       <Divider />
       <Title level={5}>Download source code</Title>
       <Segmented block options={downloadOptions} />
     </div>
   )
 
+  const repositoryGroup = repository.group ?? repository.namespace ?? repository.path?.split('/').slice(0, -1).join('/') ?? '-'
   const repositoryInfoItems = [
-    { key: 'commits', icon: <GitCommitOutlined />, label: `${getMetricValue(repository, 'Commits', commitSummary.total)} Commits` },
-    { key: 'branches', icon: <BranchesOutlined />, label: `${getMetricValue(repository, 'Branches', branches.length)} Branches` },
-    { key: 'tags', icon: <TagOutlined />, label: `${getMetricValue(repository, 'Tags', tags.length)} Tags` },
-    { key: 'storage', icon: <DatabaseOutlined />, label: `${getMetricValue(repository, 'Project Storage', '4 KiB')} Project Storage` },
+    { key: 'commits', icon: <GitCommitOutlined />, label: 'Commit', value: `${getMetricValue(repository, 'Commits', commitSummary.total)} Commits`, path: 'commits' },
+    { key: 'branches', icon: <BranchesOutlined />, label: 'Branch', value: `${getMetricValue(repository, 'Branches', branches.length)} Branches`, path: 'branches' },
+    { key: 'tags', icon: <TagOutlined />, label: 'Tag', value: `${getMetricValue(repository, 'Tags', tags.length)} Tags`, path: 'tags' },
+    { key: 'storage', icon: <DatabaseOutlined />, label: 'Project Storage', value: getMetricValue(repository, 'Project Storage', '4 KiB') },
+    { key: 'createdAt', icon: <CodeOutlined />, label: '생성일', value: repository.createdAt ?? repository.createdAtText ?? '2024.06.13' },
+    { key: 'group', icon: <FolderOutlined />, label: '그룹', value: repositoryGroup },
   ]
 
   return (
@@ -274,39 +278,70 @@ export default function RepositoryFiles() {
 
         <Col xs={24} xl={7}>
           <Card className="repository-info-panel" title="저장소 정보">
-            <List
-              size="small"
-              dataSource={repositoryInfoItems}
-              renderItem={(item) => (
-                <List.Item>
-                  <Space>
-                    {item.icon}
-                    <Text strong>{item.label}</Text>
-                  </Space>
-                </List.Item>
-              )}
-            />
+            <section className="repository-info-section">
+              <Flex vertical gap={0}>
+                {repositoryInfoItems.map((item) => {
+                  const content = (
+                    <>
+                      <Flex gap={8} align="center" className="repository-info-row-label">
+                        {item.icon}
+                        <Text>{item.label}</Text>
+                      </Flex>
+                      <Text strong>{item.value}</Text>
+                    </>
+                  )
+
+                  return item.path ? (
+                    <button
+                      key={item.key}
+                      type="button"
+                      className="repository-info-row repository-info-row-clickable"
+                      onClick={() => navigate(`/repositories/${repositoryId}/${item.path}`)}
+                    >
+                      {content}
+                    </button>
+                  ) : (
+                    <Flex key={item.key} justify="space-between" align="center" gap={12} className="repository-info-row">
+                      {content}
+                    </Flex>
+                  )
+                })}
+              </Flex>
+            </section>
             <Divider />
-            <Space direction="vertical" size={6}>
-              <Text strong>생성일</Text>
-              <Text type="secondary">2024.06.13</Text>
-            </Space>
-            <Divider />
-            <Title level={5}>최근 운영 이관</Title>
-            <List
-              className="repository-transfer-list"
-              dataSource={deploymentTransfers.slice(0, 3)}
-              locale={{ emptyText: '진행 중인 운영이관이 없습니다.' }}
-              renderItem={(item) => (
-                <List.Item>
-                  <Space direction="vertical" size={4}>
-                    <Text strong>({getTransferStatusLabel(item)}) {item.deploymentPlan?.changeReason ?? item.id}</Text>
-                    <Text type="secondary">{item.deploymentPlan?.checklistNote ?? '운영 반영 검토가 진행 중입니다.'}</Text>
-                    <Button type="link" size="small">진행 현황 보기 →</Button>
-                  </Space>
-                </List.Item>
+            <section className="repository-transfer-section">
+              <Title level={5}>최근 운영 이관</Title>
+              {deploymentTransfers.length ? (
+                <Flex vertical gap={10}>
+                  {deploymentTransfers.slice(0, 3).map((item) => {
+                    const statusMeta = getTransferStatusMeta(item)
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className="repository-transfer-row"
+                        onClick={() => navigate(`/repositories/${repositoryId}/deployment-transfer/${item.id}`)}
+                      >
+                        <Flex vertical gap={4} align="flex-start">
+                          <Text strong>{item.deploymentPlan?.changeReason ?? item.id}</Text>
+                          <Text type="secondary">
+                            {[
+                              item.mrId ? `MR !${item.mrId}` : null,
+                              item.pipelineId ? `Pipeline #${item.pipelineId}` : null,
+                              item.scheduledAt ?? item.updatedAt,
+                              item.requestedBy,
+                            ].filter(Boolean).join(' · ')}
+                          </Text>
+                          <Tag color={statusMeta.color} className="status-tag-compact">{statusMeta.label}</Tag>
+                        </Flex>
+                      </button>
+                    )
+                  })}
+                </Flex>
+              ) : (
+                <Text type="secondary">진행 중인 운영이관이 없습니다.</Text>
               )}
-            />
+            </section>
           </Card>
         </Col>
       </Row>
