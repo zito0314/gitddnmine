@@ -87,12 +87,14 @@ function Dashboard() {
       <Row gutter={[16, 16]} align="top">
         <Col xs={24} xl={17}>
           <Flex vertical gap={16} className="dashboard-work-stack">
-            <CardAdvance
-              className="dashboard-work-card"
-              title="Next up"
-              description="AI 어시스턴트가 업무 우선순위에 따라 요약해두었어요."
-              extra={<Button type="link" size="small" onClick={() => navigate('/merge-requests')}>전체보기</Button>}
-            >
+            <CardAdvance className="dashboard-work-card">
+              <Flex justify="space-between" align="center" className="dashboard-card-head">
+                <Flex vertical gap={2}>
+                  <Text strong>Next up</Text>
+                  <Text type="secondary" className="card-advance-description">AI 어시스턴트가 업무 우선순위에 따라 요약해두었어요.</Text>
+                </Flex>
+                <Button type="link" size="small" onClick={() => navigate('/merge-requests')}>전체보기</Button>
+              </Flex>
               <Tabs
                 activeKey={nextUpTab}
                 onChange={setNextUpTab}
@@ -130,11 +132,11 @@ function Dashboard() {
                 : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.messages.empty.table} />}
             </CardAdvance>
 
-            <CardAdvance
-              className="dashboard-work-card"
-              title="최근 활동"
-              extra={<Button type="link" size="small" onClick={() => navigate('/audit')}>전체보기</Button>}
-            >
+            <CardAdvance className="dashboard-work-card">
+              <Flex justify="space-between" align="center" className="dashboard-card-head">
+                <Text strong>최근 활동</Text>
+                <Button type="link" size="small" onClick={() => navigate('/audit')}>전체보기</Button>
+              </Flex>
               <Tabs
                 activeKey={activityTab}
                 onChange={setActivityTab}
@@ -164,7 +166,8 @@ function Dashboard() {
         </Col>
 
         <Col xs={24} xl={7}>
-          <CardAdvance className="dashboard-quick-card" title="Quick Access" styles={{ body: { paddingTop: 8 } }}>
+          <CardAdvance className="dashboard-quick-card">
+            <Text strong className="dashboard-card-head">Quick Access</Text>
             <Tabs
               activeKey={quickAccessTab}
               onChange={setQuickAccessTab}
