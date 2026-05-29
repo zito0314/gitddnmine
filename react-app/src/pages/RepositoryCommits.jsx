@@ -156,36 +156,34 @@ export default function RepositoryCommits() {
         description="현재 Repository의 커밋 이력과 변경 내역을 확인합니다."
       />
 
-      <Card className="commit-filter-bar">
-        <Flex gap={10} wrap="wrap" align="center">
-          <Select
-            value={branch}
-            onChange={setBranch}
-            className="filter-select filter-select--xl"
-            options={branches.map((item) => ({ value: item.name, label: item.name }))}
-          />
-          <Button onClick={() => navigate(`/repositories/${repositoryId}/files`)}>파일 보기</Button>
-          <Input.Search
-            allowClear
-            placeholder="Commit 메시지, SHA를 검색해 주세요."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            className="filter-search-fill"
-          />
-          <Select
-            value={author}
-            onChange={setAuthor}
-            className="filter-select filter-select--md"
-            options={[{ value: 'all', label: '전체 작성자' }, ...authors.map((item) => ({ value: item, label: item }))]}
-          />
-          <Select
-            value={period}
-            onChange={setPeriod}
-            className="filter-select filter-select--period"
-            options={PERIOD_OPTIONS}
-          />
-        </Flex>
-      </Card>
+      <Flex className="commit-filter-bar" gap={10} wrap="wrap" align="center">
+        <Select
+          value={branch}
+          onChange={setBranch}
+          className="filter-select filter-select--xl"
+          options={branches.map((item) => ({ value: item.name, label: item.name }))}
+        />
+        <Input.Search
+          allowClear
+          placeholder="Commit 메시지, SHA를 검색해 주세요."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          className="filter-search-fill"
+        />
+        <Select
+          value={author}
+          onChange={setAuthor}
+          className="filter-select filter-select--md"
+          options={[{ value: 'all', label: '전체 작성자' }, ...authors.map((item) => ({ value: item, label: item }))]}
+        />
+        <Select
+          value={period}
+          onChange={setPeriod}
+          className="filter-select filter-select--period"
+          options={PERIOD_OPTIONS}
+        />
+        <Button onClick={() => navigate(`/repositories/${repositoryId}/files`)}>파일 보기</Button>
+      </Flex>
 
       {commits.length === 0 ? (
         <Card>
@@ -206,7 +204,7 @@ export default function RepositoryCommits() {
         dateGroups.map((group) => (
           <section key={group.date} className="commit-date-group">
             <Text strong>{group.date}</Text>
-            <Space direction="vertical" size={10} style={{ width: '100%', marginTop: 10 }}>
+            <Space direction="vertical" size={10} className="commit-date-list">
               {group.commits.map((commit) => (
                 <CommitRow
                   key={commit.sha}

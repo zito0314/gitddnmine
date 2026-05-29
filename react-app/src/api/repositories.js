@@ -273,6 +273,23 @@ function createCommitDetailFallback(repositoryId, commit) {
       },
       {
         id: `${commit.sha}-file-002`,
+        path: 'react-app/src/api/authPolicy.ts',
+        name: 'authPolicy.ts',
+        extension: '.ts',
+        additions: 6,
+        deletions: 2,
+        changeDistribution: ['added', 'removed', 'neutral'],
+        treePath: ['src', 'api', 'authPolicy.ts'],
+        diff: [
+          { id: 'hunk-policy-001', type: 'hunk', content: '@@ -42,6 +42,8 @@' },
+          { id: 'line-policy-42', type: 'context', oldLine: 42, newLine: 42, oldContent: 'export function normalizePolicyResponse(response) {', newContent: 'export function normalizePolicyResponse(response) {' },
+          { id: 'line-policy-43r', type: 'removed', oldLine: 43, newLine: null, oldContent: '  return response;', newContent: '' },
+          { id: 'line-policy-43a', type: 'added', oldLine: null, newLine: 43, oldContent: '', newContent: "  if (response.status === 500) return { status: 'blocked' };" },
+          { id: 'line-policy-44a', type: 'added', oldLine: null, newLine: 44, oldContent: '', newContent: '  return response;' },
+        ],
+      },
+      {
+        id: `${commit.sha}-file-003`,
         path: 'README.md',
         name: 'README.md',
         extension: '.md',

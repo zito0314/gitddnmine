@@ -1677,11 +1677,16 @@ body {
 }
 
 .commit-filter-bar {
-  position: relative;
+  width: 100%;
 }
 
 .commit-date-group {
   display: block;
+}
+
+.commit-date-list {
+  width: 100%;
+  margin-top: 10px;
 }
 
 .commit-row-card {
@@ -1768,7 +1773,18 @@ body {
 }
 
 .commit-file-search {
+  width: 100%;
   margin-bottom: 12px;
+}
+
+.commit-code-search {
+  width: 260px;
+  max-width: 100%;
+}
+
+.commit-detail-page,
+.commit-comment-editor-body {
+  width: 100%;
 }
 
 .commit-diff-table,

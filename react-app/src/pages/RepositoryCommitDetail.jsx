@@ -159,7 +159,7 @@ function CommitDiffToolbar({
           value={codeSearch}
           onChange={(event) => onSearch(event.target.value)}
           onSearch={onSearch}
-          style={{ width: 260 }}
+          className="commit-code-search"
         />
       </Space>
       <Space wrap>
@@ -301,10 +301,10 @@ function CommitFilesPanel({
       extra={<Button size="small" icon={<MenuFoldOutlined />} onClick={() => setFilesCollapsed(true)} />}
       className="commit-files-panel"
     >
-      <Space.Compact style={{ width: '100%', marginBottom: 12 }}>
+      <Space.Compact className="commit-file-search">
         <Input.Search
           allowClear
-          placeholder="Filter files..."
+          placeholder="파일명, 경로를 검색해 주세요."
           value={fileSearch}
           onChange={(event) => setFileSearch(event.target.value)}
         />
@@ -450,7 +450,7 @@ export default function RepositoryCommitDetail() {
   }
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }} className="commit-detail-page">
+    <Space direction="vertical" size={16} className="commit-detail-page page-stack">
       <Card>
         <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
           <Space align="start">
@@ -730,7 +730,7 @@ function LineComments({ comments, minimized }) {
 function CommentEditor({ commentText, setCommentText, submitComment, onCancel }) {
   return (
     <Card size="small" className="commit-comment-editor">
-      <Space direction="vertical" size={8} style={{ width: '100%' }}>
+      <Space direction="vertical" size={8} className="commit-comment-editor-body">
         <TextArea
           autoSize={{ minRows: 2, maxRows: 5 }}
           placeholder="코멘트를 작성해 주세요."
