@@ -402,7 +402,7 @@ function TopHeader({ collapsed, onToggleSidebar }) {
           }}
           trigger={['click']}
         >
-          <Button className="header-ask-button" icon={<QuestionCircleOutlined />}>
+          <Button className="header-ask-button" color="default" variant="filled" icon={<QuestionCircleOutlined />}>
             Ask
           </Button>
         </Dropdown>
