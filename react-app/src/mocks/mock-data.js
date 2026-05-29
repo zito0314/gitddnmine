@@ -1563,6 +1563,11 @@ const mockData = {
       "latestPushNotice": {
         "branchName": "feature/role-based-repository-list",
         "pushedAt": "17분 전",
+        "pushedBy": "Jito",
+        "commitSha": "a83f7c19",
+        "commitMessage": "Repository 목록 권한별 노출 정책 반영",
+        "title": "Repository 목록 권한별 노출 정책 반영",
+        "description": "feature/role-based-repository-list Branch의 최근 Push를 develop Branch로 병합 요청합니다.\n\n- Repository 목록에서 역할별 접근 가능 항목을 분리\n- External 사용자에게 생성 요청 영역이 노출되지 않도록 정리\n- 권한별 Repository 필터 조건 보강",
         "hasOpenMergeRequest": false,
         "sourceBranch": "feature/role-based-repository-list",
         "targetBranch": "develop"
@@ -1646,6 +1651,23 @@ const mockData = {
           }
         },
         {
+          "name": "feature/role-based-repository-list",
+          "isDefault": false,
+          "isProtected": false,
+          "isMine": true,
+          "status": "open",
+          "hasOpenMergeRequest": false,
+          "aheadCount": 6,
+          "behindCount": 2,
+          "updatedAt": "2026-05-29",
+          "latestCommit": {
+            "message": "Repository 목록 권한별 노출 정책 반영",
+            "author": "Jito",
+            "timeText": "17분 전",
+            "sha": "a83f7c19"
+          }
+        },
+        {
           "name": "release/1.2.0",
           "isDefault": false,
           "isProtected": true,
@@ -1698,6 +1720,12 @@ const mockData = {
         }
       ],
       "branchComparisons": [
+        {
+          "source": "feature/role-based-repository-list",
+          "target": "develop",
+          "hasDiff": true,
+          "diffCount": 38
+        },
         {
           "source": "feature/payment-exception",
           "target": "develop",

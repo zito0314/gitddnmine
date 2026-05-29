@@ -126,6 +126,7 @@ export default function RepositoryFiles() {
     const params = new URLSearchParams({
       sourceBranch,
       targetBranch,
+      from: 'latest-push',
     })
 
     navigate(`/repositories/${repositoryId}/merge-requests/new?${params.toString()}`, {
@@ -133,6 +134,9 @@ export default function RepositoryFiles() {
         repositoryId,
         sourceBranch,
         targetBranch,
+        fromLatestPushNotice: true,
+        title: latestPushNotice.title,
+        description: latestPushNotice.description,
       },
     })
   }

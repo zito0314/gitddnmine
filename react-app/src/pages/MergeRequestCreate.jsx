@@ -1,6 +1,6 @@
 import { Alert, Avatar, Button, Card, Checkbox, Col, Divider, Flex, Form, Input, message, Row, Select, Tooltip, Typography } from 'antd'
-import { useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   getRepositories,
   getRepositoryBranchComparison,
@@ -29,14 +29,38 @@ function findLatestCommit(branches, branchName) {
   return branches.find((branch) => branch.name === branchName)?.latestCommit ?? null
 }
 
+function getPushNotice(repository, sourceBranch, targetBranch) {
+  const notice = repository?.latestPushNotice
+  if (!notice) return null
+  const noticeSource = notice.sourceBranch ?? notice.branchName
+  const noticeTarget = notice.targetBranch ?? repository.defaultBranch
+  if (noticeSource !== sourceBranch || noticeTarget !== targetBranch) return null
+  return notice
+}
+
+function getDefaultMrTitle(sourceBranch, targetBranch, notice) {
+  if (notice?.title) return notice.title
+  return `${sourceBranch} → ${targetBranch} MR`
+}
+
+function getDefaultMrDescription(sourceBranch, targetBranch, notice) {
+  if (notice?.description) return notice.description
+  return `${sourceBranch} Branch의 변경사항을 ${targetBranch} Branch로 병합 요청합니다.`
+}
+
 export default function MergeRequestCreate() {
   const { repositoryId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
   const repositoryOptions = useMemo(() => getRepositories().map(toRepositoryOption), [])
   const [form] = Form.useForm()
-  const [selectedRepositoryId, setSelectedRepositoryId] = useState(null)
-  const [selectedSourceBranch, setSelectedSourceBranch] = useState(null)
-  const [selectedTargetBranch, setSelectedTargetBranch] = useState(null)
+  const initialRepositoryId = location.state?.repositoryId ?? repositoryId ?? null
+  const initialSourceBranch = location.state?.sourceBranch ?? searchParams.get('sourceBranch')
+  const initialTargetBranch = location.state?.targetBranch ?? searchParams.get('targetBranch')
+  const [selectedRepositoryId, setSelectedRepositoryId] = useState(initialRepositoryId)
+  const [selectedSourceBranch, setSelectedSourceBranch] = useState(initialSourceBranch)
+  const [selectedTargetBranch, setSelectedTargetBranch] = useState(initialTargetBranch)
 
   const selectedRepository = selectedRepositoryId ? getRepositoryDetail(selectedRepositoryId) : null
   const branches = selectedRepositoryId ? getRepositoryBranches(selectedRepositoryId) : []
@@ -55,6 +79,29 @@ export default function MergeRequestCreate() {
       ),
   )
   const hasNoDiff = branchComparison?.hasDiff === false
+  const pushNotice = getPushNotice(selectedRepository, selectedSourceBranch, selectedTargetBranch)
+  const isFromLatestPushNotice = Boolean(location.state?.fromLatestPushNotice || searchParams.get('from') === 'latest-push')
+
+  useEffect(() => {
+    if (!initialRepositoryId) return
+    if (!initialSourceBranch || !initialTargetBranch) {
+      form.setFieldValue('repositoryId', initialRepositoryId)
+      return
+    }
+
+    const repository = getRepositoryDetail(initialRepositoryId)
+    const notice = getPushNotice(repository, initialSourceBranch, initialTargetBranch)
+    const title = location.state?.title ?? getDefaultMrTitle(initialSourceBranch, initialTargetBranch, notice)
+    const description = location.state?.description ?? getDefaultMrDescription(initialSourceBranch, initialTargetBranch, notice)
+
+    form.setFieldsValue({
+      repositoryId: initialRepositoryId,
+      source: initialSourceBranch,
+      target: initialTargetBranch,
+      title,
+      description,
+    })
+  }, [form, initialRepositoryId, initialSourceBranch, initialTargetBranch, location.state?.description, location.state?.title])
 
   const warnRepositoryRequired = () => {
     if (!selectedRepositoryId) message.warning('저장소를 먼저 선택해 주세요.')
@@ -108,6 +155,14 @@ export default function MergeRequestCreate() {
             title="저장소 / Branch 선택"
             description="MR을 생성할 저장소와 병합할 Branch를 선택해 주세요. 선택한 Branch 기준으로 비교 가능한 변경사항이 있을 때 MR을 생성할 수 있어요."
           >
+              {isFromLatestPushNotice && pushNotice ? (
+                <Alert
+                  type="info"
+                  showIcon
+                  title="새 Push를 기반으로 MR 정보를 채웠어요."
+                  description={`${pushNotice.branchName} Branch에 ${pushNotice.pushedAt} ${pushNotice.pushedBy}님이 Push한 Commit ${pushNotice.commitSha} 기준입니다.`}
+                />
+              ) : null}
               <Form.Item label="저장소" name="repositoryId" rules={[{ required: true, message: '저장소를 선택해 주세요.' }]}>
                 <Select placeholder="저장소 선택" options={repositoryOptions} onChange={handleRepositoryChange} />
               </Form.Item>
@@ -306,16 +361,16 @@ function CommitCard({ commit, onCopy }) {
 
 function BranchValidationAlert({ hasSameBranch, hasDuplicateMr, branchComparison }) {
   if (hasSameBranch) {
-    return <Alert type="warning" showIcon message="Source Branch와 Target Branch는 서로 달라야 해요." />
+    return <Alert type="warning" showIcon title="Source Branch와 Target Branch는 서로 달라야 해요." />
   }
   if (hasDuplicateMr) {
-    return <Alert type="warning" showIcon message="동일한 Source/Target Branch 조합의 MR이 이미 있어요." />
+    return <Alert type="warning" showIcon title="동일한 Source/Target Branch 조합의 MR이 이미 있어요." />
   }
   if (branchComparison?.hasDiff === false) {
-    return <Alert type="warning" showIcon message="선택한 Branch 사이에 비교 가능한 변경사항이 없어요." />
+    return <Alert type="warning" showIcon title="선택한 Branch 사이에 비교 가능한 변경사항이 없어요." />
   }
   if (branchComparison?.hasDiff) {
-    return <Alert type="success" showIcon message={`선택한 Branch 사이에 비교 가능한 변경사항 ${branchComparison.diffCount}건이 있어요.`} />
+    return <Alert type="success" showIcon title={`선택한 Branch 사이에 비교 가능한 변경사항 ${branchComparison.diffCount}건이 있어요.`} />
   }
   return null
 }
