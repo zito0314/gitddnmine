@@ -1789,6 +1789,192 @@ const mockData = {
         "required": 2,
         "comments": 5,
         "status": "open",
+        "mergeable": false,
+        "mergeProgress": 50,
+        "sourceBranch": "feature/auth-banner",
+        "targetBranch": "develop",
+        "createdAtText": "2일 전 생성",
+        "updatedAtText": "15분 전 마지막 업데이트",
+        "tabs": {
+          "commitsCount": 4,
+          "pipelinesCount": 3,
+          "changesAdded": 166,
+          "changesRemoved": 47
+        },
+        "description": [
+          "로그인 후 고객 포털 상단 인증 안내 배너와 만료 상태 표시를 개선합니다. 인증 정책 예외 케이스 응답값 정리와 인증 API 응답 필드 표준화를 함께 반영합니다.",
+          "만료 임박 상태에서 재인증 유도 배너를 노출하고, 인증 실패 응답의 표준 에러 코드를 정리했어요."
+        ],
+        "mergeConditions": [
+          {
+            "id": "pipeline",
+            "title": "Pipeline",
+            "statusLabel": "Failed",
+            "status": "failed",
+            "completed": false,
+            "summary": "build-test Job에서 오류가 발생했어요.",
+            "pipelineId": "#8471"
+          },
+          {
+            "id": "approval",
+            "title": "승인",
+            "current": 0,
+            "required": 1,
+            "statusLabel": "승인 1건 필요",
+            "status": "required",
+            "completed": false
+          },
+          {
+            "id": "security",
+            "title": "보안 점검",
+            "statusLabel": "Passed",
+            "status": "passed",
+            "completed": true,
+            "vulnerabilities": {
+              "critical": 0,
+              "high": 0,
+              "danger": 0,
+              "medium": 2,
+              "low": 3,
+              "veryLow": 1
+            }
+          },
+          {
+            "id": "target-branch",
+            "title": "Target Branch 최신 상태",
+            "statusLabel": "최신",
+            "status": "passed",
+            "completed": true,
+            "rebaseRequired": false
+          }
+        ],
+        "nextSteps": [
+          {
+            "id": "pipeline-log",
+            "text": "실패한 Pipeline을 확인해 주세요.",
+            "description": "build-test Job에서 오류가 발생했어요.",
+            "actionLabel": "로그 보기"
+          },
+          {
+            "id": "request-approval",
+            "text": "리뷰어 1명의 승인이 필요해요.",
+            "description": "승인자에게 승인을 요청할 수 있어요.",
+            "actionLabel": "승인 요청 보내기"
+          }
+        ],
+        "approvers": [
+          {
+            "id": "ap-1",
+            "name": "박승인",
+            "avatar": "박",
+            "role": "Tech Lead · 필수 승인자",
+            "status": "pending",
+            "statusLabel": "대기 중"
+          }
+        ],
+        "reviewers": [
+          {
+            "id": "rv-1",
+            "name": "Min",
+            "avatar": "민",
+            "role": "리뷰",
+            "status": "reviewing",
+            "statusLabel": "리뷰 중"
+          },
+          {
+            "id": "rv-2",
+            "name": "Park",
+            "avatar": "박",
+            "role": "보안 검토",
+            "status": "approved",
+            "statusLabel": "승인"
+          }
+        ],
+        "project": {
+          "name": "고객 포털 인증 개선",
+          "ticket": "BANK-2041",
+          "milestone": "2026 Q2 인증 UX 개선"
+        },
+        "integrations": [
+          {
+            "id": "itbpi",
+            "label": "ITBPI 요청번호",
+            "value": "ITBPI-20260527-014",
+            "status": "linked",
+            "statusLabel": "연결됨"
+          },
+          {
+            "id": "ecams",
+            "label": "eCAMS 검증",
+            "value": "검증 통과",
+            "status": "passed",
+            "statusLabel": "통과"
+          },
+          {
+            "id": "deploy",
+            "label": "운영이관 요청",
+            "value": "요청 준비 중",
+            "status": "pending",
+            "statusLabel": "대기"
+          },
+          {
+            "id": "mattermost",
+            "label": "Mattermost 알림",
+            "value": "#mr-customer-portal",
+            "status": "linked",
+            "statusLabel": "연결됨"
+          }
+        ],
+        "activities": [
+          {
+            "id": "mr129-act-1",
+            "type": "merge_request_created",
+            "actor": "Min",
+            "text": "Min님이 Merge Request를 생성했어요.",
+            "timeText": "2일 전"
+          },
+          {
+            "id": "mr129-act-2",
+            "type": "pipeline",
+            "actor": "시스템",
+            "text": "Pipeline이 실패했어요.",
+            "timeText": "15분 전",
+            "link": { "label": "#8471", "value": "pipeline-8471" }
+          },
+          {
+            "id": "mr129-act-3",
+            "type": "security",
+            "actor": "시스템",
+            "text": "보안 점검에서 발견된 High 취약점 1건을 해결했어요.",
+            "timeText": "12분 전",
+            "branchName": "feature/auth-banner",
+            "vulnerabilities": {
+              "critical": 0,
+              "high": 0,
+              "danger": 0,
+              "medium": 2,
+              "low": 3,
+              "veryLow": 1
+            }
+          },
+          {
+            "id": "mr129-act-4",
+            "type": "approval",
+            "actor": "Min",
+            "text": "Reviewer에게 승인 요청을 보냈어요.",
+            "timeText": "10분 전"
+          },
+          {
+            "id": "mr129-act-5",
+            "type": "commit",
+            "actor": "Min",
+            "text": "Commit이 추가되었어요.",
+            "timeText": "8분 전",
+            "link": { "label": "7e14d754", "value": "commit-7e14d754" },
+            "commentsCount": 3,
+            "participantsCount": 2
+          }
+        ],
         "gates": [
           {
             "type": "approval",
@@ -5496,7 +5682,7 @@ const mockData = {
     ],
     "detail": {
       "id": 128,
-      "title": "feat: Update file style.css",
+      "title": "인증 정책 응답값 개선",
       "summary": "결제 승인 API 예외 케이스 실패 응답 처리 로직 보완",
       "repo": "mobile-banking-api",
       "repoGroup": "Digital Banking / Mobile",
@@ -5528,8 +5714,7 @@ const mockData = {
       },
       "description": [
         "결제 승인 API에서 특정 예외 케이스가 누락되어, 실패 응답 처리 로직을 보완합니다.",
-        "결제 승인 API에서 특정 예외 케이스가 누락되어, 실패 응답 처리 로직을 보완합니다.",
-        "결제 승인 API에서 특정 예외 케이스가 누락되어, 실패 응답 처리 로직을 보완합니다."
+        "예외 응답 코드를 표준화하고, 인증 정책 분기에서 누락되던 케이스를 검증 테스트로 보강했어요."
       ],
       "mergeConditions": [
         {
@@ -5555,13 +5740,13 @@ const mockData = {
           "title": "보안 점검",
           "statusLabel": "Passed",
           "status": "passed",
-          "completed": false,
+          "completed": true,
           "vulnerabilities": {
-            "critical": 9,
-            "high": 4,
-            "danger": 6,
-            "medium": 8,
-            "low": 0,
+            "critical": 0,
+            "high": 0,
+            "danger": 1,
+            "medium": 3,
+            "low": 2,
             "veryLow": 0
           }
         },
@@ -5587,10 +5772,55 @@ const mockData = {
           "actionLabel": "승인 요청 보내기"
         }
       ],
-      "approvers": [],
-      "reviewers": [],
-      "project": null,
-      "integrations": [],
+      "approvers": [
+        {
+          "id": "ap-1",
+          "name": "박승인",
+          "avatar": "박",
+          "role": "Security Reviewer · 필수 승인자",
+          "status": "pending",
+          "statusLabel": "대기 중"
+        }
+      ],
+      "reviewers": [
+        {
+          "id": "rv-1",
+          "name": "Min",
+          "avatar": "민",
+          "role": "리뷰",
+          "status": "approved",
+          "statusLabel": "승인"
+        },
+        {
+          "id": "rv-2",
+          "name": "Han",
+          "avatar": "한",
+          "role": "Backend 검토",
+          "status": "reviewing",
+          "statusLabel": "리뷰 중"
+        }
+      ],
+      "project": {
+        "name": "결제 승인 개선",
+        "ticket": "BANK-1987",
+        "milestone": "2026 Q2 결제 안정화"
+      },
+      "integrations": [
+        {
+          "id": "itbpi",
+          "label": "ITBPI 요청번호",
+          "value": "ITBPI-20260526-009",
+          "status": "linked",
+          "statusLabel": "연결됨"
+        },
+        {
+          "id": "ecams",
+          "label": "eCAMS 검증",
+          "value": "검증 통과",
+          "status": "passed",
+          "statusLabel": "통과"
+        }
+      ],
       "activities": [
         {
           "id": "act-001",
@@ -5602,42 +5832,43 @@ const mockData = {
         {
           "id": "act-002",
           "type": "security",
-          "text": "보안 점검 Pipeline이 취약점을 감지했어요.",
-          "timeText": "6시간 전",
-          "branchName": "branch-name",
+          "actor": "시스템",
+          "text": "보안 점검에서 발견된 취약점을 모두 해결했어요.",
+          "timeText": "5시간 전",
+          "branchName": "feature/payment-exception",
           "vulnerabilities": {
-            "critical": 9,
-            "high": 4,
-            "danger": 6,
-            "medium": 8,
-            "low": 0,
+            "critical": 0,
+            "high": 0,
+            "danger": 1,
+            "medium": 3,
+            "low": 2,
             "veryLow": 0
           }
         },
         {
           "id": "act-003",
           "type": "pipeline",
-          "text": "Pipeline {pipelineLabel}이 성공했어요.",
-          "pipelineLabel": "pipelineLabel",
-          "timeText": "6시간 전"
+          "actor": "시스템",
+          "text": "Pipeline이 실패했어요.",
+          "timeText": "4시간 전",
+          "link": { "label": "#8014", "value": "pipeline-8014" }
         },
         {
           "id": "act-004",
           "type": "commit",
           "actor": "김동현",
-          "text": "김동현님이 commit 코멘트 {commitSHA}를 작성했어요.",
-          "commitSHA": "commitSHA",
+          "text": "김동현님이 Commit을 추가했어요.",
+          "timeText": "2시간 전",
+          "link": { "label": "7e14d754", "value": "commit-7e14d754" },
           "commentsCount": 13,
-          "participantsCount": 8,
-          "timeText": "6시간 전"
+          "participantsCount": 8
         },
         {
           "id": "act-005",
-          "type": "repository",
-          "actor": "김동현",
-          "text": "김동현님이 Git 저장소 root-sub-repo를 생성했습니다.",
-          "repositoryName": "root-sub-repo",
-          "timeText": "6시간 전"
+          "type": "approval",
+          "actor": "Min",
+          "text": "Reviewer에게 승인 요청을 보냈어요.",
+          "timeText": "1시간 전"
         }
       ],
       "gates": [

@@ -38,6 +38,7 @@ import {
   getMergeRequestDetail,
   getMergeRequestPipeline,
 } from '../api/mergeRequests'
+import { useAuth } from '../auth/AuthContext'
 
 const { Paragraph, Text, Title } = Typography
 
@@ -49,6 +50,19 @@ const STATUS_COLORS = {
   failed: 'error',
   passed: 'success',
   required: 'warning',
+  pending: 'warning',
+  reviewing: 'processing',
+  approved: 'success',
+  rejected: 'error',
+  running: 'processing',
+  linked: 'blue',
+}
+
+const STATUS_LABELS = {
+  open: 'Open',
+  draft: 'Draft',
+  merged: 'Merged',
+  closed: 'Closed',
 }
 
 const ACTIVITY_FILTERS = [
@@ -94,33 +108,27 @@ function getActivityFilterType(type) {
 }
 
 function renderActivityText(activity, onLinkedValueClick) {
-  if (activity.pipelineLabel) {
-    return (
-      <Text>
-        Pipeline <Typography.Link onClick={() => onLinkedValueClick(activity.pipelineLabel)}>{activity.pipelineLabel}</Typography.Link>이 성공했어요.
-      </Text>
-    )
-  }
-  if (activity.commitSHA) {
-    return (
-      <Text>
-        {activity.actor}님이 commit 코멘트 <Typography.Link onClick={() => onLinkedValueClick(activity.commitSHA)}>{activity.commitSHA}</Typography.Link>를 작성했어요.
-      </Text>
-    )
-  }
-  if (activity.repositoryName) {
-    return (
-      <Text>
-        {activity.actor}님이 Git 저장소 <Typography.Link onClick={() => onLinkedValueClick(activity.repositoryName)}>{activity.repositoryName}</Typography.Link>를 생성했습니다.
-      </Text>
-    )
-  }
-  return <Text>{activity.text}</Text>
+  const link = activity.link
+  return (
+    <Text>
+      {activity.text}
+      {link ? (
+        <>
+          {' '}
+          <Typography.Link onClick={() => onLinkedValueClick(link.value ?? link.label)}>
+            {link.label}
+          </Typography.Link>
+        </>
+      ) : null}
+    </Text>
+  )
 }
 
 export default function MergeRequestDetail() {
   const { mrId, mergeRequestId } = useParams()
   const { message, modal } = AntdApp.useApp()
+  const auth = useAuth()
+  const canManage = !auth.isExternalDeveloper
   const currentMrId = mrId ?? mergeRequestId
   const mergeRequest = getMergeRequestDetail(currentMrId)
   const commits = getMergeRequestCommits(currentMrId)
@@ -175,7 +183,7 @@ export default function MergeRequestDetail() {
       title,
       content: (
         <Select
-          style={{ width: '100%', marginTop: 12 }}
+          className="mr-assign-select"
           placeholder={title}
           options={kind === 'project' ? PROJECT_OPTIONS : PEOPLE_OPTIONS}
         />
@@ -219,13 +227,14 @@ export default function MergeRequestDetail() {
   const overview = (
     <Row gutter={[24, 24]} align="top">
       <Col xs={24} xl={17}>
-        <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+        <Space orientation="vertical" size={16} className="mr-detail-stack">
           <MergeStatusCard
             mergeable={mergeable}
             mergeRequest={mergeRequest}
             progress={progress}
             conditions={conditions}
             onAction={runAction}
+            canManage={canManage}
           />
           <DescriptionCard description={mergeRequest.description} />
           <ActivityCard
@@ -234,12 +243,14 @@ export default function MergeRequestDetail() {
             setActivityFilter={setActivityFilter}
             onLinkedValueClick={(value) => message.info(`${value} 상세 이동은 준비 중입니다.`)}
           />
-          <CommentEditor
-            commentText={commentText}
-            setCommentText={setCommentText}
-            addComment={addComment}
-            closeWithComment={closeWithComment}
-          />
+          {canManage ? (
+            <CommentEditor
+              commentText={commentText}
+              setCommentText={setCommentText}
+              addComment={addComment}
+              closeWithComment={closeWithComment}
+            />
+          ) : null}
         </Space>
       </Col>
       <Col xs={24} xl={7}>
@@ -247,18 +258,19 @@ export default function MergeRequestDetail() {
           mergeRequest={mergeRequest}
           onAction={runAction}
           onAssign={openAssignModal}
+          canManage={canManage}
         />
       </Col>
     </Row>
   )
 
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
-      <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap">
+    <Space orientation="vertical" size={16} className="mr-detail-stack">
+      <Flex align="flex-start" justify="space-between" gap={16} wrap="wrap" className="mr-detail-hero">
         <div>
           <Title level={2}>{mergeRequest.title}</Title>
           <Space wrap>
-            {statusTag(mergeRequest.status, mergeRequest.status === 'open' ? 'Open' : mergeRequest.status)}
+            {statusTag(mergeRequest.status, STATUS_LABELS[mergeRequest.status] ?? mergeRequest.status)}
             <Text strong>{mergeRequest.author?.name ?? mergeRequest.author}</Text>
             <Text type="secondary">·</Text>
             <Text>{mergeRequest.createdAtText ?? '2일 전 생성'}</Text>
@@ -270,15 +282,18 @@ export default function MergeRequestDetail() {
             <Text>{mergeRequest.updatedAtText ?? mergeRequest.updatedAt}</Text>
           </Space>
         </div>
-        <Space>
-          <Button>수정</Button>
-          <Tooltip title={!mergeable ? '필수 조건을 완료해야 Merge할 수 있어요.' : ''}>
-            <Button type="primary" disabled={!mergeable} onClick={handleMerge}>Merge</Button>
-          </Tooltip>
-        </Space>
+        {canManage ? (
+          <Space>
+            <Button icon={<EditOutlined />}>수정</Button>
+            <Tooltip title={!mergeable ? 'Pipeline 성공과 리뷰어 승인 1건이 필요해요.' : ''}>
+              <Button type="primary" disabled={!mergeable} onClick={handleMerge}>Merge</Button>
+            </Tooltip>
+          </Space>
+        ) : null}
       </Flex>
 
       <Tabs
+        className="mr-detail-tabs"
         items={[
           { key: 'overview', label: 'Overview', children: overview },
           { key: 'commits', label: `Commits ${tabs.commitsCount}`, children: <PlaceholderTable title="Commits" data={commits} /> },
@@ -290,20 +305,21 @@ export default function MergeRequestDetail() {
   )
 }
 
-function MergeStatusCard({ mergeable, mergeRequest, progress, conditions, onAction }) {
+function MergeStatusCard({ mergeable, mergeRequest, progress, conditions, onAction, canManage }) {
+  const targetBranch = mergeRequest.targetBranch ?? mergeRequest.target
   return (
     <Card title={mergeable ? 'Merge 가능' : 'Merge 불가'}>
       <Paragraph>
         {mergeable
-          ? `모든 필수 조건이 완료되었어요. ${mergeRequest.targetBranch ?? mergeRequest.target} Branch로 Merge할 수 있어요.`
-          : `Pipeline 성공과 리뷰어 승인 1건이 필요해요. 필수 조건을 완료하면 ${mergeRequest.targetBranch ?? mergeRequest.target} Branch로 Merge할 수 있어요.`}
+          ? `모든 필수 조건이 완료되었어요. ${targetBranch} Branch로 Merge할 수 있어요.`
+          : `Pipeline 성공과 리뷰어 승인 1건이 필요해요. 필수 조건을 완료하면 ${targetBranch} Branch로 Merge할 수 있어요.`}
       </Paragraph>
       <Flex align="center" gap={12}>
         <Text>Merge 진행도</Text>
-        <Progress percent={progress} style={{ flex: 1 }} />
+        <Progress percent={progress} className="mr-merge-progress" />
       </Flex>
       <Collapse
-        style={{ marginTop: 16 }}
+        className="mr-condition-collapse"
         items={conditions.map((condition) => ({
           key: condition.id,
           label: (
@@ -315,20 +331,20 @@ function MergeStatusCard({ mergeable, mergeRequest, progress, conditions, onActi
               <Tag color={condition.completed ? 'success' : 'warning'}>{condition.completed ? '완료' : '미완료'}</Tag>
             </Flex>
           ),
-          children: <ConditionDetail condition={condition} onAction={onAction} />,
+          children: <ConditionDetail condition={condition} onAction={onAction} canManage={canManage} />,
         }))}
       />
     </Card>
   )
 }
 
-function ConditionDetail({ condition, onAction }) {
+function ConditionDetail({ condition, onAction, canManage }) {
   if (condition.id === 'pipeline') {
     return (
       <Space orientation="vertical">
         <Text>{condition.summary}</Text>
         <Text>마지막 Pipeline: {condition.pipelineId}</Text>
-        <Button onClick={() => onAction('pipeline-log')}>로그 보기</Button>
+        {canManage ? <Button onClick={() => onAction('pipeline-log')}>로그 보기</Button> : null}
       </Space>
     )
   }
@@ -337,7 +353,7 @@ function ConditionDetail({ condition, onAction }) {
       <Space orientation="vertical">
         <Text>리뷰어 {condition.required}명의 승인이 필요해요.</Text>
         <Text>승인자에게 승인 요청을 보낼 수 있어요.</Text>
-        <Button onClick={() => onAction('request-approval')}>승인 요청 보내기</Button>
+        {canManage ? <Button onClick={() => onAction('request-approval')}>승인 요청 보내기</Button> : null}
       </Space>
     )
   }
@@ -345,7 +361,11 @@ function ConditionDetail({ condition, onAction }) {
     const vulnerabilities = condition.vulnerabilities ?? {}
     return (
       <Space orientation="vertical">
-        <Text>보안 점검 Pipeline이 취약점을 감지했어요.</Text>
+        <Text>
+          {condition.completed
+            ? '보안 점검을 통과했어요.'
+            : '보안 점검 Pipeline이 취약점을 감지했어요.'}
+        </Text>
         <Space wrap>
           <Tag color="error">치명적 {vulnerabilities.critical ?? 0}</Tag>
           <Tag color="error">매우 위험 {vulnerabilities.high ?? 0}</Tag>
@@ -354,7 +374,7 @@ function ConditionDetail({ condition, onAction }) {
           <Tag>낮음 {vulnerabilities.low ?? 0}</Tag>
           <Tag>매우 낮음 {vulnerabilities.veryLow ?? 0}</Tag>
         </Space>
-        <Button onClick={() => onAction('security-report')}>보안 리포트 보기</Button>
+        {canManage ? <Button onClick={() => onAction('security-report')}>보안 리포트 보기</Button> : null}
       </Space>
     )
   }
@@ -365,7 +385,7 @@ function ConditionDetail({ condition, onAction }) {
           ? 'Target Branch의 최신 변경사항이 반영되지 않았어요. Merge 전 Rebase가 필요해요.'
           : 'Target Branch 기준 최신 상태예요. Rebase가 필요하지 않습니다.'}
       </Text>
-      {condition.rebaseRequired ? <Button onClick={() => onAction('rebase-guide')}>Rebase 안내 보기</Button> : null}
+      {condition.rebaseRequired && canManage ? <Button onClick={() => onAction('rebase-guide')}>Rebase 안내 보기</Button> : null}
     </Space>
   )
 }
@@ -390,7 +410,7 @@ function ActivityCard({ activities, activityFilter, setActivityFilter, onLinkedV
           options={ACTIVITY_FILTERS}
           value={activityFilter}
           onChange={setActivityFilter}
-          style={{ width: 160 }}
+          className="mr-activity-filter"
         />
       )}
     >
@@ -399,7 +419,7 @@ function ActivityCard({ activities, activityFilter, setActivityFilter, onLinkedV
           items={activities.map((activity) => ({
             icon: activity.type === 'security' ? <SafetyCertificateOutlined /> : activity.type === 'pipeline' ? <CheckCircleOutlined /> : <Avatar size={24}>{(activity.actor ?? 'S').slice(0, 1)}</Avatar>,
             content: (
-              <Space orientation="vertical" size={8} style={{ width: '100%' }}>
+              <Space orientation="vertical" size={8} className="mr-detail-stack">
                 <Space wrap>
                   {renderActivityText(activity, onLinkedValueClick)}
                   <Text type="secondary">{activity.timeText}</Text>
@@ -485,43 +505,115 @@ function CommentEditor({ commentText, setCommentText, addComment, closeWithComme
   )
 }
 
-function SidePanel({ mergeRequest, onAction, onAssign }) {
+function SidePanel({ mergeRequest, onAction, onAssign, canManage }) {
+  const { approvers = [], reviewers = [], project, integrations = [], nextSteps = [] } = mergeRequest
+
   return (
-    <Space orientation="vertical" size={16} style={{ width: '100%' }}>
+    <Space orientation="vertical" size={16} className="mr-side-panel">
       <Card title="Next Step">
-        <Space orientation="vertical" size={12}>
-          {mergeRequest.nextSteps?.map((step) => (
-            <Flex key={step.id} justify="space-between" gap={12} align="center">
-              <div>
-                <Text strong>{step.text}</Text>
-                <br />
-                <Text type="secondary">{step.description}</Text>
-              </div>
-              <Button onClick={() => onAction(step.id)}>{step.actionLabel}</Button>
-            </Flex>
-          ))}
-        </Space>
+        {nextSteps.length > 0 ? (
+          <Space orientation="vertical" size={12} className="mr-detail-stack">
+            {nextSteps.map((step) => (
+              <Flex key={step.id} justify="space-between" gap={12} align="center">
+                <div>
+                  <Text strong>{step.text}</Text>
+                  <br />
+                  <Text type="secondary">{step.description}</Text>
+                </div>
+                {canManage ? <Button onClick={() => onAction(step.id)}>{step.actionLabel}</Button> : null}
+              </Flex>
+            ))}
+          </Space>
+        ) : (
+          <Text type="secondary">지금 처리해야 할 다음 단계가 없어요.</Text>
+        )}
       </Card>
-      <AssignmentCard title="승인자" emptyText="승인자 없음" actionLabel="승인자 설정" onClick={() => onAssign('approver')} />
-      <AssignmentCard title="리뷰어" emptyText="리뷰어 없음" actionLabel="리뷰어 설정" onClick={() => onAssign('reviewer')} />
-      <AssignmentCard title="프로젝트" emptyText="프로젝트 없음" actionLabel="프로젝트 설정" onClick={() => onAssign('project')} />
+
+      <PeopleCard
+        title="승인자"
+        people={approvers}
+        emptyText="승인자 없음"
+        actionLabel="승인자 설정"
+        onClick={() => onAssign('approver')}
+        canManage={canManage}
+      />
+      <PeopleCard
+        title="리뷰어"
+        people={reviewers}
+        emptyText="리뷰어 없음"
+        actionLabel="리뷰어 설정"
+        onClick={() => onAssign('reviewer')}
+        canManage={canManage}
+      />
+
+      <Card
+        title="프로젝트"
+        extra={canManage && project ? <Button size="small" onClick={() => onAssign('project')}>변경</Button> : null}
+      >
+        {project ? (
+          <Space orientation="vertical" size={4} className="mr-detail-stack">
+            <Text strong>{project.name}</Text>
+            {project.ticket ? <Text type="secondary">Ticket · {project.ticket}</Text> : null}
+            {project.milestone ? <Text type="secondary">Milestone · {project.milestone}</Text> : null}
+          </Space>
+        ) : (
+          <Flex justify="space-between" align="center" gap={12}>
+            <Text type="secondary">프로젝트 없음</Text>
+            {canManage ? <Button onClick={() => onAssign('project')}>프로젝트 설정</Button> : null}
+          </Flex>
+        )}
+      </Card>
+
       <Card title="내부 연계 옵션">
-        <Space orientation="vertical">
+        {integrations.length > 0 ? (
+          <Space orientation="vertical" size={12} className="mr-detail-stack">
+            {integrations.map((integration) => (
+              <Flex key={integration.id} justify="space-between" align="center" gap={12}>
+                <div>
+                  <Text>{integration.label}</Text>
+                  <br />
+                  <Text type="secondary">{integration.value}</Text>
+                </div>
+                {integration.statusLabel ? statusTag(integration.status, integration.statusLabel) : null}
+              </Flex>
+            ))}
+          </Space>
+        ) : (
           <Text type="secondary">연결된 내부 시스템 정보가 없습니다.</Text>
-          {['ITBPI 요청번호', 'eCAMS 검증', '운영이관 요청', 'Mattermost 알림'].map((item) => <Tag key={item}>{item}</Tag>)}
-        </Space>
+        )}
       </Card>
     </Space>
   )
 }
 
-function AssignmentCard({ title, emptyText, actionLabel, onClick }) {
+function PeopleCard({ title, people, emptyText, actionLabel, onClick, canManage }) {
   return (
-    <Card title={title}>
-      <Flex justify="space-between" align="center" gap={12}>
-        <Text type="secondary">{emptyText}</Text>
-        <Button onClick={onClick}>{actionLabel}</Button>
-      </Flex>
+    <Card
+      title={title}
+      extra={canManage && people.length > 0 ? <Button size="small" onClick={onClick}>변경</Button> : null}
+    >
+      {people.length > 0 ? (
+        <Space orientation="vertical" size={12} className="mr-detail-stack">
+          {people.map((person) => (
+            <Flex key={person.id} justify="space-between" align="center" gap={12}>
+              <Space>
+                <Avatar>{person.avatar ?? person.name?.slice(0, 1)}</Avatar>
+                <div>
+                  <Text strong>{person.name}</Text>
+                  <br />
+                  <Text type="secondary">{person.role}</Text>
+                </div>
+              </Space>
+              {person.statusLabel ? statusTag(person.status, person.statusLabel) : null}
+            </Flex>
+          ))}
+        </Space>
+      ) : (
+        <Flex justify="space-between" align="center" gap={12}>
+          <Text type="secondary">{emptyText}</Text>
+          {canManage ? <Button onClick={onClick}>{actionLabel}</Button> : null}
+        </Flex>
+      )}
     </Card>
   )
 }
