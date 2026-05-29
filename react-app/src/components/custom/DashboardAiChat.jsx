@@ -1,6 +1,7 @@
 import { ArrowRightOutlined, ReloadOutlined } from '../icons'
-import { Button, Card, Flex, Input, Space, Spin, Tag, Tooltip, Typography } from 'antd'
+import { Button, Flex, Input, Spin, Tag, Tooltip, Typography } from 'antd'
 import { useEffect, useRef, useState } from 'react'
+import { CardAdvance } from '../common'
 import GitddnLogo from './GitddnLogo'
 
 const { Text } = Typography
@@ -48,17 +49,17 @@ function DashboardAiChat({ currentUserName, prompts, getResponse, onOpenResponse
   }
 
   return (
-    <Card className="dashboard-ai-panel" variant="borderless">
+    <CardAdvance className="dashboard-ai-panel" variant="borderless">
       <Flex justify="space-between" align="flex-start" gap={24}>
-        <Space direction="vertical" size={16} className="dashboard-ai-content">
+        <Flex vertical gap={16} className="dashboard-ai-content">
           <GitddnLogo compact className="dashboard-ai-logo" />
-          <Space direction="vertical" size={4}>
+          <Flex vertical gap={4}>
             <Text>안녕하세요, <Text strong className="dashboard-ai-user">{currentUserName}</Text>님! 오늘 처리할 업무를 분석했어요.</Text>
             <Text strong className="dashboard-ai-summary">
               승인 대기 MR 4건, Pipeline 실패 2건, 보안 이슈 1건이 있습니다. 어떤 것부터 살펴볼까요?
             </Text>
-          </Space>
-          <Space wrap>
+          </Flex>
+          <Flex gap={8} wrap>
             {prompts.map((prompt) => (
               <Button
                 key={prompt.key}
@@ -70,8 +71,8 @@ function DashboardAiChat({ currentUserName, prompts, getResponse, onOpenResponse
                 {prompt.label}
               </Button>
             ))}
-          </Space>
-        </Space>
+          </Flex>
+        </Flex>
         <Button
           type="text"
           icon={<ArrowRightOutlined />}
@@ -86,17 +87,17 @@ function DashboardAiChat({ currentUserName, prompts, getResponse, onOpenResponse
             {message.role === 'user' ? (
               <Tag className="dashboard-ai-question">{message.content}</Tag>
             ) : (
-              <Space direction="vertical" size={8} className="dashboard-ai-answer">
+              <Flex vertical gap={8} className="dashboard-ai-answer">
                 <Text strong>{message.title}</Text>
                 <Text>{message.content}</Text>
-                <Space wrap>
+                <Flex gap={8} wrap>
                   {message.links.map((link) => (
                     <Button key={link.href} size="small" onClick={() => onOpenResponse(link.href)}>
                       {link.label}
                     </Button>
                   ))}
-                </Space>
-              </Space>
+                </Flex>
+              </Flex>
             )}
           </Flex>
         ))}
@@ -127,7 +128,7 @@ function DashboardAiChat({ currentUserName, prompts, getResponse, onOpenResponse
           disabled={loading}
         />
       </Flex>
-    </Card>
+    </CardAdvance>
   )
 }
 

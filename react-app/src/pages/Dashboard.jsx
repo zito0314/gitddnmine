@@ -1,5 +1,5 @@
 import { StarFilled } from '../components/icons'
-import { Button, Col, Empty, Flex, Row, Space, Tabs, Typography } from 'antd'
+import { Button, Col, Empty, Flex, Row, Tabs, Typography } from 'antd'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -108,13 +108,13 @@ function Dashboard() {
                     className="dashboard-next-item"
                     onClick={() => navigate(item.href)}
                   >
-                    <Space direction="vertical" size={2}>
+                    <Flex vertical gap={2}>
                       <Flex align="center" gap={8} wrap="wrap" className="dashboard-next-title">
                         <Text strong>{item.title}</Text>
                         <StatusTag status={item.status} />
                       </Flex>
                       <Text type="secondary">{item.target} · {item.updatedAt}</Text>
-                    </Space>
+                    </Flex>
                     <Button
                       type={item.type === 'Merge Request' ? 'primary' : 'default'}
                       size="small"
@@ -140,7 +140,7 @@ function Dashboard() {
                 onChange={setActivityTab}
                 items={activityTabs.map((tab) => ({ key: tab.key, label: tab.label }))}
               />
-              <Space direction="vertical" size={0} className="dashboard-activity-list" style={{ width: '100%' }}>
+              <Flex vertical gap={0} className="dashboard-activity-list">
                 {filteredActivities.slice(0, 4).length > 0
                   ? filteredActivities.slice(0, 4).map((activity) => (
                     <Flex
@@ -151,14 +151,14 @@ function Dashboard() {
                       onClick={() => navigate(activity.href)}
                     >
                       <BadgeDot />
-                      <Space direction="vertical" size={2}>
+                      <Flex vertical gap={2}>
                         <Text>{activity.actor}님이 <Link to={activity.href}>{activity.message}</Link></Text>
                         <Text type="secondary">{activity.repositoryName} · {activity.createdAt}</Text>
-                      </Space>
+                      </Flex>
                     </Flex>
                   ))
                   : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={UI_TEXT.messages.empty.table} />}
-              </Space>
+              </Flex>
             </CardAdvance>
           </Flex>
         </Col>

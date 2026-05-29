@@ -11,16 +11,17 @@ function CardAdvance({
   titleNode,
   ...cardProps
 }) {
-  const titleContent = titleNode ?? (
+  const hasTitle = titleNode || title || description
+  const titleContent = titleNode ?? (hasTitle ? (
     <Flex vertical gap={2} className="card-advance-title">
-      <Text strong>{title}</Text>
+      {title ? <Text strong>{title}</Text> : null}
       {description ? (
         <Text type="secondary" className="card-advance-description">
           {description}
         </Text>
       ) : null}
     </Flex>
-  )
+  ) : undefined)
 
   return (
     <Card
