@@ -116,10 +116,10 @@ export default function RepositoryList() {
     () =>
       [...new Set([
         ...repositories.map((repository) => repository.type),
-        ...repositoryRequests.map((request) => request.language),
+        ...(canUseManagedView ? repositoryRequests.map((request) => request.language) : []),
       ].filter(Boolean))]
         .map((language) => ({ value: language, label: language })),
-    [repositories, repositoryRequests],
+    [canUseManagedView, repositories, repositoryRequests],
   )
   const groupFilterItems = [
     { key: 'all', label: '모든 그룹' },
@@ -140,16 +140,16 @@ export default function RepositoryList() {
 
   const filteredRepositories = repositories.filter(matchesFilters)
   const filteredRequests = repositoryRequests.filter(matchesFilters)
+  const repositoryRows = filteredRepositories.map((repository) => ({
+    ...repository,
+    rowType: 'repository',
+    status: 'approved',
+    groupPath: repository.group?.replace(/\s*\/\s*/g, '/'),
+    language: repository.type,
+    titleText: repository.name,
+    timeText: repository.updatedAt,
+  }))
   const catalogRows = useMemo(() => {
-    const approvedRows = filteredRepositories.map((repository) => ({
-      ...repository,
-      rowType: 'repository',
-      status: 'approved',
-      groupPath: repository.group?.replace(/\s*\/\s*/g, '/'),
-      language: repository.type,
-      titleText: repository.name,
-      timeText: repository.updatedAt,
-    }))
     const requestRows = canUseManagedView
       ? filteredRequests.map((request) => {
         const pathParts = getPathParts(request.path)
@@ -163,10 +163,11 @@ export default function RepositoryList() {
       })
       : []
 
-    return [...approvedRows, ...requestRows]
-  }, [canUseManagedView, filteredRepositories, filteredRequests])
+    return [...repositoryRows, ...requestRows]
+  }, [canUseManagedView, filteredRequests, repositoryRows])
 
   const visibleCatalogRows = catalogRows.filter((row) => activeStatus === 'all' || row.status === activeStatus)
+  const visibleRepositoryRows = canUseManagedView ? visibleCatalogRows : repositoryRows
   const tabItems = FILTER_TABS.map((tab) => ({
     ...tab,
     label: tab.label,
@@ -300,7 +301,7 @@ export default function RepositoryList() {
         <Space orientation="vertical" size={4} className="repository-catalog-content">
           <Flex align="center" gap={8} wrap="wrap">
             <Text strong className="repository-catalog-title">{row.titleText}</Text>
-            <Tag color={meta.color} style={{ marginInlineEnd: 0 }}>{meta.label}</Tag>
+            {canUseManagedView ? <Tag color={meta.color} style={{ marginInlineEnd: 0 }}>{meta.label}</Tag> : null}
           </Flex>
           <Text type="secondary" className="repository-catalog-description">
             {descriptionItems.map((item, index) => (
@@ -331,15 +332,17 @@ export default function RepositoryList() {
       />
 
       <Space orientation="vertical" size={16} className="repository-catalog">
-        <Tabs
-          activeKey={activeStatus}
-          items={tabItems}
-          onChange={setActiveStatus}
-        />
+        {canUseManagedView ? (
+          <Tabs
+            activeKey={activeStatus}
+            items={tabItems}
+            onChange={setActiveStatus}
+          />
+        ) : null}
         {renderFilterBar()}
         <Card variant="outlined" styles={{ body: { padding: 0 } }}>
           <div className="repository-catalog-list">
-            {visibleCatalogRows.length > 0 ? visibleCatalogRows.map(renderCatalogRow) : (
+            {visibleRepositoryRows.length > 0 ? visibleRepositoryRows.map(renderCatalogRow) : (
               <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="저장소가 없습니다." />
             )}
           </div>
