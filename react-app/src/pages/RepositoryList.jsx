@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getRepositories, getRepositoryRequests } from '../api/repositories'
 import { useAuth } from '../auth/AuthContext'
-import { PageHeader } from '../components/common'
+import { FilterBar, PageHeader } from '../components/common'
 import { UI_TEXT } from '../constants'
 import useRepositoryFavorites from '../hooks/useRepositoryFavorites'
 import { sortRepositoriesByFavorite } from '../utils/favorites'
@@ -199,13 +199,13 @@ export default function RepositoryList() {
   }
 
   const renderFilterBar = () => (
-    <Flex align="center" gap={12} wrap="wrap" className="repository-catalog-filter">
+    <FilterBar className="repository-catalog-filter">
       <Search
         allowClear
         placeholder="저장소명, 프로젝트명, 담당 조직 선택"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
-        style={{ flex: '1 1 320px', minWidth: 260 }}
+        style={{ flex: '1 1 320px', minWidth: 280 }}
       />
       <Dropdown
         menu={{
@@ -235,7 +235,7 @@ export default function RepositoryList() {
           </Space>
         </Button>
       </Dropdown>
-    </Flex>
+    </FilterBar>
   )
 
   const renderRowActions = (row) => {
@@ -336,9 +336,7 @@ export default function RepositoryList() {
           items={tabItems}
           onChange={setActiveStatus}
         />
-        <Card size="small" variant="outlined" styles={{ body: { padding: 12 } }}>
-          {renderFilterBar()}
-        </Card>
+        {renderFilterBar()}
         <Card variant="outlined" styles={{ body: { padding: 0 } }}>
           <div className="repository-catalog-list">
             {visibleCatalogRows.length > 0 ? visibleCatalogRows.map(renderCatalogRow) : (

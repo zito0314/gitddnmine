@@ -525,11 +525,21 @@ body {
 }
 
 .filter-bar {
+  width: 100%;
   margin-bottom: 14px;
+}
+
+.filter-bar-controls,
+.filter-bar-actions {
+  min-width: 0;
 }
 
 .filter-search {
   width: 280px;
+}
+
+.filter-bar .ant-input-search {
+  min-width: 280px;
 }
 
 .repository-context-sidebar {
@@ -1573,6 +1583,7 @@ body {
 
 .repository-catalog-filter {
   width: 100%;
+  margin-bottom: 0;
 }
 
 .repository-catalog-list {
