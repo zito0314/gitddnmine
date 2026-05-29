@@ -166,13 +166,6 @@ export default function RepositoryList() {
     return [...repositoryRows, ...requestRows]
   }, [canUseManagedView, filteredRequests, repositoryRows])
 
-  const visibleCatalogRows = catalogRows.filter((row) => activeStatus === 'all' || row.status === activeStatus)
-  const visibleRepositoryRows = canUseManagedView ? visibleCatalogRows : repositoryRows
-  const tabItems = FILTER_TABS.map((tab) => ({
-    ...tab,
-    label: tab.label,
-  }))
-
   const handleCancelRequest = (request) => {
     modal.confirm({
       title: '요청을 취소할까요?',
@@ -319,6 +312,27 @@ export default function RepositoryList() {
     )
   }
 
+  const renderCatalogBody = (rows) => (
+    <>
+      {renderFilterBar()}
+      <Card variant="outlined" styles={{ body: { padding: 0 } }}>
+        <div className="repository-catalog-list">
+          {rows.length > 0 ? rows.map(renderCatalogRow) : (
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="저장소가 없습니다." />
+          )}
+        </div>
+      </Card>
+    </>
+  )
+
+  const visibleCatalogRows = catalogRows.filter((row) => activeStatus === 'all' || row.status === activeStatus)
+  const visibleRepositoryRows = canUseManagedView ? visibleCatalogRows : repositoryRows
+  const tabItems = FILTER_TABS.map((tab) => ({
+    ...tab,
+    label: tab.label,
+    children: renderCatalogBody(catalogRows.filter((row) => tab.key === 'all' || row.status === tab.key)),
+  }))
+
   return (
     <Space orientation="vertical" size={16} className="page-stack">
       <PageHeader
@@ -338,15 +352,7 @@ export default function RepositoryList() {
             items={tabItems}
             onChange={setActiveStatus}
           />
-        ) : null}
-        {renderFilterBar()}
-        <Card variant="outlined" styles={{ body: { padding: 0 } }}>
-          <div className="repository-catalog-list">
-            {visibleRepositoryRows.length > 0 ? visibleRepositoryRows.map(renderCatalogRow) : (
-              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="저장소가 없습니다." />
-            )}
-          </div>
-        </Card>
+        ) : renderCatalogBody(visibleRepositoryRows)}
       </Space>
     </Space>
   )
