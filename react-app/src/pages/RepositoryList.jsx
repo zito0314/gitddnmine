@@ -203,7 +203,7 @@ export default function RepositoryList() {
     <FilterBar className="repository-catalog-filter">
       <Search
         allowClear
-        className="filter-search-fluid"
+        className="filter-search-fill"
         placeholder="저장소명, 프로젝트명, 담당 조직 선택"
         value={search}
         onChange={(event) => setSearch(event.target.value)}

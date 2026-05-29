@@ -574,7 +574,7 @@ export default function AuditEvidenceExport() {
                 onChange={(e) => setSearch(e.target.value)}
                 onSearch={(v) => setSearch(v)}
                 allowClear
-                className="filter-search-fluid"
+                className="filter-search-fill"
               />
               <Button type="primary" icon={<DownloadOutlined />} onClick={handleBulkExport}>
                 일괄 Export

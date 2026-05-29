@@ -539,21 +539,30 @@ body {
   min-width: 0;
 }
 
-.filter-search {
+.filter-bar .filter-search {
+  flex: 1 1 280px;
+  min-width: 280px;
+}
+
+.filter-bar .filter-select,
+.filter-bar .filter-control-hug,
+.filter-bar .filter-button--sm,
+.filter-bar .filter-button--compact {
+  flex: 0 0 auto;
+}
+
+.filter-search,
+.filter-search-hug {
   width: 280px;
 }
 
-.filter-bar .ant-input-search {
+.filter-search-fill {
+  flex: 1 1 320px;
   min-width: 280px;
 }
 
 .page-stack {
   width: 100%;
-}
-
-.filter-search-fluid {
-  flex: 1 1 320px;
-  min-width: 280px;
 }
 
 .filter-search-limited {
@@ -569,6 +578,10 @@ body {
   width: 280px;
 }
 
+.filter-select {
+  flex: 0 0 auto;
+}
+
 .filter-select--xs {
   width: 130px;
 }
@@ -582,11 +595,11 @@ body {
 }
 
 .filter-select--period {
-  min-width: 150px;
+  width: 150px;
 }
 
 .filter-select--md {
-  min-width: 160px;
+  width: 160px;
 }
 
 .filter-select--lg {
@@ -598,7 +611,7 @@ body {
 }
 
 .filter-select--xxl {
-  min-width: 220px;
+  width: 220px;
 }
 
 .filter-button--sm {

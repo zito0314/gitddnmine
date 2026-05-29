@@ -170,7 +170,7 @@ export default function RepositoryCommits() {
             placeholder="Commit 메시지, SHA를 검색해 주세요."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            className="filter-search-fluid"
+            className="filter-search-fill"
           />
           <Select
             value={author}
