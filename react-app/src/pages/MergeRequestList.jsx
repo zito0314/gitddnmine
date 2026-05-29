@@ -316,7 +316,7 @@ export default function MergeRequestList() {
         </FilterBar>
 
         <Card className="mr-dashboard-list-card">
-          <div className="mr-dashboard-list">
+          <Flex vertical className="mr-dashboard-list">
             {filteredMergeRequests.length > 0 ? (
               filteredMergeRequests.map((mr) => (
                 <MergeRequestRow
@@ -336,7 +336,7 @@ export default function MergeRequestList() {
                 }
               />
             )}
-          </div>
+          </Flex>
         </Card>
       </Space>
     </Space>

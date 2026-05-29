@@ -517,12 +517,11 @@ function SidePanel({ mergeRequest, onAction, onAssign, canManage }) {
           {nextSteps.length > 0 ? (
             <Space orientation="vertical" size={12} className="mr-detail-stack">
               {nextSteps.map((step) => (
-                <Flex key={step.id} justify="space-between" gap={12} align="center">
-                  <div>
+                <Flex key={step.id} justify="space-between" gap={12} align="flex-start">
+                  <Flex vertical gap={2}>
                     <Text strong>{step.text}</Text>
-                    <br />
                     <Text type="secondary">{step.description}</Text>
-                  </div>
+                  </Flex>
                   {canManage ? <Button onClick={() => onAction(step.id)}>{step.actionLabel}</Button> : null}
                 </Flex>
               ))}
@@ -580,12 +579,11 @@ function SidePanel({ mergeRequest, onAction, onAssign, canManage }) {
           {integrations.length > 0 ? (
             <Space orientation="vertical" size={12} className="mr-detail-stack">
               {integrations.map((integration) => (
-                <Flex key={integration.id} justify="space-between" align="center" gap={12}>
-                  <div>
+                <Flex key={integration.id} justify="space-between" align="flex-start" gap={12}>
+                  <Flex vertical gap={2}>
                     <Text>{integration.label}</Text>
-                    <br />
                     <Text type="secondary">{integration.value}</Text>
-                  </div>
+                  </Flex>
                   {integration.statusLabel ? statusTag(integration.status, integration.statusLabel) : null}
                 </Flex>
               ))}
@@ -601,13 +599,13 @@ function SidePanel({ mergeRequest, onAction, onAssign, canManage }) {
 
 function SidePanelSection({ title, extra, children }) {
   return (
-    <div className="mr-side-section">
+    <Flex vertical className="mr-side-section">
       <Flex align="center" justify="space-between" gap={8} className="mr-side-section-head">
         <Text strong className="mr-side-section-title">{title}</Text>
         {extra}
       </Flex>
       {children}
-    </div>
+    </Flex>
   )
 }
 
@@ -626,11 +624,10 @@ function PeopleList({ people, emptyText, actionLabel, onClick, canManage }) {
         <Flex key={person.id} justify="space-between" align="center" gap={12}>
           <Space>
             <Avatar>{person.avatar ?? person.name?.slice(0, 1)}</Avatar>
-            <div>
+            <Flex vertical gap={2}>
               <Text strong>{person.name}</Text>
-              <br />
               <Text type="secondary">{person.role}</Text>
-            </div>
+            </Flex>
           </Space>
           {person.statusLabel ? statusTag(person.status, person.statusLabel) : null}
         </Flex>

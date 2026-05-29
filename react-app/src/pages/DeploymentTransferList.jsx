@@ -176,13 +176,7 @@ export default function DeploymentTransferList() {
   return (
     <Space direction="vertical" size={16} style={{ width: '100%' }} className="deployment-dashboard-page">
       <PageHeader
-        title={(
-          <>
-            운영 반영 가능 여부를
-            <br />
-            한눈에 판단하세요
-          </>
-        )}
+        title="운영 반영 가능 여부를 한눈에 판단하세요"
         description="운영이관 계획, 승인, 검증, 리허설, 롤백, 안정화 상태를 하나의 흐름으로 확인합니다."
         actions={[
           <Button key="audit" onClick={() => navigate('/audit')}>감사 로그 보기</Button>,

@@ -10,7 +10,7 @@ import {
   SettingOutlined,
 } from '../components/icons'
 import { App as AntdApp, Button, Card, Divider, Dropdown, Empty, Flex, Input, Result, Segmented, Space, Tag, Tooltip, Typography } from 'antd'
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getRepositoryBranches, getRepositoryDetail } from '../api/repositories'
 import { useAuth } from '../auth/AuthContext'
@@ -115,62 +115,56 @@ function BranchRow({ branch, repositoryId, canManage }) {
   ]
 
   return (
-    <div className="branch-row">
-      <Flex align="center" justify="space-between" gap={16} wrap="wrap">
-        <div className="branch-main-info">
-          <Flex align="center" gap={8} wrap="wrap">
-            <Text strong className="branch-name-text">{branch.name}</Text>
-            <Tooltip title="Branch 이름 복사">
-              <Button type="text" size="small" className="branch-copy-button" icon={<CopyOutlined />} onClick={copyBranchName} />
-            </Tooltip>
-            {branch.isDefault && <Tag>Default</Tag>}
-            {branch.isProtected && <Tag icon={<LockOutlined />}>Protected</Tag>}
-            {!branch.isDefault && (
-              <Tag color={isOpen ? 'green' : 'red'}>{isOpen ? 'Open' : 'Closed'}</Tag>
-            )}
-          </Flex>
-          <Flex className="branch-commit-meta" align="center" gap={6} wrap="wrap">
-            <Tooltip title="Commit 상세 보기">
-              <Text className="branch-commit-sha" onClick={handleCommitShaClick}>{sha.slice(0, 8)}</Text>
-            </Tooltip>
-            {commitMessage !== '-' && (
-              <Text type="secondary" className="branch-commit-text" ellipsis={{ tooltip: commitMessage }}>
-                {commitMessage}
-              </Text>
-            )}
-            <Divider orientation="vertical" />
-            <Text type="secondary" className="branch-commit-sub">{author}</Text>
-            <Text type="secondary" className="branch-commit-sub">·</Text>
-            <Text type="secondary" className="branch-commit-sub">{timeText}</Text>
-          </Flex>
-        </div>
-
-        <div className="branch-divergence">
-          <Flex align="center" gap={4}>
-            <Tooltip title="기준 Branch보다 앞선 Commit 수">
-              <Text type="secondary" className="branch-commit-sub">↑{formatAheadCount(aheadCount)}</Text>
-            </Tooltip>
-            <Divider orientation="vertical" />
-            <Tooltip title="기준 Branch보다 뒤처진 Commit 수">
-              <Text type="secondary" className="branch-commit-sub">↓{behindCount}</Text>
-            </Tooltip>
-          </Flex>
-        </div>
-
-        <div className="branch-row-actions">
-          <Space size={4}>
-            {canManage && isOpen && !branch.isDefault && (
-              <Button size="small" type="primary" icon={<PullRequestOutlined />} onClick={handleCreateMergeRequest}>
-                MR 생성
-              </Button>
-            )}
-            <Dropdown menu={{ items: moreMenuItems }} trigger={['click']} placement="bottomRight">
-              <Button size="small" icon={<EllipsisOutlined />} aria-label="Branch 작업 더보기" />
-            </Dropdown>
-          </Space>
-        </div>
+    <Flex className="branch-row" align="center" justify="space-between" gap={16} wrap="wrap">
+      <Flex vertical className="branch-main-info">
+        <Flex align="center" gap={8} wrap="wrap">
+          <Text strong className="branch-name-text">{branch.name}</Text>
+          <Tooltip title="Branch 이름 복사">
+            <Button type="text" size="small" className="branch-copy-button" icon={<CopyOutlined />} onClick={copyBranchName} />
+          </Tooltip>
+          {branch.isDefault && <Tag>Default</Tag>}
+          {branch.isProtected && <Tag icon={<LockOutlined />}>Protected</Tag>}
+          {!branch.isDefault && (
+            <Tag color={isOpen ? 'green' : 'red'}>{isOpen ? 'Open' : 'Closed'}</Tag>
+          )}
+        </Flex>
+        <Flex className="branch-commit-meta" align="center" gap={6} wrap="wrap">
+          <Tooltip title="Commit 상세 보기">
+            <Text className="branch-commit-sha" onClick={handleCommitShaClick}>{sha.slice(0, 8)}</Text>
+          </Tooltip>
+          {commitMessage !== '-' && (
+            <Text type="secondary" className="branch-commit-text" ellipsis={{ tooltip: commitMessage }}>
+              {commitMessage}
+            </Text>
+          )}
+          <Divider orientation="vertical" />
+          <Text type="secondary" className="branch-commit-sub">{author}</Text>
+          <Text type="secondary" className="branch-commit-sub">·</Text>
+          <Text type="secondary" className="branch-commit-sub">{timeText}</Text>
+        </Flex>
       </Flex>
-    </div>
+
+      <Flex align="center" gap={4} className="branch-divergence">
+        <Tooltip title="기준 Branch보다 앞선 Commit 수">
+          <Text type="secondary" className="branch-commit-sub">↑{formatAheadCount(aheadCount)}</Text>
+        </Tooltip>
+        <Divider orientation="vertical" />
+        <Tooltip title="기준 Branch보다 뒤처진 Commit 수">
+          <Text type="secondary" className="branch-commit-sub">↓{behindCount}</Text>
+        </Tooltip>
+      </Flex>
+
+      <Space size={4} className="branch-row-actions">
+        {canManage && isOpen && !branch.isDefault && (
+          <Button size="small" type="primary" icon={<PullRequestOutlined />} onClick={handleCreateMergeRequest}>
+            MR 생성
+          </Button>
+        )}
+        <Dropdown menu={{ items: moreMenuItems }} trigger={['click']} placement="bottomRight">
+          <Button size="small" icon={<EllipsisOutlined />} aria-label="Branch 작업 더보기" />
+        </Dropdown>
+      </Space>
+    </Flex>
   )
 }
 
@@ -184,10 +178,10 @@ function BranchSection({ title, hint, branches, repositoryId, canManage }) {
       </Flex>
       <Space orientation="vertical" size={0} className="branch-section-list">
         {branches.map((branch, index) => (
-          <div key={branch.name}>
+          <Fragment key={branch.name}>
             <BranchRow branch={branch} repositoryId={repositoryId} canManage={canManage} />
             {index < branches.length - 1 && <Divider className="branch-row-divider" />}
-          </div>
+          </Fragment>
         ))}
       </Space>
     </Card>

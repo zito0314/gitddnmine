@@ -211,7 +211,7 @@ export default function RepositoryMergeRequests() {
       </Flex>
 
       <Card className="mr-dashboard-list-card">
-        <div className="mr-dashboard-list">
+        <Flex vertical className="mr-dashboard-list">
           {filteredMergeRequests.length > 0 ? (
             filteredMergeRequests.map((mr) => (
               <RepositoryMergeRequestRow
@@ -234,7 +234,7 @@ export default function RepositoryMergeRequests() {
               {createButton}
             </Empty>
           )}
-        </div>
+        </Flex>
       </Card>
     </Space>
   )
