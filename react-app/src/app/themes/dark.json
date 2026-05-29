@@ -339,7 +339,9 @@
     "fontWeightMedium": 500,
     "padding10": 10,
     "fontWeightBold": 700,
-    "fontSizeIconSM": 14
+    "fontSizeIconSM": 14,
+    "borderRadius12": 12,
+    "borderRadius16": 16
   },
   "components": {
     "Input": {
@@ -624,7 +626,7 @@
       "paddingXS": 8,
       "paddingSM": 12,
       "paddingLG": 24,
-      "padding": 16,
+      "padding": 0,
       "marginXXS": 4,
       "marginXS": 8,
       "marginSM": 12,
