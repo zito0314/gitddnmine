@@ -193,7 +193,7 @@ body {
 .sidebar-organization-button.ant-btn {
   width: calc(100% - 44px);
   height: 38px;
-  margin: 0 22px 22px;
+  margin: 12px 22px 22px;
   padding-inline: 12px;
   justify-content: flex-start;
   color: var(--gitddn-sidebar-text);
