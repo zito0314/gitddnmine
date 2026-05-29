@@ -5727,6 +5727,62 @@ const mockData = {
           "removed": "-29",
           "files": 6
         }
+      },
+      {
+        "id": 131,
+        "title": "이체 한도 정책 초안 작성",
+        "summary": "이체 한도 정책 적용을 위한 초기 구조와 검증 흐름 초안입니다.",
+        "repo": "mobile-banking-api",
+        "repoGroup": "Mobile Banking / API",
+        "source": "feature/transfer-limit-policy",
+        "target": "develop",
+        "owner": "jito",
+        "author": "Jito",
+        "updatedAt": "1시간 전",
+        "pipeline": "pending",
+        "security": "pending",
+        "securityLabel": "Pending",
+        "review": "draft",
+        "reviewLabel": "Draft",
+        "approved": 0,
+        "required": 2,
+        "comments": 0,
+        "status": "draft",
+        "sourceBranch": "feature/transfer-limit-policy",
+        "targetBranch": "develop",
+        "createdAtText": "1시간 전 생성",
+        "updatedAtText": "1시간 전 마지막 업데이트",
+        "description": [
+          "이체 한도 정책 적용을 위한 초기 구조와 검증 흐름 초안입니다."
+        ]
+      },
+      {
+        "id": 130,
+        "title": "푸시 토큰 만료 처리 정리",
+        "summary": "만료된 푸시 토큰 정리 로직을 단순화하려다 범위가 커져 닫았습니다.",
+        "repo": "mobile-banking-api",
+        "repoGroup": "Mobile Banking / API",
+        "source": "feature/push-token-cleanup",
+        "target": "develop",
+        "owner": "han",
+        "author": "Han",
+        "updatedAt": "3일 전",
+        "pipeline": "canceled",
+        "security": "none",
+        "securityLabel": "-",
+        "review": "rejected",
+        "reviewLabel": "승인 반려",
+        "approved": 0,
+        "required": 2,
+        "comments": 2,
+        "status": "closed",
+        "sourceBranch": "feature/push-token-cleanup",
+        "targetBranch": "develop",
+        "createdAtText": "4일 전 생성",
+        "updatedAtText": "3일 전 마지막 업데이트",
+        "description": [
+          "만료된 푸시 토큰 정리 로직을 단순화하려다 범위가 커져 닫았습니다."
+        ]
       }
     ],
     "detail": {

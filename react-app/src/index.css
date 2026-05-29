@@ -2279,6 +2279,24 @@ body {
   }
 }
 
+/* Repository Merge Requests Page */
+.repository-mr-page .mr-dashboard-row-meta .ant-typography {
+  gap: 6px;
+}
+
+.repository-mr-row-summary {
+  max-width: 640px;
+}
+
+.repository-mr-tab-count .ant-badge-count {
+  color: var(--gitddn-text-secondary);
+  box-shadow: none;
+}
+
+.repository-mr-empty {
+  padding: 40px 24px;
+}
+
 /* Branch List Page */
 .branch-list-page {}
 

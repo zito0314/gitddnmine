@@ -1,29 +1,75 @@
 import {
-  CheckCircleOutlined,
   CommentOutlined,
-  ExclamationCircleOutlined,
   PullRequestOutlined,
   SafetyCertificateOutlined,
+  UserOutlined,
 } from '../components/icons'
-import { Button, Card, Col, Flex, Progress, Row, Space, Typography } from 'antd'
+import { Badge, Button, Card, Empty, Flex, Input, Select, Space, Tabs, Tag, Typography } from 'antd'
 import { useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import {
-  getRepositoryMergeRequestSummary,
-  getRepositoryMergeRequests,
-} from '../api/repositories'
-import { DataTable, FilterBar, PageHeader, StatusTag, SummaryCard } from '../components/common'
-import { UI_TEXT } from '../constants'
+import { useNavigate, useParams } from 'react-router-dom'
+import { getRepositoryDetail, getRepositoryMergeRequests } from '../api/repositories'
+import { useAuth } from '../auth/AuthContext'
+import { PageHeader, StatusTag } from '../components/common'
 
+const { Search } = Input
 const { Text } = Typography
 
-function getReviewers(mergeRequest) {
-  return (
-    mergeRequest.gates
-      ?.find((gate) => gate.type === 'approval')
-      ?.items?.map((item) => item.title)
-      .filter(Boolean) ?? []
-  )
+const STATUS_TABS = [
+  { key: 'open', label: 'Open' },
+  { key: 'closed', label: 'Closed' },
+  { key: 'merged', label: 'Merged' },
+  { key: 'draft', label: 'Draft' },
+  { key: 'all', label: '전체' },
+]
+
+const SECURITY_OPTIONS = [
+  { value: 'passed', label: '통과' },
+  { value: 'warning', label: '확인 필요' },
+  { value: 'failed', label: '실패' },
+]
+
+const APPROVAL_OPTIONS = [
+  { value: 'approved', label: '승인 완료' },
+  { value: 'required', label: '승인 필요' },
+  { value: 'review', label: '리뷰 필요' },
+]
+
+const PIPELINE_META = {
+  passed: { label: 'Pipeline 통과', color: 'success' },
+  failed: { label: 'Pipeline 실패', color: 'error' },
+  running: { label: 'Pipeline 실행 중', color: 'processing' },
+  pending: { label: 'Pipeline 대기', color: 'default' },
+  canceled: { label: 'Pipeline 취소', color: 'default' },
+}
+
+const SECURITY_META = {
+  passed: { label: '보안 통과', color: 'success' },
+  failed: { label: '보안 실패', color: 'error' },
+  blocked: { label: '보안 실패', color: 'error' },
+  warning: { label: '보안 확인 필요', color: 'warning' },
+  pending: { label: '보안 대기', color: 'default' },
+  none: { label: '보안 미확인', color: 'default' },
+}
+
+const APPROVAL_META = {
+  approved: { label: '승인 완료', color: 'success' },
+  required: { label: '승인 필요', color: 'warning' },
+  none: { label: '미승인', color: 'default' },
+}
+
+const REVIEW_META = {
+  approved: { label: '리뷰 완료', color: 'success' },
+  'need-review': { label: '리뷰 필요', color: 'warning' },
+  reviewing: { label: '검토 중', color: 'processing' },
+  rejected: { label: '변경 요청', color: 'error' },
+  draft: { label: '리뷰 없음', color: 'default' },
+  none: { label: '리뷰 없음', color: 'default' },
+}
+
+function toApprovalStatus(mr) {
+  if ((mr.required ?? 0) > 0 && (mr.approved ?? 0) >= mr.required) return 'approved'
+  if ((mr.approved ?? 0) > 0) return 'required'
+  return 'none'
 }
 
 function uniqueOptions(values) {
@@ -33,275 +79,229 @@ function uniqueOptions(values) {
 export default function RepositoryMergeRequests() {
   const { repositoryId } = useParams()
   const navigate = useNavigate()
-  const allMergeRequests = useMemo(() => getRepositoryMergeRequests(repositoryId), [repositoryId])
-  const summary = useMemo(() => getRepositoryMergeRequestSummary(repositoryId), [repositoryId])
+  const auth = useAuth()
+  const repository = getRepositoryDetail(repositoryId)
+  const mergeRequests = useMemo(() => getRepositoryMergeRequests(repositoryId), [repositoryId])
 
+  const [activeStatus, setActiveStatus] = useState('open')
   const [search, setSearch] = useState('')
-  const [status, setStatus] = useState(null)
-  const [reviewStatus, setReviewStatus] = useState(null)
-  const [pipelineStatus, setPipelineStatus] = useState(null)
-  const [securityStatus, setSecurityStatus] = useState(null)
   const [author, setAuthor] = useState(null)
-  const [reviewer, setReviewer] = useState(null)
+  const [securityStatus, setSecurityStatus] = useState(null)
+  const [approvalStatus, setApprovalStatus] = useState(null)
+
+  const enrichedMergeRequests = useMemo(
+    () =>
+      mergeRequests.map((mr) => ({
+        ...mr,
+        sourceBranch: mr.sourceBranch ?? mr.source,
+        targetBranch: mr.targetBranch ?? mr.target,
+        updatedAtText: mr.updatedAtText ?? `${mr.updatedAt} 마지막 업데이트`,
+        createdAtText: mr.createdAtText ?? `${mr.author} 생성`,
+        commentsCount: mr.comments ?? 0,
+        pipelineStatus: mr.pipeline ?? 'pending',
+        securityStatus: mr.security ?? 'none',
+        approvalStatus: toApprovalStatus(mr),
+        reviewStatus: mr.review ?? 'none',
+      })),
+    [mergeRequests],
+  )
+
+  const statusCounts = useMemo(() => {
+    const counts = { open: 0, closed: 0, merged: 0, draft: 0, all: enrichedMergeRequests.length }
+    enrichedMergeRequests.forEach((mr) => {
+      if (counts[mr.status] !== undefined) counts[mr.status] += 1
+    })
+    return counts
+  }, [enrichedMergeRequests])
+
+  const tabItems = STATUS_TABS.map((tab) => ({
+    key: tab.key,
+    label: (
+      <Flex align="center" gap={6}>
+        <span>{tab.label}</span>
+        <Badge count={statusCounts[tab.key] ?? 0} showZero color="var(--gitddn-primary-soft)" className="repository-mr-tab-count" />
+      </Flex>
+    ),
+  }))
 
   const authorOptions = useMemo(
-    () => uniqueOptions(allMergeRequests.map((mr) => mr.author)),
-    [allMergeRequests],
+    () => uniqueOptions(enrichedMergeRequests.map((mr) => mr.author)),
+    [enrichedMergeRequests],
   )
 
-  const reviewerOptions = useMemo(
-    () => uniqueOptions(allMergeRequests.flatMap((mr) => getReviewers(mr))),
-    [allMergeRequests],
-  )
-
-  const filteredMergeRequests = useMemo(() => {
+  const filteredMergeRequests = enrichedMergeRequests.filter((mr) => {
     const query = search.trim().toLowerCase()
+    const searchable = [mr.title, mr.summary, mr.author, mr.sourceBranch, mr.targetBranch]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase()
 
-    return allMergeRequests.filter((mr) => {
-      if (query) {
-        const searchable = [mr.title, mr.summary, mr.source, mr.target, mr.author]
-          .filter(Boolean)
-          .join(' ')
-          .toLowerCase()
-        if (!searchable.includes(query)) return false
+    if (activeStatus !== 'all' && mr.status !== activeStatus) return false
+    if (query && !searchable.includes(query)) return false
+    if (author && mr.author !== author) return false
+    if (securityStatus && mr.securityStatus !== securityStatus) return false
+    if (approvalStatus) {
+      if (approvalStatus === 'review') {
+        if (mr.reviewStatus !== 'need-review') return false
+      } else if (approvalStatus === 'required') {
+        if (!['required', 'none'].includes(mr.approvalStatus)) return false
+      } else if (mr.approvalStatus !== approvalStatus) {
+        return false
       }
+    }
+    return true
+  })
 
-      if (status && mr.status !== status) return false
-      if (reviewStatus && mr.review !== reviewStatus) return false
-      if (pipelineStatus && mr.pipeline !== pipelineStatus) return false
-      if (securityStatus && mr.security !== securityStatus) return false
-      if (author && mr.author !== author) return false
-      if (reviewer && !getReviewers(mr).includes(reviewer)) return false
+  const canCreateMr = auth.hasPermission('mr:create')
+  const goToCreate = () => navigate(`/repositories/${repositoryId}/merge-requests/new`)
 
-      return true
-    })
-  }, [allMergeRequests, author, pipelineStatus, reviewer, reviewStatus, search, securityStatus, status])
-
-  const isFiltered = search || status || reviewStatus || pipelineStatus || securityStatus || author || reviewer
-
-  const resetFilters = () => {
-    setSearch('')
-    setStatus(null)
-    setReviewStatus(null)
-    setPipelineStatus(null)
-    setSecurityStatus(null)
-    setAuthor(null)
-    setReviewer(null)
-  }
-
-  const columns = [
-    {
-      title: 'MR ID',
-      dataIndex: 'id',
-      width: 96,
-      render: (id) => <Link to={`/repositories/${repositoryId}/merge-requests/${id}`}>!{id}</Link>,
-    },
-    {
-      title: 'Title / Description',
-      dataIndex: 'title',
-      minWidth: 280,
-      render: (title, record) => (
-        <Space direction="vertical" size={2}>
-          <Link to={`/repositories/${repositoryId}/merge-requests/${record.id}`}>{title}</Link>
-          <Text type="secondary">{record.summary}</Text>
-        </Space>
-      ),
-    },
-    {
-      title: 'Source → Target branch',
-      key: 'branch',
-      width: 220,
-      render: (_, record) => (
-        <Space direction="vertical" size={2}>
-          <Text code>{record.source}</Text>
-          <Text type="secondary">→ {record.target}</Text>
-        </Space>
-      ),
-    },
-    { title: 'Author', dataIndex: 'author', width: 120 },
-    {
-      title: 'Review status',
-      dataIndex: 'review',
-      width: 140,
-      render: (value, record) => <StatusTag status={value} label={record.reviewLabel} />,
-    },
-    {
-      title: 'Approval progress',
-      key: 'approval',
-      width: 170,
-      render: (_, record) => {
-        const percent = record.required ? Math.round((record.approved / record.required) * 100) : 0
-        return (
-          <Space direction="vertical" size={2} style={{ width: '100%' }}>
-            <Text>
-              {record.approved}/{record.required} approved
-            </Text>
-            <Progress percent={percent} size="small" showInfo={false} />
-          </Space>
-        )
-      },
-    },
-    {
-      title: 'Pipeline status',
-      dataIndex: 'pipeline',
-      width: 130,
-      render: (value) => <StatusTag status={value} />,
-    },
-    {
-      title: 'Security status',
-      dataIndex: 'security',
-      width: 130,
-      render: (value, record) => <StatusTag status={value} label={record.securityLabel} />,
-    },
-    { title: 'Updated at', dataIndex: 'updatedAt', width: 120 },
-    {
-      title: 'Comments',
-      dataIndex: 'comments',
-      width: 100,
-      render: (value) => (
-        <Flex align="center" gap={6}>
-          <CommentOutlined />
-          {value}
-        </Flex>
-      ),
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      fixed: 'right',
-      width: 104,
-      render: (_, record) => (
-        <Button
-          size="small"
-          onClick={(event) => {
-            event.stopPropagation()
-            navigate(`/repositories/${repositoryId}/merge-requests/${record.id}`)
-          }}
-        >
-          View
-        </Button>
-      ),
-    },
-  ]
+  const createButton = canCreateMr ? (
+    <Button type="primary" icon={<PullRequestOutlined />} onClick={goToCreate}>
+      MR 생성
+    </Button>
+  ) : null
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <Space orientation="vertical" size={16} className="page-stack repository-mr-page">
       <PageHeader
-        title={UI_TEXT.pages.repositoryMergeRequests.title}
-        description={UI_TEXT.pages.repositoryMergeRequests.description}
+        title="Merge Requests"
+        description={`현재 저장소의 Merge Requests를 확인하는 화면입니다.${repository?.name ? ` (${repository.name})` : ''}`}
+        actions={createButton}
       />
 
-      <Card>
-        <RowCards summary={summary} />
+      <Tabs
+        activeKey={activeStatus}
+        items={tabItems}
+        onChange={setActiveStatus}
+        className="mr-dashboard-status-tabs"
+      />
 
-        <FilterBar
-          search={{
-            placeholder: 'Title, branch, author 검색',
-            value: search,
-            onChange: setSearch,
-          }}
-          filters={[
-            {
-              key: 'status',
-              placeholder: 'Status',
-              value: status,
-              onChange: setStatus,
-              options: [
-                { value: 'open', label: 'Open' },
-                { value: 'merged', label: 'Merged' },
-                { value: 'blocked', label: 'Blocked' },
-                { value: 'draft', label: 'Draft' },
-              ],
-            },
-            {
-              key: 'reviewStatus',
-              placeholder: 'Review',
-              value: reviewStatus,
-              onChange: setReviewStatus,
-              options: [
-                { value: 'need-review', label: 'Review required' },
-                { value: 'approved', label: 'Approved' },
-                { value: 'draft', label: 'Draft' },
-              ],
-            },
-            {
-              key: 'pipelineStatus',
-              placeholder: 'Pipeline',
-              value: pipelineStatus,
-              onChange: setPipelineStatus,
-              options: [
-                { value: 'passed', label: 'Passed' },
-                { value: 'failed', label: 'Failed' },
-                { value: 'running', label: 'Running' },
-                { value: 'pending', label: 'Pending' },
-              ],
-            },
-            {
-              key: 'securityStatus',
-              placeholder: 'Security',
-              value: securityStatus,
-              onChange: setSecurityStatus,
-              options: [
-                { value: 'passed', label: 'Passed' },
-                { value: 'failed', label: 'Failed' },
-                { value: 'blocked', label: 'Blocked' },
-                { value: 'pending', label: 'Pending' },
-                { value: 'warning', label: 'Warning' },
-              ],
-            },
-            {
-              key: 'author',
-              placeholder: 'Author',
-              value: author,
-              onChange: setAuthor,
-              options: authorOptions,
-            },
-            {
-              key: 'reviewer',
-              placeholder: 'Reviewer',
-              value: reviewer,
-              onChange: setReviewer,
-              options: reviewerOptions,
-            },
-          ]}
-          onReset={isFiltered ? resetFilters : undefined}
+      <Flex className="filter-bar mr-filter-bar" align="center" gap={8} wrap="wrap">
+        <Search
+          allowClear
+          placeholder="MR 제목, 작성자, Branch를 검색해 주세요."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          className="filter-search-fill"
         />
+        <Select
+          allowClear
+          placeholder="작성자"
+          value={author}
+          onChange={setAuthor}
+          options={authorOptions}
+          className="filter-select filter-select--md"
+        />
+        <Select
+          allowClear
+          placeholder="보안 상태"
+          value={securityStatus}
+          onChange={setSecurityStatus}
+          options={SECURITY_OPTIONS}
+          className="filter-select filter-select--lg"
+        />
+        <Select
+          allowClear
+          placeholder="승인 상태"
+          value={approvalStatus}
+          onChange={setApprovalStatus}
+          options={APPROVAL_OPTIONS}
+          className="filter-select filter-select--lg"
+        />
+      </Flex>
 
-        <DataTable
-          rowKey="id"
-          columns={columns}
-          dataSource={filteredMergeRequests}
-          onRow={(record) => ({
-            onClick: () => navigate(`/repositories/${repositoryId}/merge-requests/${record.id}`),
-            style: { cursor: 'pointer' },
-          })}
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: false,
-            showTotal: (total, range) => `${range[0]}-${range[1]} / 총 ${total}개`,
-          }}
-        />
+      <Card className="mr-dashboard-list-card">
+        <div className="mr-dashboard-list">
+          {filteredMergeRequests.length > 0 ? (
+            filteredMergeRequests.map((mr) => (
+              <RepositoryMergeRequestRow
+                key={mr.id}
+                mergeRequest={mr}
+                onClick={() => navigate(`/repositories/${repositoryId}/merge-requests/${mr.id}`)}
+              />
+            ))
+          ) : (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              className="repository-mr-empty"
+              description={
+                <Space orientation="vertical" size={2}>
+                  <Text>조건에 맞는 Merge Request가 없습니다.</Text>
+                  <Text type="secondary">필터를 변경하거나 새 MR을 생성해보세요.</Text>
+                </Space>
+              }
+            >
+              {createButton}
+            </Empty>
+          )}
+        </div>
       </Card>
     </Space>
   )
 }
 
-function RowCards({ summary }) {
+function RepositoryMergeRequestRow({ mergeRequest, onClick }) {
+  const pipelineMeta = PIPELINE_META[mergeRequest.pipelineStatus]
+  const securityMeta = SECURITY_META[mergeRequest.securityStatus]
+  const approvalMeta = APPROVAL_META[mergeRequest.approvalStatus] ?? APPROVAL_META.none
+  const reviewMeta = REVIEW_META[mergeRequest.reviewStatus] ?? REVIEW_META.none
+
   return (
-    <Row gutter={[12, 12]} className="summary-cards-row repository-mr-summary">
-      <ColCard title="Open MRs" value={summary.open} icon={<PullRequestOutlined />} />
-      <ColCard title="Review Required" value={summary.reviewRequired} tone="warning" icon={<ExclamationCircleOutlined />} />
-      <ColCard title="Pipeline Failed" value={summary.pipelineFailed} tone="danger" icon={<ExclamationCircleOutlined />} />
-      <ColCard title="Security Blocked" value={summary.securityBlocked} tone="danger" icon={<SafetyCertificateOutlined />} />
-      <ColCard title="Ready to Merge" value={summary.readyToMerge} tone="success" icon={<CheckCircleOutlined />} />
-    </Row>
+    <Flex
+      align="center"
+      justify="space-between"
+      gap={16}
+      wrap="wrap"
+      className="mr-dashboard-row"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          onClick()
+        }
+      }}
+    >
+      <StatusTag status={mergeRequest.status} className="mr-dashboard-row-status" />
+
+      <Space orientation="vertical" size={4} className="mr-dashboard-row-content">
+        <Flex align="center" gap={8} wrap>
+          <Text strong className="mr-dashboard-row-title">{mergeRequest.title}</Text>
+          {pipelineMeta ? <Tag color={pipelineMeta.color}>{pipelineMeta.label}</Tag> : null}
+          {securityMeta && mergeRequest.securityStatus !== 'none' ? (
+            <Tag color={securityMeta.color}>{securityMeta.label}</Tag>
+          ) : null}
+        </Flex>
+        <Flex align="center" gap={8} wrap className="mr-dashboard-row-description">
+          {mergeRequest.repoGroup ? <Text type="secondary">{mergeRequest.repoGroup}</Text> : null}
+          <Text type="secondary">!{mergeRequest.id}</Text>
+          <Text type="secondary">· {mergeRequest.author}</Text>
+          <Text type="secondary">· {mergeRequest.createdAtText}</Text>
+          <BranchLine source={mergeRequest.sourceBranch} target={mergeRequest.targetBranch} />
+        </Flex>
+        {mergeRequest.summary ? (
+          <Text type="secondary" ellipsis className="repository-mr-row-summary">{mergeRequest.summary}</Text>
+        ) : null}
+      </Space>
+
+      <Flex align="center" justify="flex-end" gap={10} wrap className="mr-dashboard-row-meta">
+        <Text type="secondary">{mergeRequest.updatedAtText}</Text>
+        <Text type="secondary"><CommentOutlined /> {mergeRequest.commentsCount}</Text>
+        <Text type="secondary"><SafetyCertificateOutlined /> {approvalMeta.label}</Text>
+        <Text type="secondary"><UserOutlined /> {reviewMeta.label}</Text>
+      </Flex>
+    </Flex>
   )
 }
 
-function ColCard({ title, value, tone, icon }) {
+function BranchLine({ source, target }) {
+  if (!source && !target) return null
   return (
-    <Col xs={24} sm={12} xl={4}>
-      <SummaryCard title={title} value={value} tone={tone} icon={icon} />
-    </Col>
+    <Flex align="center" gap={6} wrap="nowrap" className="mr-dashboard-branch-line mr-dashboard-branch-line-compact">
+      <Tag className="mr-dashboard-branch-tag">{source}</Tag>
+      <Text className="mr-dashboard-branch-arrow">›</Text>
+      <Tag className="mr-dashboard-branch-tag">{target}</Tag>
+    </Flex>
   )
 }
