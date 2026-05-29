@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { getMergeRequests } from '../api/mergeRequests'
 import { getRepositories } from '../api/repositories'
 import { useAuth } from '../auth/AuthContext'
-import { PageHeader, SummaryCard } from '../components/common'
+import { FilterBar, PageHeader, SummaryCard } from '../components/common'
 
 const { Search } = Input
 const { Text, Title } = Typography
@@ -197,56 +197,47 @@ export default function MergeRequestList() {
       <Card>
         <Space orientation="vertical" size={16} style={{ width: '100%' }}>
           <Tabs activeKey={activeStatus} items={STATUS_TABS} onChange={setActiveStatus} />
-          <Row gutter={[8, 8]} className="mr-filter-bar">
-            <Col xs={24} md={6} xl={4}>
-              <Select
-                allowClear
-                placeholder="전체 저장소"
-                value={repositoryId}
-                onChange={setRepositoryId}
-                options={repositories.map((repository) => ({ value: repository.id, label: repository.name }))}
-                style={{ width: '100%' }}
-              />
-            </Col>
-            <Col xs={24} md={18} xl={8}>
-              <Search
-                allowClear
-                placeholder="저장소명, 프로젝트명, 담당 조직 선택"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-              />
-            </Col>
-            <Col xs={24} md={8} xl={4}>
-              <Select
-                allowClear
-                placeholder="작성자"
-                value={author}
-                onChange={setAuthor}
-                options={uniqueOptions(enrichedMergeRequests.map((mr) => mr.author))}
-                style={{ width: '100%' }}
-              />
-            </Col>
-            <Col xs={24} md={8} xl={4}>
-              <Select
-                allowClear
-                placeholder="보안 상태"
-                value={securityStatus}
-                onChange={setSecurityStatus}
-                options={uniqueOptions(enrichedMergeRequests.map((mr) => mr.securityStatus), SECURITY_META)}
-                style={{ width: '100%' }}
-              />
-            </Col>
-            <Col xs={24} md={8} xl={4}>
-              <Select
-                allowClear
-                placeholder="승인 상태"
-                value={approvalStatus}
-                onChange={setApprovalStatus}
-                options={uniqueOptions(enrichedMergeRequests.map((mr) => mr.approvalStatus), APPROVAL_META)}
-                style={{ width: '100%' }}
-              />
-            </Col>
-          </Row>
+          <FilterBar className="mr-filter-bar">
+            <Select
+              allowClear
+              placeholder="전체 저장소"
+              value={repositoryId}
+              onChange={setRepositoryId}
+              options={repositories.map((repository) => ({ value: repository.id, label: repository.name }))}
+              className="filter-select filter-select--xl"
+            />
+            <Search
+              allowClear
+              placeholder="저장소명, 프로젝트명, 담당 조직 선택"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              className="filter-search-fill"
+            />
+            <Select
+              allowClear
+              placeholder="작성자"
+              value={author}
+              onChange={setAuthor}
+              options={uniqueOptions(enrichedMergeRequests.map((mr) => mr.author))}
+              className="filter-select filter-select--md"
+            />
+            <Select
+              allowClear
+              placeholder="보안 상태"
+              value={securityStatus}
+              onChange={setSecurityStatus}
+              options={uniqueOptions(enrichedMergeRequests.map((mr) => mr.securityStatus), SECURITY_META)}
+              className="filter-select filter-select--lg"
+            />
+            <Select
+              allowClear
+              placeholder="승인 상태"
+              value={approvalStatus}
+              onChange={setApprovalStatus}
+              options={uniqueOptions(enrichedMergeRequests.map((mr) => mr.approvalStatus), APPROVAL_META)}
+              className="filter-select filter-select--lg"
+            />
+          </FilterBar>
 
           {filteredMergeRequests.length > 0 ? (
             <Space orientation="vertical" size={10} style={{ width: '100%' }}>
