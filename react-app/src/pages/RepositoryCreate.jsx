@@ -124,14 +124,13 @@ export default function RepositoryCreate() {
         )}
       />
 
-      <Card>
-        <Form
-          form={form}
-          layout="vertical"
-          className="repository-request-form"
-          initialValues={{ members: [] }}
-          onFinish={submit}
-        >
+      <Form
+        form={form}
+        layout="vertical"
+        className="repository-request-form"
+        initialValues={{ members: [] }}
+        onFinish={submit}
+      >
           <SectionIntro
             title="요청 정보"
             description="저장소 생성 목적과 사용 용도를 간단히 작성해주세요. 요청 내용을 바탕으로 관리자가 승인 여부를 검토해요."
@@ -254,8 +253,7 @@ export default function RepositoryCreate() {
             <Button onClick={() => navigate('/repositories')}>취소</Button>
             <Button type="primary" htmlType="submit">요청 제출</Button>
           </Space>
-        </Form>
-      </Card>
+      </Form>
     </Space>
   )
 }
